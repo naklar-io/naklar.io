@@ -72,3 +72,6 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/osx,linux,windows
+
+#Korbi VENV
+venv/
