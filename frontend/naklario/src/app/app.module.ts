@@ -25,7 +25,6 @@ import { LandingComponent } from './landing/landing.component';
   ],
   imports: [
     BrowserModule,
-    NgbModule,
     AppRoutingModule
   ],
   providers: [],
