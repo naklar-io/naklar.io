@@ -13,6 +13,7 @@ import { AccountComponent } from './account/account.component';
 import { CallComponent } from './call/call.component';
 import { HomeComponent } from './home/home.component';
 import { LandingComponent } from './landing/landing.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { LandingComponent } from './landing/landing.component';
     AccountComponent,
     CallComponent,
     HomeComponent,
-    LandingComponent
+    LandingComponent,
+    NavbarComponent
   ],
   imports: [
     NgbModule,
