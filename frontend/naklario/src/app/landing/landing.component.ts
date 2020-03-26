@@ -14,7 +14,7 @@ import { LandingService } from "./landing.service";
   providers: [LandingService]
 })
 export class LandingComponent implements OnInit {
-  private emailForm = this.fb.group({
+  emailForm = this.fb.group({
     type: ["", Validators.required],
     email: ["", [Validators.required, Validators.email]],
     updates: [false]
@@ -25,16 +25,19 @@ export class LandingComponent implements OnInit {
   }
 
   onEmailFormSubmit() {
+    if (!this.emailForm.valid) {
+      return;
+    }
     let form = {
-      type: this.emailForm.controls['type'].value,
-      email: this.emailForm.controls['email'].value,
-      updates: this.emailForm.controls['updates'].value
+      type: this.emailForm.controls["type"].value,
+      email: this.emailForm.controls["email"].value,
+      updates: this.emailForm.controls["updates"].value
     };
-    this.landingService
-      .postForm(form)
-      .subscribe(newForm => console.log("posted:" + newForm),
+    this.landingService.postForm(form).subscribe(
+      newForm => console.log("posted:" + newForm),
       // handle error here
-      error => error);
+      error => error
+    );
   }
 
   ngOnInit(): void {}
