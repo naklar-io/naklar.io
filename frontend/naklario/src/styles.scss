@@ -1,5 +1,39 @@
-/* You can add global styles to this file, and also import other style files */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+// boostrap config
+$enable-gradients: true;
+
 body {
-    font-family: 'Open Sans', sans-serif;
+  // apply the google font
+  font-family: "Roboto", sans-serif;
+}
+// font specific classes
+.bold {
+  font-weight: 700;
+}
+.light {
+  font-weight: 300;
+}
+.lighter {
+  font-weight: 100;
+}
+
+// color specific classes
+$primary-color: rgba(239, 133, 21, 0.76);
+$primary-color-light: rgba(239, 133, 21, 0.3);
+$light-gray: #f4f4f4;
+
+.primary-color {
+  color: $primary-color;
+}
+
+.bg-gradient-primary {
+  background-image: linear-gradient(
+    to left,
+    $primary-color,
+    $primary-color-light
+  );
+}
+
+
+.bg-gray {
+    background-color: $light-gray;
 }
