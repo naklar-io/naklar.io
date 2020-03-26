@@ -1,95 +1,111 @@
 <div class="container">
   <div class="row my-5">
     <div class="col-6 col-md">
-      <h1>Frage deien Tutor auf Knopfdruck. <br />Kostenlos.</h1>
-      <p>
+      <h1 class="primary-color">
+        Frage deien Tutor auf Knopfdruck. <br />Kostenlos.
+      </h1>
+      <p class="lead">
         Wir lassen Schüler*innen nicht im Stich. Wir bringen sie mit geprüften
         Tutor*innen zusammen und unterstützen so unsere zukünftige Generation
         während des Schulausfalls!
       </p>
-      <h2>Wir melden uns, sobald wir startklar sind:</h2>
 
-      <form
-        [formGroup]="emailForm"
-        (ngSubmit)="onEmailFormSubmit()"
-        class="form-group"
-      >
-        <div class="my-1">
-          <div class="form-check form-check-inline">
-            <input
-              type="radio"
-              formControlName="type"
-              value="student"
-              class="form-check-input"
-            />
-            <label class="form-check-label">Schüler*in</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              type="radio"
-              formControlName="type"
-              value="tutor"
-              class="form-check-input"
-            />
-            <label class="form-check-label">Tutor*in</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              type="radio"
-              formControlName="type"
-              value="parent"
-              class="form-check-input"
-            />
-            <label class="form-check-label">Elternteil</label>
-          </div>
-        </div>
+      <div class="my-5">
+        <h3>Wir melden uns, sobald wir startklar sind:</h3>
 
-        <div class="py-1">
-          <input
-            type="text"
-            formControlName="email"
-            placeholder="Deine Email (wir melden uns zum Start)"
-            class="form-control"
-          />
-        </div>
-        <div class="form-check my-1">
-          <input
-            type="checkbox"
-            formControlName="updates"
-            class="form-check-input"
-          />
-          <label class="form-check-label"
-            >Ja, sendet mit Updates zu naklar.io*</label
-          >
-        </div>
-        <button class="btn btn-primary my-1" type="submit">
-          Sei einer der ersten!
-        </button>
-      </form>
+        <form
+          [formGroup]="emailForm"
+          (ngSubmit)="onEmailFormSubmit()"
+          class="form-group"
+        >
+          <div class="my-1">
+            <div class="form-check form-check-inline">
+              <input
+                type="radio"
+                formControlName="type"
+                value="student"
+                class="form-check-input"
+              />
+              <label class="form-check-label">Schüler*in</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                type="radio"
+                formControlName="type"
+                value="tutor"
+                class="form-check-input"
+              />
+              <label class="form-check-label">Tutor*in</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                type="radio"
+                formControlName="type"
+                value="parent"
+                class="form-check-input"
+              />
+              <label class="form-check-label">Elternteil</label>
+            </div>
+          </div>
+
+          <div class="py-1">
+            <input
+              type="text"
+              formControlName="email"
+              placeholder="Deine Email (wir melden uns zum Start)"
+              class="form-control"
+            />
+          </div>
+          <div class="form-check my-1">
+            <input
+              type="checkbox"
+              formControlName="updates"
+              class="form-check-input"
+            />
+            <label class="form-check-label"
+              >Ja, sendet mit Updates zu naklar.io*</label
+            >
+          </div>
+          <button class="btn btn-primary my-1" type="submit">
+            Sei einer der ersten!
+          </button>
+        </form>
+      </div>
     </div>
+
     <div class="col-6 col-md">
       <img
         src="assets/img/showcase.png"
         alt="naklar.io Produkt Showcase"
         class="img-fluid"
       />
+      <div class="py-5 text-center">
+        <h3 class="primary-color">Eine Initiative von:</h3>
+        <img
+          src="assets/img/partners/wirvsvirus.jpg"
+          alt="wirvisvirus logo"
+          class="img-fluid"
+          style="width: 75%;"
+        />
+      </div>
     </div>
   </div>
 </div>
-<div></div>
+
+<hr />
 
 <!-- FEATURES -->
 <div class="container">
   <div class="row my-5">
     <div class="col-6 col-md text-center">
-      <h2>Fragen auf Knopfdruck</h2>
+      <h2 class="primary-color">Fragen auf Knopfdruck</h2>
       <p>
         Eine Vielzahl an engagierten Tutor*innen steht jederzeit für Dich auf
         Knopfdruck zur Verfügung. Probiere es gleich aus und stelle Deine Frage!
       </p>
     </div>
     <div class="col-6 col-md text-center">
-      <h2>Für jeden zugänglich</h2>
+      <h2 class="primary-color">Für jeden zugänglich</h2>
       <p>
         Jeder kann helfen. Und helfen kann so einfach sein! Engagierte können
         ganz einfach Tutor werden und in ihren verfügbaren Zeiten flexibel
@@ -99,7 +115,7 @@
       </p>
     </div>
     <div class="col-6 col-md text-center">
-      <h2>Geprüfte Tutor*innen</h2>
+      <h2 class="primary-color">Geprüfte Tutor*innen</h2>
       <p>
         Sicherheit und Vertrauen sind wichtig. Unser Tutor*innen werden einzeln
         überprüft und mithilfe eines Bewertungssystems kontrolliert.
@@ -107,10 +123,12 @@
     </div>
   </div>
 
+  <hr />
+
   <!-- VIDEO -->
   <div class="row justify-content-center my-5">
     <div class="col-9 text-center">
-      <h3>naklar.io kurz erklärt!</h3>
+      <h3 class="my-3">naklar.io kurz erklärt!</h3>
       <iframe
         width="782"
         height="440"
@@ -121,9 +139,11 @@
       ></iframe>
     </div>
   </div>
+</div>
 
-  <!-- PARTNERS -->
-  <div class="row my-5">
+<!-- PARTNERS -->
+<div class=".mx-auto px-0">
+  <div class="row py-5 bg-gradient-primary">
     <div class="col text-center">
       <h3>Eine Initiative von:</h3>
       <img
@@ -133,12 +153,14 @@
       />
     </div>
   </div>
+</div>
 
+<div class="container">
   <!-- MISSION -->
   <div class="row justify-content-center my-5">
     <div class="col-10 text-center">
       <h1>Unsere Mission:<br />Keinen Schüler zurücklassen</h1>
-      <p>
+      <p class="lead">
         Seit dem 16. März 2020 sind Schulen in Deutschland geschlossen. Ca. 11
         Millionen Schüler*innen befinden sich zu Hause und sind gezwungen den
         Lernstoff zum Großteil selbst zu erarbeiten. Wir möchten engagierte
@@ -152,10 +174,7 @@
 </div>
 
 <!-- NUMBERS -->
-<div
-  class="container"
-  style="background-color:#f4f4f4; color:rgb(122, 122, 122);"
->
+<div class="mx-auto px-0 bg-gray" style="color:rgb(122, 122, 122);">
   <div class="row text-center py-3">
     <div class="col">
       <h3>
@@ -166,29 +185,22 @@
   </div>
   <div class="row text-center py-5">
     <div class="col-6 col-md">
-      <pre>12</pre>
-      <p>Fächer</p>
+      <pre class="display-3">12</pre>
+      <p class="lead">Fächer</p>
     </div>
     <div class="col-6 col-md">
-      <pre>382</pre>
-      <p>Tutor*innen</p>
+      <pre class="display-3">382</pre>
+      <p class="lead">Tutor*innen</p>
     </div>
     <div class="col-6 col-md">
-      <pre>1,829</pre>
-      <p>Schüler*innen</p>
+      <pre class="display-3">1,829</pre>
+      <p class="lead">Schüler*innen</p>
     </div>
   </div>
 </div>
 
 <!-- TEAM -->
-<style>
-  .team-img {
-    max-width: 125px;
-    max-height: 100%;
-    filter: grayscale(100%);
-  }
-</style>
-<div class="contianer my-5">
+<div class="container my-5">
   <div class="row">
     <div class="col-6">
       <div class="container">
@@ -238,21 +250,30 @@
       </div>
     </div>
     <div class="col-6 align-self-center">
-      <p>
+      <p class="lead">
         Das Team hinter naklar.io – engagiert und motiviert, Schüler*innen in
         dieser Zeit mit der richtigen Unterstützung unter die Arme zu greifen.
       </p>
-      <h4>Das Team</h4>
+      <h4 class="primary-color">Das Team</h4>
     </div>
   </div>
 </div>
 
 <!-- FOOTER -->
-<div class="contianer my-5">
+<hr />
+<div class="container my-5">
   <div class="row">
     <div class="col-12 col-md">
-      <pre>Naklar.io logo</pre>
+      <a href="#">
+        <img
+          src="assets/img/Logo.png"
+          alt="naklar.io logo"
+          class="img-fluid"
+          style="width:150px;"
+        />
+      </a>
       <pre>copyright?</pre>
+      
     </div>
     <div class="col-6 col-md">
       <h5>Produkt</h5>
