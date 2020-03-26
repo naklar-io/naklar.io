@@ -14,10 +14,13 @@ import { LandingService } from "./landing.service";
   providers: [LandingService]
 })
 export class LandingComponent implements OnInit {
-  emailForm = this.fb.group({
-    type: ["", Validators.required],
-    email: ["", [Validators.required, Validators.email]],
-    updates: [false]
+  emailForm = new FormGroup({
+    type: new FormControl("", Validators.required),
+    email: new FormControl("", {
+      updateOn: 'submit',
+      validators: [Validators.required, Validators.email]
+    }),
+    updates: new FormControl(false)
   });
 
   constructor(private landingService: LandingService, private fb: FormBuilder) {
