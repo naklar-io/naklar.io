@@ -8,10 +8,62 @@
         während des Schulausfalls!
       </p>
       <h2>Wir melden uns, sobald wir startklar sind:</h2>
-      <form action="">
-        <input type="email" name="" id="" />
-        <button class="btn btn-primary" type="submit">
-          Einer der ersten sein!
+
+      <form
+        [formGroup]="emailForm"
+        (ngSubmit)="onEmailFormSubmit()"
+        class="form-group"
+      >
+        <div class="my-1">
+          <div class="form-check form-check-inline">
+            <input
+              type="radio"
+              formControlName="type"
+              value="student"
+              class="form-check-input"
+            />
+            <label class="form-check-label">Schüler*in</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              type="radio"
+              formControlName="type"
+              value="tutor"
+              class="form-check-input"
+            />
+            <label class="form-check-label">Tutor*in</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              type="radio"
+              formControlName="type"
+              value="parent"
+              class="form-check-input"
+            />
+            <label class="form-check-label">Elternteil</label>
+          </div>
+        </div>
+
+        <div class="py-1">
+          <input
+            type="text"
+            formControlName="email"
+            placeholder="Deine Email (wir melden uns zum Start)"
+            class="form-control"
+          />
+        </div>
+        <div class="form-check my-1">
+          <input
+            type="checkbox"
+            formControlName="updates"
+            class="form-check-input"
+          />
+          <label class="form-check-label"
+            >Ja, sendet mit Updates zu naklar.io*</label
+          >
+        </div>
+        <button class="btn btn-primary my-1" type="submit">
+          Sei einer der ersten!
         </button>
       </form>
     </div>
