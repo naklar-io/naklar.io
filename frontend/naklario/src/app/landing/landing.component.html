@@ -17,6 +17,7 @@
           [formGroup]="emailForm"
           (ngSubmit)="onEmailFormSubmit()"
           class="form-group"
+          novalidate
         >
           <div class="my-1">
             <div class="form-check form-check-inline">
@@ -54,6 +55,13 @@
               formControlName="email"
               placeholder="Deine Email (wir melden uns zum Start)"
               class="form-control"
+              [ngClass]="
+                emailForm.controls['email'].invalid &&
+                (emailForm.controls['email'].dirty ||
+                  emailForm.controls['email'].touched)
+                  ? 'is-invalid'
+                  : ''
+              "
             />
           </div>
           <div class="form-check my-1">
@@ -273,7 +281,6 @@
         />
       </a>
       <pre>copyright?</pre>
-      
     </div>
     <div class="col-6 col-md">
       <h5>Produkt</h5>
