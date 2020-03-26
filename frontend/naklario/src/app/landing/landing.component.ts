@@ -5,22 +5,37 @@ import {
   FormBuilder,
   Validators
 } from "@angular/forms";
+import { LandingService } from "./landing.service";
 
 @Component({
   selector: "app-landing",
   templateUrl: "./landing.component.html",
-  styleUrls: ["./landing.component.scss"]
+  styleUrls: ["./landing.component.scss"],
+  providers: [LandingService]
 })
 export class LandingComponent implements OnInit {
-  emailForm = this.fb.group({
+  private emailForm = this.fb.group({
     type: ["", Validators.required],
     email: ["", [Validators.required, Validators.email]],
     updates: [false]
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private landingService: LandingService, private fb: FormBuilder) {
+    this.onEmailFormSubmit();
+  }
 
-  onEmailFormSubmit() {}
+  onEmailFormSubmit() {
+    let form = {
+      type: this.emailForm.controls['type'].value,
+      email: this.emailForm.controls['email'].value,
+      updates: this.emailForm.controls['updates'].value
+    };
+    this.landingService
+      .postForm(form)
+      .subscribe(newForm => console.log("posted:" + newForm),
+      // handle error here
+      error => error);
+  }
 
   ngOnInit(): void {}
 }
