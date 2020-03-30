@@ -1,0 +1,11 @@
+{
+    "/api": {
+        "target": "http://api.naklar.io",
+        "secure": false,
+        "pathRewrite": {
+            "^/api": ""
+        },
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}

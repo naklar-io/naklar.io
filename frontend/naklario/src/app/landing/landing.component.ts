@@ -17,8 +17,8 @@ export class LandingComponent implements OnInit {
   emailForm = new FormGroup({
     type: new FormControl("", Validators.required),
     email: new FormControl("", {
-      updateOn: 'submit',
-      validators: [Validators.required, Validators.email]
+      updateOn: "submit",
+      validators: [Validators.required, Validators.email, Validators.maxLength(254)]
     }),
     updates: new FormControl(false)
   });
@@ -31,8 +31,8 @@ export class LandingComponent implements OnInit {
     if (!this.emailForm.valid) {
       return;
     }
-    let form = {
-      type: this.emailForm.controls["type"].value,
+    const form = {
+      ind_type: this.emailForm.controls["type"].value,
       email: this.emailForm.controls["email"].value,
       updates: this.emailForm.controls["updates"].value
     };
