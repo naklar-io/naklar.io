@@ -17,29 +17,42 @@ export class LandingComponent implements OnInit {
   emailForm = new FormGroup({
     type: new FormControl("", Validators.required),
     email: new FormControl("", {
-      updateOn: 'submit',
-      validators: [Validators.required, Validators.email]
+      validators: [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(254)
+      ]
     }),
     updates: new FormControl(false)
   });
+  emailFormSubmitted = false;
 
   constructor(private landingService: LandingService, private fb: FormBuilder) {
     this.onEmailFormSubmit();
   }
 
-  onEmailFormSubmit() {
+  onEmailFormSubmit(): void {
     if (!this.emailForm.valid) {
       return;
     }
-    let form = {
-      type: this.emailForm.controls["type"].value,
+    
+    const form = {
+      ind_type: this.emailForm.controls["type"].value,
       email: this.emailForm.controls["email"].value,
       updates: this.emailForm.controls["updates"].value
     };
     this.landingService.postForm(form).subscribe(
-      newForm => console.log("posted:" + newForm),
-      // handle error here
-      error => error
+      newForm => {
+        this.emailFormSubmitted = true;
+      },
+      // forward the error to the form
+      error => {
+        for (let [key, value] of Object.entries(error)) {
+          this.emailForm.controls[key].setErrors({
+            backend: (value as Array<string>).join(" ")
+          });
+        }
+      }
     );
   }
 
