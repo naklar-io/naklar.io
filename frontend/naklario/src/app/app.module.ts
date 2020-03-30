@@ -17,6 +17,8 @@ import { LandingComponent } from "./landing/landing.component";
 import { NavbarComponent } from "./misc/navbar/navbar.component";
 import { FooterComponent } from "./misc/footer/footer.component";
 import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
+import { ImpressumComponent } from './impressum/impressum.component';
+import { AboutComponent } from './about/about.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.comp
     LandingComponent,
     NavbarComponent,
     FooterComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ImpressumComponent,
+    AboutComponent
   ],
   imports: [NgbModule, BrowserModule,HttpClientModule,  AppRoutingModule, ReactiveFormsModule],
   providers: [],
