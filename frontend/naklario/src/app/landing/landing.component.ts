@@ -37,7 +37,7 @@ export class LandingComponent implements OnInit {
       updates: this.emailForm.controls["updates"].value
     };
     this.landingService.postForm(form).subscribe(
-      newForm => console.log("posted:" + newForm),
+      newForm => newForm,
       // handle error here
       error => error
     );
