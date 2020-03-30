@@ -1,24 +1,24 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 
-import { Observable, throwError } from "rxjs";
+import { Observable, throwError, from } from "rxjs";
 import { catchError, retry } from "rxjs/operators";
+import { environment } from "../../environments/environment";
+
 export interface EmailForm {
-  type: string;
+  ind_type: string;
   email: string;
   updates: boolean;
 }
 
 @Injectable()
 export class LandingService {
-  private backendUrl = "api.naklar.io";
-
   constructor(private http: HttpClient) {}
 
   postForm(form: EmailForm): Observable<EmailForm> {
     return this.http
-      .post<EmailForm>(this.backendUrl, form)
-      .pipe(retry(3), catchError(this.handleError));
+      .post<EmailForm>(environment.apiUrl, form)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {
