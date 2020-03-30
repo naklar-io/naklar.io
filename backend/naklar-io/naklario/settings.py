@@ -32,6 +32,25 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['bbb.goodgrade.de', 'localhost', '127.0.0.1']
 
+# Set custom user model
+AUTH_USER_MODEL = 'account.CustomUser'
+
+# Rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+#        'rest_framework.parsers.XMLParser',
+    ],
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+#        'rest_framework_xml.renderers.XMLRenderer',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
+    ]
+}
 
 # Application definition
 
@@ -47,10 +66,13 @@ INSTALLED_APPS = [
 # our components
     'account',
     'call',
-    'roulette'
+    'roulette',
+    'landing',
+    'rest_framework',
+    'knox'
 ]
 
-MIDDLEWARE = [    
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
