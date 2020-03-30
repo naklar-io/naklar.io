@@ -16,8 +16,9 @@ export class LandingService {
   constructor(private http: HttpClient) {}
 
   postForm(form: EmailForm): Observable<EmailForm> {
+    let requestUrl = environment.apiUrl + '/landing/add_individual/'
     return this.http
-      .post<EmailForm>(environment.apiUrl, form)
+      .post<EmailForm>(requestUrl, form)
       .pipe(catchError(this.handleError));
   }
 
@@ -29,7 +30,7 @@ export class LandingService {
       // the backend returned an error
       // response should contain what is wrong
       console.error(
-        `Backend returned code ${error.status} body was: ${error.error}`
+        `Backend returned code ${error.status} body was: `, error.error
       );
     }
     // user facing error message

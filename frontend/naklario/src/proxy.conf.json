@@ -1,6 +1,6 @@
 {
     "/api": {
-        "target": "http://api.naklar.io",
+        "target": "https://api.naklar.io",
         "secure": false,
         "pathRewrite": {
             "^/api": ""
