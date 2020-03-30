@@ -15,6 +15,7 @@ import { CallComponent } from "./call/call.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
 import { NavbarComponent } from "./misc/navbar/navbar.component";
+import { FooterComponent } from "./misc/footer/footer.component";
 import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
 
 @NgModule({
@@ -26,6 +27,7 @@ import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.comp
     HomeComponent,
     LandingComponent,
     NavbarComponent,
+    FooterComponent,
     PageNotFoundComponent
   ],
   imports: [NgbModule, BrowserModule,HttpClientModule,  AppRoutingModule, ReactiveFormsModule],
