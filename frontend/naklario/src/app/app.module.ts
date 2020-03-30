@@ -19,6 +19,7 @@ import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.comp
 import { AccountModule } from "./account/account.module";
 import { ImpressumComponent } from './impressum/impressum.component';
 import { AboutComponent } from './about/about.component';
+import { DatenschutzComponent } from './datenschutz/datenschutz.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AboutComponent } from './about/about.component';
     FooterComponent,
     PageNotFoundComponent,
     ImpressumComponent,
-    AboutComponent
+    AboutComponent,
+    DatenschutzComponent
   ],
   imports: [
     NgbModule,
