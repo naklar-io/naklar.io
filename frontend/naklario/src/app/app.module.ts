@@ -14,6 +14,7 @@ import { CallComponent } from "./call/call.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
 import { NavbarComponent } from "./misc/navbar/navbar.component";
+import { FooterComponent } from "./misc/footer/footer.component";
 import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
 
@@ -25,6 +26,7 @@ import { AccountModule } from "./account/account.module";
     HomeComponent,
     LandingComponent,
     NavbarComponent,
+    FooterComponent,
     PageNotFoundComponent
   ],
   imports: [
