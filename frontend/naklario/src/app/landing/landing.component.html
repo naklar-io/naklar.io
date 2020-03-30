@@ -10,9 +10,8 @@
         während des Schulausfalls!
       </p>
 
-      <div class="my-5">
+      <div *ngIf="!emailFormSubmitted">
         <h3>Wir melden uns, sobald wir startklar sind:</h3>
-
         <form
           [formGroup]="emailForm"
           (ngSubmit)="onEmailFormSubmit()"
@@ -56,13 +55,21 @@
               placeholder="Deine Email (wir melden uns zum Start)"
               class="form-control"
               [ngClass]="
-                emailForm.controls['email'].invalid &&
-                (emailForm.controls['email'].dirty ||
-                  emailForm.controls['email'].touched)
+                emailForm.controls.email.touched &&
+                emailForm.controls.email.errors
                   ? 'is-invalid'
                   : ''
               "
             />
+            <div
+              *ngIf="
+                emailForm.controls.email.errors &&
+                emailForm.controls.email.errors.backend
+              "
+              class="invalid-feedback"
+            >
+              {{ emailForm.controls.email.errors.backend }}
+            </div>
           </div>
           <div class="form-check my-1">
             <input
@@ -79,6 +86,18 @@
           </button>
         </form>
       </div>
+
+
+      <div *ngIf="emailFormSubmitted && emailForm.valid" class="text-center">
+        <h3 class="primary-color">Vielen Dank!</h3>
+        <p>Wir haben deine Email erhalten</p>
+        <p class="lead">Ganz wichtig:
+          Teile unsere Seite mit weiterten Bekannten und Freunden. So können wir wirklich was bewegen.
+        </p>
+        <p>Dein naklar.io Team</p>
+        <p >Dein Zugang zu motivierten Tutoren</p>
+      </div>
+
     </div>
 
     <div class="col-6 col-md">
