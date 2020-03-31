@@ -14,8 +14,12 @@ import { CallComponent } from "./call/call.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
 import { NavbarComponent } from "./misc/navbar/navbar.component";
+import { FooterComponent } from "./misc/footer/footer.component";
 import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
+import { ImpressumComponent } from './impressum/impressum.component';
+import { AboutComponent } from './about/about.component';
+import { DatenschutzComponent } from './datenschutz/datenschutz.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +29,12 @@ import { AccountModule } from "./account/account.module";
     HomeComponent,
     LandingComponent,
     NavbarComponent,
-    PageNotFoundComponent
+    FooterComponent,
+    PageNotFoundComponent,
+    ImpressumComponent,
+    AboutComponent,
+    DatenschutzComponent
+<<<<<<< HEAD
   ],
   imports: [
     NgbModule,
@@ -36,6 +45,8 @@ import { AccountModule } from "./account/account.module";
     AccountModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
+=======
+>>>>>>> 9669db06510353216b53e1e80af4137f170f19f0
   ],
   providers: [],
   bootstrap: [AppComponent]
