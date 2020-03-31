@@ -14,9 +14,15 @@ import { CallComponent } from "./call/call.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
 import { NavbarComponent } from "./misc/navbar/navbar.component";
+import { FooterComponent } from "./misc/footer/footer.component";
 import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
+
 import { EmailFormComponent } from './landing/email-form/email-form.component';
+
+import { ImpressumComponent } from './impressum/impressum.component';
+import { AboutComponent } from './about/about.component';
+import { DatenschutzComponent } from './datenschutz/datenschutz.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +34,11 @@ import { EmailFormComponent } from './landing/email-form/email-form.component';
     NavbarComponent,
     PageNotFoundComponent,
     EmailFormComponent
+    FooterComponent,
+    PageNotFoundComponent,
+    ImpressumComponent,
+    AboutComponent,
+    DatenschutzComponent
   ],
   imports: [
     NgbModule,
