@@ -34,6 +34,7 @@ import { DatenschutzComponent } from './datenschutz/datenschutz.component';
     ImpressumComponent,
     AboutComponent,
     DatenschutzComponent
+<<<<<<< HEAD
   ],
   imports: [
     NgbModule,
@@ -44,6 +45,8 @@ import { DatenschutzComponent } from './datenschutz/datenschutz.component';
     AccountModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
+=======
+>>>>>>> 9669db06510353216b53e1e80af4137f170f19f0
   ],
   providers: [],
   bootstrap: [AppComponent]
