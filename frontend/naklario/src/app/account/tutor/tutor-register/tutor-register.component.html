@@ -5,55 +5,83 @@
     Schülern helfen.
   </p>
 
-  <form>
+  <form (ngSubmit)="onSubmit()">
     <div class="form-row">
       <div class="form-group col">
         <label for="first-name">Vorname</label>
-        <input type="text" class="form-control" id="first-name" />
+        <input
+          type="text"
+          [(ngModel)]="model.first_name"
+          class="form-control"
+          name="first-name"
+          required
+        />
       </div>
       <div class="form-group col">
         <label for="last-name">Nachname</label>
-        <input type="text" class="form-control" id="last-name" />
+        <input
+          type="text"
+          class="form-control"
+          name="last-name"
+          [(ngModel)]="model.last_name"
+          required
+        />
       </div>
     </div>
     <div class="form-row">
       <div class="from-group col">
         <label for="email">Email</label>
-        <input type="email" name="" id="email" class="form-control" />
+        <input
+          type="email"
+          name="email"
+          class="form-control"
+          [(ngModel)]="model.email"
+          required
+        />
       </div>
       <div class="form-group col">
         <label for="password">Passwort</label>
-        <input type="password" name="" id="password" class="form-control" />
+        <input
+          type="password"
+          name="password"
+          class="form-control"
+          [(ngModel)]="model.password"
+          required
+        />
       </div>
     </div>
     <div class="form-row">
       <div class="from-group col">
         <label for="state">Bundesland</label>
-        <select name="" id="state" class="form-control">
-          <option selected>Bayern</option>
-          <option>Baden-Württemberg</option>
-          <option>...</option>
+        <select
+          name="state"
+          class="form-control"
+          [(ngModel)]="model.state"
+          required
+        >
+          <option *ngFor="let state of states" [value]="state.id">
+            {{ state.name }}
+          </option>
         </select>
       </div>
     </div>
 
-    <p>Schultypen</p>
+    <label>Schultypen</label>
     <div class="form-row">
-      <div class="form-check form-check-inline">
-        <input type="checkbox" name="" id="school-type-1" class="form-check-input" />
-        <label for="school-type-1" class="form-check-label">Gymnasium</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input type="checkbox" name="" id="school-type-2" class="form-check-input" />
-        <label for="school-type-2" class="form-check-label">Realschule</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input type="checkbox" name="" id="school-type-3" class="form-check-input" />
-        <label for="school-type-3" class="form-check-label">Mittelschule</label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input type="checkbox" name="" id="school-type-4" class="form-check-input" />
-        <label for="school-type-4" class="form-check-label">FOS / BOS</label>
+      <div
+        *ngFor="let schoolType of schoolTypes"
+        class="form-check form-check-inline"
+      >
+        <label class="form-check-label">
+          <input
+            type="checkbox"
+            name="school-type"
+            class="form-check-input"
+            [value]="schoolType.id"
+            required
+          />
+          {{ schoolType.name }}
+        </label>
       </div>
     </div>
   </form>
