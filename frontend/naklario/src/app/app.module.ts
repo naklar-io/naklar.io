@@ -33,7 +33,7 @@ import { DatenschutzComponent } from './datenschutz/datenschutz.component';
     LandingComponent,
     NavbarComponent,
     PageNotFoundComponent,
-    EmailFormComponent
+    EmailFormComponent,
     FooterComponent,
     PageNotFoundComponent,
     ImpressumComponent,
@@ -55,4 +55,5 @@ import { DatenschutzComponent } from './datenschutz/datenschutz.component';
   providers: [],
   bootstrap: [AppComponent]
 })
+
 export class AppModule {}
