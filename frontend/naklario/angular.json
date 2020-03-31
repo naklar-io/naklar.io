@@ -29,7 +29,8 @@
             ],
             "styles": [
               "node_modules/bootswatch/dist/united/bootstrap.min.css",
-              "src/styles.scss"
+              "src/styles.scss",
+              "src/forms.scss"
             ],
             "scripts": []
           },

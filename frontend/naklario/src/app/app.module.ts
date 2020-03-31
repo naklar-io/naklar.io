@@ -1,7 +1,7 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
-import { ReactiveFormsModule } from "@angular/forms";
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 
 // Third party modules
@@ -16,6 +16,7 @@ import { LandingComponent } from "./landing/landing.component";
 import { NavbarComponent } from "./misc/navbar/navbar.component";
 import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
+import { EmailFormComponent } from './landing/email-form/email-form.component';
 
 @NgModule({
   declarations: [
@@ -25,13 +26,16 @@ import { AccountModule } from "./account/account.module";
     HomeComponent,
     LandingComponent,
     NavbarComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    EmailFormComponent
   ],
   imports: [
     NgbModule,
     BrowserModule,
     HttpClientModule,
+    // Stuff for reactive / template driven forms
     ReactiveFormsModule,
+    FormsModule,
     // modules (arbitrary order)
     AccountModule,
     // AppRoutingComponent needs to be the last routing module
