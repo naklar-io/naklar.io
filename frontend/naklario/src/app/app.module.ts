@@ -2,10 +2,12 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { HttpClientModule, HttpClient } from "@angular/common/http";
+import { HttpClientModule } from "@angular/common/http";
 
 // Third party modules
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+
+import {GlobalDataService} from './app.service'
 
 // Components
 import { AppComponent } from "./app.component";
@@ -35,7 +37,6 @@ import { DatenschutzComponent } from './datenschutz/datenschutz.component';
     PageNotFoundComponent,
     EmailFormComponent,
     FooterComponent,
-    PageNotFoundComponent,
     ImpressumComponent,
     AboutComponent,
     DatenschutzComponent
@@ -52,7 +53,7 @@ import { DatenschutzComponent } from './datenschutz/datenschutz.component';
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
   ],
-  providers: [],
+  providers: [GlobalDataService],
   bootstrap: [AppComponent]
 })
 

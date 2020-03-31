@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { StudentComponent } from "./student/student.component";
 import { TutorComponent } from "./tutor/tutor.component";
-import { TutorRegisterComponent } from "./tutor/tutor-register.component";
+import { TutorRegisterComponent } from "./tutor/tutor-register/tutor-register.component";
 
 const routes: Routes = [
   { path: "account/student", component: StudentComponent },
