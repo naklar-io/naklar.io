@@ -1,30 +1,56 @@
-import { Component, OnInit } from "@angular/core";
-import {GlobalDataService } from '../../../app.service'
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { GlobalDataService } from "../../../app.service";
+import {
+  State,
+  Subject,
+  SchoolType,
+  SchoolData,
+  User
+} from "../../../database-models";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "account-tutor-register",
   templateUrl: "./tutor-register.component.html",
-  styleUrls: ["./tutor-register.component.scss"],
+  styleUrls: ["./tutor-register.component.scss"]
 })
+export class TutorRegisterComponent implements OnInit, OnDestroy {
+  states: State[];
+  subjects: Subject[];
+  schoolTypes: SchoolType[];
+  schoolData: SchoolData[];
 
-// class UserModel {
-//   constructor(
-//     public email: string,
-//     public password: string,
-//     public first_name: string,
-//     public last_name: string,
-//     public state?: any,
-//     public studentdata?: any,
-//     public tutordata?: any
-//   ) {}
-// }
+  model = new User("", "", "", "", -1, -1, -1);
+  submitted = false;
 
-export class TutorRegisterComponent implements OnInit {
+  private subscription_states: Subscription;
+  private subscription_subjects: Subscription;
+  private subscription_schoolTypes: Subscription;
+  private subscription_schoolData: Subscription;
 
   constructor(private globalData: GlobalDataService) {
-
-    
+    this.subscription_states = this.globalData.states.subscribe(
+      value => (this.states = value)
+    );
+    this.subscription_subjects = this.globalData.subjects.subscribe(
+      value => (this.subjects = value)
+    );
+    this.subscription_schoolData = this.globalData.schooldata.subscribe(
+      value => (this.schoolData = value)
+    );
+    this.subscription_schoolTypes = this.globalData.schooltypes.subscribe(
+      value => (this.schoolTypes = value)
+    );
   }
 
+  onSubmit(): void {}
+
   ngOnInit(): void {}
+
+  ngOnDestroy(): void {
+    this.subscription_states.unsubscribe();
+    this.subscription_subjects.unsubscribe();
+    this.subscription_schoolTypes.unsubscribe();
+    this.subscription_schoolData.unsubscribe();
+  }
 }

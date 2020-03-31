@@ -1,40 +1,19 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Subject as R_Subject, Observable, throwError } from "rxjs";
+import { Subject as R_Subject, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { environment } from "../environments/environment";
+import {State, Subject, SchoolData, SchoolType} from './database-models'
 
-export class State {
-  constructor(
-    public id: number,
-    public name: string,
-    public shortcode: string
-  ) {}
-}
-
-export class Subject {
-  constructor(public id: number, public name: string) {}
-}
-export class SchoolType {
-  constructor(public id: number, public name: string) {}
-}
-
-export class SchoolData {
-  constructor(
-    public id: number,
-    public school_type: SchoolType,
-    public grade: number
-  ) {}
-}
 
 @Injectable()
 export class GlobalDataService {
   // backend tables
-  states = new R_Subject<State[]>();
-  subjects = new R_Subject<Subject[]>();
-  schooltypes = new R_Subject<SchoolType[]>();
-  schooldata = new R_Subject<SchoolData[]>();
+  readonly states = new R_Subject<State[]>();
+  readonly subjects = new R_Subject<Subject[]>();
+  readonly schooltypes = new R_Subject<SchoolType[]>();
+  readonly schooldata = new R_Subject<SchoolData[]>();
 
   constructor(private http: HttpClient) {
     this.getRequest<State[]>(
@@ -67,5 +46,18 @@ export class GlobalDataService {
       .subscribe(x => {
         subject.next(x);
       });
+  }
+
+  setStates(states: State[]): void {
+    this.states.next(states);
+  }
+  setSubjects(subjects: Subject[]): void {
+    this.subjects.next(subjects);
+  }
+  setSchoolTypes(schoolTypes: SchoolType[]): void {
+    this.schooltypes.next(schoolTypes);
+  }
+  setSchoolData(schoolData: SchoolData[]): void {
+    this.schooldata.next(schoolData);
   }
 }

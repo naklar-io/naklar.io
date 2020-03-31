@@ -1,4 +1,4 @@
-import { Component, OnInit, Injectable } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { EmailModel } from "./email-model";
 import { EmailFormService } from "./email-form.service";
 
