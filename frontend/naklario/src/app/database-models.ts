@@ -22,13 +22,13 @@ export class SchoolData {
 }
 
 export class StudentData {
-  constructor(public schoolData: SchoolData = new SchoolData()) {}
+  constructor(public school_data: number = 1) {}
 }
 
 export class TutorData {
   constructor(
-    public schoolData: SchoolData[] = [new SchoolData()],
-    public subjects: Subject[] = [new Subject()]
+    public schooldata: number[] = [],
+    public subjects: number[] = []
   ) {}
 }
 
@@ -36,33 +36,37 @@ export class User {
   constructor(
     public email: string = "",
     public password: string = "",
+    public password_repeat: string = "",
     public first_name: string = "",
     public last_name: string = "",
-    public state: State = new State(),
+    public state: number = -1,
+    public terms_accepted: boolean = false,
     public studentdata: StudentData = new StudentData(),
     public tutordata: TutorData = new TutorData()
   ) {}
 }
 
-export const sendable = (obj: any, clone = true) => {
-  if (!(typeof obj === "object")) {
-    return obj;
-  } else if (obj instanceof Array) {
-    return obj.map(x => sendable(x));
-  } else if (obj instanceof SchoolData) {
-    return obj.id;
-  } else if (obj instanceof Subject) {
-    return obj.id;
-  } else if (obj instanceof State) {
-    return obj.id;
-  }
-  let res = clone ? {} : obj;
-  // recurse
-  for (let [key, value] of Object.entries(obj)) {
-    res[key] = sendable(value);
-  }
-  return res;
-};
+// export const sendable = (obj: any, clone = true) => {
+//   if (typeof obj !== "object" || !obj) {
+//     return obj;
+//   } else if (obj instanceof Array) {
+//     return obj.map(x => sendable(x));
+//   } else if (obj instanceof SchoolData) {
+//     return obj.id;
+//   } else if (obj instanceof Subject) {
+//     return obj.id;
+//   } else if (obj instanceof State) {
+//     return obj.id;
+//   }
+//   let res = clone ? {} : obj;
+//   // recurse
+//   for (let [key, value] of Object.entries(obj)) {
+//     res[key] = sendable(value);
+//   }
+//   return res;
+// };
+
+
 export const states: State[] = [
   {
     id: 1,
