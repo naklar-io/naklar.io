@@ -1,0 +1,122 @@
+<div class="container">
+  <h1 class="primary-color">Registrierung als Schüler*in</h1>
+  <p class="lead">
+    Wir brauchen hier noch ein paar Informationen von dir.
+  </p>
+
+  <form #studentForm (ngSubmit)="onSubmit()">
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="first-name">Vorname</label>
+        <input
+          type="text"
+          [(ngModel)]="model.first_name"
+          class="form-control"
+          name="first-name"
+          required
+        />
+      </div>
+      <div class="from-group col">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          [(ngModel)]="model.email"
+          name="email"
+          class="form-control"
+          required
+        />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="password">Passwort</label>
+        <input
+          type="password"
+          [(ngModel)]="model.password"
+          name="password"
+          class="form-control"
+          required
+        />
+      </div>
+      <div class="form-group col">
+        <label for="password-repeat">Passwort wiederholen</label>
+        <input
+          type="password"
+          [(ngModel)]="model.password_repeat"
+          name="password-repeat"
+          class="form-control"
+          required
+        />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="from-group col">
+        <label for="state">Bundesland</label>
+        <select
+          name="state"
+          class="form-control"
+          [(ngModel)]="model.state"
+          required
+        >
+        <option *ngFor="let state of states" [ngValue]="state">
+          {{ state.name }}
+        </option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="from-group col">
+        <label for="school-type">Schultyp</label>
+        <select
+          name="school-type"
+          class="form-control"
+          [(ngModel)]="schoolType" 
+          required
+        >
+        <option *ngFor="let schoolType of schoolTypes" [ngValue]="schoolType">
+          {{ schoolType.name }}
+        </option>
+        </select>
+      </div>
+      <div class="from-group col">
+        <label for="class">Klassenstufe</label>
+          <ng5-slider
+            [options]="options"
+            [(value)]="grade"
+          ></ng5-slider>
+      </div>
+    </div>
+
+    
+    <!-- 
+      <label>Schultypen</label>
+      <div class="form-group">
+      <div *ngFor="let schoolType of schoolTypes" class="form-row">
+        <div class="col-3 form-check">
+          <label class="form-check-label">
+            <input
+              type="checkbox"
+              name="school-type"
+              class="form-check-input"
+              [value]="schoolType"
+              required
+            />
+            {{ schoolType.name }}
+          </label>
+        </div>
+        <div class="col">
+          <ng5-slider
+            [options]="slider_options[schoolType.id]"
+            [(value)]="slider_data[schoolType.id].low"
+            [(highValue)]="slider_data[schoolType.id].high"
+            class="form-control-range"
+          ></ng5-slider>
+        </div>
+      </div>
+    </div> -->
+
+    <button type="submit" class="btn btn-primary" [disabled]="studentForm.invalid || submitted">Absenden</button>
+
+  </form>
+</div>
