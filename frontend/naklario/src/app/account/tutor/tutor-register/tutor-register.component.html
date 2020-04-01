@@ -59,7 +59,7 @@
           [(ngModel)]="model.state"
           required
         >
-          <option *ngFor="let state of states" [value]="state.id">
+          <option *ngFor="let state of states" [value]="state">
             {{ state.name }}
           </option>
         </select>
@@ -67,22 +67,32 @@
     </div>
 
     <label>Schultypen</label>
-    <div class="form-row">
-      <div
-        *ngFor="let schoolType of schoolTypes"
-        class="form-check form-check-inline"
-      >
-        <label class="form-check-label">
-          <input
-            type="checkbox"
-            name="school-type"
-            class="form-check-input"
-            [value]="schoolType.id"
-            required
-          />
-          {{ schoolType.name }}
-        </label>
+    <div class="form-group">
+      <div *ngFor="let schoolType of schoolTypes" class="form-row">
+        <div class="col-3 form-check">
+          <label class="form-check-label">
+            <input
+              type="checkbox"
+              name="school-type"
+              class="form-check-input"
+              [value]="schoolType"
+              required
+            />
+            {{ schoolType.name }}
+          </label>
+        </div>
+        <div class="col">
+          <ng5-slider
+            [options]="slider_options[schoolType.id]"
+            [(value)]="slider_data[schoolType.id].low"
+            [(highValue)]="slider_data[schoolType.id].high"
+            class="form-control-range"
+          ></ng5-slider>
+        </div>
       </div>
     </div>
+
+    <button type="submit" class="btn bin-primary">Absenden</button>
+
   </form>
 </div>
