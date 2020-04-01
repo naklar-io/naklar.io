@@ -4,8 +4,7 @@ import { Subject as R_Subject, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { environment } from "../environments/environment";
-import {State, Subject, SchoolData, SchoolType} from './database-models'
-
+import { State, Subject, SchoolData, SchoolType } from "./database-models";
 
 @Injectable()
 export class GlobalDataService {
@@ -44,6 +43,7 @@ export class GlobalDataService {
         })
       )
       .subscribe(x => {
+        console.log(x)
         subject.next(x);
       });
   }
