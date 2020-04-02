@@ -1,13 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
-import {
-  User,
-  SendableUser,
-  SendableLogin,
-  sendableToLocal
-} from "../_models";
+import { User, SendableUser, SendableLogin, sendableToLocal } from "../_models";
 import { environment } from "../../environments/environment";
+import { map } from "rxjs/operators";
 
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
@@ -24,44 +20,36 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  public register(user: SendableUser): void {
-    this.http
+  public register(user: SendableUser) {
+    return this.http
       .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
-      .subscribe(
-        user => {
+      .pipe(
+        map(user => {
           console.log("HTTP Response: ", user);
           const u = sendableToLocal(user);
           console.log("converted: ", u);
           this.currentUserSubject.next(u);
-        },
-        error => {
-          console.log(error);
-          return throwError(error);
-        }
+        })
       );
   }
 
-  public login(login: SendableLogin): void {
-    this.http
+  public login(login: SendableLogin) {
+    return this.http
       .post<SendableLogin>(`${environment.apiUrl}/account/login/`, login)
-      .subscribe(
-        user => {
-          console.log("HTTP Response: ", user);
-        },
-        error => {
-          console.log(error);
-          return throwError(error);
-        }
+      .pipe(
+        map(user => {
+          user;
+        })
       );
   }
 
   // TODO:
-  public logout(): void {
+  public logout() {
     this.http.post(`${environment.apiUrl}/account/logout/`, null);
     this.currentUserSubject.next(null);
   }
 
-  public logoutAll():void {
-      this.http.post(`${environment.apiUrl}/account/logoutall/`, null)
+  public logoutAll() {
+    this.http.post(`${environment.apiUrl}/account/logoutall/`, null);
   }
 }

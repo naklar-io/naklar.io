@@ -8,7 +8,7 @@ import {
   states,
   schoolData,
   schoolTypes
-} from "../../../_models/database-models";
+} from "../../../_models/database";
 import { Options } from "ng5-slider";
 
 @Component({
