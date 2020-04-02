@@ -4,7 +4,6 @@ import {
   Subject,
   SchoolType,
   SchoolData,
-  User,
   states,
   schoolData,
   schoolTypes,
@@ -12,10 +11,19 @@ import {
   SendableUser
 } from "../../../_models";
 import { AuthenticationService } from "../../../_services";
+import { passwordNotMatchValidator } from "../../../_helpers";
 import { Options } from "ng5-slider";
-import { FormBuilder, Validators } from "@angular/forms";
-import { first } from "rxjs/operators";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  FormControl,
+  FormArray
+} from "@angular/forms";
+import { first, catchError } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
+import { isNull } from "util";
+import { throwError } from "rxjs";
 
 @Component({
   selector: "account-tutor-register",
@@ -29,109 +37,113 @@ export class TutorRegisterComponent implements OnInit {
   schoolTypes: SchoolType[] = schoolTypes;
   schoolData: SchoolData[] = schoolData;
 
-  registerForm = this.fb.group({
-    firstName: ["", Validators.required],
-    lastName: ["", Validators.required],
-    email: ["", [Validators.required, Validators.email]],
-    state: [null, Validators.required],
-    password: ["", [Validators.required, Validators.minLength(8)]],
-    passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
-    schoolTypes: [[], Validators.required],
-    subjects: [[], Validators.required],
-    terms: [false, Validators.required]
-  });
+  registerForm: FormGroup;
+  sliderOptions: Options[];
 
   submitted = false;
+  submitSuccess = false;
   loading = false;
   returnUrl: string = this.route.snapshot.queryParams["returnUrl"] || "/";
-  error: string;
-
-  slider_options: Options = { floor: 5, ceil: 13 };
+  error: string = null;
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService
-  ) {
-    //    // slider setup
-    //    for (let schoolType of this.schoolTypes) {
-    //      let grades = schoolData
-    //        .filter(x => x.school_type === schoolType.id)
-    //        .map(x => x.grade);
-    //      let min = Math.min(...grades);
-    //      let max = Math.max(...grades);
-    //
-    //      this.slider_options[schoolType.id] = {
-    //        animate: false,
-    //        showTicks: true,
-    //        floor: min,
-    //        ceil: max
-    //      };
-    //      this.slider_data[schoolType.id] = { low: min, high: max };
-    //      this.slider_enabled[schoolType.id] = false;
-    //    }
-    //
-    //// subjects setup
-    //for (let subject of this.subjects) {
-    //  this.selected_subject[subject.id] = false;
-    //}
+  ) {}
+  ngOnInit(): void {
+    let data: SchoolData[][] = [];
+    for (let schoolType of schoolTypes) {
+      data.push(schoolData.filter(x => x.school_type === schoolType.id));
+    }
+    let grades = data.map(x => x.map(y => y.grade));
+    this.sliderOptions = grades.map(x => {
+      return {
+        animate: false,
+        showTicks: true,
+        floor: Math.min(...x),
+        ceil: Math.max(...x)
+      };
+    });
+
+    this.registerForm = this.fb.group(
+      {
+        firstName: ["", Validators.required],
+        lastName: ["", Validators.required],
+        email: ["", [Validators.required, Validators.email]],
+        state: [null, Validators.required],
+        password: ["", [Validators.required, Validators.minLength(1)]],
+        passwordRepeat: ["", [Validators.required, Validators.minLength(1)]],
+        schoolTypes: this.fb.array(
+          this.schoolTypes.map(x => this.fb.control(null)),
+          Validators.required
+        ),
+        sliders: this.fb.array(
+          grades.map(x => this.fb.control([Math.min(...x), Math.max(...x)])),
+          Validators.required
+        ),
+        subjects: this.fb.array(
+          this.subjects.map(x => this.fb.control(null)),
+          Validators.required
+        ),
+        terms: [false, Validators.required]
+      },
+      { validators: passwordNotMatchValidator }
+    );
   }
-  //
-  //  /**
-  //   * form the slider ranges we need to collect the actual StudentData
-  //   * objects to be sent to the backend
-  //   */
-  //  private collectSchoolData(): number[] {
-  //    let data: number[] = [];
-  //
-  //    for (let schoolType of this.schoolData) {
-  //      const id = schoolType.id;
-  //      if (!this.slider_enabled[id]) continue;
-  //      // add selected SchoolData objects to data variable
-  //      data.push(
-  //        ...this.schoolData
-  //          .filter(x => x.school_type === id)
-  //          .filter(
-  //            x =>
-  //              this.slider_data[id].low <= x.grade &&
-  //              x.grade <= this.slider_data[id].high
-  //          )
-  //          .map(x => x.id)
-  //      );
-  //    }
-  //    return data;
-  //  }
-  //
-  // private collectSubjects(): number[] {
-  //   return this.subjects
-  //     .filter(x => this.selected_subject[x.id])
-  //     .map(x => x.id);
-  // }
 
   get f() {
     return this.registerForm.controls;
   }
 
+  get schoolTypesControl() {
+    return this.registerForm.get("schoolTypes") as FormArray;
+  }
+  get subjectsControl() {
+    return this.registerForm.get("subjects") as FormArray;
+  }
+  get sliderControl() {
+    return this.registerForm.get("sliders") as FormArray;
+  }
+
   onSubmit(): void {
+    this.submitted = true;
+
+    if (this.registerForm.invalid) {
+      return;
+    }
+
+    let grades: number[] = [];
+    for (const [i, schoolType] of this.schoolTypes.entries()) {
+      if (!this.schoolTypesControl.value[i]) {
+        continue;
+      }
+      let range = this.f.sliders.value[i];
+      let g = schoolData
+        .filter(x => x.school_type === schoolType.id)
+        .filter(x => range[0] <= x.grade && x.grade <= range[1])
+        .map(x => x.id);
+      grades.push(...g);
+    }
+
     const user: SendableUser = {
       email: this.f.email.value,
       password: this.f.password.value,
       first_name: this.f.firstName.value,
       last_name: this.f.lastName.value,
-      state: this.f.state.value,
-      terms_accepted: this.f.termsAccepted.value,
-      studentdata: {
-        school_data: -1
-      },
+      state: this.f.state.value.id,
+      terms_accepted: this.f.terms.value,
+      studentdata: null,
       tutordata: {
-        schooldata: [],
-        subjects: []
+        schooldata: grades,
+        subjects: this.f.subjects.value
+          .map((x, i) => (x ? this.subjects[i].id : x))
+          .filter(x => !isNull(x))
       }
     };
 
     console.log("About to send Data: ", user);
-    return;
 
     this.loading = true;
     this.authenticationService
@@ -141,7 +153,8 @@ export class TutorRegisterComponent implements OnInit {
         data => {
           // this.router.navigate([this.returnUrl]);
           this.loading = false;
-          this.submitted = true;
+          this.submitSuccess = true;
+          this.error = null;
         },
         error => {
           this.error = error;
@@ -149,6 +162,4 @@ export class TutorRegisterComponent implements OnInit {
         }
       );
   }
-
-  ngOnInit(): void {}
 }

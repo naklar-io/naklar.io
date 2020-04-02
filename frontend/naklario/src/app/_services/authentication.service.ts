@@ -25,10 +25,9 @@ export class AuthenticationService {
       .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
       .pipe(
         map(user => {
-          console.log("HTTP Response: ", user);
           const u = sendableToLocal(user);
-          console.log("converted: ", u);
           this.currentUserSubject.next(u);
+          return user;
         })
       );
   }
