@@ -71,8 +71,8 @@ export class TutorRegisterComponent implements OnInit {
         lastName: ["", Validators.required],
         email: ["", [Validators.required, Validators.email]],
         state: [null, Validators.required],
-        password: ["", [Validators.required, Validators.minLength(1)]],
-        passwordRepeat: ["", [Validators.required, Validators.minLength(1)]],
+        password: ["", [Validators.required, Validators.minLength(8)]],
+        passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
         schoolTypes: this.fb.array(
           this.schoolTypes.map(x => this.fb.control(null)),
           Validators.required
@@ -85,7 +85,7 @@ export class TutorRegisterComponent implements OnInit {
           this.subjects.map(x => this.fb.control(null)),
           Validators.required
         ),
-        terms: [false, Validators.required]
+        terms: [false, Validators.requiredTrue]
       },
       { validators: passwordNotMatchValidator }
     );
