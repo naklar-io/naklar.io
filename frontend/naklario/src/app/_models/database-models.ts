@@ -1,3 +1,59 @@
+/**
+ * sendable interfaces for communication with the api
+ */
+export interface SendableTutorData {
+  schooldata: number[];
+  subjects: number[];
+}
+
+export interface SendableStudentData {
+  school_data: number;
+}
+
+export interface SendableUser {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  state: number;
+  terms_accepted: boolean;
+  sudentdata: SendableStudentData;
+  tutordata: SendableTutorData;
+}
+
+export interface SendableLogin {
+  email: string;
+  password: string;
+}
+
+/**
+ * local objects
+ */
+export class StudentData {
+  constructor(public school_data: SchoolData = new SchoolData()) {}
+}
+
+export class TutorData {
+  constructor(
+    public schooldata: SchoolData[] = [],
+    public subjects: Subject[] = []
+  ) {}
+}
+
+export class User {
+  constructor(
+    public email: string = "",
+    public password: string = "",
+    public first_name: string = "",
+    public last_name: string = "",
+    public state: State = new State(),
+    public studentdata: StudentData = new StudentData(),
+    public tutordata: TutorData = new TutorData(),
+    public terms_accepted: boolean = false,
+    public token: string = ""
+  ) {}
+}
+
 export class State {
   constructor(
     public id: number = -1,
@@ -21,51 +77,42 @@ export class SchoolData {
   ) {}
 }
 
-export class StudentData {
-  constructor(public school_data: number = 1) {}
-}
+/**
+ *  conversion functions between User <==> SendableUser
+ */
+export const localToSendable = (user: User): SendableUser => {
+  return {
+    email: user.email,
+    password: user.password,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    state: user.state.id,
+    sudentdata: {
+      school_data: user.studentdata.school_data.id
+    },
+    tutordata: {
+      schooldata: user.tutordata.schooldata.map(x => x.id),
+      subjects: user.tutordata.subjects.map(x => x.id)
+    },
+    terms_accepted: user.terms_accepted
+  };
+};
 
-export class TutorData {
-  constructor(
-    public schooldata: number[] = [],
-    public subjects: number[] = []
-  ) {}
-}
-
-export class User {
-  constructor(
-    public email: string = "",
-    public password: string = "",
-    public password_repeat: string = "",
-    public first_name: string = "",
-    public last_name: string = "",
-    public state: number = -1,
-    public terms_accepted: boolean = false,
-    public studentdata: StudentData = new StudentData(),
-    public tutordata: TutorData = new TutorData()
-  ) {}
-}
-
-// export const sendable = (obj: any, clone = true) => {
-//   if (typeof obj !== "object" || !obj) {
-//     return obj;
-//   } else if (obj instanceof Array) {
-//     return obj.map(x => sendable(x));
-//   } else if (obj instanceof SchoolData) {
-//     return obj.id;
-//   } else if (obj instanceof Subject) {
-//     return obj.id;
-//   } else if (obj instanceof State) {
-//     return obj.id;
-//   }
-//   let res = clone ? {} : obj;
-//   // recurse
-//   for (let [key, value] of Object.entries(obj)) {
-//     res[key] = sendable(value);
-//   }
-//   return res;
-// };
-
+export const sendableToLocal = (user: SendableUser): User => {
+  return new User(
+    user.email,
+    user.password,
+    user.first_name,
+    user.last_name,
+    states.find(x => x.id === user.state),
+    new StudentData(schoolData.find(x => x.id === user.sudentdata.school_data)),
+    new TutorData(
+      schoolData.filter(x => x.id in user.tutordata.schooldata),
+      subjects.filter(x => x.id in user.tutordata.subjects)
+    )
+    // TODO: provide token & terms_accepted
+  );
+};
 
 export const states: State[] = [
   {

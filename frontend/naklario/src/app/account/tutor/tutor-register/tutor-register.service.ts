@@ -5,7 +5,7 @@ import { Observable, throwError} from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { environment } from "../../../../environments/environment";
-import { User } from 'src/app/database-models';
+import { User } from 'src/app/_models/database-models';
 
 
 @Injectable()

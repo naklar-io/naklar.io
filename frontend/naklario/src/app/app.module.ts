@@ -2,12 +2,12 @@ import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 // Third party modules
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
-import {GlobalDataService} from './app.service'
+import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
 
 // Components
 import { AppComponent } from "./app.component";
@@ -20,11 +20,11 @@ import { FooterComponent } from "./misc/footer/footer.component";
 import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
 
-import { EmailFormComponent } from './landing/email-form/email-form.component';
+import { EmailFormComponent } from "./landing/email-form/email-form.component";
 
-import { ImpressumComponent } from './impressum/impressum.component';
-import { AboutComponent } from './about/about.component';
-import { DatenschutzComponent } from './datenschutz/datenschutz.component';
+import { ImpressumComponent } from "./impressum/impressum.component";
+import { AboutComponent } from "./about/about.component";
+import { DatenschutzComponent } from "./datenschutz/datenschutz.component";
 
 @NgModule({
   declarations: [
@@ -51,10 +51,12 @@ import { DatenschutzComponent } from './datenschutz/datenschutz.component';
     // modules (arbitrary order)
     AccountModule,
     // AppRoutingComponent needs to be the last routing module
-    AppRoutingModule,
+    AppRoutingModule
   ],
-  providers: [GlobalDataService],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
-
 export class AppModule {}
