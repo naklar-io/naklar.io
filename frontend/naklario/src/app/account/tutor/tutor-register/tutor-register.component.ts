@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
   State,
   Subject,
@@ -17,13 +17,11 @@ import {
   FormGroup,
   FormBuilder,
   Validators,
-  FormControl,
   FormArray
 } from "@angular/forms";
-import { first, catchError } from "rxjs/operators";
+import { first } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { isNull } from "util";
-import { throwError } from "rxjs";
 
 @Component({
   selector: "account-tutor-register",

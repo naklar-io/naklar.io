@@ -36,8 +36,10 @@ export class AuthenticationService {
     return this.http
       .post<SendableLogin>(`${environment.apiUrl}/account/login/`, login)
       .pipe(
-        map(user => {
-          user;
+        map(response => {
+          console.log(response);
+          const user = this.currentUserSubject.value;
+          return response;
         })
       );
   }
@@ -50,5 +52,6 @@ export class AuthenticationService {
 
   public logoutAll() {
     this.http.post(`${environment.apiUrl}/account/logoutall/`, null);
+    this.currentUserSubject.next(null);
   }
 }

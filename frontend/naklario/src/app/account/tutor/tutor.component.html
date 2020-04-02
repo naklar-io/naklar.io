@@ -1,21 +1,61 @@
 <div class="container">
   <h1 class="primary-color">Willkommen zurück</h1>
   <p class="lead">Wir freuen uns dich wieder zu sehen!</p>
+
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error | json }}
+  </div>
+
   <div class="row">
     <div class="col-6">
-      <form>
+      <form #loginFrom="ngForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-group">
-          <label>Email</label>
-          <input type="text" class="form-control" />
+          <label for="email">Email</label>
+          <input
+            type="text"
+            name="email"
+            class="form-control"
+            formControlName="email"
+          />
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">
+              Du musst eine Emailadresse eingeben.
+            </div>
+            <div *ngIf="f.email.errors.email">
+              Das ist keine gültige Email.
+            </div>
+            <!-- Maybe more error messages -->
+          </div>
         </div>
+
         <div class="form-group">
-          <label for="">Passwort</label>
-          <input type="text" class="form-control" />
-        </div>
-        <div class="form-group">
+          <label for="password">Passwort</label>
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            formControlName="password"
+          />
+          <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="f.password.errors.required">
+              Du musst ein Passwort eingeben
+            </div>
+            <!-- Maybe more error messages -->
+          </div>
           <a routerLink="/">Passwort vergessen?</a>
         </div>
-        <button class="btn btn-primary">Login</button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="submitSuccess || loading"
+        >
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          Login
+        </button>
 
         <p>
           Du hast noch keinen Account?
