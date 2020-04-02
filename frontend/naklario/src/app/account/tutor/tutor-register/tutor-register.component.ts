@@ -10,7 +10,7 @@ import {
   schoolData,
   schoolTypes,
   subjects,
-} from "../../../database-models";
+} from "../../../_models/database-models";
 import { Options } from "ng5-slider";
 import { TutorRegisterService } from "./tutor-register.service";
 

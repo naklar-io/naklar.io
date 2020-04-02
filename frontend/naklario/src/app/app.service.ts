@@ -4,7 +4,7 @@ import { Subject as R_Subject, throwError } from "rxjs";
 import { catchError } from "rxjs/operators";
 
 import { environment } from "../environments/environment";
-import { State, Subject, SchoolData, SchoolType } from "./database-models";
+import { State, Subject, SchoolData, SchoolType } from "./_models/database-models";
 
 @Injectable()
 export class GlobalDataService {
