@@ -5,9 +5,12 @@
     Schülern helfen.
   </p>
 
-  <div class="alert alert-success text-center" [hidden]="!submitted">
+  <div *ngIf="submitSuccess" class="alert alert-success text-center" >
     <p>Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.</p>
     <p>Sobald wir fertig sind, <strong>melden wir uns per Mail</strong></p>
+  </div>
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{error | json}}
   </div>
 
   <form #tutorForm="ngForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
@@ -17,7 +20,6 @@
         <input
           type="text"
           formControlName="firstName"
-          [disabled]="submitted"
           class="form-control"
         />
       </div>
@@ -27,7 +29,6 @@
           type="text"
           formControlName="lastName"
           class="form-control"
-          [disabled]="submitted"
         />
       </div>
     </div>
@@ -37,10 +38,17 @@
         <label for="email">Email</label>
         <input
           type="email"
-          fromControlName="email"
+          formControlName="email"
           class="form-control"
-          [disabled]="submitted"
         />
+      </div>
+      <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+        <div *ngIf="f.email.errors.required">
+          Du musst eine email angeben
+        </div>
+        <div *ngIf="f.email.errors.email">
+          Diese Email ist invalide
+        </div>
       </div>
       <div class="from-group col">
         <label for="state">Bundesland</label>
@@ -48,7 +56,6 @@
           name="state"
           class="form-control"
           formControlName="state"
-          [disabled]="submitted"
         >
           <option *ngFor="let state of states" [ngValue]="state">
             {{ state.name }}
@@ -64,8 +71,13 @@
           type="password"
           formControlName="password"
           class="form-control"
-          [disabled]="submitted"
         />
+        <div
+          *ngIf="submitted && registerForm.errors?.passwordNotMatch"
+          class="invalid-feedback"
+        >
+          Die beiden Passwörter müssen überein stimmen.
+        </div>
       </div>
       <div class="form-group col">
         <label for="passwordRepeat">Passwort wiederholen</label>
@@ -73,34 +85,49 @@
           type="password"
           formControlName="passwordRepeat"
           class="form-control"
-          [disabled]="submitted"
           required
         />
+        <div
+          *ngIf="submitted && registerForm.errors?.passwordNotMatch"
+          class="invalid-feedback"
+        >
+          Die beiden Passwörter müssen überein stimmen
+        </div>
       </div>
     </div>
 
     <label for="schoolType">Schultypen, die du unterrichten möchtest:</label>
     <div class="form-group">
-      <div *ngFor="let schoolType of schoolTypes" class="form-row">
+      <div
+        *ngFor="let schoolType of schoolTypesControl.controls; let i = index"
+        class="form-row"
+      >
         <div class="col-3 form-check my-3 align-middle">
           <input
             type="checkbox"
-            formControlName="schoolType"
-            id="school-type-{{ schoolType.id }}"
+            [formControl]="schoolType"
+            id="school-type-{{ schoolTypes[i].id }}"
+            name="schoolType"
             class="form-check-input"
-            [disabled]="submitted"
           />
-          <label class="form-check-label" for="school-type-{{ schoolType.id }}">
-            {{ schoolType.name }}
+          <label
+            class="form-check-label"
+            for="school-type-{{ schoolTypes[i].id }}"
+          >
+            {{ schoolTypes[i].name }}
           </label>
         </div>
-        <div class="col-3 text-center align-middle">
+        <div
+          class="col-3 text-center align-middle"
+          [hidden]="schoolType.value !== true"
+        >
           <p>Klasse (von/bis):</p>
         </div>
-        <div class="col" [hidden]="">
-          <!-- <ng5-slider
-            [options]="slider_options"
-          ></ng5-slider> -->
+        <div class="col" [hidden]="schoolType.value !== true">
+          <ng5-slider
+            [options]="sliderOptions[i]"
+            [formControl]="sliderControl.controls[i]"
+          ></ng5-slider>
         </div>
       </div>
     </div>
@@ -113,18 +140,18 @@
       </div>
       <div class="form-row">
         <div
-          *ngFor="let subject of subjects"
+          *ngFor="let subject of subjectsControl.controls; let i = index"
           class="form-check form-check-inline"
         >
           <input
             type="checkbox"
-            formControlName="subjects"
-            id="subject-{{ subject.id }}"
+            [formControl]="subject"
+            id="subject-{{ subjects[i].id }}"
             class="from-check-input"
-            [disabled]="submitted"
+            [value]="subjects[i]"
           />
-          <label class="form-check-label" for="subject-{{ subject.id }}"
-            >{{ subject.name }}
+          <label class="form-check-label" for="subject-{{ subjects[i].id }}"
+            >{{ subjects[i].name }}
           </label>
         </div>
       </div>
@@ -135,7 +162,6 @@
         type="checkbox"
         formControlName="terms"
         class="form-check-input"
-        [disabled]="submitted"
       />
       <label for="terms" class="form-check-label"
         >Ja, ich habe die <a routerLink="/account/terms">AGB</a> gelesen</label
@@ -145,7 +171,7 @@
     <button
       type="submit"
       class="btn btn-primary"
-      [disabled]="submitted || loading"
+      [disabled]="submitSuccess || loading"
     >
       <span
         *ngIf="loading"

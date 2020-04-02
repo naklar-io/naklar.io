@@ -17,8 +17,8 @@ export interface SendableUser {
   last_name: string;
   state: number;
   terms_accepted: boolean;
-  studentdata: SendableStudentData;
-  tutordata: SendableTutorData;
+  studentdata: SendableStudentData | null;
+  tutordata: SendableTutorData | null;
 }
 
 export interface SendableLogin {
@@ -47,8 +47,8 @@ export class User {
     public first_name: string = "",
     public last_name: string = "",
     public state: State = new State(),
-    public studentdata: StudentData = new StudentData(),
-    public tutordata: TutorData = new TutorData(),
+    public studentdata: StudentData | null = new StudentData(),
+    public tutordata: TutorData | null = new TutorData(),
     public terms_accepted: boolean = false,
     public token: string = ""
   ) {}
@@ -81,19 +81,25 @@ export class SchoolData {
  *  conversion functions between User <==> SendableUser
  */
 export const localToSendable = (user: User): SendableUser => {
+  const studentdata: SendableStudentData | null = user.studentdata
+    ? {
+        school_data: user.studentdata.school_data.id
+      }
+    : null;
+  const tutordata: SendableTutorData | null = user.tutordata
+    ? {
+        schooldata: user.tutordata.schooldata.map(x => x.id),
+        subjects: user.tutordata.subjects.map(x => x.id)
+      }
+    : null;
   return {
     email: user.email,
     password: user.password,
     first_name: user.first_name,
     last_name: user.last_name,
     state: user.state.id,
-    studentdata: {
-      school_data: user.studentdata.school_data.id
-    },
-    tutordata: {
-      schooldata: user.tutordata.schooldata.map(x => x.id),
-      subjects: user.tutordata.subjects.map(x => x.id)
-    },
+    studentdata: studentdata,
+    tutordata: tutordata,
     terms_accepted: user.terms_accepted
   };
 };
@@ -105,11 +111,17 @@ export const sendableToLocal = (user: SendableUser): User => {
     user.first_name,
     user.last_name,
     states.find(x => x.id === user.state),
-    new StudentData(schoolData.find(x => x.id === user.studentdata.school_data)),
-    new TutorData(
-      schoolData.filter(x => x.id in user.tutordata.schooldata),
-      subjects.filter(x => x.id in user.tutordata.subjects)
-    )
+    user.studentdata
+      ? new StudentData(
+          schoolData.find(x => x.id === user.studentdata.school_data)
+        )
+      : null,
+    user.tutordata
+      ? new TutorData(
+          schoolData.filter(x => x.id in user.tutordata.schooldata),
+          subjects.filter(x => x.id in user.tutordata.subjects)
+        )
+      : null
     // TODO: provide token & terms_accepted
   );
 };
