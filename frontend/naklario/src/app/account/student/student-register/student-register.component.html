@@ -10,7 +10,6 @@
         <label for="first-name">Vorname</label>
         <input
           type="text"
-          [(ngModel)]="model.first_name"
           class="form-control"
           name="first-name"
           required
@@ -20,7 +19,6 @@
         <label for="email">Email</label>
         <input
           type="email"
-          [(ngModel)]="model.email"
           name="email"
           class="form-control"
           required
@@ -32,7 +30,6 @@
         <label for="password">Passwort</label>
         <input
           type="password"
-          [(ngModel)]="model.password"
           name="password"
           class="form-control"
           required
@@ -42,7 +39,6 @@
         <label for="password-repeat">Passwort wiederholen</label>
         <input
           type="password"
-          [(ngModel)]="model.password_repeat"
           name="password-repeat"
           class="form-control"
           required
@@ -55,7 +51,6 @@
         <select
           name="state"
           class="form-control"
-          [(ngModel)]="model.state"
           required
         >
         <option *ngFor="let state of states" [ngValue]="state">
@@ -71,7 +66,6 @@
         <select
           name="school-type"
           class="form-control"
-          [(ngModel)]="schoolType" 
           required
         >
         <option *ngFor="let schoolType of schoolTypes" [ngValue]="schoolType">

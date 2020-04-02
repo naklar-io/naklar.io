@@ -17,7 +17,7 @@ export interface SendableUser {
   last_name: string;
   state: number;
   terms_accepted: boolean;
-  sudentdata: SendableStudentData;
+  studentdata: SendableStudentData;
   tutordata: SendableTutorData;
 }
 
@@ -87,7 +87,7 @@ export const localToSendable = (user: User): SendableUser => {
     first_name: user.first_name,
     last_name: user.last_name,
     state: user.state.id,
-    sudentdata: {
+    studentdata: {
       school_data: user.studentdata.school_data.id
     },
     tutordata: {
@@ -105,7 +105,7 @@ export const sendableToLocal = (user: SendableUser): User => {
     user.first_name,
     user.last_name,
     states.find(x => x.id === user.state),
-    new StudentData(schoolData.find(x => x.id === user.sudentdata.school_data)),
+    new StudentData(schoolData.find(x => x.id === user.studentdata.school_data)),
     new TutorData(
       schoolData.filter(x => x.id in user.tutordata.schooldata),
       subjects.filter(x => x.id in user.tutordata.subjects)

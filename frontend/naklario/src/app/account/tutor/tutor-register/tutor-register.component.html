@@ -10,29 +10,24 @@
     <p>Sobald wir fertig sind, <strong>melden wir uns per Mail</strong></p>
   </div>
 
-  <form #tutorForm="ngForm" (ngSubmit)="onSubmit()">
-
+  <form #tutorForm="ngForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
       <div class="form-group col">
-        <label for="first-name">Vorname</label>
+        <label for="firstName">Vorname</label>
         <input
           type="text"
-          [(ngModel)]="model.first_name"
+          formControlName="firstName"
           [disabled]="submitted"
           class="form-control"
-          name="first-name"
-          required
         />
       </div>
       <div class="form-group col">
-        <label for="last-name">Nachname</label>
+        <label for="lastName">Nachname</label>
         <input
           type="text"
+          formControlName="lastName"
           class="form-control"
-          name="last-name"
-          [(ngModel)]="model.last_name"
           [disabled]="submitted"
-          required
         />
       </div>
     </div>
@@ -42,11 +37,9 @@
         <label for="email">Email</label>
         <input
           type="email"
-          name="email"
+          fromControlName="email"
           class="form-control"
-          [(ngModel)]="model.email"
           [disabled]="submitted"
-          required
         />
       </div>
       <div class="from-group col">
@@ -54,78 +47,69 @@
         <select
           name="state"
           class="form-control"
-          [(ngModel)]="model.state"
+          formControlName="state"
           [disabled]="submitted"
-          required
         >
-          <option *ngFor="let state of states" [ngValue]="state.id">
+          <option *ngFor="let state of states" [ngValue]="state">
             {{ state.name }}
           </option>
         </select>
       </div>
     </div>
-    
+
     <div class="form-row">
       <div class="form-group col">
         <label for="password">Passwort</label>
         <input
           type="password"
-          name="password"
+          formControlName="password"
           class="form-control"
-          [(ngModel)]="model.password"
           [disabled]="submitted"
-          required
         />
       </div>
       <div class="form-group col">
-        <label for="password-repeat">Passwort wiederholen</label>
+        <label for="passwordRepeat">Passwort wiederholen</label>
         <input
           type="password"
-          name="password-repeat"
+          formControlName="passwordRepeat"
           class="form-control"
-          [(ngModel)]="model.password_repeat"
           [disabled]="submitted"
           required
         />
       </div>
     </div>
 
-    <label>Schultypen, die du unterrichten möchtest:</label>
+    <label for="schoolType">Schultypen, die du unterrichten möchtest:</label>
     <div class="form-group">
       <div *ngFor="let schoolType of schoolTypes" class="form-row">
         <div class="col-3 form-check my-3 align-middle">
           <input
             type="checkbox"
-            name="school-type"
+            formControlName="schoolType"
             id="school-type-{{ schoolType.id }}"
             class="form-check-input"
-            [(ngModel)]="slider_enabled[schoolType.id]"
             [disabled]="submitted"
-            required
           />
           <label class="form-check-label" for="school-type-{{ schoolType.id }}">
             {{ schoolType.name }}
           </label>
         </div>
-        <div
-          class="col-3 text-center align-middle"
-          [hidden]="!slider_enabled[schoolType.id]"
-        >
+        <div class="col-3 text-center align-middle">
           <p>Klasse (von/bis):</p>
         </div>
-        <div class="col" [hidden]="!slider_enabled[schoolType.id]">
-          <ng5-slider
-            [options]="slider_options[schoolType.id]"
-            [(value)]="slider_data[schoolType.id].low"
-            [(highValue)]="slider_data[schoolType.id].high"
-          ></ng5-slider>
+        <div class="col" [hidden]="">
+          <!-- <ng5-slider
+            [options]="slider_options"
+          ></ng5-slider> -->
         </div>
       </div>
     </div>
 
     <div class="my-4">
       <div class="form-row">
-        <label>Für welche Fächer willst du Fragen beantworten:</label>
+        <label for="subjects"
+          >Für welche Fächer willst du Fragen beantworten:</label
+        >
       </div>
       <div class="form-row">
         <div
@@ -134,12 +118,10 @@
         >
           <input
             type="checkbox"
-            name="subject"
+            formControlName="subjects"
             id="subject-{{ subject.id }}"
             class="from-check-input"
-            [(ngModel)]="selected_subject[subject.id]"
             [disabled]="submitted"
-            required
           />
           <label class="form-check-label" for="subject-{{ subject.id }}"
             >{{ subject.name }}
@@ -151,23 +133,24 @@
     <div class="form-group form-row form-check-inline">
       <input
         type="checkbox"
-        name="terms"
+        formControlName="terms"
         class="form-check-input"
-        [(ngModel)]="model.terms_accepted"
         [disabled]="submitted"
-        required
       />
       <label for="terms" class="form-check-label"
-        >Ja, ich habe die
-        <a routerLink="/account/terms">AGB</a> gelesen</label
+        >Ja, ich habe die <a routerLink="/account/terms">AGB</a> gelesen</label
       >
     </div>
 
     <button
       type="submit"
       class="btn btn-primary"
-      [disabled]="tutorForm.invalid || submitted"
+      [disabled]="submitted || loading"
     >
+      <span
+        *ngIf="loading"
+        class="spinner-border spinner-border-sm mr-1"
+      ></span>
       Absenden
     </button>
   </form>
