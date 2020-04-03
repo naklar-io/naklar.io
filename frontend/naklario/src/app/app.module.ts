@@ -11,7 +11,6 @@ import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
 
 // Components
 import { AppComponent } from "./app.component";
-import { RouletteComponent } from "./roulette/roulette.component";
 import { CallComponent } from "./call/call.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
@@ -19,17 +18,18 @@ import { NavbarComponent } from "./misc/navbar/navbar.component";
 import { FooterComponent } from "./misc/footer/footer.component";
 import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
+import { RouletteModule } from "./roulette/roulette.module";
 
 import { EmailFormComponent } from "./landing/email-form/email-form.component";
 
 import { ImpressumComponent } from "./impressum/impressum.component";
 import { AboutComponent } from "./about/about.component";
 import { DatenschutzComponent } from "./datenschutz/datenschutz.component";
+import { DatabaseService, AuthenticationService } from "./_services";
 
 @NgModule({
   declarations: [
     AppComponent,
-    RouletteComponent,
     CallComponent,
     HomeComponent,
     LandingComponent,
@@ -50,12 +50,16 @@ import { DatenschutzComponent } from "./datenschutz/datenschutz.component";
     FormsModule,
     // modules (arbitrary order)
     AccountModule,
+    RouletteModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    // Singleton Services
+    DatabaseService,
+    AuthenticationService
   ],
   bootstrap: [AppComponent]
 })

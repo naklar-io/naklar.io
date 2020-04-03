@@ -17,12 +17,32 @@
         oder möchtest du dich als Tutor engagieren?
       </p>
       <p>Ich bin...</p>
-      <div class="row">
+      <div class="row my-1">
         <div class="col-6">
-          <a routerLink="/account/student" class="btn btn-primary btn-block">Schüler</a>
+          <a routerLink="/account/student" class="btn btn-primary btn-block"
+            >Schüler</a
+          >
         </div>
         <div class="col-6">
-          <a routerLink="/account/tutor" class="btn btn-primary btn-block">Tutor</a>
+          <a routerLink="/account/tutor" class="btn btn-primary btn-block"
+            >Tutor</a
+          >
+        </div>
+      </div>
+      <div class="row my-1">
+        <div class="col-6">
+          <a
+            [routerLink]="['/roulette', 'student']"
+            class="btn btn-primary btn-block"
+            >DEBUG: Roulette Schüler</a
+          >
+        </div>
+        <div class="col-6">
+          <a
+            [routerLink]="['/roulette', 'tutor']"
+            class="btn btn-primary btn-block"
+            >DEBUG: Roulette Tutor</a
+          >
         </div>
       </div>
     </div>

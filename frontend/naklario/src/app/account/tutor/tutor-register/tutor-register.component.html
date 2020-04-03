@@ -34,7 +34,7 @@
     </div>
 
     <div class="form-row">
-      <div class="from-group col">
+      <div class="form-group col">
         <label for="email">Email</label>
         <input
           type="email"
@@ -50,7 +50,7 @@
           Diese Email ist invalide
         </div>
       </div>
-      <div class="from-group col">
+      <div class="form-group col">
         <label for="state">Bundesland</label>
         <select
           name="state"
@@ -147,7 +147,7 @@
             type="checkbox"
             [formControl]="subject"
             id="subject-{{ subjects[i].id }}"
-            class="from-check-input"
+            class="form-check-input"
             [value]="subjects[i]"
           />
           <label class="form-check-label" for="subject-{{ subjects[i].id }}"
