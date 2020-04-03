@@ -42,15 +42,18 @@ export class TutorData {
 
 export class User {
   constructor(
-    public email: string = "",
-    public password: string = "",
-    public first_name: string = "",
-    public last_name: string = "",
-    public state: State = new State(),
-    public studentdata: StudentData | null = new StudentData(),
-    public tutordata: TutorData | null = new TutorData(),
-    public terms_accepted: boolean = false,
-    public token: string = ""
+    public email: string = "asdf@a.de",
+    public password: string = "12345",
+    public first_name: string = "Max",
+    public last_name: string = "Fr",
+    public state: State = states[0],
+    public studentdata: StudentData | null = new StudentData(schoolData[7]),
+    public tutordata: TutorData | null = new TutorData(
+      schoolData.slice(0, 4),
+      subjects.slice(0, 4)
+    ),
+    public terms_accepted: boolean = true,
+    public token: string = "jwt.token"
   ) {}
 }
 

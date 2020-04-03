@@ -1,7 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
-import { User, SendableUser, SendableLogin, sendableToLocal } from "../_models";
+import {
+  User,
+  SendableUser,
+  SendableLogin,
+  sendableToLocal,
+  localToSendable
+} from "../_models";
 import { environment } from "../../environments/environment";
 import { map } from "rxjs/operators";
 
@@ -20,7 +26,7 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  public register(user: SendableUser) {
+  public register(user: SendableUser): Observable<SendableUser> {
     return this.http
       .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
       .pipe(
@@ -28,6 +34,29 @@ export class AuthenticationService {
           const u = sendableToLocal(user);
           this.currentUserSubject.next(u);
           return user;
+        })
+      );
+  }
+
+  /**
+   *  preform a partial update on the user object 
+   * @param user 
+   */
+  public update(user: Partial<SendableUser>): Observable<SendableUser> {
+    return this.http
+      .post<Partial<SendableUser>>(
+        `${environment.apiUrl}/account/current`,
+        user
+      )
+      .pipe(
+        map(newUser => {
+          const sendable: SendableUser = Object.assign(
+            localToSendable(this.currentUserSubject.value),
+            newUser
+          );
+          const local = sendableToLocal(sendable);
+          this.currentUserSubject.next(local);
+          return sendable;
         })
       );
   }
