@@ -1,9 +1,14 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { User, SendableUser, SendableLogin, sendableToLocal } from "../_models";
 import { environment } from "../../environments/environment";
 import { map } from "rxjs/operators";
+
+interface LoginResponse {
+  token: string;
+  expiry: string;
+}
 
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
@@ -34,11 +39,23 @@ export class AuthenticationService {
 
   public login(login: SendableLogin) {
     return this.http
-      .post<SendableLogin>(`${environment.apiUrl}/account/login/`, login)
+      .post<LoginResponse>(
+        `${environment.apiUrl}/account/login/`,
+        {},
+        {
+          headers: new HttpHeaders({
+            Authorization: "Basic " + btoa(`${login.email}:${login.password}`)
+          })
+        }
+      )
       .pipe(
         map(response => {
-          console.log(response);
-          const user = this.currentUserSubject.value;
+          console.log('login response:', response);
+          const newUser = Object.assign(this.currentUserSubject.value, {
+            token: response.token,
+            expiry: new Date(response.expiry)
+          });
+          this.currentUserSubject.next(newUser);
           return response;
         })
       );

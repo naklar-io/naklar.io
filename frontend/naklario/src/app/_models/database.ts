@@ -50,7 +50,8 @@ export class User {
     public studentdata: StudentData | null = new StudentData(),
     public tutordata: TutorData | null = new TutorData(),
     public terms_accepted: boolean = false,
-    public token: string = ""
+    public token: string = "",
+    public token_expiry: Date = null
   ) {}
 }
 
