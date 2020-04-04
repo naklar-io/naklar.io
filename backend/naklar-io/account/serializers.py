@@ -43,8 +43,8 @@ class TutorDataSerializer(serializers.ModelSerializer):
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
-    studentdata = StudentDataSerializer(required=False)
-    tutordata = TutorDataSerializer(required=False)
+    studentdata = StudentDataSerializer(required=False, allow_null=True)
+    tutordata = TutorDataSerializer(required=False, allow_null=True)
 
     class Meta:
         model = CustomUser
@@ -55,11 +55,24 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        if 'studentdata' in validated_data or 'tutordata' in validated_data:
-            raise ValidationError("Unable to set studentdata or tutordata on register")
-        user = CustomUser.objects.create_user(**validated_data)
-        return user
+        studentdata, tutordata = None
 
+        if 'studendata' in validated_data:
+            studentdata = validated_data.pop('studentdata')
+        if 'tutordata' in validated_data:
+            tutordata = validated_data.pop('tutordata')
+
+        # Create user, then set studentdata and tutordata if exists
+        instance = CustomUser.objects.create_user(**validated_data)
+        if studentdata:
+            StudentData.objects.update_or_create(user=instance, **studentdata)
+        if tutordata:
+            tutor, _ = TutorData.objects.get_or_create(user=instance)
+            tutor.schooldata.set(tutordata.get('schooldata'))
+            tutor.subjects.set(tutordata.get('subjects'))
+            tutor.save()
+
+        return instance
 
     def update(self, instance, validated_data):
         if 'password' in validated_data:
@@ -86,4 +99,6 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ["email", "first_name", "last_name", "state", "studentdata", "tutordata"]
+        fields = ["uuid", "first_name", "last_name",
+                  "state", "studentdata", "tutordata"]
+        lookup_field = "uuid"
