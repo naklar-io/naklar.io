@@ -50,7 +50,7 @@ export class AuthenticationService {
       )
       .pipe(
         map(response => {
-          console.log('login response:', response);
+          console.log("login response:", response);
           const newUser = Object.assign(this.currentUserSubject.value, {
             token: response.token,
             expiry: new Date(response.expiry)
