@@ -137,7 +137,7 @@ export class TutorRegisterComponent implements OnInit {
         schooldata: grades,
         subjects: this.f.subjects.value
           .map((x, i) => (x ? this.subjects[i].id : x))
-          .filter(x => !isNull(x))
+          .filter(x => Boolean(x))
       }
     };
 
