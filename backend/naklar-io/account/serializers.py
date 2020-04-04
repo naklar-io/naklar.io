@@ -55,7 +55,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        studentdata, tutordata = None
+        studentdata = None
+        tutordata = None
 
         if 'studendata' in validated_data:
             studentdata = validated_data.pop('studentdata')
