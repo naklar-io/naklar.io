@@ -3,7 +3,10 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { RouletteComponent } from "./roulette.component";
 
-const routes: Routes = [{ path: "roulette/:type", component: RouletteComponent }];
+const routes: Routes = [
+  { path: "roulette/:type", component: RouletteComponent }
+
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

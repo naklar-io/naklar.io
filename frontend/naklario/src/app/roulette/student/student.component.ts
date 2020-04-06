@@ -1,18 +1,27 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { DatabaseService, AuthenticationService } from "src/app/_services";
-import { State, Subject, SchoolType, SchoolData, User } from "src/app/_models";
+import {
+  State,
+  Subject,
+  SchoolType,
+  SchoolData,
+  User,
+  SendableUser,
+} from "src/app/_models";
 import { Observable } from "rxjs";
-import { share, tap } from "rxjs/operators";
+import { share, tap, first } from "rxjs/operators";
 import { Options } from "ng5-slider";
 
 @Component({
   selector: "roulette-student",
   templateUrl: "./student.component.html",
   styleUrls: ["./student.component.scss"],
-  providers: [DatabaseService]
+  providers: [DatabaseService],
 })
 export class StudentComponent implements OnInit {
+  @Output() done = new EventEmitter<boolean>();
+
   states$: Observable<State[]>;
   subjects$: Observable<Subject[]>;
   schoolTypes$: Observable<SchoolType[]>;
@@ -24,13 +33,13 @@ export class StudentComponent implements OnInit {
     animate: false,
     showTicks: true,
     floor: 5,
-    ceil: 13
+    ceil: 13,
   };
 
   studentForm = this.fb.group({
     subject: [null, Validators.required],
     state: [null, Validators.required],
-    slider: [5, Validators.required]
+    slider: [5, Validators.required],
   });
 
   submitted = false;
@@ -49,9 +58,49 @@ export class StudentComponent implements OnInit {
   ) {}
 
   onSubmit(): void {
-    this.submitted = true;
-     
-    console.log(this.studentForm);
+    if (this.studentForm.invalid) {
+      return;
+    }
+
+    Promise.all([this.user$.toPromise(), this.schoolData$.toPromise()])
+      .then(([user, schoolData]) => {
+        console.log('promises resolved')
+        const grade = this.f.slider.value;
+        const selectedSchoolData = schoolData.find(
+          (x) =>
+            x.school_type === user.studentdata.school_data.school_type &&
+            x.grade === grade
+        );
+        const partialUser: Partial<SendableUser> = {
+          state: this.f.state.value.id,
+          studentdata: {
+            school_data: selectedSchoolData.id,
+          },
+        };
+
+        this.loading = true;
+        const authPromise = this.authenticationService
+          .update(partialUser)
+          .pipe(first())
+          .toPromise()
+          .then(
+            (data) => {
+              this.loading = false;
+              this.submitSuccess = true;
+              this.error = null;
+            },
+            (error) => {
+              this.error = error;
+              this.loading = true;
+            }
+          );
+        return authPromise;
+      })
+      .then(() => {
+        // return back to parent component 
+        console.log('done')
+        this.done.emit(true);
+      });
   }
 
   ngOnInit(): void {
@@ -60,10 +109,9 @@ export class StudentComponent implements OnInit {
     this.schoolTypes$ = this.databaseService.schoolTypes.pipe(share());
     this.schoolData$ = this.databaseService.schoolData.pipe(share());
     this.user$ = this.authenticationService.currentUser.pipe(share()).pipe(
-      tap(user => {
+      tap((user) => {
         this.f.state.setValue(user.state);
         this.f.slider.setValue(user.studentdata.school_data.grade);
-        console.log("updating user", this.f);
       })
     );
   }
