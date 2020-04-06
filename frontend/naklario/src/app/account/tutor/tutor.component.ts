@@ -9,18 +9,19 @@ import { first } from "rxjs/operators";
   selector: "account-tutor",
   templateUrl: "./tutor.component.html",
   styleUrls: ["./tutor.component.scss"],
-  providers: [AuthenticationService]
+  providers: [AuthenticationService],
 })
 export class TutorComponent implements OnInit {
   loginForm = this.fb.group({
     email: ["", [Validators.required, Validators.email]],
-    password: ["", Validators.required]
+    password: ["", Validators.required],
   });
 
   submitted = false;
   submitSuccess = false;
   loading = false;
-  returnUrl = this.route.snapshot.queryParams["returnUrl"];
+  // can define return url in route param
+  returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/";
   error: string = null;
 
   get f() {
@@ -42,20 +43,21 @@ export class TutorComponent implements OnInit {
 
     const login: SendableLogin = {
       email: this.f.email.value,
-      password: this.f.password.value
+      password: this.f.password.value,
     };
     this.loading = true;
-    console.log('sending', login);
+    console.log("sending", login);
     this.authenticationService
       .login(login)
       .pipe(first())
       .subscribe(
-        data => {
+        (data) => {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
+          this.router.navigate([this.returnUrl]);
         },
-        error => {
+        (error) => {
           this.error = error;
           this.loading = false;
         }
