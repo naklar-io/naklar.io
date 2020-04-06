@@ -9,7 +9,6 @@ import { first } from "rxjs/operators";
   selector: "account-tutor",
   templateUrl: "./tutor.component.html",
   styleUrls: ["./tutor.component.scss"],
-  providers: [AuthenticationService]
 })
 export class TutorComponent implements OnInit {
   loginForm = this.fb.group({

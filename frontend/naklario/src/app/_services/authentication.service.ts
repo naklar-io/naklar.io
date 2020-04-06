@@ -15,21 +15,51 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
 
   public currentUser: Observable<User>;
+  public isBackedUser: Boolean;
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User>(new User());
+    this.currentUserSubject = new BehaviorSubject<User>(
+      JSON.parse(localStorage.getItem("currentUser"))
+    );
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  public get currentUserValue() {
+  public get currentUserValue(): User {
     return this.currentUserSubject.value;
+  }
+
+  /**
+   * removes current session from storage
+   */
+  public loggedOut() {}
+
+  public updateUser(user: SendableUser) {
+    if (!user.password) {
+      // don't send password if it wasn't updated
+      delete user.password;
+    }
+    return this.http
+      .put<SendableUser>(`${environment.apiUrl}/account/`, user)
+      .pipe(
+        map((user) => {
+          const u = sendableToLocal(user);
+          // replace tokens
+          const newUser = Object.assign(u, {
+            token: this.currentUserValue.token,
+            token_expiry: this.currentUserValue.token_expiry,
+          });
+          this.currentUserSubject.next(newUser);
+          localStorage.setItem("currentUser", JSON.stringify(this.currentUser));
+          return user;
+        })
+      );
   }
 
   public register(user: SendableUser) {
     return this.http
       .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
       .pipe(
-        map(user => {
+        map((user) => {
           const u = sendableToLocal(user);
           this.currentUserSubject.next(u);
           return user;
@@ -44,19 +74,39 @@ export class AuthenticationService {
         {},
         {
           headers: new HttpHeaders({
-            Authorization: "Basic " + btoa(`${login.email}:${login.password}`)
-          })
+            Authorization: "Basic " + btoa(`${login.email}:${login.password}`),
+          }),
         }
       )
       .pipe(
-        map(response => {
+        map((response) => {
           console.log("login response:", response);
-          const newUser = Object.assign(this.currentUserSubject.value, {
-            token: response.token,
-            expiry: new Date(response.expiry)
-          });
-          this.currentUserSubject.next(newUser);
+          let user = new User();
+          user.token = response.token;
+          user.token_expiry = response.expiry;
+          localStorage.setItem("currentUser", JSON.stringify(user));
+          this.currentUserSubject.next(user);
+          this.isBackedUser = true;
+          console.log("new value:");
+          console.log(this.currentUserValue);
           return response;
+        })
+      );
+  }
+
+  public fetchUserData() {
+    return this.http
+      .get<SendableUser>(`${environment.apiUrl}/account/current/`)
+      .pipe(
+        map((user) => {
+          const u = sendableToLocal(user);
+          const filledUser = Object.assign(u, {
+            token: this.currentUserValue.token,
+            token_expiry: this.currentUserValue.token_expiry,
+          });
+          localStorage.setItem("currentUser", JSON.stringify(filledUser));
+          this.currentUserSubject.next(filledUser);
+          return filledUser;
         })
       );
   }

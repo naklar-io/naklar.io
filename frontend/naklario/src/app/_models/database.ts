@@ -51,7 +51,7 @@ export class User {
     public tutordata: TutorData | null = new TutorData(),
     public terms_accepted: boolean = false,
     public token: string = "",
-    public token_expiry: Date = null
+    public token_expiry: string = ""
   ) {}
 }
 
