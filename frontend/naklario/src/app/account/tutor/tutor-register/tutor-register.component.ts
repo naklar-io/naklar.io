@@ -26,8 +26,7 @@ import { isNull } from "util";
 @Component({
   selector: "account-tutor-register",
   templateUrl: "./tutor-register.component.html",
-  styleUrls: ["./tutor-register.component.scss"],
-  providers: [AuthenticationService]
+  styleUrls: ["./tutor-register.component.scss"]
 })
 export class TutorRegisterComponent implements OnInit {
   states: State[] = states;
