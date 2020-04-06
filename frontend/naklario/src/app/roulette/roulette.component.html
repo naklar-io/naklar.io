@@ -1,6 +1,26 @@
 <div class="container">
-  <roulette-student *ngIf="type === 'student'"></roulette-student>
-  <roulette-tutor *ngIf="type === 'tutor'"></roulette-tutor>
+  <div *ngIf="state === 'create'">
+    <roulette-student
+      *ngIf="type === 'student'"
+      (done)="onCreateDone($event)"
+    ></roulette-student>
+    <roulette-tutor
+      *ngIf="type === 'tutor'"
+      (done)="onCreateDone($event)"
+    ></roulette-tutor>
+  </div>
+
+  <div *ngIf="state === 'wait'">
+    <pre>Wait state</pre>
+  </div>
+
+  <div *ngIf="state === 'match'">
+    <pre>Match state</pre>
+  </div>
+
+  <div *ngIf="state === 'session'">
+    <pre>Session state</pre>
+  </div>
 
   <hr />
 

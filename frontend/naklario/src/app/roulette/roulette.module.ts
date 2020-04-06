@@ -7,11 +7,13 @@ import { RouletteComponent } from './roulette.component';
 import { StudentComponent } from './student/student.component';
 import { TutorComponent } from './tutor/tutor.component';
 import { Ng5SliderModule } from 'ng5-slider';
+import { WaitingComponent } from './waiting/waiting.component';
+import { FeedbackComponent } from './feedback/feedback.component';
 
 
 
 @NgModule({
-  declarations: [RouletteComponent, StudentComponent, TutorComponent],
+  declarations: [RouletteComponent, StudentComponent, TutorComponent, WaitingComponent, FeedbackComponent],
   imports: [
     Ng5SliderModule,
     CommonModule,
