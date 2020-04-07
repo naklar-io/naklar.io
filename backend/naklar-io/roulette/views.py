@@ -59,8 +59,20 @@ class UserBelongsToMatch(permissions.BasePermission):
             return False
 
 
+class AccessPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        type = view.kwargs.get('type', None)
+        if type == 'student':
+            if hasattr(request.user, 'studentdata'):
+                return True
+        elif type == 'tutor':
+            if hasattr(request.user, 'tutordata') and request.user.tutordata.verified:
+                return True
+        return type is None
+
+
 class RequestView(MatchTypeMixin, MatchUserMixin, generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, AccessPermission]
     """  def get_serializer_class(self):
         if 'type' in self.request.query_params:
             if self.request.query_params['type'] == 'student':
@@ -72,7 +84,7 @@ class RequestView(MatchTypeMixin, MatchUserMixin, generics.RetrieveAPIView):
 
 
 class RequestCreateView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, AccessPermission]
 
     def perform_create(self, serializer):
         self.get_queryset().filter(user=self.request.user).delete()
@@ -80,7 +92,7 @@ class RequestCreateView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView):
 
 
 class RequestDeleteView(MatchUserMixin, MatchTypeMixin, generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, AccessPermission]
 
 
 match_answer_param = openapi.Parameter(
