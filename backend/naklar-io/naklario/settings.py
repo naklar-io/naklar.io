@@ -32,6 +32,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['bbb.goodgrade.de', 'localhost', '127.0.0.1']
 
+CORS_ORIGIN_WHITELIST = [
+    "https://dev.naklar.io",
+]
+
 # Set custom user model
 AUTH_USER_MODEL = 'account.CustomUser'
 SWAGGER_SETTINGS = {
@@ -79,6 +83,7 @@ INSTALLED_APPS = [
     # 3rd party libs
     'channels',
     'drf_yasg',
+    'corsheaders',
     # our components
     'account',
     'call',
@@ -92,6 +97,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
