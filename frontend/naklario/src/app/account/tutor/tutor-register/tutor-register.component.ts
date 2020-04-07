@@ -26,8 +26,7 @@ import { isNull } from "util";
 @Component({
   selector: "account-tutor-register",
   templateUrl: "./tutor-register.component.html",
-  styleUrls: ["./tutor-register.component.scss"],
-  providers: [AuthenticationService]
+  styleUrls: ["./tutor-register.component.scss"]
 })
 export class TutorRegisterComponent implements OnInit {
   states: State[] = states;
@@ -137,7 +136,7 @@ export class TutorRegisterComponent implements OnInit {
         schooldata: grades,
         subjects: this.f.subjects.value
           .map((x, i) => (x ? this.subjects[i].id : x))
-          .filter(x => !isNull(x))
+          .filter(x => Boolean(x))
       }
     };
 

@@ -46,9 +46,9 @@ class SchoolDataList(generics.ListAPIView):
 
 class CustomUserView(generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
-    permission_classes = [permissions.IsAuthenticated, IsUser]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = CustomUserSerializer
-
+    lookup_field = 'uuid'
 
 class CustomUserCreateView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
