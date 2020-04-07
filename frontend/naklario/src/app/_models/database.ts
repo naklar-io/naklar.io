@@ -54,7 +54,7 @@ export class User {
     ),
     public terms_accepted: boolean = true,
     public token: string = "jwt.token",
-    public token_expiry: Date = null
+    public token_expiry: string = null
   ) {}
 }
 

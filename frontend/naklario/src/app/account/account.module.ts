@@ -10,6 +10,9 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { Ng5SliderModule } from "ng5-slider";
 import { StudentRegisterComponent } from "./student/student-register/student-register.component";
 import { TermsConditionsComponent } from "./tutor/terms-conditions/terms-conditions.component";
+import { LoginComponent } from "./login/login.component";
+import { ProfileComponent } from "./profile/profile.component";
+
 
 @NgModule({
   declarations: [
@@ -17,14 +20,16 @@ import { TermsConditionsComponent } from "./tutor/terms-conditions/terms-conditi
     StudentComponent,
     TutorRegisterComponent,
     StudentRegisterComponent,
-    TermsConditionsComponent
+    TermsConditionsComponent,
+    LoginComponent,
+    ProfileComponent,
   ],
   imports: [
     Ng5SliderModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    AccountRoutingModule
-  ]
+    AccountRoutingModule,
+  ],
 })
 export class AccountModule {}
