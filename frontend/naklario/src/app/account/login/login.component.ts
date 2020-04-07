@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { AuthenticationService } from "src/app/_services";
 import { Validators, FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
@@ -9,9 +9,12 @@ import { SendableLogin, User } from "src/app/_models";
   selector: "account-login",
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
-  // DONT USE PROVIDERS IF service already using PROVIDED in
 })
 export class LoginComponent implements OnInit {
+  @Input() registerUrl: string;
+  // if the login component was embedded by another site
+  embedded = false;
+
   loginForm = this.fb.group({
     email: ["", [Validators.required, Validators.email]],
     password: ["", Validators.required],
@@ -20,7 +23,8 @@ export class LoginComponent implements OnInit {
   submitted = false;
   submitSuccess = false;
   loading = false;
-  returnUrl: string;
+  returnUrl: string =
+    this.route.snapshot.queryParams["returnUrl"] || "/account";
   error: string = null;
 
   user: User = null;
@@ -34,10 +38,21 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService
-  ) {
+  ) {}
+  ngOnInit(): void {
+    if (!this.registerUrl) {
+      console.log(this.registerUrl);
+      // component was not embedded
+      this.embedded = false;
+      this.registerUrl = "/account/student/register";
+    } else {
+      // component was embedded
+      this.embedded = true;
+    }
+
     // redirect to home if already logged in
-    if (this.authenticationService.currentUserValue) {
-      this.router.navigate(["/account"]);
+    if (!this.embedded && this.authenticationService.currentUserValue) {
+      this.router.navigate([this.returnUrl]);
     }
   }
 
@@ -51,24 +66,19 @@ export class LoginComponent implements OnInit {
       email: this.f.email.value,
       password: this.f.password.value,
     };
+    console.log("Logging in user: ", login);
+
     this.loading = true;
-    console.log("sending", login);
     this.authenticationService
       .login(login)
       .pipe(first())
       .subscribe(
-        (data) => {
+        (userData) => {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
-          //this.router.navigate(["/account"]);
-          this.authenticationService
-            .fetchUserData()
-            .pipe(first())
-            .subscribe((userData) => {
-              this.user = userData;
-              this.router.navigate([this.returnUrl]);
-            });
+          this.user = userData;
+          this.router.navigate([this.returnUrl]);
         },
         (error) => {
           this.error = error;
@@ -76,9 +86,5 @@ export class LoginComponent implements OnInit {
           this.loading = false;
         }
       );
-  }
-
-  ngOnInit(): void {
-    this.returnUrl = this.route.snapshot.queryParams["returnUrl"] || "/account";
   }
 }

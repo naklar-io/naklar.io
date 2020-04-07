@@ -1,12 +1,16 @@
 <div class="container">
-  <h1 class="primary-color">Willkommen zurück</h1>
-  <p class="lead">Wir freuen uns dich wieder zu sehen!</p>
+  <div *ngIf="!embedded">
+    <h1 class="primary-color">Willkommen zurück</h1>
+    <p class="lead">Wir freuen uns dich wieder zu sehen!</p>
+  </div>
 
   <div *ngIf="error" class="alert alert-danger text-center">
     {{ error | json }}
   </div>
+  <div *ngIf="user" class="alert alert-success text-center">
+    Hallo, {{ user.first_name }}, du wirst nun weitergeleitet.
+  </div>
 
-  <div *ngIf="user" class="alert alert-success text-center">Hallo, {{user.first_name}}, du wirst nun weitergeleitet.</div>
   <div class="row">
     <div class="col-md-6">
       <form #loginFrom="ngForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -60,10 +64,11 @@
 
         <p>
           Du hast noch keinen Account?
-          <a routerLink="register">Registrier dich doch</a>
+          <a [routerLink]="registerUrl">Registrier dich doch</a>
         </p>
       </form>
     </div>
+
     <div class="col">
       <pre>cool image!</pre>
     </div>

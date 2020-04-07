@@ -12,6 +12,7 @@ from .managers import CustomUserManager
 
 class SchoolType(models.Model):
     name = models.CharField(_("Name des Schultyps"), max_length=50)
+
     def __str__(self):
         return self.name
 
@@ -19,6 +20,7 @@ class SchoolType(models.Model):
 class SchoolData(models.Model):
     school_type = models.ForeignKey(SchoolType, on_delete=models.CASCADE)
     grade = models.IntegerField(_("Klasse"))
+
     def __str__(self):
         return str(self.school_type) + " - " + str(self.grade) + ". Klasse"
 
@@ -26,35 +28,39 @@ class SchoolData(models.Model):
 class State(models.Model):
     name = models.CharField(_("Name"), max_length=50)
     shortcode = models.CharField(_("Kurzbezeichnung"), max_length=2)
+
     def __str__(self):
         return self.name + " (%s)" % self.shortcode
 
 
 class Subject(models.Model):
     name = models.CharField(_("Name"), max_length=50)
+
     def __str__(self):
         return self.name
 
 
 class StudentData(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
 
-    school_data = models.ForeignKey(SchoolData, verbose_name=_("Klasse und Schulart"), on_delete=models.PROTECT)
-
+    school_data = models.ForeignKey(SchoolData, verbose_name=_(
+        "Klasse und Schulart"), on_delete=models.PROTECT)
 
     def __str__(self):
         return str(self.school_data) + ' - ' + str(self.user)
 
 
 class TutorData(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
 
-    schooldata = models.ManyToManyField(SchoolData, verbose_name=_("Mögliche Schultypen/Klassenstufen"))
+    schooldata = models.ManyToManyField(
+        SchoolData, verbose_name=_("Mögliche Schultypen/Klassenstufen"))
     subjects = models.ManyToManyField(Subject, verbose_name=_("Fächer"))
 
     def __str__(self):
         return str(self.user)
-
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -74,7 +80,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'state']
     objects = CustomUserManager()
-
 
     def __str__(self):
         return self.email + ' <{}>'.format(self.uuid)
