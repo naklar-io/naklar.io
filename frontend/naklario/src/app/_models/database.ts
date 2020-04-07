@@ -78,6 +78,14 @@ export class SchoolData {
   ) {}
 }
 
+export class Gender {
+  constructor(
+    public id: number = -1,
+    public gender: string = "",
+    public shortcode: string = ""
+  ) {}
+}
+
 /**
  *  conversion functions between User <==> SendableUser
  */
@@ -134,8 +142,12 @@ export const schoolTypes: SchoolType[] = JSON.parse(
   '[{"id":1,"name":"Gymnasium"},{"id":2,"name":"Realschule"},{"id":3,"name":"Mittelschule"},{"id":4,"name":"FOS/BOS"}]'
 );
 export const schoolData: SchoolData[] = JSON.parse(
-  '[{"id":1,"grade":5,"school_type":1},{"id":2,"grade":6,"school_type":1},{"id":3,"grade":7,"school_type":1},{"id":4,"grade":8,"school_type":1},{"id":5,"grade":9,"school_type":1},{"id":6,"grade":10,"school_type":1},{"id":7,"grade":11,"school_type":1},{"id":8,"grade":12,"school_type":1},{"id":9,"grade":13,"school_type":1},{"id":10,"grade":5,"school_type":2},{"id":11,"grade":6,"school_type":2},{"id":12,"grade":7,"school_type":2},{"id":13,"grade":8,"school_type":2},{"id":14,"grade":9,"school_type":2},{"id":15,"grade":10,"school_type":2},{"id":16,"grade":5,"school_type":3},{"id":17,"grade":6,"school_type":3},{"id":18,"grade":7,"school_type":3},{"id":19,"grade":8,"school_type":3},{"id":20,"grade":9,"school_type":3},{"id":21,"grade":10,"school_type":3},{"id":22,"grade":5,"school_type":4},{"id":23,"grade":6,"school_type":4},{"id":24,"grade":7,"school_type":4},{"id":25,"grade":8,"school_type":4},{"id":26,"grade":9,"school_type":4},{"id":27,"grade":10,"school_type":4},{"id":28,"grade":11,"school_type":4},{"id":29,"grade":12,"school_type":4},{"id":30,"grade":13,"school_type":4}]'
+  '[{"id":1,"grade":5,"school_type":1},{"id":2,"grade":6,"school_type":1},{"id":3,"grade":7,"school_type":1},{"id":4,"grade":8,"school_type":1},{"id":5,"grade":9,"school_type":1},{"id":6,"grade":10,"school_type":1},{"id":7,"grade":11,"school_type":1},{"id":8,"grade":12,"school_type":1},{"id":9,"grade":13,"school_type":1},{"id":10,"grade":5,"school_type":2},{"id":11,"grade":6,"school_type":2},{"id":12,"grade":7,"school_type":2},{"id":13,"grade":8,"school_type":2},{"id":14,"grade":9,"school_type":2},{"id":15,"grade":10,"school_type":2},{"id":16,"grade":5,"school_type":3},{"id":17,"grade":6,"school_type":3},{"id":18,"grade":7,"school_type":3},{"id":19,"grade":8,"school_type":3},{"id":20,"grade":9,"school_type":3},{"id":21,"grade":10,"school_type":3},{"id":28,"grade":11,"school_type":4},{"id":29,"grade":12,"school_type":4},{"id":30,"grade":13,"school_type":4}]'
 );
 export const subjects: Subject[] = JSON.parse(
   '[{"id":1,"name":"Deutsch"},{"id":2,"name":"Mathematik"},{"id":3,"name":"Englisch"},{"id":4,"name":"Französisch"},{"id":5,"name":"Latein"},{"id":6,"name":"Physik"},{"id":7,"name":"Chemie"},{"id":8,"name":"Biologie"},{"id":9,"name":"Musik"},{"id":10,"name":"Geschichte"},{"id":11,"name":"Geographie"},{"id":12,"name":"Wirtschaft/Recht"},{"id":13,"name":"Informatik"}]'
 );
+
+export const genders: Gender[] =  JSON.parse(
+  '[{"id":1,"gender":"Weiblich", "shortcode": "FE"},{"id":2,"gender":"Männlich", "shortcode": "MA"},{"id":3,"gender":"Diverses", "shortcode": "DI"}]'
+  );
