@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     'channels',
     'drf_yasg',
     'corsheaders',
+    'drf_base64',
     # our components
     'account',
     'call',

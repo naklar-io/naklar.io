@@ -4,9 +4,9 @@ from rest_framework.exceptions import ValidationError
 from account.models import Subject, State, CustomUser, StudentData, \
     TutorData, SchoolData, SchoolType
 from account.managers import CustomUserManager
-
-
-class DynamicFieldsModelSerializer(serializers.ModelSerializer):
+from drf_base64.fields import Base64FileField
+from drf_base64.serializers import ModelSerializer
+class DynamicFieldsModelSerializer(ModelSerializer):
     """
     A ModelSerializer that takes an additional `fields` argument that
     controls which fields should be displayed.
@@ -115,6 +115,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
                 tutordata, _ = TutorData.objects.get_or_create(user=instance)
                 tutordata.schooldata.set(data.get('schooldata'))
                 tutordata.subjects.set(data.get('subjects'))
+                tutordata.verification_file = data.get('verification_file')
                 tutordata.save()
         return super(CurrentUserSerializer, self).update(instance, validated_data)
 
