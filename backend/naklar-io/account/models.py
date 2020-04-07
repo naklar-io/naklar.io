@@ -26,7 +26,7 @@ class SchoolData(models.Model):
 
 
 class State(models.Model):
-    name = models.CharField(_("Name"), max_length=50)
+    name = models.CharField(_("Name"), max_length=50, unique=True)
     shortcode = models.CharField(_("Kurzbezeichnung"), max_length=2)
 
     def __str__(self):
@@ -51,6 +51,10 @@ class StudentData(models.Model):
         return str(self.school_data) + ' - ' + str(self.user)
 
 
+def tutor_upload_path(instance, filename):
+    return 'tutor-files/{0}/{1}'.format(instance.user.uuid, filename)
+
+
 class TutorData(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
@@ -58,6 +62,10 @@ class TutorData(models.Model):
     schooldata = models.ManyToManyField(
         SchoolData, verbose_name=_("Mögliche Schultypen/Klassenstufen"))
     subjects = models.ManyToManyField(Subject, verbose_name=_("Fächer"))
+
+    verified = models.BooleanField(_("Verifiziert"), default=False)
+    verification_file = models.FileField(
+        _("Vefizierungsdatei"), upload_to=tutor_upload_path, null=True)
 
     def __str__(self):
         return str(self.user)
@@ -74,6 +82,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     first_name = models.CharField(_("Vorname"), max_length=50, blank=False)
     last_name = models.CharField(_("Nachname"), max_length=50, blank=True)
+
+    # gender-specific
+    MALE = 'MA'
+    FEMALE = 'FE'
+    DIVERSE = 'DI'
+    GENDER_CHOICES = [
+        (MALE, 'männlich'),
+        (FEMALE, 'weiblich'),
+        (DIVERSE, 'divers')
+    ]
+
+    gender = models.CharField(
+        _("Geschlecht"), max_length=2, choices=GENDER_CHOICES)
 
     # Define Django properties
     USERNAME_FIELD = 'email'

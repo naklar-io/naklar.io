@@ -36,6 +36,7 @@ CORS_ORIGIN_WHITELIST = [
     "https://dev.naklar.io",
 ]
 
+MEDIA_URL = '/media/'
 # Set custom user model
 AUTH_USER_MODEL = 'account.CustomUser'
 SWAGGER_SETTINGS = {
