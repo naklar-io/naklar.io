@@ -69,7 +69,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['uuid', 'email', 'first_name', 'last_name',
+        fields = ['uuid', 'email', 'first_name', 'last_name', 'gender'
                   'state', 'password', 'studentdata', 'tutordata']
         extra_kwargs = {
             'password': {'write_only': True},
@@ -124,5 +124,5 @@ class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ["uuid", "first_name", "last_name",
-                  "state", "studentdata", "tutordata"]
+                  "state", "studentdata", "tutordata", "gender"]
         lookup_field = "uuid"
