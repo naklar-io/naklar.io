@@ -8,17 +8,14 @@ import {
   schoolData,
   schoolTypes,
   subjects,
-  SendableUser
+  SendableUser,
+  Gender,
+  genders,
 } from "../../../_models";
 import { AuthenticationService } from "../../../_services";
 import { passwordNotMatchValidator } from "../../../_helpers";
 import { Options } from "ng5-slider";
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormArray
-} from "@angular/forms";
+import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
 import { first } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { isNull } from "util";
@@ -26,13 +23,14 @@ import { isNull } from "util";
 @Component({
   selector: "account-tutor-register",
   templateUrl: "./tutor-register.component.html",
-  styleUrls: ["./tutor-register.component.scss"]
+  styleUrls: ["./tutor-register.component.scss"],
 })
 export class TutorRegisterComponent implements OnInit {
   states: State[] = states;
   subjects: Subject[] = subjects;
   schoolTypes: SchoolType[] = schoolTypes;
   schoolData: SchoolData[] = schoolData;
+  genders: Gender[] = genders;
 
   registerForm: FormGroup;
   sliderOptions: Options[];
@@ -52,15 +50,15 @@ export class TutorRegisterComponent implements OnInit {
   ngOnInit(): void {
     let data: SchoolData[][] = [];
     for (let schoolType of schoolTypes) {
-      data.push(schoolData.filter(x => x.school_type === schoolType.id));
+      data.push(schoolData.filter((x) => x.school_type === schoolType.id));
     }
-    let grades = data.map(x => x.map(y => y.grade));
-    this.sliderOptions = grades.map(x => {
+    let grades = data.map((x) => x.map((y) => y.grade));
+    this.sliderOptions = grades.map((x) => {
       return {
         animate: false,
         showTicks: true,
         floor: Math.min(...x),
-        ceil: Math.max(...x)
+        ceil: Math.max(...x),
       };
     });
 
@@ -69,22 +67,23 @@ export class TutorRegisterComponent implements OnInit {
         firstName: ["", Validators.required],
         lastName: ["", Validators.required],
         email: ["", [Validators.required, Validators.email]],
+        gender: ["", Validators.required],
         state: [null, Validators.required],
         password: ["", [Validators.required, Validators.minLength(8)]],
         passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
         schoolTypes: this.fb.array(
-          this.schoolTypes.map(x => this.fb.control(null)),
+          this.schoolTypes.map((x) => this.fb.control(null)),
           Validators.required
         ),
         sliders: this.fb.array(
-          grades.map(x => this.fb.control([Math.min(...x), Math.max(...x)])),
+          grades.map((x) => this.fb.control([Math.min(...x), Math.max(...x)])),
           Validators.required
         ),
         subjects: this.fb.array(
-          this.subjects.map(x => this.fb.control(null)),
+          this.subjects.map((x) => this.fb.control(null)),
           Validators.required
         ),
-        terms: [false, Validators.requiredTrue]
+        terms: [false, Validators.requiredTrue],
       },
       { validators: passwordNotMatchValidator }
     );
@@ -118,9 +117,9 @@ export class TutorRegisterComponent implements OnInit {
       }
       let range = this.f.sliders.value[i];
       let g = schoolData
-        .filter(x => x.school_type === schoolType.id)
-        .filter(x => range[0] <= x.grade && x.grade <= range[1])
-        .map(x => x.id);
+        .filter((x) => x.school_type === schoolType.id)
+        .filter((x) => range[0] <= x.grade && x.grade <= range[1])
+        .map((x) => x.id);
       grades.push(...g);
     }
 
@@ -130,14 +129,17 @@ export class TutorRegisterComponent implements OnInit {
       first_name: this.f.firstName.value,
       last_name: this.f.lastName.value,
       state: this.f.state.value.id,
+      gender: this.f.gender.value,
       terms_accepted: this.f.terms.value,
       studentdata: null,
       tutordata: {
         schooldata: grades,
         subjects: this.f.subjects.value
           .map((x, i) => (x ? this.subjects[i].id : x))
-          .filter(x => Boolean(x))
-      }
+          .filter((x) => Boolean(x)),
+          verification_file: "",
+          verified: false,
+      },
     };
 
     console.log("About to send Data: ", user);
@@ -147,13 +149,13 @@ export class TutorRegisterComponent implements OnInit {
       .register(user)
       .pipe(first())
       .subscribe(
-        data => {
+        (data) => {
           // this.router.navigate([this.returnUrl]);
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
         },
-        error => {
+        (error) => {
           this.error = error;
           this.loading = false;
         }

@@ -4,11 +4,15 @@
 export interface SendableTutorData {
   schooldata: number[];
   subjects: number[];
+  verification_file: string;
+  verified: boolean;
 }
 
 export interface SendableStudentData {
   school_data: number;
 }
+
+type GenderAbbr = "MA" | "FE" | "DI";
 
 export interface SendableUser {
   email: string;
@@ -17,6 +21,7 @@ export interface SendableUser {
   last_name: string;
   state: number;
   terms_accepted: boolean;
+  gender: GenderAbbr;
   studentdata: SendableStudentData | null;
   tutordata: SendableTutorData | null;
 }
@@ -36,8 +41,14 @@ export class StudentData {
 export class TutorData {
   constructor(
     public schooldata: SchoolData[] = [],
-    public subjects: Subject[] = []
+    public subjects: Subject[] = [],
+    public verification_file: string = "",
+    public verified: boolean = false
   ) {}
+}
+
+export class Gender {
+  constructor(public abbr: GenderAbbr, public name: string) {}
 }
 
 export class User {
@@ -50,6 +61,7 @@ export class User {
     public studentdata: StudentData | null = new StudentData(),
     public tutordata: TutorData | null = new TutorData(),
     public terms_accepted: boolean = false,
+    public gender: Gender = genders[0],
     public token: string = "",
     public token_expiry: string = ""
   ) {}
@@ -84,13 +96,15 @@ export class SchoolData {
 export const localToSendable = (user: User): SendableUser => {
   const studentdata: SendableStudentData | null = user.studentdata
     ? {
-        school_data: user.studentdata.school_data.id
+        school_data: user.studentdata.school_data.id,
       }
     : null;
   const tutordata: SendableTutorData | null = user.tutordata
     ? {
-        schooldata: user.tutordata.schooldata.map(x => x.id),
-        subjects: user.tutordata.subjects.map(x => x.id)
+        schooldata: user.tutordata.schooldata.map((x) => x.id),
+        subjects: user.tutordata.subjects.map((x) => x.id),
+        verification_file: user.tutordata.verification_file,
+        verified: user.tutordata.verified,
       }
     : null;
   return {
@@ -99,9 +113,10 @@ export const localToSendable = (user: User): SendableUser => {
     first_name: user.first_name,
     last_name: user.last_name,
     state: user.state.id,
+    gender: user.gender.abbr,
     studentdata: studentdata,
     tutordata: tutordata,
-    terms_accepted: user.terms_accepted
+    terms_accepted: user.terms_accepted,
   };
 };
 
@@ -111,19 +126,23 @@ export const sendableToLocal = (user: SendableUser): User => {
     user.password,
     user.first_name,
     user.last_name,
-    states.find(x => x.id === user.state),
+    states.find((x) => x.id === user.state),
     user.studentdata
       ? new StudentData(
-          schoolData.find(x => x.id === user.studentdata.school_data)
+          schoolData.find((x) => x.id === user.studentdata.school_data)
         )
       : null,
     user.tutordata
       ? new TutorData(
-          schoolData.filter(x => x.id in user.tutordata.schooldata),
-          subjects.filter(x => x.id in user.tutordata.subjects)
+          schoolData.filter((x) => x.id in user.tutordata.schooldata),
+          subjects.filter((x) => x.id in user.tutordata.subjects),
+          user.tutordata.verification_file,
+          user.tutordata.verified
         )
-      : null
-    // TODO: provide token & terms_accepted
+      : null,
+    user.terms_accepted,
+    genders.find((x) => x.abbr === user.gender)
+    // need to provide token / token_expiry via login
   );
 };
 
@@ -139,3 +158,17 @@ export const schoolData: SchoolData[] = JSON.parse(
 export const subjects: Subject[] = JSON.parse(
   '[{"id":1,"name":"Deutsch"},{"id":2,"name":"Mathematik"},{"id":3,"name":"Englisch"},{"id":4,"name":"Französisch"},{"id":5,"name":"Latein"},{"id":6,"name":"Physik"},{"id":7,"name":"Chemie"},{"id":8,"name":"Biologie"},{"id":9,"name":"Musik"},{"id":10,"name":"Geschichte"},{"id":11,"name":"Geographie"},{"id":12,"name":"Wirtschaft/Recht"},{"id":13,"name":"Informatik"}]'
 );
+export const genders: Gender[] = [
+  {
+    abbr: "MA",
+    name: "Männlich",
+  },
+  {
+    abbr: "FE",
+    name: "Weiblich",
+  },
+  {
+    abbr: "DI",
+    name: "Divers",
+  },
+];

@@ -8,6 +8,8 @@ import {
   schoolData,
   schoolTypes,
   SendableUser,
+  Gender,
+  genders,
 } from "../../../_models/database";
 import { first } from "rxjs/operators";
 import { Options } from "ng5-slider";
@@ -25,12 +27,14 @@ export class StudentRegisterComponent implements OnInit {
   states: State[] = states;
   schoolTypes: SchoolType[] = schoolTypes;
   schoolData: SchoolData[] = schoolData;
+  genders: Gender[] = genders;
 
   registerForm = this.fb.group(
     {
       firstName: ["", Validators.required],
       lastName: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]],
+      gender: ["", Validators.required],
       password: ["", [Validators.required, Validators.minLength(8)]],
       passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
       state: [null, Validators.required],
@@ -81,6 +85,7 @@ export class StudentRegisterComponent implements OnInit {
       last_name: this.f.lastName.value,
       state: this.f.state.value.id,
       terms_accepted: this.f.terms.value,
+      gender: this.f.gender.value,
       studentdata: {
         school_data: this.schoolData.find(
           (x) =>
