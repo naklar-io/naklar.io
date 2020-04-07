@@ -9,7 +9,7 @@ import { SendableLogin, User } from "src/app/_models";
   selector: "account-login",
   templateUrl: "./login.component.html",
   styleUrls: ["./login.component.scss"],
-  // DONT USE PROVIDERS IF already using PROVIDED in
+  // DONT USE PROVIDERS IF service already using PROVIDED in
 })
 export class LoginComponent implements OnInit {
   loginForm = this.fb.group({
