@@ -16,8 +16,7 @@ type UserType = "student" | "tutor";
 export class RouletteComponent implements OnInit, OnDestroy {
   // type === 'student' => invoke student component
   // type === 'tutor'=> invoke tutor component
-  type: UserType;
-  private type$: Subscription;
+  type: UserType = "student";
 
   state: State = "create";
 
@@ -26,6 +25,15 @@ export class RouletteComponent implements OnInit, OnDestroy {
     private router: Router,
     private rouletteService: RouletteService
   ) {}
+  ngOnInit(): void {
+    if (this.router.url.endsWith("student")) {
+      this.type = "student";
+    } else if (this.router.url.endsWith("tutor")) {
+      this.type = "tutor";
+    } else {
+      this.type = "student";
+    }
+  }
 
   onCreateDone(done: boolean) {
     // advance state
@@ -47,24 +55,8 @@ export class RouletteComponent implements OnInit, OnDestroy {
     this.router.navigate(["roulette/feedback"]);
   }
 
-  ngOnInit(): void {
-    this.type$ = this.route.paramMap
-      .pipe(switchMap((params: ParamMap) => params.getAll("type")))
-      .subscribe((v) => {
-        switch (v) {
-          case "tutor":
-            this.type = "tutor";
-            break;
-          case "student":
-          default:
-            // if invalid default to student
-            this.type = "student";
-        }
-      });
-  }
 
   // cleanup
   ngOnDestroy(): void {
-    this.type$.unsubscribe();
   }
 }

@@ -3,13 +3,14 @@ import { Injectable } from "@angular/core";
 import { AuthenticationService } from "../_services";
 import {
   CanActivate,
+  CanActivateChild,
   Router,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
 } from "@angular/router";
 
 @Injectable({ providedIn: "root" })
-export class AuthGuard implements CanActivate {
+export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService
@@ -17,12 +18,16 @@ export class AuthGuard implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const currentUser = this.authenticationService.currentUserValue;
-    return true;
     if (currentUser) {
-      // user is authorized
       return true;
     }
-    this.router.navigate(["/login"], { queryParams: { returnUrl: state.url } });
+    this.router.navigate(["account/login/"], {
+      queryParams: { returnUrl: state.url },
+    });
     return false;
+  }
+
+  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    return this.canActivate(route, state);
   }
 }

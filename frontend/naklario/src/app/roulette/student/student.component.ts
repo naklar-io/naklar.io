@@ -56,6 +56,19 @@ export class StudentComponent implements OnInit {
     private databaseService: DatabaseService,
     private authenticationService: AuthenticationService
   ) {}
+  
+  ngOnInit(): void {
+    this.states$ = this.databaseService.states.pipe(share());
+    this.subjects$ = this.databaseService.subjects.pipe(share());
+    this.schoolTypes$ = this.databaseService.schoolTypes.pipe(share());
+    this.schoolData$ = this.databaseService.schoolData.pipe(share());
+    this.user$ = this.authenticationService.currentUser.pipe(share()).pipe(
+      tap((user) => {
+        this.f.state.setValue(user.state);
+        this.f.slider.setValue(user.studentdata.school_data.grade);
+      })
+    );
+  }
 
   onSubmit(): void {
     if (this.studentForm.invalid) {
@@ -80,9 +93,10 @@ export class StudentComponent implements OnInit {
           };
 
           this.loading = true;
-          const auth$= this.authenticationService
+          const auth$ = this.authenticationService
             .update(partialUser)
-            .pipe(first()).subscribe(
+            .pipe(first())
+            .subscribe(
               (data) => {
                 this.loading = false;
                 this.submitSuccess = true;
@@ -93,7 +107,7 @@ export class StudentComponent implements OnInit {
                 this.loading = true;
               }
             );
-          return authPromise;
+          return auth$;
         })
       );
     Promise.all([this.user$.toPromise(), this.schoolData$.toPromise()])
@@ -105,16 +119,4 @@ export class StudentComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void {
-    this.states$ = this.databaseService.states.pipe(share());
-    this.subjects$ = this.databaseService.subjects.pipe(share());
-    this.schoolTypes$ = this.databaseService.schoolTypes.pipe(share());
-    this.schoolData$ = this.databaseService.schoolData.pipe(share());
-    this.user$ = this.authenticationService.currentUser.pipe(share()).pipe(
-      tap((user) => {
-        this.f.state.setValue(user.state);
-        this.f.slider.setValue(user.studentdata.school_data.grade);
-      })
-    );
-  }
 }
