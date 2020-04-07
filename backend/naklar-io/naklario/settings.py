@@ -32,8 +32,26 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['bbb.goodgrade.de', 'localhost', '127.0.0.1']
 
+CORS_ORIGIN_WHITELIST = [
+    "https://dev.naklar.io",
+]
+
 # Set custom user model
 AUTH_USER_MODEL = 'account.CustomUser'
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+      'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+    },
+    'SECURITY_REQUIREMENTS': [
+        {'Token': []},
+    ],
+    'REFETCH_SCHEMA_WITH_AUTH': True,
+    'PERSIST_AUTH': True
+}
 
 # Rest framework
 REST_FRAMEWORK = {
@@ -48,6 +66,7 @@ REST_FRAMEWORK = {
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
         'knox.auth.TokenAuthentication',
     ]
 }
@@ -61,13 +80,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-# 3rd party libs
+    # 3rd party libs
     'channels',
-# our components
+    'drf_yasg',
+    'corsheaders',
+    # our components
     'account',
     'call',
     'roulette',
     'landing',
+    # 3rd party that needs to load last
     'rest_framework',
     'knox'
 ]
@@ -75,6 +97,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
