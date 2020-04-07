@@ -1,4 +1,33 @@
 <div class="container">
-   <p>Hier kannst du dein Profil ändern.</p> 
-
+  <p>Hier kannst du dein Profil ändern.</p>
+  <form>
+    <div class="col-md-6">
+      <div class="form-group row">
+        <label for="first_name" class="col-sm-3 col-form-label">Vorname</label>
+        <div class="col-sm-9">
+          <input
+            type="text"
+            class="form-control"
+            id="first_name"
+            [(ngModel)]="user.first_name"
+            name="first_name"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group row">
+        <label for="last_name" class="col-sm-3 col-form-label">Nachname</label>
+        <div class="col-sm-9">
+          <input
+            type="text"
+            class="form-control"
+            id="last_name"
+            [(ngModel)]="user.last_name"
+            name="last_name"
+          />
+        </div>
+      </div>
+    </div>
+  </form>
 </div>

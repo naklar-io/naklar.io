@@ -18,9 +18,10 @@ export class ProfileComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService
-  ) {}
+  ) {
+    authenticationService.currentUser.subscribe(user => this.user = user);
+  }
 
   ngOnInit(): void {
-    this.user = this.authenticationService.currentUserValue;
   }
 }
