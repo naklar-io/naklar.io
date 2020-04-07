@@ -9,8 +9,8 @@ import {
   User,
   SendableUser,
 } from "src/app/_models";
-import { Observable } from "rxjs";
-import { share, tap, first } from "rxjs/operators";
+import { Observable, forkJoin } from "rxjs";
+import { share, tap, first, map } from "rxjs/operators";
 import { Options } from "ng5-slider";
 
 @Component({
@@ -61,44 +61,46 @@ export class StudentComponent implements OnInit {
     if (this.studentForm.invalid) {
       return;
     }
-
-    Promise.all([this.user$.toPromise(), this.schoolData$.toPromise()])
-      .then(([user, schoolData]) => {
-        console.log('promises resolved')
-        const grade = this.f.slider.value;
-        const selectedSchoolData = schoolData.find(
-          (x) =>
-            x.school_type === user.studentdata.school_data.school_type &&
-            x.grade === grade
-        );
-        const partialUser: Partial<SendableUser> = {
-          state: this.f.state.value.id,
-          studentdata: {
-            school_data: selectedSchoolData.id,
-          },
-        };
-
-        this.loading = true;
-        const authPromise = this.authenticationService
-          .update(partialUser)
-          .pipe(first())
-          .toPromise()
-          .then(
-            (data) => {
-              this.loading = false;
-              this.submitSuccess = true;
-              this.error = null;
-            },
-            (error) => {
-              this.error = error;
-              this.loading = true;
-            }
+    forkJoin(this.user$, this.schoolData$)
+      .pipe(first())
+      .pipe(
+        map(([user, schoolData]) => {
+          console.log("promises resolved");
+          const grade = this.f.slider.value;
+          const selectedSchoolData = schoolData.find(
+            (x) =>
+              x.school_type === user.studentdata.school_data.school_type &&
+              x.grade === grade
           );
-        return authPromise;
-      })
+          const partialUser: Partial<SendableUser> = {
+            state: this.f.state.value.id,
+            studentdata: {
+              school_data: selectedSchoolData.id,
+            },
+          };
+
+          this.loading = true;
+          const auth$= this.authenticationService
+            .update(partialUser)
+            .pipe(first()).subscribe(
+              (data) => {
+                this.loading = false;
+                this.submitSuccess = true;
+                this.error = null;
+              },
+              (error) => {
+                this.error = error;
+                this.loading = true;
+              }
+            );
+          return authPromise;
+        })
+      );
+    Promise.all([this.user$.toPromise(), this.schoolData$.toPromise()])
+      .then(([user, schoolData]) => {})
       .then(() => {
-        // return back to parent component 
-        console.log('done')
+        // return back to parent component
+        console.log("done");
         this.done.emit(true);
       });
   }
