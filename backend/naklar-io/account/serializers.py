@@ -79,7 +79,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         studentdata = None
         tutordata = None
 
-        if 'studendata' in validated_data:
+        if 'studentdata' in validated_data:
             studentdata = validated_data.pop('studentdata')
         if 'tutordata' in validated_data:
             tutordata = validated_data.pop('tutordata')
