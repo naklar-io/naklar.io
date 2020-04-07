@@ -8,7 +8,9 @@ import {
   schoolData,
   schoolTypes,
   subjects,
-  SendableUser
+  SendableUser,
+  Gender,
+  genders
 } from "../../../_models";
 import { AuthenticationService } from "../../../_services";
 import { passwordNotMatchValidator } from "../../../_helpers";
@@ -34,6 +36,7 @@ export class TutorRegisterComponent implements OnInit {
   subjects: Subject[] = subjects;
   schoolTypes: SchoolType[] = schoolTypes;
   schoolData: SchoolData[] = schoolData;
+  genders: Gender[] = genders;
 
   registerForm: FormGroup;
   sliderOptions: Options[];
@@ -71,6 +74,7 @@ export class TutorRegisterComponent implements OnInit {
         lastName: ["", Validators.required],
         email: ["", [Validators.required, Validators.email]],
         state: [null, Validators.required],
+        gender: [null, Validators.required],
         password: ["", [Validators.required, Validators.minLength(1)]],
         passwordRepeat: ["", [Validators.required, Validators.minLength(1)]],
         schoolTypes: this.fb.array(
@@ -85,6 +89,8 @@ export class TutorRegisterComponent implements OnInit {
           this.subjects.map(x => this.fb.control(null)),
           Validators.required
         ),
+        file: ["", Validators.required],
+        fileSource: ["", Validators.required],
         terms: [false, Validators.required]
       },
       { validators: passwordNotMatchValidator }
@@ -103,6 +109,17 @@ export class TutorRegisterComponent implements OnInit {
   }
   get sliderControl() {
     return this.registerForm.get("sliders") as FormArray;
+  }
+
+
+  onFileChange(event) {
+  
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.registerForm.patchValue({
+        fileSource: file
+      });
+    }
   }
 
   onSubmit(): void {
@@ -137,7 +154,8 @@ export class TutorRegisterComponent implements OnInit {
         schooldata: grades,
         subjects: this.f.subjects.value
           .map((x, i) => (x ? this.subjects[i].id : x))
-          .filter(x => Boolean(x))
+          .filter(x => Boolean(x)),
+        //file: this.f.get('fileSource').value
       }
     };
 
