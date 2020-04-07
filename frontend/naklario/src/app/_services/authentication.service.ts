@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { User, SendableUser, SendableLogin, sendableToLocal } from "../_models";
 import { environment } from "../../environments/environment";
-import { map } from "rxjs/operators";
+import { map, flatMap } from "rxjs/operators";
 
 interface LoginResponse {
   token: string;
@@ -15,7 +15,6 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
 
   public currentUser: Observable<User>;
-  public isBackedUser: Boolean;
 
   constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(
@@ -80,16 +79,22 @@ export class AuthenticationService {
       )
       .pipe(
         map((response) => {
-          console.log("login response:", response);
+          console.log("Got Login response:", response);
           let user = new User();
           user.token = response.token;
           user.token_expiry = response.expiry;
+
           localStorage.setItem("currentUser", JSON.stringify(user));
           this.currentUserSubject.next(user);
-          this.isBackedUser = true;
-          console.log("new value:");
-          console.log(this.currentUserValue);
+
           return response;
+        })
+      )
+      .pipe(
+        flatMap(() => {
+          const user$ = this.fetchUserData();
+          console.log("Logged in user:", this.currentUserValue);
+          return user$;
         })
       );
   }
@@ -103,7 +108,8 @@ export class AuthenticationService {
           const filledUser = Object.assign(u, {
             token: this.currentUserValue.token,
             token_expiry: this.currentUserValue.token_expiry,
-          });
+          }) as User;
+
           localStorage.setItem("currentUser", JSON.stringify(filledUser));
           this.currentUserSubject.next(filledUser);
           return filledUser;
