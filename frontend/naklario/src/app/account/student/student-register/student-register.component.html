@@ -4,7 +4,6 @@
     Wir brauchen hier noch ein paar Informationen von dir.
   </p>
 
-
   <div *ngIf="submitSuccess" class="alert alert-success text-center">
     <p>Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.</p>
     <p>Sobald wir fertig sind, <strong>melden wir uns per Mail</strong></p>
@@ -29,7 +28,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="form-group col">
         <label for="lastName">Nachname</label>
         <input
@@ -44,7 +43,9 @@
           </div>
         </div>
       </div>
-     
+    </div>
+
+    <div class="form-row">
       <div class="from-group col">
         <label for="email">Email</label>
         <input
@@ -59,6 +60,20 @@
           </div>
           <div *ngIf="f.email.errors.email">
             Diese Email ist invalide
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col">
+        <label for="gender">Geschlecht</label>
+        <select name="gender" class="form-control" formControlName="gender">
+          <option *ngFor="let gender of genders" [ngValue]="gender.abbr">{{
+            gender.name
+          }}</option>
+        </select>
+        <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
+          <div *ngIf="f.gender.errors.required">
+            Du musst ein Geschlecht angeben
           </div>
         </div>
       </div>
@@ -182,7 +197,7 @@
         *ngIf="loading"
         class="spinner-border spinner-border-sm mr-1"
       ></span>
-      Absenden</button
-    >
+      Absenden
+    </button>
   </form>
 </div>

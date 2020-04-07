@@ -33,6 +33,20 @@
           </div>
         </div>
       </div>
+      
+      <div class="form-group col">
+        <label for="gender">Geschlecht</label>
+        <select name="gender" class="form-control" formControlName="gender">
+          <option *ngFor="let gender of genders" [ngValue]="gender.abbr">{{
+            gender.name
+          }}</option>
+        </select>
+        <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
+          <div *ngIf="f.gender.errors.required">
+            Du musst ein Geschlecht angeben
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="form-row">
