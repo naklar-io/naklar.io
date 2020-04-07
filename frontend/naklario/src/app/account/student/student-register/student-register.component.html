@@ -29,6 +29,22 @@
           </div>
         </div>
       </div>
+      
+      <div class="form-group col">
+        <label for="lastName">Vorname</label>
+        <input
+          type="text"
+          class="form-control"
+          name="lastName"
+          formControlName="lastName"
+        />
+        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+          <div *ngIf="f.lastName.errors.required">
+            Du musst einen Nachnamen angeben
+          </div>
+        </div>
+      </div>
+     
       <div class="from-group col">
         <label for="email">Email</label>
         <input
