@@ -4,13 +4,9 @@ import {
   Subject,
   SchoolType,
   SchoolData,
-  states,
-  schoolData,
-  schoolTypes,
-  subjects,
-  SendableUser,
   Gender,
-  genders,
+  SendableUser,
+  Constants,
 } from "../../../_models";
 import { AuthenticationService } from "../../../_services";
 import { passwordNotMatchValidator } from "../../../_helpers";
@@ -26,13 +22,15 @@ import { Observable } from "rxjs";
   styleUrls: ["./tutor-register.component.scss"],
 })
 export class TutorRegisterComponent implements OnInit {
-  states: State[] = states;
-  subjects: Subject[] = subjects;
-  schoolTypes: SchoolType[] = schoolTypes;
-  schoolData: SchoolData[] = schoolData;
-  genders: Gender[] = genders;
+  states: State[];
+  subjects: Subject[];
+  schoolTypes: SchoolType[];
+  schoolData: SchoolData[];
+  genders: Gender[];
 
   verificationFile$: Observable<string>;
+
+  private constants: Constants;
 
   registerForm: FormGroup;
   sliderOptions: Options[];
@@ -50,9 +48,17 @@ export class TutorRegisterComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {}
   ngOnInit(): void {
+    this.route.data.subscribe((data: { constants: Constants }) => {
+      this.constants = data.constants;
+      this.states = data.constants.states;
+      this.subjects = data.constants.subjects;
+      this.schoolTypes = data.constants.schoolTypes;
+      this.schoolData = data.constants.schoolData;
+    });
+
     let data: SchoolData[][] = [];
-    for (let schoolType of schoolTypes) {
-      data.push(schoolData.filter((x) => x.school_type === schoolType.id));
+    for (let schoolType of this.schoolTypes) {
+      data.push(this.schoolData.filter((x) => x.school_type === schoolType.id));
     }
     let grades = data.map((x) => x.map((y) => y.grade));
     this.sliderOptions = grades.map((x) => {
@@ -132,7 +138,7 @@ export class TutorRegisterComponent implements OnInit {
         continue;
       }
       let range = this.f.sliders.value[i];
-      let g = schoolData
+      let g = this.schoolData
         .filter((x) => x.school_type === schoolType.id)
         .filter((x) => range[0] <= x.grade && x.grade <= range[1])
         .map((x) => x.id);
@@ -164,7 +170,7 @@ export class TutorRegisterComponent implements OnInit {
 
       this.loading = true;
       this.authenticationService
-        .register(user)
+        .register(user, this.constants)
         .pipe(first())
         .subscribe(
           (data) => {

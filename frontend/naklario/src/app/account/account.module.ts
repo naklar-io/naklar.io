@@ -1,17 +1,19 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
-import { AccountRoutingModule } from "./account-routing.module";
-import { TutorComponent } from "./tutor/tutor.component";
-import { StudentComponent } from "./student/student.component";
-import { TutorRegisterComponent } from "./tutor/tutor-register/tutor-register.component";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { AccountRoutingModule } from './account-routing.module';
+import { TutorComponent } from './tutor/tutor.component';
+import { StudentComponent } from './student/student.component';
+import { TutorRegisterComponent } from './tutor/tutor-register/tutor-register.component';
+import { FormsModule, ReactiveFormsModule} from '@angular/forms';
 
-import { Ng5SliderModule } from "ng5-slider";
-import { StudentRegisterComponent } from "./student/student-register/student-register.component";
+import {Ng5SliderModule} from 'ng5-slider';
+import { StudentRegisterComponent } from './student/student-register/student-register.component';
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component'
+import { DatabaseService, AuthenticationService } from '../_services';
+
 import { TermsConditionsComponent, ImgUploadComponent } from "../_misc_components";
-import { LoginComponent } from "./login/login.component";
-import { ProfileComponent } from "./profile/profile.component";
 
 @NgModule({
   declarations: [
@@ -29,7 +31,7 @@ import { ProfileComponent } from "./profile/profile.component";
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
-    AccountRoutingModule,
-  ],
+    AccountRoutingModule
+  ], providers: [DatabaseService, AuthenticationService]
 })
 export class AccountModule {}

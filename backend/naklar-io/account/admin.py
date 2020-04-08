@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
+from django.utils.translation import gettext as _
+
 from .models import StudentData, TutorData, State, Subject, \
-        SchoolData, SchoolType, CustomUser
+    SchoolData, SchoolType, CustomUser
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 
@@ -18,10 +20,44 @@ class StudentDataInline(admin.StackedInline):
     verbose_name_plural = verbose_name
 
 
-class TutorDataInline(admin.TabularInline):
+class TutorDataInline(admin.StackedInline):
     model = TutorData
     verbose_name = "Tutordaten"
     verbose_name_plural = verbose_name
+    fields = ['schooldata', 'subjects', 'verified', 'verification_file', 'profile_picture', 'image_tag']
+    readonly_fields = ['image_tag']
+
+
+class TutorDataFilter(admin.SimpleListFilter):
+    title = _('Ist tutor')
+
+    parameter_name = 'is_tutor'
+
+    def lookups(self, request, model_admin):
+        return (('not_null', _('Yes')),
+                ('null', _('No')))
+    
+    def queryset(self, request, queryset):
+        if self.value() == 'null':
+            return queryset.filter(tutordata__isnull=True)
+        else:
+            return queryset.filter(tutordata__isnull=False)
+
+
+class UnverifiedTutorFilter(admin.SimpleListFilter):
+    title = _('Ist verifizierter Tutor')
+
+    parameter_name = 'verified_tutor'
+
+    def lookups(self, request, model_admin):
+        return (('yes', _('Unverified')),
+                ('no', _('Verified')))
+    
+    def queryset(self, request, queryset):
+        if self.value() == 'yes':
+            return queryset.filter(tutordata__isnull=False).filter(tutordata__verified=False)
+        elif self.value() == 'no':
+            return queryset.filter(tutordata__isnull=False).filter(tutordata__verified=True)
 
 
 class CustomUserAdmin(UserAdmin):
@@ -34,10 +70,11 @@ class CustomUserAdmin(UserAdmin):
     ]
     list_display = ('email', 'first_name', 'last_name',
                     'state', 'is_staff', 'is_active')
-    list_filter = ('email', 'state', 'is_staff', 'is_active')
+    list_filter = ('is_staff', 'is_active', UnverifiedTutorFilter, 'state'
+                   )
     fieldsets = (
         (None, {'fields':
-                ('email', 'first_name', 'last_name', 'state', 'password')}),
+                ('email', 'first_name', 'last_name', 'gender', 'state', 'password')}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (
