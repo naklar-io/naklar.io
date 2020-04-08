@@ -80,6 +80,7 @@ export class TutorRegisterComponent implements OnInit {
         gender: [null, Validators.required],
         password: ["", [Validators.required, Validators.minLength(8)]],
         passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
+        img: ["", Validators.required],
         schoolTypes: this.fb.array(
           this.schoolTypes.map((x) => this.fb.control(null)),
           Validators.required
@@ -111,6 +112,10 @@ export class TutorRegisterComponent implements OnInit {
   }
   get sliderControl() {
     return this.registerForm.get("sliders") as FormArray;
+  }
+
+  onImageChange(img: string) {
+    this.f.img.setValue(img);
   }
 
   onFileChange(event) {
@@ -164,6 +169,7 @@ export class TutorRegisterComponent implements OnInit {
             .filter((x) => Boolean(x)),
           verification_file: verificationFile,
           verified: false,
+          profile_picture: this.f.img.value,
         },
       };
 

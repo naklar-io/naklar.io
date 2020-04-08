@@ -1,5 +1,4 @@
-import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { CompressorService } from "src/app/_services";
 
 @Component({
@@ -9,18 +8,21 @@ import { CompressorService } from "src/app/_services";
   providers: [CompressorService],
 })
 export class ImgUploadComponent implements OnInit {
-  img: string;
+  @Output() img = new EventEmitter<string>();
+  img_file: string;
+
   constructor(private compressorService: CompressorService) {}
 
   ngOnInit(): void {
-    this.img = "assets/img/icons/user_default.png";
+    this.img_file = "assets/img/icons/user_default.png";
   }
 
   processImg(event) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0] as File;
       this.compressorService.compress(file).subscribe((data) => {
-        this.img = data;
+        this.img_file = data;
+        this.img.emit(data);
       });
     }
   }
