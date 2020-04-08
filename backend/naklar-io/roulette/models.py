@@ -24,9 +24,15 @@ class Feedback(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, to_field='uuid', related_name='provided_feedback')
 
     message = models.TextField(_("Nachricht"), blank=True)
+
+    meeting = models.ForeignKey('roulette.Meeting', on_delete=models.CASCADE, null=True)
+
     rating = models.PositiveSmallIntegerField(_("Bewertung"), validators=[
         MinValueValidator(0), MaxValueValidator(5)])
     created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [['receiver', 'provider', 'meeting']]
 
 
 class Request(models.Model):
