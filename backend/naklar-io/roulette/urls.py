@@ -11,6 +11,7 @@ typed_patterns = [
     #path('request/delete/', swagger_auto_schema(manual_parameters=[type_parameter], method='DELETE')(views.RequestDeleteView.as_view())),
     #path('request/create/', swagger_auto_schema(manual_parameters=[type_parameter], method='POST')(views.RequestCreateView.as_view())),
     path('match/answer/<uuid:uuid>/', views.match_answer),
+    path('roulette/end_callback/<uuid:uuid>/', views.end_callback),
 ]
 
 

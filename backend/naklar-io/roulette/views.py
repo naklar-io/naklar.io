@@ -142,3 +142,12 @@ def join_meeting(request, match_uuid):
         return Response(data={'join_url': url})
     else:
         raise exceptions.NotFound(detail="No matching meeting found")
+
+@api_view(['POST'])
+def end_callback(request, meeting_id):
+    meeting = Meeting.objects.filter(pk=meeting_id)
+    if meeting:
+        meeting = meeting.get()
+        meeting.end_meeting()
+    else:
+        raise exceptions.NotFound(detail="No matching meeting found!")
