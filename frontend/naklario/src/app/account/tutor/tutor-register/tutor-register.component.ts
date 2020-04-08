@@ -54,6 +54,7 @@ export class TutorRegisterComponent implements OnInit {
       this.subjects = data.constants.subjects;
       this.schoolTypes = data.constants.schoolTypes;
       this.schoolData = data.constants.schoolData;
+      this.genders = data.constants.genders;
     });
 
     let data: SchoolData[][] = [];
