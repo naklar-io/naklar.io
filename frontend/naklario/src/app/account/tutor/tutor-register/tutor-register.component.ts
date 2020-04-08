@@ -10,7 +10,7 @@ import {
   subjects,
   SendableUser,
   Gender,
-  genders
+  genders,
 } from "../../../_models";
 import { AuthenticationService } from "../../../_services";
 import { passwordNotMatchValidator } from "../../../_helpers";
@@ -18,7 +18,7 @@ import { Options } from "ng5-slider";
 import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
 import { first } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
-import { isNull } from "util";
+import { Observable } from "rxjs";
 
 @Component({
   selector: "account-tutor-register",
@@ -31,6 +31,8 @@ export class TutorRegisterComponent implements OnInit {
   schoolTypes: SchoolType[] = schoolTypes;
   schoolData: SchoolData[] = schoolData;
   genders: Gender[] = genders;
+
+  verificationFile$: Observable<string>;
 
   registerForm: FormGroup;
   sliderOptions: Options[];
@@ -84,7 +86,6 @@ export class TutorRegisterComponent implements OnInit {
           Validators.required
         ),
         file: ["", Validators.required],
-        fileSource: ["", Validators.required],
         terms: [false, Validators.requiredTrue],
       },
       { validators: passwordNotMatchValidator }
@@ -105,13 +106,18 @@ export class TutorRegisterComponent implements OnInit {
     return this.registerForm.get("sliders") as FormArray;
   }
 
-
   onFileChange(event) {
-  
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
-      this.registerForm.patchValue({
-        fileSource: file
+
+      this.verificationFile$ = Observable.create((observer) => {
+        const reader = new FileReader();
+        reader.addEventListener(
+          "load",
+          () => observer.next(reader.result as string),
+          false
+        );
+        reader.readAsDataURL(file);
       });
     }
   }
@@ -123,6 +129,7 @@ export class TutorRegisterComponent implements OnInit {
       return;
     }
 
+    // compute schoolData
     let grades: number[] = [];
     for (const [i, schoolType] of this.schoolTypes.entries()) {
       if (!this.schoolTypesControl.value[i]) {
@@ -136,43 +143,45 @@ export class TutorRegisterComponent implements OnInit {
       grades.push(...g);
     }
 
-    const user: SendableUser = {
-      email: this.f.email.value,
-      password: this.f.password.value,
-      first_name: this.f.firstName.value,
-      last_name: this.f.lastName.value,
-      state: this.f.state.value.id,
-      gender: this.f.gender.value,
-      terms_accepted: this.f.terms.value,
-      studentdata: null,
-      tutordata: {
-        schooldata: grades,
-        subjects: this.f.subjects.value
-          .map((x, i) => (x ? this.subjects[i].id : x))
-          .filter(x => Boolean(x)),
-          verification_file: "",
+    // wait for file
+    this.verificationFile$.subscribe((verificationFile) => {
+      const user: SendableUser = {
+        email: this.f.email.value,
+        password: this.f.password.value,
+        first_name: this.f.firstName.value,
+        last_name: this.f.lastName.value,
+        state: this.f.state.value.id,
+        gender: this.f.gender.value,
+        terms_accepted: this.f.terms.value,
+        studentdata: null,
+        tutordata: {
+          schooldata: grades,
+          subjects: this.f.subjects.value
+            .map((x, i) => (x ? this.subjects[i].id : x))
+            .filter((x) => Boolean(x)),
+          verification_file: verificationFile,
           verified: false,
-        //file: this.f.get('fileSource').value
-      }
-    };
-
-    console.log("About to send Data: ", user);
-
-    this.loading = true;
-    this.authenticationService
-      .register(user)
-      .pipe(first())
-      .subscribe(
-        (data) => {
-          // this.router.navigate([this.returnUrl]);
-          this.loading = false;
-          this.submitSuccess = true;
-          this.error = null;
         },
-        (error) => {
-          this.error = error;
-          this.loading = false;
-        }
-      );
+      };
+
+      console.log("About to send Data: ", user);
+
+      this.loading = true;
+      this.authenticationService
+        .register(user)
+        .pipe(first())
+        .subscribe(
+          (data) => {
+            // this.router.navigate([this.returnUrl]);
+            this.loading = false;
+            this.submitSuccess = true;
+            this.error = null;
+          },
+          (error) => {
+            this.error = error;
+            this.loading = false;
+          }
+        );
+    });
   }
 }
