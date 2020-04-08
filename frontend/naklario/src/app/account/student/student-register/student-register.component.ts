@@ -4,12 +4,10 @@ import {
   State,
   SchoolType,
   SchoolData,
-  User,
-  states,
-  schoolData,
-  schoolTypes
+  User, Constants
 } from "../../../_models/database";
 import { Options } from "ng5-slider";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: "app-student-register",
@@ -17,9 +15,9 @@ import { Options } from "ng5-slider";
   styleUrls: ["./student-register.component.scss"]
 })
 export class StudentRegisterComponent implements OnInit {
-  states: State[] = states;
-  schoolTypes: SchoolType[] = schoolTypes;
-  schoolData: SchoolData[] = schoolData;
+  states: State[];
+  schoolTypes: SchoolType[];
+  schoolData: SchoolData[];
   schoolType: number = -1;
   grade: number = -1;
 
@@ -35,11 +33,19 @@ export class StudentRegisterComponent implements OnInit {
 
   submitted = false;
 
-  constructor() {}
+  constructor(private route: ActivatedRoute) {}
+  ngOnInit(): void {
+    this.route.data.subscribe((data: { constants: Constants }) => {
+      this.states = data.constants.states;
+      this.schoolTypes = data.constants.schoolTypes;
+      this.schoolData = data.constants.schoolData;
+    });
+
+
+  }
 
   onSubmit(): void {
     this.submitted = true;
   }
 
-  ngOnInit(): void {}
 }
