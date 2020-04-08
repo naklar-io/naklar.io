@@ -161,9 +161,9 @@ class Meeting(models.Model):
                                  on_delete=models.CASCADE, null=True)
 
     tutor = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='tutor_meetings')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='tutor_meetings', to_field='uuid')
     student = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='student_meetings')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='student_meetings', to_field='uuid')
 
     name = models.CharField(_("Meeting-Name"), max_length=254)
 
