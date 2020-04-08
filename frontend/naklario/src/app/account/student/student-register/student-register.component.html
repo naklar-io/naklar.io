@@ -67,8 +67,8 @@
       <div class="form-group col">
         <label for="gender">Geschlecht</label>
         <select name="gender" class="form-control" formControlName="gender">
-          <option *ngFor="let gender of genders" [ngValue]="gender.abbr">{{
-            gender.name
+          <option *ngFor="let gender of genders" [ngValue]="gender.shortcode">{{
+            gender.gender
           }}</option>
         </select>
         <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
