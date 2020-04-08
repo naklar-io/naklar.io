@@ -20,10 +20,12 @@ class StudentDataInline(admin.StackedInline):
     verbose_name_plural = verbose_name
 
 
-class TutorDataInline(admin.TabularInline):
+class TutorDataInline(admin.StackedInline):
     model = TutorData
     verbose_name = "Tutordaten"
     verbose_name_plural = verbose_name
+    fields = ['schooldata', 'subjects', 'verified', 'verification_file', 'profile_picture', 'image_tag']
+    readonly_fields = ['image_tag']
 
 
 class TutorDataFilter(admin.SimpleListFilter):

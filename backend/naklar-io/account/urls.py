@@ -17,7 +17,7 @@ urlpatterns = [
     path('schooltypes/', SchoolTypeList.as_view()),
     path('schooldata/', SchoolDataList.as_view()),
     path('schooldata/<int:school_type>/', SchoolDataList.as_view()),
-    path('users/<uuid:uuid>/', CustomUserView.as_view()),
+    path('users/<uuid:uuid>/', CustomUserView.as_view(), name="user_view"),
     path('current/', CurrentUserView.as_view()),
     path('create/', CustomUserCreateView.as_view()),
     path('upload_verification/', views.UploadVerificationView.as_view()),

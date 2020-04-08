@@ -6,9 +6,12 @@ from rest_framework import exceptions, generics, mixins, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
+from roulette.models import Feedback
+
 from .models import Match, Meeting, Request, StudentRequest, TutorRequest
 from .serializers import (MatchSerializer, MeetingSerializer,
                           StudentRequestSerializer, TutorRequestSerializer)
+from roulette.serializers import FeedbackSerializer
 
 
 class MatchUserMixin(object):
@@ -86,17 +89,53 @@ class MeetingListView(generics.ListAPIView):
     filterset_fields = ['ended']
 
     def get_queryset(self):
-        return self.queryset.filter(Q(student=self.request.user) | Q(tutor=self.request.user)) 
+        return self.queryset.filter(Q(student=self.request.user) | Q(tutor=self.request.user))
 
-    
+
+class FeedbackListView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = FeedbackSerializer
+    queryset = Feedback.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['provider', 'receiver']
+
+    def get_queryset(self):
+        return self.queryset.filter(Q(provider=self.request.user) | Q(receiver=self.request.user))
+
+    def perform_create(self, serializer):
+        meeting = serializer.validated_data.get('meeting')
+        provider = None
+        receiver = None
+        if meeting.student and meeting.tutor:
+            if meeting.student == self.request.user:
+                provider = meeting.student
+                receiver = meeting.tutor
+            else:
+                provider = meeting.tutor
+                receiver = meeting.student
+
+        serializer.save(provider=provider, receiver=receiver)
+
+
+class FeedbackDetailView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = FeedbackSerializer
+    queryset = Feedback.objects.all()
+    lookup_field = 'meeting'
+
+    def get_queryset(self):
+        return self.queryset.filter(Q(provider=self.request.user) | Q(receiver=self.request.user))
 
 
 match_answer_param = openapi.Parameter(
     'agree', openapi.IN_BODY, 'Agree with Match?', required=True, schema=openapi.Schema(type=openapi.TYPE_BOOLEAN))
 
-schema = openapi.Schema(type=openapi.TYPE_OBJECT, properties={'agree': openapi.Schema(type=openapi.TYPE_BOOLEAN)})
+schema = openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                        'agree': openapi.Schema(type=openapi.TYPE_BOOLEAN)})
 
-type_parameter = openapi.Parameter('type', openapi.IN_PATH, description='User type', required=True, type=openapi.TYPE_STRING, enum=['student', 'tutor'], )
+type_parameter = openapi.Parameter('type', openapi.IN_PATH, description='User type',
+                                   required=True, type=openapi.TYPE_STRING, enum=['student', 'tutor'], )
+
 
 @swagger_auto_schema(method='POST', manual_parameters=[type_parameter], request_body=schema)
 @api_view(['POST'])
@@ -134,6 +173,7 @@ def match_answer(request, uuid, type):
     else:
         raise exceptions.NotAuthenticated()
 
+
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def join_meeting(request, match_uuid):
@@ -154,6 +194,7 @@ def join_meeting(request, match_uuid):
         return Response(data={'join_url': url})
     else:
         raise exceptions.NotFound(detail="No matching meeting found")
+
 
 @api_view(['POST'])
 def end_callback(request, meeting_id):

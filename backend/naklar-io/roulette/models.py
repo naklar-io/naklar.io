@@ -25,7 +25,8 @@ class Feedback(models.Model):
 
     message = models.TextField(_("Nachricht"), blank=True)
 
-    meeting = models.ForeignKey('roulette.Meeting', on_delete=models.CASCADE, null=True)
+    meeting = models.ForeignKey(
+        'roulette.Meeting', on_delete=models.CASCADE, null=True)
 
     rating = models.PositiveSmallIntegerField(_("Bewertung"), validators=[
         MinValueValidator(0), MaxValueValidator(5)])
@@ -71,18 +72,27 @@ def look_for_match(sender, instance, **kwargs):
         # look for open tutor requests and match the best one
         tutor_requests = TutorRequest.objects.exclude(
             user__in=instance.failed_matches.all())
-        tutor_requests = tutor_requests.filter(match__isnull=True)
-        if tutor_requests:
+        tutor_requests = tutor_requests.exclude(
+            user__tutordata__verified=False).filter(match__isnull=True)
+        # filter tutor requests for matching subject
+        filtered = []
+        for r in tutor_requests.all():
+            if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists():
+                filtered.append(r)
+        if filtered:
             best_tutor = max(
-                tutor_requests, key=lambda k: calculate_matching_score(instance, k))
+                filtered, key=lambda k: calculate_matching_score(instance, k))
             Match.objects.create(
                 student_request=instance,
                 tutor_request=best_tutor
             )
-    else:
+    elif sender is TutorRequest:
         student_requests = StudentRequest.objects.exclude(
             user__in=instance.failed_matches.all())
         student_requests = student_requests.filter(match__isnull=True)
+        
+        subjects = instance.user.tutordata.subjects.all()
+        student_requests = student_requests.filter(subject__in=subjects)
         if student_requests:
             best_student = max(
                 student_requests, key=lambda k: calculate_matching_score(k, instance))
@@ -95,8 +105,12 @@ def look_for_match(sender, instance, **kwargs):
 
 def calculate_matching_score(student_request: StudentRequest, tutor_request: TutorRequest):
     score = 1
-    if tutor_request.user.tutordata.subjects.filter(pk=student_request.subject.id).exists():
+    student = student_request.user
+    tutor = tutor_request.user
+    if student.state == tutor.state:
         score += 5
+    if student.gender == tutor.gender:
+        score += 3
     return score
 
 
@@ -138,6 +152,7 @@ def on_match_change(sender, instance, created, **kwargs):
             meeting.tutor = instance.tutor_request.user
             meeting.student = instance.student_request.user
             meeting.save()
+
             # send update with meeting to requests
 
 
@@ -164,7 +179,7 @@ class Meeting(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False)
 
     match = models.OneToOneField(Match, to_field='uuid',
-                                 on_delete=models.CASCADE, null=True)
+                                 on_delete=models.SET_NULL, null=True)
 
     tutor = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='tutor_meetings', to_field='uuid')
@@ -228,7 +243,11 @@ class Meeting(models.Model):
                       'password': self.moderator_pw}
         r = requests.get(self.build_api_request("end", parameters))
         if self.match:
-            self.match.get().delete()
+            match = self.match.get()
+            tutor_request = match.tutor_request
+            match.student_request.delete()
+            tutor_request.delete()
+            
 
     def create_join_link(self, user, moderator=False):
         if not self.established:
@@ -251,15 +270,3 @@ class Meeting(models.Model):
             'meetingID': str(self.meeting_id)
         }
         return requests.get(build_api_request("join", parameters)).content
-
-
-# @receiver(pre_delete, sender=Meeting)
-# def meeting_deleted(sender, instance, using, **kwargs):
-#    instance.end_meeting(delete_instance=False)
-
-# @receiver(post_delete, sender=Meeting)
-# def delete_match(sender, instance, **kwargs):
-#    try:
-#        instance.match.delete()
-#    except Match.DoesNotExist:
-#        pass
