@@ -12,6 +12,7 @@ import { StudentRegisterComponent } from './student/student-register/student-reg
 import { TermsConditionsComponent } from './tutor/terms-conditions/terms-conditions.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component'
+import { DatabaseService, AuthenticationService } from '../_services';
 
 
 @NgModule({
@@ -22,6 +23,6 @@ import { ProfileComponent } from './profile/profile.component'
     ReactiveFormsModule,
     CommonModule,
     AccountRoutingModule
-  ]
+  ], providers: [DatabaseService, AuthenticationService]
 })
 export class AccountModule { }

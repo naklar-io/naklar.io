@@ -1,7 +1,13 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { BehaviorSubject, Observable, throwError } from "rxjs";
-import { User, SendableUser, SendableLogin, sendableToLocal } from "../_models";
+import { BehaviorSubject, Observable } from "rxjs";
+import {
+  User,
+  SendableUser,
+  SendableLogin,
+  sendableToLocal,
+  Constants,
+} from "../_models";
 import { environment } from "../../environments/environment";
 import { map, flatMap } from "rxjs/operators";
 
@@ -13,10 +19,11 @@ interface LoginResponse {
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
-
   public currentUser: Observable<User>;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+  ) {
     this.currentUserSubject = new BehaviorSubject<User>(
       JSON.parse(localStorage.getItem("currentUser"))
     );
@@ -32,7 +39,7 @@ export class AuthenticationService {
    */
   public loggedOut() {}
 
-  public updateUser(user: SendableUser) {
+  public updateUser(user: SendableUser, constants: Constants) {
     if (!user.password) {
       // don't send password if it wasn't updated
       delete user.password;
@@ -41,7 +48,9 @@ export class AuthenticationService {
       .put<SendableUser>(`${environment.apiUrl}/account/`, user)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user);
+          const u = sendableToLocal(
+            user, constants
+          );
           // replace tokens
           const newUser = Object.assign(u, {
             token: this.currentUserValue.token,
@@ -54,19 +63,19 @@ export class AuthenticationService {
       );
   }
 
-  public register(user: SendableUser) {
+  public register(user: SendableUser, constants: Constants) {
     return this.http
       .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user);
+          const u = sendableToLocal(user, constants);
           this.currentUserSubject.next(u);
           return user;
         })
       );
   }
 
-  public login(login: SendableLogin) {
+  public login(login: SendableLogin, constants: Constants) {
     return this.http
       .post<LoginResponse>(
         `${environment.apiUrl}/account/login/`,
@@ -92,19 +101,19 @@ export class AuthenticationService {
       )
       .pipe(
         flatMap(() => {
-          const user$ = this.fetchUserData();
+          const user$ = this.fetchUserData(constants);
           console.log("Logged in user:", this.currentUserValue);
           return user$;
         })
       );
   }
 
-  public fetchUserData() {
+  public fetchUserData(constants: Constants) {
     return this.http
       .get<SendableUser>(`${environment.apiUrl}/account/current/`)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user);
+          const u = sendableToLocal(user, constants);
           const filledUser = Object.assign(u, {
             token: this.currentUserValue.token,
             token_expiry: this.currentUserValue.token_expiry,

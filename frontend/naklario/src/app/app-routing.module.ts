@@ -7,7 +7,6 @@ import { LandingComponent } from "./landing/landing.component";
 import { ImpressumComponent } from "./impressum/impressum.component";
 import { AboutComponent } from "./about/about.component";
 
-
 const routes: Routes = [
   { path: "landing", component: LandingComponent },
   { path: "impressum", component: ImpressumComponent },
@@ -18,6 +17,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule {}
