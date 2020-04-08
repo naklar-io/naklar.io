@@ -20,7 +20,6 @@ export class ImgUploadComponent implements OnInit {
     if (event.target.files.length > 0) {
       const file = event.target.files[0] as File;
       this.compressorService.compress(file).subscribe((data) => {
-        console.log(data);
         this.img = data;
       });
     }
