@@ -131,19 +131,6 @@
       </div>
     </div>
 
-    <div class="form-group">
-      <label for="file">Datei für Verifikation</label>
-      <input
-        formControlName="file"
-        type="file"
-        class="form-control"
-        (change)="onFileChange($event)"
-      />
-      <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
-        <div *ngIf="f.file.errors.required">Wir brauchen hier eine Datei.</div>
-      </div>
-    </div>
-
     <label for="schoolType">Schultypen, die du unterrichten möchtest:</label>
     <div class="form-group">
       <div
@@ -213,6 +200,24 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="form-group">
+      <label for="file">Datei für Verifikation</label>
+      <input
+        type="file"
+        class="form-control"
+        (change)="onFileChange($event)"
+        formControlName="file"
+      />
+      <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
+        <div *ngIf="f.file.errors.required">Wir brauchen hier eine Datei.</div>
+      </div>
+
+      <p>
+        Um deinen Tutor-Account zu verifizieren benötigen wir ein Zertifikat,
+        welches deinen vollen Namen enthält und dich als Tutor qualifiziert.
+      </p>
     </div>
 
     <div class="form-group form-row form-check-inline">
