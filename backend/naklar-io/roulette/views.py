@@ -1,15 +1,14 @@
-from rest_framework import generics
-from rest_framework import mixins
-from rest_framework import permissions
-from rest_framework import exceptions
-from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
-
-from drf_yasg.utils import swagger_auto_schema
+from django.db.models import Q
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework import exceptions, generics, mixins, permissions
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
 
-from .models import TutorRequest, StudentRequest, Request, Match, Meeting
-from .serializers import TutorRequestSerializer, StudentRequestSerializer, MatchSerializer
+from .models import Match, Meeting, Request, StudentRequest, TutorRequest
+from .serializers import (MatchSerializer, MeetingSerializer,
+                          StudentRequestSerializer, TutorRequestSerializer)
 
 
 class MatchUserMixin(object):
@@ -77,6 +76,19 @@ class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generi
     def perform_create(self, serializer):
         self.get_queryset().filter(user=self.request.user).delete()
         serializer.save(user=self.request.user)
+
+
+class MeetingListView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = MeetingSerializer
+    queryset = Meeting.objects.all()
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['ended']
+
+    def get_queryset(self):
+        return self.queryset.filter(Q(student=self.request.user) | Q(tutor=self.request.user)) 
+
+    
 
 
 match_answer_param = openapi.Parameter(

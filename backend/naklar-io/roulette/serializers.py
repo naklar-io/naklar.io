@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from roulette.models import StudentRequest, TutorRequest, Request, Match
+from roulette.models import Match, Meeting, Request, StudentRequest, TutorRequest
 from account.serializers import CustomUserSerializer
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -51,4 +51,9 @@ class StudentRequestSerializer(serializers.ModelSerializer):
         fields = ['subject', 'match', 'failed_matches', 'created']
         read_only_fields = ['match', 'failed_matches', 'created']
 
+
+class MeetingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Meeting
+        fields = ['meeting_id', 'ended', 'time_ended', 'student', 'tutor', 'name']
 
