@@ -67,7 +67,8 @@ def look_for_match(sender, instance, **kwargs):
             user__in=instance.failed_matches.all())
         tutor_requests = tutor_requests.filter(match__isnull=True)
         if tutor_requests:
-            best_tutor = max(tutor_requests, key=lambda k: calculate_matching_score(instance, k))
+            best_tutor = max(
+                tutor_requests, key=lambda k: calculate_matching_score(instance, k))
             Match.objects.create(
                 student_request=instance,
                 tutor_request=best_tutor
@@ -77,12 +78,14 @@ def look_for_match(sender, instance, **kwargs):
             user__in=instance.failed_matches.all())
         student_requests = student_requests.filter(match__isnull=True)
         if student_requests:
-            best_student = max(student_requests, key=lambda k: calculate_matching_score(k, instance))
-                
+            best_student = max(
+                student_requests, key=lambda k: calculate_matching_score(k, instance))
+
             Match.objects.create(
                 student_request=best_student,
-                    tutor_request=instance
-                )
+                tutor_request=instance
+            )
+
 
 def calculate_matching_score(student_request: StudentRequest, tutor_request: TutorRequest):
     score = 1
@@ -121,12 +124,14 @@ def on_match_change(sender, instance, created, **kwargs):
     else:
         if instance.student_agree and instance.tutor_agree and not hasattr(instance, 'meeting'):
             meeting = Meeting(match=instance, name="naklar.io - Meeting")
-            #meeting.users.add(instance.student_request.user
-                             # )
+            # meeting.users.add(instance.student_request.user
+            # )
             meeting.save()
-            meeting.users.add(instance.student_request.user, instance.tutor_request.user)
+            meeting.users.add(instance.student_request.user,
+                              instance.tutor_request.user)
+            meeting.tutor = instance.tutor_request.user
+            meeting.student = instance.student_request.user
             meeting.save()
-            meeting.create_meeting()
             # send update with meeting to requests
 
 
@@ -155,6 +160,11 @@ class Meeting(models.Model):
     match = models.OneToOneField(Match, to_field='uuid',
                                  on_delete=models.CASCADE, null=True)
 
+    tutor = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='tutor_meetings')
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='student_meetings')
+
     name = models.CharField(_("Meeting-Name"), max_length=254)
 
     users = models.ManyToManyField(settings.AUTH_USER_MODEL)
@@ -163,9 +173,11 @@ class Meeting(models.Model):
     moderator_pw = models.CharField(max_length=120, null=True)
 
     established = models.BooleanField(default=False)
-    ended = models.BooleanField(default=False)
     time_established = models.DateTimeField(
         _("Aufgebaut"), null=True, blank=True)
+
+    ended = models.BooleanField(default=False)
+    time_ended = models.DateTimeField(_("Beendet"), null=True, blank=True)
 
     def build_api_request(self, call, parameters):
         to_hash = call + urlencode(parameters) + settings.BBB_SHARED
@@ -179,8 +191,8 @@ class Meeting(models.Model):
     def create_meeting(self):
         parameters = {'name': 'naklar.io',
                       'meetingID': str(self.meeting_id),
-                      'meta_endCallBackUrl': settings.HOST + "/roulette/end_callback?meetingID="+str(self.meeting_id),
-                      'logoutURL': 'https://naklar.io/landingpage/mockup_end/',
+                      'meta_endCallBackUrl': settings.HOST + "/roulette/end_callback/"+str(self.meeting_id)+"/",
+                      'logoutURL': 'https://dev.naklar.io/',
                       'welcome': 'Herzlich willkommen bei naklar.io!'}
         r = requests.get(self.build_api_request("create", parameters))
         root = ET.fromstring(r.content)
@@ -205,15 +217,16 @@ class Meeting(models.Model):
         r = requests.get(full_link)
         print(r.content)
 
-    def end_meeting(self, delete_instance=True, close_session=True):
+    def end_meeting(self, close_session=True):
         parameters = {'meetingID': str(self.meeting_id),
                       'password': self.moderator_pw}
         r = requests.get(self.build_api_request("end", parameters))
-        if delete_instance:
-            self.delete()
+        if self.match:
+            self.match.get().delete()
 
     def create_join_link(self, user, moderator=False):
-        # TODO: Fix check?
+        if not self.established:
+            self.create_meeting()
         if user in self.users.all() and self.established:
             parameters = {'fullName': user.first_name + user.last_name,
                           'userID': str(user.uuid),
@@ -234,13 +247,13 @@ class Meeting(models.Model):
         return requests.get(build_api_request("join", parameters)).content
 
 
-@receiver(pre_delete, sender=Meeting)
-def meeting_deleted(sender, instance, using, **kwargs):
-    instance.end_meeting(delete_instance=False)
+# @receiver(pre_delete, sender=Meeting)
+# def meeting_deleted(sender, instance, using, **kwargs):
+#    instance.end_meeting(delete_instance=False)
 
-@receiver(post_delete, sender=Meeting)
-def delete_match(sender, instance, **kwargs):
-    try:
-        instance.match.delete()
-    except Match.DoesNotExist:
-        pass
+# @receiver(post_delete, sender=Meeting)
+# def delete_match(sender, instance, **kwargs):
+#    try:
+#        instance.match.delete()
+#    except Match.DoesNotExist:
+#        pass
