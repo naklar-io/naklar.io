@@ -28,6 +28,12 @@ import {
   NavbarComponent,
 } from "./_misc_components";
 import { DatabaseService, AuthenticationService } from "./_services";
+import { ParentsComponent } from './_misc_components/parents/parents.component';
+import { StudentsComponent } from './_misc_components/students/students.component';
+import { TutorsComponent } from './_misc_components/tutors/tutors.component';
+import { SchoolsComponent } from './_misc_components/schools/schools.component';
+import { HelpSupportComponent } from './_misc_components/help-support/help-support.component';
+import { FeedbackComponent } from './_misc_components/feedback/feedback.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +49,12 @@ import { DatabaseService, AuthenticationService } from "./_services";
     AboutComponent,
     DatenschutzComponent,
     PrivacyComponent,
+    ParentsComponent,
+    StudentsComponent,
+    TutorsComponent,
+    SchoolsComponent,
+    HelpSupportComponent,
+    FeedbackComponent,
   ],
   imports: [
     NgbModule,

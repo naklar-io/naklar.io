@@ -32,8 +32,10 @@ $light-gray: #f4f4f4;
     $primary-color-light
   );
 }
-
+.spacer {
+  margin-top: 40px;
+}
 
 .bg-gray {
-    background-color: $light-gray;
+  background-color: $light-gray;
 }

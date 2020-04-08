@@ -7,10 +7,22 @@ import { LandingComponent } from "./landing/landing.component";
 import {
   ImpressumComponent,
   TermsConditionsComponent,
+  FeedbackComponent,
+  AboutComponent,
+  HelpSupportComponent,
+  ParentsComponent,
+  SchoolsComponent,
+  StudentsComponent,
+  TutorsComponent,
 } from "./_misc_components/";
-import { AboutComponent } from "./_misc_components/about/about.component";
 
 const routes: Routes = [
+  { path: "feedback", component: FeedbackComponent },
+  { path: "support", component: HelpSupportComponent },
+  { path: "parents", component: ParentsComponent },
+  { path: "schools", component: SchoolsComponent },
+  { path: "students", component: StudentsComponent },
+  { path: "tutors", component: TutorsComponent },
   { path: "terms", component: TermsConditionsComponent },
   { path: "imprint", component: ImpressumComponent },
   { path: "privacy", component: ImpressumComponent },
