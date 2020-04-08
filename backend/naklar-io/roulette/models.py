@@ -66,8 +66,8 @@ def look_for_match(sender, instance, **kwargs):
         tutor_requests = TutorRequest.objects.exclude(
             user__in=instance.failed_matches.all())
         tutor_requests = tutor_requests.filter(match__isnull=True)
-        best_tutor = max(tutor_requests, key=lambda k: calculate_matching_score(instance, k))
-        if best_tutor:
+        if tutor_requests:
+            best_tutor = max(tutor_requests, key=lambda k: calculate_matching_score(instance, k))
             Match.objects.create(
                 student_request=instance,
                 tutor_request=best_tutor
@@ -76,12 +76,13 @@ def look_for_match(sender, instance, **kwargs):
         student_requests = StudentRequest.objects.exclude(
             user__in=instance.failed_matches.all())
         student_requests = student_requests.filter(match__isnull=True)
-        best_student = max(student_requests, key=lambda k: calculate_matching_score(k, instance))
-        if best_student:
+        if student_requests:
+            best_student = max(student_requests, key=lambda k: calculate_matching_score(k, instance))
+                
             Match.objects.create(
                 student_request=best_student,
-                tutor_request=instance
-            )
+                    tutor_request=instance
+                )
 
 def calculate_matching_score(student_request: StudentRequest, tutor_request: TutorRequest):
     score = 1
@@ -118,7 +119,7 @@ def on_match_change(sender, instance, created, **kwargs):
         # send update to requests
         pass
     else:
-        if instance.student_agree and instance.tutor_agree:
+        if instance.student_agree and instance.tutor_agree and not hasattr(instance, 'meeting'):
             meeting = Meeting(match=instance, name="naklar.io - Meeting")
             #meeting.users.add(instance.student_request.user
                              # )

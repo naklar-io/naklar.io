@@ -71,28 +71,12 @@ class AccessPermission(permissions.BasePermission):
         return type is None
 
 
-class RequestView(MatchTypeMixin, MatchUserMixin, generics.RetrieveAPIView):
-    permission_classes = [permissions.IsAuthenticated, AccessPermission]
-    """  def get_serializer_class(self):
-        if 'type' in self.request.query_params:
-            if self.request.query_params['type'] == 'student':
-                return StudentRequestSerializer
-            elif self.request.query_params['type'] == 'tutor':
-                return TutorRequestSerializer
-        else:
-            raise exceptions.NotAcceptable()"""
-
-
-class RequestCreateView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView):
+class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generics.RetrieveAPIView, generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, AccessPermission]
 
     def perform_create(self, serializer):
         self.get_queryset().filter(user=self.request.user).delete()
         serializer.save(user=self.request.user)
-
-
-class RequestDeleteView(MatchUserMixin, MatchTypeMixin, generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated, AccessPermission]
 
 
 match_answer_param = openapi.Parameter(
@@ -105,9 +89,9 @@ type_parameter = openapi.Parameter('type', openapi.IN_PATH, description='User ty
 @swagger_auto_schema(method='POST', manual_parameters=[type_parameter], request_body=schema)
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
-def match_answer(request, uuid):
+def match_answer(request, uuid, type):
     # first, find corresponding match
-    match = Match.objects.find(uuid=uuid)
+    match = Match.objects.filter(uuid=uuid)
     agree = request.data.get('agree', None)
     if agree is None:
         raise exceptions.ValidationError(detail="agree is missing!")
@@ -118,7 +102,7 @@ def match_answer(request, uuid):
         raise exceptions.NotFound()
 
     # check if user is authenticated
-    if match.student_request.user == request.user:
+    if type == 'student' and match.student_request.user == request.user:
         # user is student
         match.student_agree = agree
         if not agree:
@@ -127,7 +111,7 @@ def match_answer(request, uuid):
         else:
             match.save()
         return Response({'success': True})
-    elif match.tutor_request.user == request.user:
+    elif type == 'tutor' and match.tutor_request.user == request.user:
         # user is tutor
         match.tutor_agree = agree
         if not agree:
@@ -146,7 +130,7 @@ def join_meeting(request, match_uuid):
     url = ""
     if match:
         match = match.get()
-        if match.meeting:
+        if hasattr(match, 'meeting'):
             if user == match.student_request.user:
                 url = match.meeting.create_join_link(user, moderator=False)
             elif user == match.tutor_request.user:
