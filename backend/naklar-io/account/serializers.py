@@ -60,7 +60,8 @@ class StudentDataSerializer(serializers.ModelSerializer):
 class TutorDataSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = TutorData
-        fields = ['schooldata', 'subjects', 'verification_file', 'verified']
+        fields = ['schooldata', 'subjects', 'verification_file', 'verified', 'profile_picture']
+        read_only_fields = ['verified']
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
@@ -93,6 +94,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             tutor.schooldata.set(tutordata.get('schooldata'))
             tutor.subjects.set(tutordata.get('subjects'))
             tutor.verfication_file = tutordata.get('verification_file')
+            tutor.profile_picture = tutordata.get('profile_picture')
             tutor.save()
 
         return instance
@@ -115,7 +117,10 @@ class CurrentUserSerializer(serializers.ModelSerializer):
                 tutordata, _ = TutorData.objects.get_or_create(user=instance)
                 tutordata.schooldata.set(data.get('schooldata'))
                 tutordata.subjects.set(data.get('subjects'))
-                tutordata.verification_file = data.get('verification_file')
+                if data.get('verification_file'):
+                    tutordata.verification_file = data.get('verification_file')
+                if data.get('profile_picture'):
+                    tutordata.profile_picture = data.get('profile_picture')
                 tutordata.save()
         return super(CurrentUserSerializer, self).update(instance, validated_data)
 

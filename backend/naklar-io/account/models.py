@@ -5,9 +5,12 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.conf import settings
 
+import os
+
 import uuid
 
 from .managers import CustomUserManager
+from django.utils.safestring import mark_safe
 
 
 class SchoolType(models.Model):
@@ -55,6 +58,10 @@ def tutor_upload_path(instance, filename):
     return 'tutor-files/{0}/{1}'.format(instance.user.uuid, filename)
 
 
+def profile_upload_path(instance, filename):
+    return 'tutor-pics/{0}{1}'.format(instance.user.uuid, os.path.splitext(filename)[1])
+
+
 class TutorData(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
@@ -67,9 +74,16 @@ class TutorData(models.Model):
     verification_file = models.FileField(
         _("Vefizierungsdatei"), upload_to=tutor_upload_path, null=True)
 
+    profile_picture = models.ImageField(
+        _("Profilbild"), upload_to=profile_upload_path, null=True)
+
     def __str__(self):
         return str(self.user)
 
+    def image_tag(self):
+        return mark_safe('<img src="/media/%s" width="256" height="256" />' % (self.profile_picture))
+
+    image_tag.short_description = 'Image'
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("E-Mail"), max_length=254, unique=True)

@@ -16,8 +16,10 @@ typed_patterns = [
 
 urlpatterns = [
     path('meeting/join/<uuid:match_uuid>/', views.join_meeting),
-    path('meeting/', views.MeetingListView.as_view()),
-    path('meeting/end_callback/<uuid:uuid>/', views.end_callback),
+    path('meetings/', views.MeetingListView.as_view()),
+    path('meeting/feedback/', views.FeedbackListView.as_view()),
+    path('meeting/feedback/<uuid:meeting>', views.FeedbackDetailView.as_view()),
+    path('meeting/end/<uuid:uuid>/', views.end_callback),
     re_path(r'^(?P<type>(student|tutor))/', include(typed_patterns)),
 ]
 
