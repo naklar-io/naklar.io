@@ -15,117 +15,145 @@
 
   <form #tutorForm="ngForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
-      <div class="form-group col">
-        <label for="firstName">Vorname</label>
-        <input type="text" formControlName="firstName" class="form-control" />
-        <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
-          <div *ngIf="f.firstName.errors.required">
-            Du musst einen Vornamen angeben
-          </div>
-        </div>
-      </div>
-      <div class="form-group col">
-        <label for="lastName">Nachname</label>
-        <input type="text" formControlName="lastName" class="form-control" />
-        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-          <div *ngIf="f.lastName.errors.required">
-            Du musst einen Nachnamen angeben
-          </div>
-        </div>
+      <div class="col-3"> 
+        <misc-img-upload></misc-img-upload>
       </div>
 
-      <div class="form-group col">
-        <label for="gender">Geschlecht</label>
-        <select name="gender" class="form-control" formControlName="gender">
-          <option *ngFor="let gender of genders" [ngValue]="gender.shortcode">{{
-            gender.gender
-          }}</option>
-        </select>
-        <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
-          <div *ngIf="f.gender.errors.required">
-            Du musst ein Geschlecht angeben
+      <div class="col-md">
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="firstName">Vorname</label>
+            <input
+              type="text"
+              formControlName="firstName"
+              class="form-control"
+            />
+            <div
+              *ngIf="submitted && f.firstName.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="f.firstName.errors.required">
+                Du musst einen Vornamen angeben
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+          <div class="form-group col">
+            <label for="lastName">Nachname</label>
+            <input
+              type="text"
+              formControlName="lastName"
+              class="form-control"
+            />
+            <div
+              *ngIf="submitted && f.lastName.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="f.lastName.errors.required">
+                Du musst einen Nachnamen angeben
+              </div>
+            </div>
+          </div>
 
-    <div class="form-row">
-      <div class="from-group col">
-        <label for="email">Email</label>
-        <input type="email" formControlName="email" class="form-control" />
-      </div>
-      <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-        <div *ngIf="f.email.errors.required">
-          Du musst eine email angeben
+          <div class="form-group col">
+            <label for="gender">Geschlecht</label>
+            <select name="gender" class="form-control" formControlName="gender">
+              <option
+                *ngFor="let gender of genders"
+                [ngValue]="gender.shortcode"
+                >{{ gender.gender }}</option
+              >
+            </select>
+            <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
+              <div *ngIf="f.gender.errors.required">
+                Du musst ein Geschlecht angeben
+              </div>
+            </div>
+          </div>
         </div>
-        <div *ngIf="f.email.errors.email">
-          Diese Email ist invalide
-        </div>
-      </div>
 
-      <div class="from-group col">
-        <label for="state">Bundesland</label>
-        <select name="state" class="form-control" formControlName="state">
-          <option *ngFor="let state of states" [ngValue]="state">
-            {{ state.name }}
-          </option>
-        </select>
-        <div *ngIf="submitted && f.state.errors" class="invalid-feedback">
-          <div *ngIf="f.state.errors.required">
-            Du musst ein Bundesland angeben.
+        <div class="form-row">
+          <div class="from-group col">
+            <label for="email">Email</label>
+            <input type="email" formControlName="email" class="form-control" />
           </div>
-        </div>
-      </div>
-    </div>
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">
+              Du musst eine email angeben
+            </div>
+            <div *ngIf="f.email.errors.email">
+              Diese Email ist invalide
+            </div>
+          </div>
 
-    <div class="form-row">
-      <div class="form-group col">
-        <label for="password">Passwort</label>
-        <input
-          type="password"
-          formControlName="password"
-          class="form-control"
-        />
-        <div
-          *ngIf="submitted && registerForm.errors?.passwordNotMatch"
-          class="invalid-feedback"
-        >
-          Die beiden Passwörter müssen überein stimmen.
-        </div>
-        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-          <div *ngIf="f.password.errors.required">
-            Du musst ein Passwort angeben
-          </div>
-          <div *ngIf="f.password.errors.minlength">
-            Dein Passwort muss mindestens
-            {{ f.password.errors.minlength.requiredLength }} Zeichen lang
+          <div class="from-group col">
+            <label for="state">Bundesland</label>
+            <select name="state" class="form-control" formControlName="state">
+              <option *ngFor="let state of states" [ngValue]="state">
+                {{ state.name }}
+              </option>
+            </select>
+            <div *ngIf="submitted && f.state.errors" class="invalid-feedback">
+              <div *ngIf="f.state.errors.required">
+                Du musst ein Bundesland angeben.
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="form-group col">
-        <label for="passwordRepeat">Passwort wiederholen</label>
-        <input
-          type="password"
-          formControlName="passwordRepeat"
-          class="form-control"
-          required
-        />
-        <div
-          *ngIf="submitted && registerForm.errors?.passwordNotMatch"
-          class="invalid-feedback"
-        >
-          Die beiden Passwörter müssen überein stimmen
-        </div>
-        <div
-          *ngIf="submitted && f.passwordRepeat.errors"
-          class="invalid-feedback"
-        >
-          <div *ngIf="f.passwordRepeat.errors.required">
-            Du musst ein Passwort angeben
+
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="password">Passwort</label>
+            <input
+              type="password"
+              formControlName="password"
+              class="form-control"
+            />
+            <div
+              *ngIf="submitted && registerForm.errors?.passwordNotMatch"
+              class="invalid-feedback"
+            >
+              Die beiden Passwörter müssen überein stimmen.
+            </div>
+            <div
+              *ngIf="submitted && f.password.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="f.password.errors.required">
+                Du musst ein Passwort angeben
+              </div>
+              <div *ngIf="f.password.errors.minlength">
+                Dein Passwort muss mindestens
+                {{ f.password.errors.minlength.requiredLength }} Zeichen lang
+              </div>
+            </div>
           </div>
-          <div *ngIf="f.passwordRepeat.errors.minlength">
-            Dein Passwort muss mindestens
-            {{ f.passwordRepeat.errors.minlength.requiredLength }} Zeichen lang
+          <div class="form-group col">
+            <label for="passwordRepeat">Passwort wiederholen</label>
+            <input
+              type="password"
+              formControlName="passwordRepeat"
+              class="form-control"
+              required
+            />
+            <div
+              *ngIf="submitted && registerForm.errors?.passwordNotMatch"
+              class="invalid-feedback"
+            >
+              Die beiden Passwörter müssen überein stimmen
+            </div>
+            <div
+              *ngIf="submitted && f.passwordRepeat.errors"
+              class="invalid-feedback"
+            >
+              <div *ngIf="f.passwordRepeat.errors.required">
+                Du musst ein Passwort angeben
+              </div>
+              <div *ngIf="f.passwordRepeat.errors.minlength">
+                Dein Passwort muss mindestens
+                {{ f.passwordRepeat.errors.minlength.requiredLength }} Zeichen
+                lang
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -215,8 +243,10 @@
       </div>
 
       <p>
-        Um deinen Tutor-Account zu verifizieren benötigen wir ein Zertifikat,
-        welches deinen vollen Namen enthält und dich als Tutor qualifiziert.
+        <small>
+          Um deinen Tutor-Account zu verifizieren benötigen wir ein Zertifikat,
+          welches deinen vollen Namen enthält und dich als Tutor qualifiziert.
+        </small>
       </p>
     </div>
 

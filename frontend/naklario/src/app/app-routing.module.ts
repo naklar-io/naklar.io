@@ -2,9 +2,9 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
 import { HomeComponent } from "./home/home.component";
-import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
+import { PageNotFoundComponent } from "./_misc_components/page-not-found/page-not-found.component";
 import { LandingComponent } from "./landing/landing.component";
-import { ImpressumComponent } from "./impressum/impressum.component";
+import { ImpressumComponent } from "./_misc_components/impressum/impressum.component";
 import { AboutComponent } from "./about/about.component";
 
 

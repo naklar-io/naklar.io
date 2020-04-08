@@ -12,25 +12,23 @@ import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
 // Components
 import { AppComponent } from "./app.component";
 import { RouletteComponent } from "./roulette/roulette.component";
-import { CallComponent } from "./call/call.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
-import { NavbarComponent } from "./misc/navbar/navbar.component";
-import { FooterComponent } from "./misc/footer/footer.component";
-import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
+import { NavbarComponent } from "./_misc_components/navbar/navbar.component";
+import { FooterComponent } from "./_misc_components/footer/footer.component";
+import { PageNotFoundComponent } from "./_misc_components/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
 
 import { EmailFormComponent } from "./landing/email-form/email-form.component";
 
-import { ImpressumComponent } from "./impressum/impressum.component";
+import { ImpressumComponent } from "./_misc_components/impressum/impressum.component";
 import { AboutComponent } from "./about/about.component";
-import { DatenschutzComponent } from "./datenschutz/datenschutz.component";
+import { DatenschutzComponent } from "./_misc_components/datenschutz/datenschutz.component";
 
 @NgModule({
   declarations: [
     AppComponent,
     RouletteComponent,
-    CallComponent,
     HomeComponent,
     LandingComponent,
     NavbarComponent,
@@ -39,7 +37,7 @@ import { DatenschutzComponent } from "./datenschutz/datenschutz.component";
     FooterComponent,
     ImpressumComponent,
     AboutComponent,
-    DatenschutzComponent
+    DatenschutzComponent,
   ],
   imports: [
     NgbModule,

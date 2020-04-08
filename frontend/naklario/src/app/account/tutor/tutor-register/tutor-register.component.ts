@@ -112,11 +112,7 @@ export class TutorRegisterComponent implements OnInit {
 
       this.verificationFile$ = Observable.create((observer) => {
         const reader = new FileReader();
-        reader.addEventListener(
-          "load",
-          () => observer.next(reader.result as string),
-          false
-        );
+        reader.onload = (ev) => observer.next(ev.target.result as string);
         reader.readAsDataURL(file);
       });
     }
