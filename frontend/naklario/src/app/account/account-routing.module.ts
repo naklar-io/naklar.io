@@ -4,7 +4,7 @@ import { StudentComponent } from "./student/student.component";
 import { StudentRegisterComponent } from "./student/student-register/student-register.component";
 import { TutorComponent } from "./tutor/tutor.component";
 import { TutorRegisterComponent } from "./tutor/tutor-register/tutor-register.component";
-import { TermsConditionsComponent } from "./tutor/terms-conditions/terms-conditions.component";
+import { TermsConditionsComponent } from "../_misc_components/terms-conditions/terms-conditions.component";
 import { LoginComponent } from "./login/login.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { AuthGuard } from "../_helpers";

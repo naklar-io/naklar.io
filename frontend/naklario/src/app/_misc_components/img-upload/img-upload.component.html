@@ -1,0 +1,18 @@
+<div class="image-upload-container text-center">
+  <img
+    [src]="img"
+    alt="user profile picture"
+    class="img-fluid img-preview"
+  />
+  <label class="btn btn-primary">
+    Bild Hochladen
+    <input
+      #imageInput
+      class="file-input"
+      value="Bild Hochladen"
+      type="file"
+      accept="image/"
+      (change)="processImg($event)"
+    />
+  </label>
+</div>
