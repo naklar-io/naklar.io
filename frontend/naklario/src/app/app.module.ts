@@ -24,6 +24,7 @@ import { EmailFormComponent } from "./landing/email-form/email-form.component";
 import { ImpressumComponent } from "./_misc_components/impressum/impressum.component";
 import { AboutComponent } from "./about/about.component";
 import { DatenschutzComponent } from "./_misc_components/datenschutz/datenschutz.component";
+import { DatabaseService, AuthenticationService} from "./_services";
 
 @NgModule({
   declarations: [
@@ -49,12 +50,14 @@ import { DatenschutzComponent } from "./_misc_components/datenschutz/datenschutz
     // modules (arbitrary order)
     AccountModule,
     // AppRoutingComponent needs to be the last routing module
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    AuthenticationService,
+    DatabaseService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

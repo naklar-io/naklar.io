@@ -4,12 +4,9 @@ import {
   State,
   SchoolType,
   SchoolData,
-  states,
-  schoolData,
-  schoolTypes,
-  SendableUser,
   Gender,
-  genders,
+  Constants,
+  SendableUser,
 } from "../../../_models/database";
 import { first } from "rxjs/operators";
 import { Options } from "ng5-slider";
@@ -24,10 +21,14 @@ import { Router, ActivatedRoute } from "@angular/router";
   styleUrls: ["./student-register.component.scss"],
 })
 export class StudentRegisterComponent implements OnInit {
-  states: State[] = states;
-  schoolTypes: SchoolType[] = schoolTypes;
-  schoolData: SchoolData[] = schoolData;
-  genders: Gender[] = genders;
+  states: State[];
+  schoolTypes: SchoolType[];
+  schoolData: SchoolData[];
+  genders: Gender[];
+  schoolType: number = -1;
+  grade: number = -1;
+  
+  private constants: Constants;
 
   registerForm = this.fb.group(
     {
@@ -69,7 +70,14 @@ export class StudentRegisterComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.route.data.subscribe((data: { constants: Constants }) => {
+      this.constants = data.constants;
+      this.states = data.constants.states;
+      this.schoolTypes = data.constants.schoolTypes;
+      this.schoolData = data.constants.schoolData;
+    });
+  }
 
   onSubmit(): void {
     this.submitted = true;
@@ -99,7 +107,7 @@ export class StudentRegisterComponent implements OnInit {
 
     this.loading = true;
     this.authenticationService
-      .register(user)
+      .register(user, this.constants)
       .pipe(first())
       .subscribe(
         (data) => {
