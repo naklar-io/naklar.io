@@ -1,6 +1,6 @@
 <div class="image-upload-container text-center">
   <img
-    [src]="img"
+    [src]="img_file"
     alt="user profile picture"
     class="my-2 img-fluid img-preview"
   />
@@ -11,7 +11,7 @@
       class="file-input"
       value="Bild Hochladen"
       type="file"
-      accept="image/"
+      accept="image/*"
       (change)="processImg($event)"
     />
   </label>
