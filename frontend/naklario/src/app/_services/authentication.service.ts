@@ -7,6 +7,7 @@ import {
   SendableLogin,
   sendableToLocal,
   Constants,
+  State,
 } from "../_models";
 import { environment } from "../../environments/environment";
 import { map, flatMap } from "rxjs/operators";
@@ -21,9 +22,7 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
-  constructor(
-    private http: HttpClient,
-  ) {
+  constructor(private http: HttpClient) {
     this.currentUserSubject = new BehaviorSubject<User>(
       JSON.parse(localStorage.getItem("currentUser"))
     );
@@ -48,9 +47,7 @@ export class AuthenticationService {
       .put<SendableUser>(`${environment.apiUrl}/account/`, user)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(
-            user, constants
-          );
+          const u = sendableToLocal(user, constants);
           // replace tokens
           const newUser = Object.assign(u, {
             token: this.currentUserValue.token,
@@ -89,7 +86,19 @@ export class AuthenticationService {
       .pipe(
         map((response) => {
           console.log("Got Login response:", response);
-          let user = new User();
+          let user = new User(
+            "",
+            "",
+            "",
+            "",
+            null,
+            null,
+            null,
+            false,
+            null,
+            "",
+            ""
+          );
           user.token = response.token;
           user.token_expiry = response.expiry;
 
