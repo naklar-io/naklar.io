@@ -8,15 +8,32 @@ import { TermsConditionsComponent } from "./tutor/terms-conditions/terms-conditi
 import { LoginComponent } from "./login/login.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { AuthGuard } from "../_helpers";
+import { DatabaseResolverService } from "../_services";
 
 const routes: Routes = [
-  { path: "account/student/register", component: StudentRegisterComponent },
+  {
+    path: "account/student/register",
+    component: StudentRegisterComponent,
+    resolve: { constants: DatabaseResolverService },
+  },
   { path: "account/student", component: StudentComponent },
   { path: "account/terms", component: TermsConditionsComponent },
-  { path: "account/tutor/register", component: TutorRegisterComponent },
+  {
+    path: "account/tutor/register",
+    component: TutorRegisterComponent,
+    resolve: { constants: DatabaseResolverService },
+  },
   { path: "account/tutor", component: TutorComponent },
-  { path: "account/login", component: LoginComponent },
-  { path: "account", component: ProfileComponent, canActivate: [AuthGuard] },
+  {
+    path: "account/login",
+    component: LoginComponent,
+    resolve: { constants: DatabaseResolverService },
+  },
+  {
+    path: "account",
+    component: ProfileComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({
