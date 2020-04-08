@@ -15,21 +15,6 @@
 
   <form #tutorForm="ngForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
-      <div class="from-group col">
-        <label for="gender">Geschlecht</label>
-        <select
-          name="gender"
-          class="form-control"
-          formControlName="gender"
-        >
-          <option *ngFor="let gender of genders" [ngValue]="gender">
-            {{ gender.gender }}
-          </option>
-        </select>
-      </div>
-    </div>
-    
-    <div class="form-row">
       <div class="form-group col">
         <label for="firstName">Vorname</label>
         <input type="text" formControlName="firstName" class="form-control" />
@@ -48,12 +33,12 @@
           </div>
         </div>
       </div>
-      
+
       <div class="form-group col">
         <label for="gender">Geschlecht</label>
         <select name="gender" class="form-control" formControlName="gender">
-          <option *ngFor="let gender of genders" [ngValue]="gender.abbr">{{
-            gender.name
+          <option *ngFor="let gender of genders" [ngValue]="gender.shortcode">{{
+            gender.gender
           }}</option>
         </select>
         <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
@@ -62,7 +47,6 @@
           </div>
         </div>
       </div>
-      
     </div>
 
     <div class="form-row">
@@ -93,7 +77,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="form-row">
       <div class="form-group col">
         <label for="password">Passwort</label>
@@ -132,7 +116,10 @@
         >
           Die beiden Passwörter müssen überein stimmen
         </div>
-        <div *ngIf="submitted && f.passwordRepeat.errors" class="invalid-feedback">
+        <div
+          *ngIf="submitted && f.passwordRepeat.errors"
+          class="invalid-feedback"
+        >
           <div *ngIf="f.passwordRepeat.errors.required">
             Du musst ein Passwort angeben
           </div>
@@ -146,13 +133,14 @@
 
     <div class="form-group">
       <label for="file">Datei für Verifikation</label>
-      <input 
-          formControlName="file" 
-          type="file" 
-          class="form-control"
-          (change)="onFileChange($event)">
+      <input
+        formControlName="file"
+        type="file"
+        class="form-control"
+        (change)="onFileChange($event)"
+      />
       <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
-          <div *ngIf="f.file.errors.required">Wir brauchen hier eine Datei.</div>
+        <div *ngIf="f.file.errors.required">Wir brauchen hier eine Datei.</div>
       </div>
     </div>
 
@@ -190,11 +178,11 @@
           ></ng5-slider>
         </div>
       </div>
-        <div *ngIf="submitted && f.schoolTypes.errors" class="invalid-feedback">
-          <div *ngIf="f.schoolTypes.errors.required">
-            Du musst einen Schultyp angeben.
-          </div>
+      <div *ngIf="submitted && f.schoolTypes.errors" class="invalid-feedback">
+        <div *ngIf="f.schoolTypes.errors.required">
+          Du musst einen Schultyp angeben.
         </div>
+      </div>
     </div>
 
     <div class="my-4">
@@ -232,11 +220,11 @@
       <label for="terms" class="form-check-label"
         >Ja, ich habe die <a routerLink="/account/terms">AGB</a> gelesen</label
       >
-        <div *ngIf="submitted && f.terms.errors" class="invalid-feedback">
-          <div *ngIf="f.terms.errors.required">
-            Du musst die AGB akzeptieren.
-          </div>
+      <div *ngIf="submitted && f.terms.errors" class="invalid-feedback">
+        <div *ngIf="f.terms.errors.required">
+          Du musst die AGB akzeptieren.
         </div>
+      </div>
     </div>
 
     <button
