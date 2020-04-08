@@ -14,17 +14,20 @@ import { AppComponent } from "./app.component";
 import { RouletteComponent } from "./roulette/roulette.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
-import { NavbarComponent } from "./_misc_components/navbar/navbar.component";
-import { FooterComponent } from "./_misc_components/footer/footer.component";
-import { PageNotFoundComponent } from "./_misc_components/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
 
 import { EmailFormComponent } from "./landing/email-form/email-form.component";
 
-import { ImpressumComponent } from "./_misc_components/impressum/impressum.component";
-import { AboutComponent } from "./about/about.component";
-import { DatenschutzComponent } from "./_misc_components/datenschutz/datenschutz.component";
-import { DatabaseService, AuthenticationService} from "./_services";
+import {
+  ImpressumComponent,
+  AboutComponent,
+  DatenschutzComponent,
+  PrivacyComponent,
+  PageNotFoundComponent,
+  FooterComponent,
+  NavbarComponent,
+} from "./_misc_components";
+import { DatabaseService, AuthenticationService } from "./_services";
 
 @NgModule({
   declarations: [
@@ -39,6 +42,7 @@ import { DatabaseService, AuthenticationService} from "./_services";
     ImpressumComponent,
     AboutComponent,
     DatenschutzComponent,
+    PrivacyComponent,
   ],
   imports: [
     NgbModule,
@@ -56,7 +60,7 @@ import { DatabaseService, AuthenticationService} from "./_services";
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     AuthenticationService,
-    DatabaseService
+    DatabaseService,
   ],
   bootstrap: [AppComponent],
 })

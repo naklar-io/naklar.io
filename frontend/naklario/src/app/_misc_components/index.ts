@@ -5,3 +5,5 @@ export * from "./impressum/impressum.component";
 export * from "./navbar/navbar.component";
 export * from "./page-not-found/page-not-found.component";
 export * from "./terms-conditions/terms-conditions.component";
+export * from './privacy/privacy.component';
+export * from './about/about.component';

@@ -17,7 +17,6 @@ const routes: Routes = [
     resolve: { constants: DatabaseResolverService },
   },
   { path: "account/student", component: StudentComponent },
-  { path: "account/terms", component: TermsConditionsComponent },
   {
     path: "account/tutor/register",
     component: TutorRegisterComponent,
