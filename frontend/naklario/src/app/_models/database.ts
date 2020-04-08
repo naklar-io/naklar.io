@@ -6,6 +6,7 @@ export interface SendableTutorData {
   subjects: number[];
   verification_file: string;
   verified: boolean;
+  profile_picture: string;
 }
 
 export interface SendableStudentData {
@@ -35,62 +36,63 @@ export interface SendableLogin {
  * local objects
  */
 export class StudentData {
-  constructor(public school_data: SchoolData = new SchoolData()) {}
+  constructor(public school_data: SchoolData) {}
 }
 
 export class TutorData {
   constructor(
-    public schooldata: SchoolData[] = [],
-    public subjects: Subject[] = [],
-    public verification_file: string = "",
-    public verified: boolean = false
+    public schooldata: SchoolData[],
+    public subjects: Subject[],
+    public verification_file: string,
+    public verified: boolean,
+    public profile_picture
   ) {}
 }
 
 export class User {
   constructor(
-    public email: string = "",
-    public password: string = "",
-    public first_name: string = "",
-    public last_name: string = "",
-    public state: State = new State(),
-    public studentdata: StudentData | null = new StudentData(),
-    public tutordata: TutorData | null = new TutorData(),
-    public terms_accepted: boolean = false,
-    public gender: Gender = new Gender(),
-    public token: string = "",
-    public token_expiry: string = ""
+    public email: string,
+    public password: string,
+    public first_name: string,
+    public last_name: string,
+    public state: State,
+    public studentdata: StudentData | null,
+    public tutordata: TutorData | null,
+    public terms_accepted: boolean,
+    public gender: Gender,
+    public token: string,
+    public token_expiry: string
   ) {}
 }
 
 export class State {
   constructor(
-    public id: number = -1,
-    public name: string = "",
-    public shortcode: string = ""
+    public id: number,
+    public name: string,
+    public shortcode: string
   ) {}
 }
 
 export class Subject {
-  constructor(public id: number = -1, public name: string = "") {}
+  constructor(public id: number, public name: string) {}
 }
 export class SchoolType {
-  constructor(public id: number = -1, public name: string = "") {}
+  constructor(public id: number, public name: string) {}
 }
 
 export class SchoolData {
   constructor(
-    public id: number = -1,
-    public school_type: number = -1,
-    public grade: number = -1
+    public id: number,
+    public school_type: number,
+    public grade: number
   ) {}
 }
 
 export class Gender {
   constructor(
-    public id: number = -1,
-    public gender: string = "",
-    public shortcode: GenderAbbr = "MA"
+    public id: number,
+    public gender: string,
+    public shortcode: GenderAbbr
   ) {}
 }
 
@@ -109,6 +111,7 @@ export const localToSendable = (user: User): SendableUser => {
         subjects: user.tutordata.subjects.map((x) => x.id),
         verification_file: user.tutordata.verification_file,
         verified: user.tutordata.verified,
+        profile_picture: user.tutordata.profile_picture,
       }
     : null;
   return {
@@ -145,12 +148,15 @@ export const sendableToLocal = (
           constants.schoolData.filter((x) => x.id in user.tutordata.schooldata),
           constants.subjects.filter((x) => x.id in user.tutordata.subjects),
           user.tutordata.verification_file,
-          user.tutordata.verified
+          user.tutordata.verified,
+          user.tutordata.profile_picture
         )
       : null,
     user.terms_accepted,
-    constants.genders.find((x) => x.shortcode === user.gender)
+    constants.genders.find((x) => x.shortcode === user.gender),
     // need to provide token / token_expiry via login
+    "",
+    ""
   );
 };
 
