@@ -75,6 +75,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['uuid', 'email', 'email_verified', 'first_name', 'last_name', 'gender',
                   'state', 'password', 'studentdata', 'tutordata']
+        read_only_fields = ['email_verified']
         extra_kwargs = {
             'password': {'write_only': True},
         }
