@@ -9,9 +9,11 @@ cryptography==2.9
 Django==3.0.5
 django-channels==0.7.0
 django-cors-headers==3.2.1
+django-filter==2.2.0
 django-rest-framework==0.1.0
 django-rest-knox==4.1.0
 djangorestframework==3.11.0
+drf-base64==2.0
 drf-yasg==1.17.1
 entrypoints==0.3
 flake8==3.7.9
@@ -23,6 +25,7 @@ MarkupSafe==1.1.1
 mccabe==0.6.1
 oauthlib==3.1.0
 packaging==20.3
+Pillow==7.1.1
 pip-review==1.1.0
 pycodestyle==2.5.0
 pycparser==2.20

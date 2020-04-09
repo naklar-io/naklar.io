@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+from django.conf.global_settings import DATA_UPLOAD_MAX_MEMORY_SIZE
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +27,14 @@ SECRET_KEY = 'y@e1mtft*fn9@a0p_07=31in#4_i-zgc9)e%cqlfj-q9yzbjts'
 BBB_SHARED = 'iFsEVFiFzXVJkgYHWEEBdf6PIcu39Az0gLn522K2UI'
 BBB_URL = "https://bbb.goodgrade.de"
 
-HOST = "https://naklar.io"
+# configure for production, see https://docs.djangoproject.com/en/3.0/ref/settings/#email-backend
+EMAIL_HOST = "localhost"
+EMAIL_PORT = "1025"
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10mb
+
+
+HOST = "https://dev.naklar.io"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -36,6 +45,7 @@ CORS_ORIGIN_WHITELIST = [
     "https://dev.naklar.io",
 ]
 
+MEDIA_URL = '/media/'
 # Set custom user model
 AUTH_USER_MODEL = 'account.CustomUser'
 SWAGGER_SETTINGS = {
@@ -84,6 +94,7 @@ INSTALLED_APPS = [
     'channels',
     'drf_yasg',
     'corsheaders',
+    'drf_base64',
     # our components
     'account',
     'call',
