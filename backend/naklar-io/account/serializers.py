@@ -73,7 +73,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['uuid', 'email', 'first_name', 'last_name', 'gender',
+        fields = ['uuid', 'email', 'email_verified', 'first_name', 'last_name', 'gender',
                   'state', 'password', 'studentdata', 'tutordata']
         extra_kwargs = {
             'password': {'write_only': True},
