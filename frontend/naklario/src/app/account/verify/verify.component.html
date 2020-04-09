@@ -1,0 +1,49 @@
+<div class="container">
+  <h1 class="primary-color">Hey du,</h1>
+
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error | json }}
+  </div>
+
+  <div *ngIf="loading" class="text-center align-middle">
+    <span class="spinner-border primary-color"></span>
+    <br />
+    <small>
+      Gib uns noch einen Moment. Wir geben unser bestes ;)
+    </small>
+  </div>
+
+  <div *ngIf="!loading">
+    <div *ngIf="verificationOk">
+      <div class="alert alert-success text-center">
+        Verfizierung erfolgreich
+      </div>
+      <p>
+        Vielen Dank fürs Beitreten der Community von naklar.io! Du kannst jetzt
+        alle unserer Features ausprobieren.
+      </p>
+    </div>
+    <div *ngIf="!verificationOk">
+      <div class="alert alert-danger text-center">
+        Verfizierung fehlgeschlagen
+      </div>
+      <p>
+        Uups, dieser Link zur Verifizierung scheint abgelaufen zu sein. Du
+        kannst dich hier anmelden und einfach einen neuen bekommen.
+      </p>
+    </div>
+    <div class="row">
+      <div class="col-sm"></div>
+      <div class="col text-center">
+        <a
+          routerLink="/account/login"
+          class="btn btn-primary"
+          style="width: 50%;"
+        >
+          Login
+        </a>
+      </div>
+      <div class="col-sm"></div>
+    </div>
+  </div>
+</div>
