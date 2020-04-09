@@ -1,12 +1,14 @@
 <div class="container">
-  <h1 class="primary-color">Registrierung als Schüler*in</h1>
+  <h1 class="primary-color">
+    Unsere Tutoren sind bereit für deine Fragen! Eine kleine Sache noch...
+  </h1>
   <p class="lead">
-    Wir brauchen hier noch ein paar Informationen von dir.
+    Bitte registriere Dich hier kurz. Dann kannst Du sofort loslegen und mit
+    Deinem Tutor kostenlos mit Deinen Fragen löchern!
   </p>
 
   <div *ngIf="submitSuccess" class="alert alert-success text-center">
     <p>Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.</p>
-    <p>Sobald wir fertig sind, <strong>melden wir uns per Mail</strong></p>
   </div>
   <div *ngIf="error" class="alert alert-danger text-center">
     {{ error | json }}
@@ -29,23 +31,6 @@
         </div>
       </div>
 
-      <div class="form-group col">
-        <label for="lastName">Nachname</label>
-        <input
-          type="text"
-          class="form-control"
-          name="lastName"
-          formControlName="lastName"
-        />
-        <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
-          <div *ngIf="f.lastName.errors.required">
-            Du musst einen Nachnamen angeben
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-row">
       <div class="from-group col">
         <label for="email">Email</label>
         <input

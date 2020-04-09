@@ -1,13 +1,20 @@
 <div class="container">
-  <h1 class="primary-color">Tutoren sind gern gesehen</h1>
+  <h1 class="primary-color">Die Schüler freuen sich auf Dich!</h1>
   <p class="lead">
-    Nur durch die aktive Unterstützung unserer Tutoren können wir tausenden
-    Schülern helfen.
+    Mit Deiner Unterstützung können Schüler den Schulstoff meistern und bleiben
+    motiviert. Helfe ihnen bequem von zu Hause und wann immer Du möchtest.
   </p>
 
   <div *ngIf="submitSuccess" class="alert alert-success text-center">
-    <p>Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.</p>
-    <p>Sobald wir fertig sind, <strong>melden wir uns per Mail</strong></p>
+    <p>
+      Danke für Dein Engagement! Unser Team wird sich Deine Registrierung
+      zeitnah bearbeiten und Dich
+      <strong
+        >nach einer kurzen Verifizierung Deiner Eingaben freischalten.
+      </strong>
+      <br>
+      Und schon bist Du startklar und kannst direkt Schülern helfen :)
+    </p>
   </div>
   <div *ngIf="error" class="alert alert-danger text-center">
     {{ error | json }}
@@ -15,9 +22,9 @@
 
   <form #tutorForm="ngForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
-      <div class="col-3"> 
+      <div class="col-3">
         <div class="mx-2 align-middle">
-        <misc-img-upload (img)="onImageChange($event)"></misc-img-upload>
+          <misc-img-upload (img)="onImageChange($event)"></misc-img-upload>
         </div>
       </div>
 
@@ -233,7 +240,7 @@
     </div>
 
     <div class="form-group">
-      <label for="file">Datei für Verifikation</label>
+      <label for="file">Hochladen Dokument</label>
       <input
         type="file"
         class="form-control"
@@ -246,8 +253,10 @@
 
       <p>
         <small>
-          Um deinen Tutor-Account zu verifizieren benötigen wir ein Zertifikat,
-          welches deinen vollen Namen enthält und dich als Tutor qualifiziert.
+          Der Schutz der Schüler*innen im Internet ist uns sehr wichtig. Bitte
+          lade hier ein Ausweisdokument (Das kann sein: Perso, Pass,
+          Führerschein, Studentenausweis mit Foto) hoch, damit wir Dich
+          verifizieren können Danke für Dein Verständnis :)!
         </small>
       </p>
     </div>

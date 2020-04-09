@@ -27,13 +27,12 @@ export class StudentRegisterComponent implements OnInit {
   genders: Gender[];
   schoolType: number = -1;
   grade: number = -1;
-  
+
   private constants: Constants;
 
   registerForm = this.fb.group(
     {
       firstName: ["", Validators.required],
-      lastName: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]],
       gender: ["", Validators.required],
       password: ["", [Validators.required, Validators.minLength(8)]],
@@ -76,6 +75,7 @@ export class StudentRegisterComponent implements OnInit {
       this.states = data.constants.states;
       this.schoolTypes = data.constants.schoolTypes;
       this.schoolData = data.constants.schoolData;
+      this.genders = data.constants.genders;
     });
   }
 
@@ -90,7 +90,7 @@ export class StudentRegisterComponent implements OnInit {
       email: this.f.email.value,
       password: this.f.password.value,
       first_name: this.f.firstName.value,
-      last_name: this.f.lastName.value,
+      last_name: "",
       state: this.f.state.value.id,
       terms_accepted: this.f.terms.value,
       gender: this.f.gender.value,
