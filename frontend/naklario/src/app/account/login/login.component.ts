@@ -46,7 +46,6 @@ export class LoginComponent implements OnInit {
     });
 
     if (!this.registerUrl) {
-      console.log(this.registerUrl);
       // component was not embedded
       this.embedded = false;
       this.registerUrl = "/account/student/register";
@@ -56,7 +55,7 @@ export class LoginComponent implements OnInit {
     }
 
     // redirect to home if already logged in
-    if (!this.embedded && this.authenticationService.currentUserValue) {
+    if (!this.embedded && this.authenticationService.isLoggedIn) {
       this.router.navigate([this.returnUrl]);
     }
   }
@@ -71,7 +70,7 @@ export class LoginComponent implements OnInit {
       email: this.f.email.value,
       password: this.f.password.value,
     };
-    console.log("Logging in user: ", login);
+    console.log("Logging in user: ", login, this.constants);
 
     this.loading = true;
     this.authenticationService
