@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import {
   User,
   SendableUser,
@@ -8,9 +8,11 @@ import {
   sendableToLocal,
   Constants,
   State,
+  TutorData,
 } from "../_models";
 import { environment } from "../../environments/environment";
-import { map, flatMap, tap } from "rxjs/operators";
+import { map, flatMap, tap, take, mergeMap } from "rxjs/operators";
+import { DatabaseService } from "./database.service";
 
 interface LoginResponse {
   token: string;
@@ -25,7 +27,10 @@ export class AuthenticationService {
   private loggedIn: BehaviorSubject<boolean>;
   private loggedIn$: Observable<boolean>;
 
-  constructor(private http: HttpClient) {
+  public constants$: Observable<Constants>;
+
+  constructor(private http: HttpClient,
+    private databaseService: DatabaseService) {
     let user = JSON.parse(localStorage.getItem("currentUser")) as User;
     let loggedIn = false;
     // is the login still valid ?
@@ -159,6 +164,21 @@ export class AuthenticationService {
           return filledUser;
         })
       );
+  }
+
+  public refreshTutorVerified() {
+    return this.http.get<SendableUser>(`${environment.apiUrl}/account/current/`).pipe(
+      map((user) => {
+        const updatedUser = Object.assign(this.currentUserValue, {
+          tutordata: Object.assign(this.currentUserValue.tutordata, {
+            verified: user.tutordata.verified,
+          }) as TutorData
+        }) as User;
+        this.currentUserSubject.next(updatedUser);
+        return updatedUser;
+      })
+    );
+
   }
 
   /**

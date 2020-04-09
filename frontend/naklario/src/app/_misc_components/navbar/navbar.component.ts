@@ -11,11 +11,15 @@ import { Router } from "@angular/router";
 export class NavbarComponent implements OnInit {
   isNavbarCollapsed: boolean;
   user: User;
+  loggedIn: boolean;
   constructor(
     private authenticationService: AuthenticationService,
     private router: Router
   ) {
     authenticationService.currentUser.subscribe((user) => (this.user = user));
+    authenticationService.isLoggedIn$.subscribe(
+      (loggedIn) => (this.loggedIn = loggedIn)
+    );
   }
 
   ngOnInit(): void {

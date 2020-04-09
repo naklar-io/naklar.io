@@ -52,6 +52,7 @@ export class TutorGuard implements CanActivate, CanActivateChild {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    this.authenticationService.refreshTutorVerified().subscribe()
     const currentUser = this.authenticationService.currentUserValue;
     if (currentUser) {
       if (currentUser.tutordata && currentUser.tutordata.verified) {

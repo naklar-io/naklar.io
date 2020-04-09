@@ -7,25 +7,21 @@
   </p>
 
   <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
-    <div *ngIf="subjects$ | async as subjects" class="form-group form-row">
-      <label for="subjects">Für welches Fach hast du eine Frage?</label>
-      <select name="subjects" class="form-control" [formControl]="f.subject">
-        <option *ngFor="let subject of subjects" [ngValue]="subject">
-          {{ subject.name }}
+    <label for="subjects">Für welches Fach hast du eine Frage?</label>
+    <select name="subjects" class="form-control" [formControl]="f.subject">
+      <option *ngFor="let subject of constants.subjects" [ngValue]="subject">
+        {{ subject.name }}
+      </option>
+    </select>
+
+    <p>Diese Informationen haben wir in deinem Account gefunden:</p>
+    <div class="form-row">
+      <label for="state">Bundesland</label>
+      <select name="state" class="form-control" [formControl]="f.state">
+        <option *ngFor="let state of constants.states" [ngValue]="state">
+          {{ state.name }}
         </option>
       </select>
-    </div>
-
-    <p>Diese Informationen haben wir aus deinem Account gefunden:</p>
-    <div class="form-row">
-      <div *ngIf="states$ | async as states" class="form-group col">
-        <label for="state">Bundesland</label>
-        <select name="state" class="form-control" [formControl]="f.state">
-          <option *ngFor="let state of states" [ngValue]="state">
-            {{ state.name }}
-          </option>
-        </select>
-      </div>
 
       <div class="from-group col">
         <ng5-slider

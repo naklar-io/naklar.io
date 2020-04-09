@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthenticationService
   ) {
+    authenticationService.refreshTutorVerified().subscribe();
     authenticationService.currentUser.subscribe(user => this.user = user);
   }
 
