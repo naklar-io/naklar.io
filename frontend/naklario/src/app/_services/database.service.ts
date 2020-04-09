@@ -28,7 +28,7 @@ export class DatabaseService {
     this.schoolData = this.get<SchoolData[]>("/account/schooldata/");
     this.genders = of(
       JSON.parse(
-        '[{"id":1,"gender":"Weiblich", "shortcode": "FE"},{"id":2,"gender":"Männlich", "shortcode": "MA"},{"id":3,"gender":"Diverses", "shortcode": "DI"}]'
+        '[{"id":1,"gender":"Weiblich", "shortcode": "FE"},{"id":2,"gender":"Männlich", "shortcode": "MA"},{"id":3,"gender":"Divers", "shortcode": "DI"}]'
       ) as Gender[]
     );
   }

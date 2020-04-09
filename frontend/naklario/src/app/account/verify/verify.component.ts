@@ -46,6 +46,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
       },
       (error) => {
         this.loading = false;
+        this.verificationOk = false;
         this.error = error;
       }
     );
