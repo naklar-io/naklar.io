@@ -1,7 +1,11 @@
 Hallo {{ user.first_name }},
+  
+vielen Dank für die Anmeldung!
 
-vielen Dank für die Anmeldung! 
-Du kannst deine E-Mail unter {{ verification_url }} bestätigen.
+Um sicher zu sein, dass dir diese E-Mail-Adresse gehört, haben wir dir diesen Link geschickt.
+
+Bitte bestätige hier {{ verification_url }} den Besitz deiner E-Mail-Adresse
 
 Viele Grüße
 Dein naklar.io-Team
+

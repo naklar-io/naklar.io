@@ -1,0 +1,9 @@
+Hallo {{ user.first_name }},
+  
+wir haben deine Daten überprüft und deinen Account freigeschaltet!
+Du kannst dich nun auf {{ login_url }} einloggen und loslegen.
+Viel Spaß!
+
+Viele Grüße
+Dein naklar.io-Team
+
