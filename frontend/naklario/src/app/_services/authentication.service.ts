@@ -17,10 +17,6 @@ interface LoginResponse {
   expiry: string;
 }
 
-interface Verification {
-  token: string;
-}
-
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
@@ -150,11 +146,8 @@ export class AuthenticationService {
   }
 
   public verify(token: string) {
-    const v: Verification = {
-      token: token,
-    };
     return this.http
-      .post<Verification>(`${environment.apiUrl}/account/verfiy/`, v)
+      .post<null>(`${environment.apiUrl}/account/email/verify/${token}/`, null)
       .pipe(
         tap((v) => {
           // set verified to true
@@ -162,5 +155,9 @@ export class AuthenticationService {
           this.currentUserSubject.next(this.currentUserValue);
         })
       );
+  }
+
+  public resendVerify() {
+    return this.http.post(`${environment.apiUrl}/account/email/resend_verification/`, null)
   }
 }
