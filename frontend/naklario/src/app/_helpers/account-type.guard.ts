@@ -25,7 +25,8 @@ export class StudentGuard implements CanActivate, CanActivateChild {
       if (currentUser.studentdata) {
         return true;
       } else {
-        this.router.navigate(["roulette/tutor/"]);
+        // TODO: Show error message
+        this.router.navigate(["/"]);
         return false;
       }
     }
@@ -41,7 +42,7 @@ export class StudentGuard implements CanActivate, CanActivateChild {
 }
 
 /**
- * for sites which require a tutor account
+ * for sites which require a verified tutor account
  */
 @Injectable({ providedIn: "root" })
 export class TutorGuard implements CanActivate, CanActivateChild {
@@ -53,7 +54,7 @@ export class TutorGuard implements CanActivate, CanActivateChild {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const currentUser = this.authenticationService.currentUserValue;
     if (currentUser) {
-      if (currentUser.tutordata) {
+      if (currentUser.tutordata && currentUser.tutordata.verified) {
         return true;
       } else {
         this.router.navigate(["roulette/student/"]);

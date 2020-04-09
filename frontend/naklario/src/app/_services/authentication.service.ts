@@ -37,11 +37,7 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  public updateUser(user: SendableUser, constants: Constants) {
-    if (!user.password) {
-      // don't send password if it wasn't updated
-      delete user.password;
-    }
+  public updateUser(user: Partial<SendableUser>, constants: Constants) {
     return this.http
       .put<SendableUser>(`${environment.apiUrl}/account/`, user)
       .pipe(

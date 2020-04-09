@@ -39,8 +39,7 @@ import { FeedbackComponent } from './_misc_components/feedback/feedback.componen
 @NgModule({
   declarations: [
     AppComponent,
-    CallComponent,
-    RouletteComponent,
+
     HomeComponent,
     LandingComponent,
     NavbarComponent,
