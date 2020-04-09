@@ -19,6 +19,9 @@ from account.managers import CustomUserManager
 EMAIL_VERIFICATION_PLAINTEXT = get_template("email_verification.txt")
 EMAIL_VERIFICATION_HTMLY = get_template("email_verification.html")
 
+TUTOR_VERIFICATION_PLAINTEXT = get_template("tutor_verification.txt")
+TUTOR_VERIFICATION_HTMLY = get_template("tutor_verification.html")
+
 
 class SchoolType(models.Model):
     name = models.CharField(_("Name des Schultyps"), max_length=50)
@@ -83,6 +86,29 @@ class TutorData(models.Model):
 
     profile_picture = models.ImageField(
         _("Profilbild"), upload_to=profile_upload_path, null=True)
+
+    __was_verified = None
+
+    def __init__(self, *args, **kwargs):
+        super(TutorData, self).__init__(*args, **kwargs)
+        self.__was_verified = self.verified
+    
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.__was_verified != self.verified:
+            self.send_verified_email()
+        return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+    
+    def send_verified_email(self):
+        subject, from_email, to = "Verifizierung für naklar.io", "noreply@naklar.io", self.user.email
+        d = {
+            "user": self.user,
+            "url": "https://dev.naklar.io",
+        }
+        text_content = TUTOR_VERIFICATION_PLAINTEXT.render(d)
+        html_content = TUTOR_VERIFICATION_HTMLY.render(d)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
     def __str__(self):
         return str(self.user)
@@ -155,6 +181,18 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return True
         else:
             return False
+
+    def is_tutor(self):
+        return hasattr(self, 'tutordata')
+    
+    def is_student(self):
+        return hasattr(self, 'studentdata')
+
+    is_tutor.boolean = True
+    is_tutor.admin_order_field = 'tutordata'
+    is_student.boolean = True
+    is_student.admin_order_field = 'studentdata'
+    
 
     def __str__(self):
         return self.email + ' <{}>'.format(self.uuid)

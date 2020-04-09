@@ -1,7 +1,21 @@
-Hallo {{ user.first_name }},
+<p>
+  Hallo {{ user.first_name }},
+</p>
+<p>
+  vielen Dank für die Anmeldung!
+</p>
+<p>
+  Um sicher zu sein, dass dir diese E-Mail-Adresse gehört, haben wir dir diesen
+  Link geschickt.
+</p>
+<p>
+  Bitte bestätige hier
+  <a href="{{verification_url}}">{{ verification_url }}</a> den Besitz deiner
+  E-Mail-Adresse.
+</p>
 
-vielen Dank für die Anmeldung! 
-Du kannst deine E-Mail unter <a href="{{verification_url}}">{{ verification_url }}</a> bestätigen.
-
-Viele Grüße
-Dein naklar.io-Team
+<p>
+  Viele Grüße
+  <br />
+  Dein naklar.io-Team
+</p>

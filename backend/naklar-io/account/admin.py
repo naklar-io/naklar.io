@@ -28,7 +28,7 @@ class TutorDataInline(admin.StackedInline):
 
 
 class TutorDataFilter(admin.SimpleListFilter):
-    title = _('Ist tutor')
+    title = _('Tutor')
 
     parameter_name = 'is_tutor'
 
@@ -39,8 +39,23 @@ class TutorDataFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() == 'null':
             return queryset.filter(tutordata__isnull=True)
-        else:
+        elif self.value() == 'not_null':
             return queryset.filter(tutordata__isnull=False)
+
+
+class StudentDataFilter(admin.SimpleListFilter):
+    title = _('Schüler')
+
+    parameter_name = 'is_student'
+
+    def lookups(self, request, model_admin):
+        return (('not_null', _('Yes')),
+                ('null', _('No')))
+    def queryset(self, request, queryset):
+        if self.value() == 'null':
+            return queryset.filter(studentdata__isnull=True)
+        elif self.value() == 'not_null':
+            return queryset.filter(studentdata__isnull=False)
 
 
 class UnverifiedTutorFilter(admin.SimpleListFilter):
@@ -68,12 +83,12 @@ class CustomUserAdmin(UserAdmin):
         TutorDataInline
     ]
     list_display = ('email', 'first_name', 'last_name',
-                    'state', 'is_staff', 'is_active')
-    list_filter = ('is_staff', 'is_active', UnverifiedTutorFilter, 'state'
+                    'state', 'is_staff', 'is_active', 'is_tutor', 'is_student', 'email_verified')
+    list_filter = ('is_staff', 'is_active', 'email_verified', UnverifiedTutorFilter, StudentDataFilter, TutorDataFilter, 'state'
                    )
     fieldsets = (
         (None, {'fields':
-                ('email', 'first_name', 'last_name', 'gender', 'state', 'password')}),
+                ('email', 'email_verified', 'first_name', 'last_name', 'gender', 'state', 'password')}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (
