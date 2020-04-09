@@ -8,10 +8,12 @@ import {
   SchoolData,
   User,
   SendableUser,
+  Constants,
 } from "src/app/_models";
 import { Observable, forkJoin } from "rxjs";
 import { share, tap, first, map } from "rxjs/operators";
 import { Options } from "ng5-slider";
+import { RouteConfigLoadEnd, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: "roulette-student",
@@ -28,6 +30,8 @@ export class StudentComponent implements OnInit {
   schoolData$: Observable<SchoolData[]>;
 
   user$: Observable<User>;
+
+  constants: Constants;
 
   slider_options: Options = {
     animate: false,
@@ -53,15 +57,15 @@ export class StudentComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private databaseService: DatabaseService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private route: ActivatedRoute,
   ) {}
   
   ngOnInit(): void {
-    this.states$ = this.databaseService.states.pipe(share());
-    this.subjects$ = this.databaseService.subjects.pipe(share());
-    this.schoolTypes$ = this.databaseService.schoolTypes.pipe(share());
-    this.schoolData$ = this.databaseService.schoolData.pipe(share());
+    this.route.data.subscribe((data: {constants: Constants}) => {
+      this.constants = data.constants;
+    });
+
     this.user$ = this.authenticationService.currentUser.pipe(share()).pipe(
       tap((user) => {
         this.f.state.setValue(user.state);
@@ -94,7 +98,7 @@ export class StudentComponent implements OnInit {
 
           this.loading = true;
           const auth$ = this.authenticationService
-            .update(partialUser)
+            .updateUser(partialUser, this.constants)
             .pipe(first())
             .subscribe(
               (data) => {
