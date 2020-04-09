@@ -1,12 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-
 from django.utils.translation import gettext as _
 
-from .models import StudentData, TutorData, State, Subject, \
-    SchoolData, SchoolType, CustomUser
 from .forms import CustomUserChangeForm, CustomUserCreationForm
-
+from .models import (CustomUser, SchoolData, SchoolType, State, StudentData,
+                     Subject, TutorData)
 
 admin.site.register(SchoolData)
 admin.site.register(SchoolType)
@@ -24,7 +22,8 @@ class TutorDataInline(admin.StackedInline):
     model = TutorData
     verbose_name = "Tutordaten"
     verbose_name_plural = verbose_name
-    fields = ['schooldata', 'subjects', 'verified', 'verification_file', 'profile_picture', 'image_tag']
+    fields = ['schooldata', 'subjects', 'verified',
+              'verification_file', 'profile_picture', 'image_tag']
     readonly_fields = ['image_tag']
 
 
@@ -36,7 +35,7 @@ class TutorDataFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         return (('not_null', _('Yes')),
                 ('null', _('No')))
-    
+
     def queryset(self, request, queryset):
         if self.value() == 'null':
             return queryset.filter(tutordata__isnull=True)
@@ -52,7 +51,7 @@ class UnverifiedTutorFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         return (('yes', _('Unverified')),
                 ('no', _('Verified')))
-    
+
     def queryset(self, request, queryset):
         if self.value() == 'yes':
             return queryset.filter(tutordata__isnull=False).filter(tutordata__verified=False)

@@ -1,0 +1,7 @@
+Hallo {{ user.first_name }},
+
+vielen Dank für die Anmeldung! 
+Du kannst deine E-Mail unter {{ verification_url }} bestätigen.
+
+Viele Grüße
+Dein naklar.io-Team
