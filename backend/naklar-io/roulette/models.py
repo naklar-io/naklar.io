@@ -1,20 +1,20 @@
-from django.db import models
-from django.db.models.signals import pre_delete, pre_save, post_save, post_delete
-from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.dispatch import receiver
-
-from django.conf import settings
-
-from account.models import StudentData, TutorData, Subject
-
 import datetime
+import hashlib
 import random
 import uuid
-import requests
-import hashlib
 import xml.etree.ElementTree as ET
 from urllib.parse import urlencode
+
+import requests
+from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+from django.db.models.signals import (post_delete, post_save, pre_delete,
+                                      pre_save)
+from django.dispatch import receiver
+from django.utils.translation import gettext_lazy as _
+
+from account.models import StudentData, Subject, TutorData
 
 
 class Feedback(models.Model):
@@ -90,7 +90,7 @@ def look_for_match(sender, instance, **kwargs):
         student_requests = StudentRequest.objects.exclude(
             user__in=instance.failed_matches.all())
         student_requests = student_requests.filter(match__isnull=True)
-        
+
         subjects = instance.user.tutordata.subjects.all()
         student_requests = student_requests.filter(subject__in=subjects)
         if student_requests:
@@ -247,7 +247,6 @@ class Meeting(models.Model):
             tutor_request = match.tutor_request
             match.student_request.delete()
             tutor_request.delete()
-            
 
     def create_join_link(self, user, moderator=False):
         if not self.established:

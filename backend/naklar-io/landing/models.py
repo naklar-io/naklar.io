@@ -6,10 +6,10 @@ class InterestedIndividual(models.Model):
     PARENT = 'PA'
     STUDENT = 'ST'
     TYPE_CHOICES = [
-         (TUTOR, 'Tutor'),
-         (PARENT, 'Eltern'),
-         (STUDENT, 'Schüler')
-        ]
+        (TUTOR, 'Tutor'),
+        (PARENT, 'Eltern'),
+        (STUDENT, 'Schüler')
+    ]
 
     email = models.EmailField(max_length=254, unique=True)
     updates = models.BooleanField(default=False)

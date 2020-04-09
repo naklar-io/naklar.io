@@ -1,16 +1,23 @@
-from django.core import validators
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from django.conf import settings
-
 import os
-
 import uuid
 
-from .managers import CustomUserManager
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.core import validators
+from django.core.mail import EmailMultiAlternatives
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.template import Context
+from django.template.loader import get_template
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
+
+from account.managers import CustomUserManager
+
+EMAIL_VERIFICATION_PLAINTEXT = get_template("email_verification.txt")
+EMAIL_VERIFICATION_HTMLY = get_template("email_verification.html")
 
 
 class SchoolType(models.Model):
@@ -85,8 +92,17 @@ class TutorData(models.Model):
 
     image_tag.short_description = 'Image'
 
+
+class VerificationToken(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created = models.DateTimeField(_("Erstellt"), auto_now_add=True)
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("E-Mail"), max_length=254, unique=True)
+    email_verified = models.BooleanField(_("E-Mail bestätigt"), default=False)
     # UUID field for identification in e.g. BBB-Service (also possibly shadow-accounts for LIMITED!!! access)
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     is_staff = models.BooleanField(default=False)
@@ -116,5 +132,35 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['first_name', 'state']
     objects = CustomUserManager()
 
+    def send_verification_email(self):
+        if not self.email_verified:
+            token = VerificationToken.objects.get_or_create(user=self)[0]
+            subject, from_email, to = "E-Mail-Bestätigung für naklar.io", "noreply@naklar.io", self.email
+            d = {
+                'user': self,
+                'verification_url': settings.HOST + "/account/verify?token=" + str(token.token)
+            }
+            text_content = EMAIL_VERIFICATION_PLAINTEXT.render(d)
+            html_content = EMAIL_VERIFICATION_HTMLY.render(d)
+            msg = EmailMultiAlternatives(
+                subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+
+    def check_email_verification(self, check_token):
+        if str(self.verificationtoken.token) == str(check_token):
+            self.email_verified = True
+            self.verificationtoken.delete()
+            self.save()
+            return True
+        else:
+            return False
+
     def __str__(self):
         return self.email + ' <{}>'.format(self.uuid)
+
+
+@receiver(post_save, sender=CustomUser)
+def send_verify_on_creation(sender, instance, created, **kwargs):
+    if created:
+        instance.send_verification_email()

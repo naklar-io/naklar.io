@@ -1,13 +1,16 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from account.models import State, SchoolType, Subject, SchoolData
+from account.models import SchoolData, SchoolType, State, Subject
 
-SUBJECTS = ["Deutsch", "Mathematik", "Englisch", "Französisch", "Latein", "Physik", "Chemie", "Biologie", "Musik", "Geschichte", "Geographie", "Wirtschaft/Recht", "Informatik"]
-MAX_GRADES = {"Gymnasium": 13, "Realschule": 10, "Mittelschule": 10, "FOS/BOS": 13}
+SUBJECTS = ["Deutsch", "Mathematik", "Englisch", "Französisch", "Latein", "Physik", "Chemie",
+            "Biologie", "Musik", "Geschichte", "Geographie", "Wirtschaft/Recht", "Informatik"]
+MAX_GRADES = {"Gymnasium": 13, "Realschule": 10,
+              "Mittelschule": 10, "FOS/BOS": 13}
 STATES = {"Baden-Württemberg": "BW",
           "Bayern": "BY",
           "Berlin": "BE",
           "Brandenburg": "BB",
+          "Bremen": "HB",
           "Hamburg": "HH",
           "Hessen": "HE",
           "Mecklenburg-Vorpommern": "MV",
@@ -42,4 +45,3 @@ class Command(BaseCommand):
         for subj in SUBJECTS:
             subjobj = Subject(name=subj)
             subjobj.save()
-

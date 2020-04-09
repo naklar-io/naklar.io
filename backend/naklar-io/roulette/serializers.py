@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from django.conf import settings
+from rest_framework import serializers
+
 from account.serializers import CustomUserSerializer
 from roulette.models import (Feedback, Match, Meeting, Request, StudentRequest,
                              TutorRequest)
@@ -37,7 +38,6 @@ class FeedbackSerializer(serializers.ModelSerializer):
             'rating': {'required': True},
             'meeting': {'required': True}
         }
-
 
 
 class MatchSerializer(DynamicFieldsModelSerializer):

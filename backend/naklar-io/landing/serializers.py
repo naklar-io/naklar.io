@@ -1,5 +1,6 @@
-from .models import InterestedIndividual
 from rest_framework import serializers
+
+from .models import InterestedIndividual
 
 
 class IndividualSerializer(serializers.ModelSerializer):

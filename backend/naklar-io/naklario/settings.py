@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -25,7 +26,13 @@ SECRET_KEY = 'y@e1mtft*fn9@a0p_07=31in#4_i-zgc9)e%cqlfj-q9yzbjts'
 BBB_SHARED = 'iFsEVFiFzXVJkgYHWEEBdf6PIcu39Az0gLn522K2UI'
 BBB_URL = "https://bbb.goodgrade.de"
 
-HOST = "https://naklar.io"
+# configure for production, see https://docs.djangoproject.com/en/3.0/ref/settings/#email-backend
+EMAIL_HOST = "localhost"
+EMAIL_PORT = "1025"
+
+
+
+HOST = "https://dev.naklar.io"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

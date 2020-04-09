@@ -1,25 +1,22 @@
-from rest_framework import generics
-from rest_framework import serializers
-from rest_framework import permissions
-from rest_framework import status
-from rest_framework import exceptions
-
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from knox.views import LoginView as KnoxLoginView
+from rest_framework import (exceptions, generics, permissions, serializers,
+                            status)
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import get_object_or_404
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.decorators import api_view
 
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-
-
-from account.serializers import SubjectSerializer, StateSerializer,\
-    CustomUserSerializer, CurrentUserSerializer, SchoolDataSerializer, SchoolTypeSerializer, TutorDataSerializer
-from account.models import Subject, State, CustomUser, SchoolType, SchoolData, TutorData
-
+from account.models import (CustomUser, SchoolData, SchoolType, State, Subject,
+                            TutorData, VerificationToken)
 from account.permissions import IsUser
-from knox.views import LoginView as KnoxLoginView
-from rest_framework.authentication import BasicAuthentication
+from account.serializers import (CurrentUserSerializer, CustomUserSerializer,
+                                 SchoolDataSerializer, SchoolTypeSerializer,
+                                 StateSerializer, SubjectSerializer,
+                                 TutorDataSerializer)
 
 
 class LoginView(KnoxLoginView):
@@ -135,3 +132,21 @@ class DeleteVerificationView(APIView):
             tutordata.verification_file.delete()
             tutordata.save()
         return Response(self.serializer_class(instance=request.user).data)
+
+
+@api_view(['POST'])
+def verify_email(request, token):
+    if not token:
+        raise exceptions.NotAcceptable(detail="Kein Token gefunden!")
+    verify_token = get_object_or_404(VerificationToken, token=token)
+    if verify_token.user.check_email_verification(token):
+        return Response({"success": True})
+    else:
+        return Response({"error": "Token nicht gültig!"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def resend_verification(request):
+    request.user.send_verification_email()
+    return Response()

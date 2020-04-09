@@ -6,6 +6,8 @@ from account.models import Subject, State, CustomUser, StudentData, \
 from account.managers import CustomUserManager
 from drf_base64.fields import Base64FileField
 from drf_base64.serializers import ModelSerializer
+
+
 class DynamicFieldsModelSerializer(ModelSerializer):
     """
     A ModelSerializer that takes an additional `fields` argument that
@@ -26,7 +28,7 @@ class DynamicFieldsModelSerializer(ModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
-    
+
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
@@ -60,7 +62,8 @@ class StudentDataSerializer(serializers.ModelSerializer):
 class TutorDataSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = TutorData
-        fields = ['schooldata', 'subjects', 'verification_file', 'verified', 'profile_picture']
+        fields = ['schooldata', 'subjects',
+                  'verification_file', 'verified', 'profile_picture']
         read_only_fields = ['verified']
 
 
@@ -127,6 +130,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
 class CustomUserSerializer(serializers.ModelSerializer):
     tutordata = TutorDataSerializer(fields=['schooldata', 'subjects'])
+
     class Meta:
         model = CustomUser
         fields = ["uuid", "first_name", "last_name",

@@ -7,11 +7,11 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
 from roulette.models import Feedback
+from roulette.serializers import FeedbackSerializer
 
 from .models import Match, Meeting, Request, StudentRequest, TutorRequest
 from .serializers import (MatchSerializer, MeetingSerializer,
                           StudentRequestSerializer, TutorRequestSerializer)
-from roulette.serializers import FeedbackSerializer
 
 
 class MatchUserMixin(object):
