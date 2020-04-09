@@ -1,10 +1,20 @@
 <div class="container">
-  <h1 class="primary-color">Registrierung als Schüler*in</h1>
+  <h1 class="primary-color">
+    Unsere Tutoren sind bereit für deine Fragen! Eine kleine Sache noch...
+  </h1>
   <p class="lead">
-    Wir brauchen hier noch ein paar Informationen von dir.
+    Bitte registriere Dich hier kurz. Dann kannst Du sofort loslegen und mit
+    Deinem Tutor kostenlos mit Deinen Fragen löchern!
   </p>
 
-  <form #studentForm (ngSubmit)="onSubmit()">
+  <div *ngIf="submitSuccess" class="alert alert-success text-center">
+    <p>Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.</p>
+  </div>
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error | json }}
+  </div>
+
+  <form #studentForm [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div class="form-row">
       <div class="form-group col">
         <label for="first-name">Vorname</label>
@@ -12,19 +22,48 @@
           type="text"
           class="form-control"
           name="first-name"
-          required
+          formControlName="firstName"
         />
+        <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+          <div *ngIf="f.firstName.errors.required">
+            Du musst einen Vornamen angeben
+          </div>
+        </div>
       </div>
+
       <div class="from-group col">
         <label for="email">Email</label>
         <input
           type="email"
           name="email"
           class="form-control"
-          required
+          formControlName="email"
         />
+        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+          <div *ngIf="f.email.errors.required">
+            Du musst eine email angeben
+          </div>
+          <div *ngIf="f.email.errors.email">
+            Diese Email ist invalide
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col">
+        <label for="gender">Geschlecht</label>
+        <select name="gender" class="form-control" formControlName="gender">
+          <option *ngFor="let gender of genders" [ngValue]="gender.shortcode">{{
+            gender.gender
+          }}</option>
+        </select>
+        <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
+          <div *ngIf="f.gender.errors.required">
+            Du musst ein Geschlecht angeben
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="form-row">
       <div class="form-group col">
         <label for="password">Passwort</label>
@@ -32,31 +71,68 @@
           type="password"
           name="password"
           class="form-control"
-          required
+          formControlName="password"
         />
+        <div
+          *ngIf="submitted && registerForm.errors?.passwordNotMatch"
+          class="invalid-feedback"
+        >
+          Die beiden Passwörter müssen überein stimmen.
+        </div>
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div *ngIf="f.password.errors.required">
+            Du musst ein Passwort angeben
+          </div>
+          <div *ngIf="f.password.errors.minlength">
+            Dein Passwort muss mindestens
+            {{ f.password.errors.minlength.requiredLength }} Zeichen lang
+          </div>
+        </div>
       </div>
+
       <div class="form-group col">
         <label for="password-repeat">Passwort wiederholen</label>
         <input
           type="password"
           name="password-repeat"
           class="form-control"
-          required
+          formControlName="passwordRepeat"
         />
+        <div
+          *ngIf="submitted && registerForm.errors?.passwordNotMatch"
+          class="invalid-feedback"
+        >
+          Die beiden Passwörter müssen überein stimmen.
+        </div>
+        <div
+          *ngIf="submitted && f.passwordRepeat.errors"
+          class="invalid-feedback"
+        >
+          <div *ngIf="f.passwordRepeat.errors.required">
+            Du musst ein Passwort angeben
+          </div>
+          <div *ngIf="f.passwordRepeat.errors.minlength">
+            Dein Passwort muss mindestens
+            {{ f.passwordRepeat.errors.minlength.requiredLength }} Zeichen lang
+            sein.
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="form-row">
       <div class="from-group col">
         <label for="state">Bundesland</label>
-        <select
-          name="state"
-          class="form-control"
-          required
-        >
-        <option *ngFor="let state of states" [ngValue]="state">
-          {{ state.name }}
-        </option>
+        <select name="state" class="form-control" formControlName="state">
+          <option *ngFor="let state of states" [ngValue]="state">
+            {{ state.name }}
+          </option>
         </select>
+        <div *ngIf="submitted && f.state.errors" class="invalid-feedback">
+          <div *ngIf="f.state.errors.required">
+            Du musst einen Bundesland ngeben
+          </div>
+        </div>
       </div>
     </div>
 
@@ -66,51 +142,47 @@
         <select
           name="school-type"
           class="form-control"
-          required
+          formControlName="schoolType"
         >
-        <option *ngFor="let schoolType of schoolTypes" [ngValue]="schoolType">
-          {{ schoolType.name }}
-        </option>
+          <option *ngFor="let schoolType of schoolTypes" [ngValue]="schoolType">
+            {{ schoolType.name }}
+          </option>
         </select>
+        <div *ngIf="submitted && f.schoolType.errors" class="invalid-feedback">
+          <div *ngIf="f.schoolType.errors.required">
+            Du musst einen Schultyp angeben
+          </div>
+        </div>
       </div>
+
       <div class="from-group col">
         <label for="class">Klassenstufe</label>
-          <ng5-slider
-            [options]="options"
-            [(value)]="grade"
-          ></ng5-slider>
+        <ng5-slider [options]="options" formControlName="slider"></ng5-slider>
       </div>
     </div>
 
-    
-    <!-- 
-      <label>Schultypen</label>
-      <div class="form-group">
-      <div *ngFor="let schoolType of schoolTypes" class="form-row">
-        <div class="col-3 form-check">
-          <label class="form-check-label">
-            <input
-              type="checkbox"
-              name="school-type"
-              class="form-check-input"
-              [value]="schoolType"
-              required
-            />
-            {{ schoolType.name }}
-          </label>
-        </div>
-        <div class="col">
-          <ng5-slider
-            [options]="slider_options[schoolType.id]"
-            [(value)]="slider_data[schoolType.id].low"
-            [(highValue)]="slider_data[schoolType.id].high"
-            class="form-control-range"
-          ></ng5-slider>
+    <div class="form-group form-row form-check-inline">
+      <input type="checkbox" formControlName="terms" class="form-check-input" />
+      <label for="terms" class="form-check-label"
+        >Ja, ich habe die <a routerLink="/terms">AGB</a> gelesen</label
+      >
+      <div *ngIf="submitted && f.terms.errors" class="invalid-feedback">
+        <div *ngIf="f.terms.errors.required">
+          Du musst die AGB akzeptieren
         </div>
       </div>
-    </div> -->
+    </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="studentForm.invalid || submitted">Absenden</button>
-
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="submitSuccess || loading"
+    >
+      <span
+        *ngIf="loading"
+        class="spinner-border spinner-border-sm mr-1"
+      ></span>
+      Absenden
+    </button>
   </form>
 </div>

@@ -3,7 +3,7 @@ import { AuthenticationService } from "src/app/_services";
 import { Validators, FormBuilder } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { first } from "rxjs/operators";
-import { SendableLogin, User } from "src/app/_models";
+import { SendableLogin, User, Constants } from "src/app/_models";
 
 @Component({
   selector: "account-login",
@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   @Input() registerUrl: string;
   // if the login component was embedded by another site
   embedded = false;
+  private constants: Constants;
 
   loginForm = this.fb.group({
     email: ["", [Validators.required, Validators.email]],
@@ -40,6 +41,10 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {}
   ngOnInit(): void {
+    this.route.data.subscribe((data: { constants: Constants }) => {
+      this.constants = data.constants;
+    });
+
     if (!this.registerUrl) {
       console.log(this.registerUrl);
       // component was not embedded
@@ -70,7 +75,7 @@ export class LoginComponent implements OnInit {
 
     this.loading = true;
     this.authenticationService
-      .login(login)
+      .login(login, this.constants)
       .pipe(first())
       .subscribe(
         (userData) => {

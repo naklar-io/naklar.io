@@ -11,26 +11,36 @@ import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
 
 // Components
 import { AppComponent } from "./app.component";
-import { CallComponent } from "./call/call.component";
+import { RouletteComponent } from "./roulette/roulette.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
-import { NavbarComponent } from "./misc/navbar/navbar.component";
-import { FooterComponent } from "./misc/footer/footer.component";
-import { PageNotFoundComponent } from "./misc/page-not-found/page-not-found.component";
 import { AccountModule } from "./account/account.module";
 import { RouletteModule } from "./roulette/roulette.module";
 
 import { EmailFormComponent } from "./landing/email-form/email-form.component";
 
-import { ImpressumComponent } from "./impressum/impressum.component";
-import { AboutComponent } from "./about/about.component";
-import { DatenschutzComponent } from "./datenschutz/datenschutz.component";
+import {
+  ImpressumComponent,
+  AboutComponent,
+  DatenschutzComponent,
+  PrivacyComponent,
+  PageNotFoundComponent,
+  FooterComponent,
+  NavbarComponent,
+} from "./_misc_components";
 import { DatabaseService, AuthenticationService } from "./_services";
+import { ParentsComponent } from './_misc_components/parents/parents.component';
+import { StudentsComponent } from './_misc_components/students/students.component';
+import { TutorsComponent } from './_misc_components/tutors/tutors.component';
+import { SchoolsComponent } from './_misc_components/schools/schools.component';
+import { HelpSupportComponent } from './_misc_components/help-support/help-support.component';
+import { FeedbackComponent } from './_misc_components/feedback/feedback.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CallComponent,
+    RouletteComponent,
     HomeComponent,
     LandingComponent,
     NavbarComponent,
@@ -39,7 +49,14 @@ import { DatabaseService, AuthenticationService } from "./_services";
     FooterComponent,
     ImpressumComponent,
     AboutComponent,
-    DatenschutzComponent
+    DatenschutzComponent,
+    PrivacyComponent,
+    ParentsComponent,
+    StudentsComponent,
+    TutorsComponent,
+    SchoolsComponent,
+    HelpSupportComponent,
+    FeedbackComponent,
   ],
   imports: [
     NgbModule,
@@ -52,15 +69,14 @@ import { DatabaseService, AuthenticationService } from "./_services";
     AccountModule,
     RouletteModule,
     // AppRoutingComponent needs to be the last routing module
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    // Singleton Services
+    AuthenticationService,
     DatabaseService,
-    AuthenticationService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}
