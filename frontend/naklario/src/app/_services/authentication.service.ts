@@ -19,13 +19,42 @@ interface LoginResponse {
 
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
-  private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
+  private currentUserSubject: BehaviorSubject<User>;
+  private loggedIn: BehaviorSubject<boolean>;
+  private loggedIn$: Observable<boolean>;
+
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User>(
-      JSON.parse(localStorage.getItem("currentUser"))
-    );
+    let user = JSON.parse(localStorage.getItem("currentUser")) as User;
+    let loggedIn = false;
+    // is the login still valid ?
+    if (user && user.token && Date.parse(user.token_expiry) > Date.now()) {
+      console.log("loaded logged in user from local storage");
+      loggedIn = true;
+    } else {
+      user = new User(
+        "",
+        "",
+        "",
+        "",
+        null,
+        null,
+        null,
+        false,
+        false,
+        null,
+        "",
+        ""
+      );
+      loggedIn = false;
+      console.log("no user found in localstorage");
+    }
+
+    this.loggedIn = new BehaviorSubject<boolean>(loggedIn);
+    this.loggedIn$ = this.loggedIn.asObservable();
+
+    this.currentUserSubject = new BehaviorSubject<User>(user);
     this.currentUser = this.currentUserSubject.asObservable();
     // automatically update User in localStorage on change
     this.currentUser.subscribe((user) =>
@@ -33,6 +62,12 @@ export class AuthenticationService {
     );
   }
 
+  public get isLoggedIn(): boolean {
+    return this.loggedIn.value;
+  }
+  public get isLoggedIn$(): Observable<boolean> {
+    return this.loggedIn$;
+  }
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
   }
@@ -60,7 +95,7 @@ export class AuthenticationService {
       .pipe(
         map((user) => {
           const u = sendableToLocal(user, constants);
-          this.currentUserSubject.next(u);
+          // this.currentUserSubject.next(u);
           return user;
         })
       );
@@ -89,6 +124,7 @@ export class AuthenticationService {
             null,
             null,
             false,
+            false,
             null,
             "",
             ""
@@ -96,6 +132,7 @@ export class AuthenticationService {
           user.token = response.token;
           user.token_expiry = response.expiry;
           this.currentUserSubject.next(user);
+          this.loggedIn.next(true);
           return response;
         })
       )
@@ -108,7 +145,7 @@ export class AuthenticationService {
       );
   }
 
-  public fetchUserData(constants: Constants) {
+  private fetchUserData(constants: Constants) {
     return this.http
       .get<SendableUser>(`${environment.apiUrl}/account/current/`)
       .pipe(
@@ -118,7 +155,6 @@ export class AuthenticationService {
             token: this.currentUserValue.token,
             token_expiry: this.currentUserValue.token_expiry,
           }) as User;
-
           this.currentUserSubject.next(filledUser);
           return filledUser;
         })
@@ -131,6 +167,7 @@ export class AuthenticationService {
   public logout() {
     this.http.post(`${environment.apiUrl}/account/logout/`, null);
     this.currentUserSubject.next(null);
+    this.loggedIn.next(false);
   }
 
   /**
@@ -139,6 +176,7 @@ export class AuthenticationService {
   public logoutAll() {
     this.http.post(`${environment.apiUrl}/account/logoutall/`, null);
     this.currentUserSubject.next(null);
+    this.loggedIn.next(false);
   }
 
   public verify(token: string) {
@@ -147,13 +185,16 @@ export class AuthenticationService {
       .pipe(
         tap((v) => {
           // set verified to true
-          this.currentUserValue.tutordata.verified = true;
+          this.currentUserValue.email_verified = true;
           this.currentUserSubject.next(this.currentUserValue);
         })
       );
   }
 
   public resendVerify() {
-    return this.http.post(`${environment.apiUrl}/account/email/resend_verification/`, null)
+    return this.http.post(
+      `${environment.apiUrl}/account/email/resend_verification/`,
+      null
+    );
   }
 }
