@@ -2,7 +2,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
 import { RouletteComponent } from "./roulette.component";
-import { AuthGuard, StudentGuard, TutorGuard } from "../_helpers";
+import { LoggedInGuard, StudentGuard, TutorGuard } from "../_helpers";
 import { DatabaseResolverService } from '../_services';
 
 const routes: Routes = [
@@ -12,17 +12,18 @@ const routes: Routes = [
       {
         path: "student",
         component: RouletteComponent,
-        canActivate: [AuthGuard, StudentGuard],
+        canActivate: [StudentGuard],
         children: [],
       },
       {
         path: "tutor",
         component: RouletteComponent,
-        canActivate: [AuthGuard, TutorGuard],
+        canActivate: [TutorGuard],
         children: [],
       },
     ],
-    resolve: {'constants': DatabaseResolverService}
+    resolve: {'constants': DatabaseResolverService},
+    canActivate: [LoggedInGuard]
   },
 ];
 
