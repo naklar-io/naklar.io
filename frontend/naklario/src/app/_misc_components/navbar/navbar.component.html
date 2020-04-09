@@ -1,20 +1,40 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" routerLink=""><img src="assets/img/Logo.png" height="40px"></a>
-    <button class="navbar-toggler" type="button" (click)="isNavbarCollapsed = !isNavbarCollapsed"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div [ngbCollapse]="isNavbarCollapsed" class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto" routerLinkActive="active">
-            <li class="nav-item"><a routerLink="" class="nav-link">Home</a></li>
-            <li class="nav-item"><a routerLink="account" class="nav-link">Account</a></li>
-        </ul>
-        <ul class="navbar-nav ml-auto">
-            <li *ngIf="user;else login" class="nav-item"><a routerLink="account">Eingeloggt als: {{user.email}}</a></li>
-            <li *ngIf="user"><button onclick="logout()" class="btn btn-danger">Ausloggen</button></li>
-            <ng-template #login>
-                <li class="nav-item"><a routerLink="account/login" class="nav-link">Einloggen</a></li>
-            </ng-template>
-        </ul>
-    </div>
+  <a class="navbar-brand" routerLink=""
+    ><img src="assets/img/Logo.png" height="40px"
+  /></a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    (click)="isNavbarCollapsed = !isNavbarCollapsed"
+    aria-controls="navbarSupportedContent"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div
+    [ngbCollapse]="isNavbarCollapsed"
+    class="collapse navbar-collapse"
+    id="navbarSupportedContent"
+  >
+    <ul class="navbar-nav mr-auto" routerLinkActive="active">
+      <li class="nav-item"><a routerLink="" class="nav-link">Home</a></li>
+      <li class="nav-item">
+        <a routerLink="account" class="nav-link">Account</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li *ngIf="user; else login" class="nav-item">
+        <a routerLink="/account">Eingeloggt als: {{ user.email }}</a>
+      </li>
+      <li *ngIf="user">
+        <button (click)="logout()" class="btn btn-danger">Ausloggen</button>
+      </li>
+      <ng-template #login>
+        <li class="nav-item">
+          <a routerLink="/account/login" class="nav-link">Einloggen</a>
+        </li>
+      </ng-template>
+    </ul>
+  </div>
 </nav>
