@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+from django.conf.global_settings import DATA_UPLOAD_MAX_MEMORY_SIZE
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,6 +31,7 @@ BBB_URL = "https://bbb.goodgrade.de"
 EMAIL_HOST = "localhost"
 EMAIL_PORT = "1025"
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10mb
 
 
 HOST = "https://dev.naklar.io"

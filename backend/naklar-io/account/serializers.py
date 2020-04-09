@@ -1,11 +1,11 @@
+from drf_base64.fields import Base64FileField
+from drf_base64.serializers import ModelSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from account.models import Subject, State, CustomUser, StudentData, \
-    TutorData, SchoolData, SchoolType
 from account.managers import CustomUserManager
-from drf_base64.fields import Base64FileField
-from drf_base64.serializers import ModelSerializer
+from account.models import (CustomUser, SchoolData, SchoolType, State,
+                            StudentData, Subject, TutorData)
 
 
 class DynamicFieldsModelSerializer(ModelSerializer):
@@ -97,7 +97,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             tutor, _ = TutorData.objects.get_or_create(user=instance)
             tutor.schooldata.set(tutordata.get('schooldata'))
             tutor.subjects.set(tutordata.get('subjects'))
-            tutor.verfication_file = tutordata.get('verification_file')
+            tutor.verification_file = tutordata.get('verification_file')
             tutor.profile_picture = tutordata.get('profile_picture')
             tutor.save()
 
@@ -127,7 +127,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
                     tutordata.profile_picture = data.get('profile_picture')
                 tutordata.save()
         return super(CurrentUserSerializer, self).update(instance, validated_data)
-
+    
 
 class CustomUserSerializer(serializers.ModelSerializer):
     tutordata = TutorDataSerializer(fields=['schooldata', 'subjects'])
