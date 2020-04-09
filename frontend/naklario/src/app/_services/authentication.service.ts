@@ -10,11 +10,15 @@ import {
   State,
 } from "../_models";
 import { environment } from "../../environments/environment";
-import { map, flatMap } from "rxjs/operators";
+import { map, flatMap, tap } from "rxjs/operators";
 
 interface LoginResponse {
   token: string;
   expiry: string;
+}
+
+interface Verification {
+  token: string;
 }
 
 @Injectable({ providedIn: "root" })
@@ -27,16 +31,15 @@ export class AuthenticationService {
       JSON.parse(localStorage.getItem("currentUser"))
     );
     this.currentUser = this.currentUserSubject.asObservable();
+    // automatically update User in localStorage on change
+    this.currentUser.subscribe((user) =>
+      localStorage.setItem("currentUser", JSON.stringify(user))
+    );
   }
 
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
   }
-
-  /**
-   * removes current session from storage
-   */
-  public loggedOut() {}
 
   public updateUser(user: SendableUser, constants: Constants) {
     if (!user.password) {
@@ -54,7 +57,6 @@ export class AuthenticationService {
             token_expiry: this.currentUserValue.token_expiry,
           });
           this.currentUserSubject.next(newUser);
-          localStorage.setItem("currentUser", JSON.stringify(this.currentUser));
           return user;
         })
       );
@@ -101,10 +103,7 @@ export class AuthenticationService {
           );
           user.token = response.token;
           user.token_expiry = response.expiry;
-
-          localStorage.setItem("currentUser", JSON.stringify(user));
           this.currentUserSubject.next(user);
-
           return response;
         })
       )
@@ -128,21 +127,40 @@ export class AuthenticationService {
             token_expiry: this.currentUserValue.token_expiry,
           }) as User;
 
-          localStorage.setItem("currentUser", JSON.stringify(filledUser));
           this.currentUserSubject.next(filledUser);
           return filledUser;
         })
       );
   }
 
-  // TODO:
+  /**
+   * logout current user
+   */
   public logout() {
     this.http.post(`${environment.apiUrl}/account/logout/`, null);
     this.currentUserSubject.next(null);
   }
 
+  /**
+   * logout all devices (invalidates all user tokens)
+   */
   public logoutAll() {
     this.http.post(`${environment.apiUrl}/account/logoutall/`, null);
     this.currentUserSubject.next(null);
+  }
+
+  public verify(token: string) {
+    const v: Verification = {
+      token: token,
+    };
+    return this.http
+      .post<Verification>(`${environment.apiUrl}/account/verfiy/`, v)
+      .pipe(
+        tap((v) => {
+          // set verified to true
+          this.currentUserValue.tutordata.verified = true;
+          this.currentUserSubject.next(this.currentUserValue);
+        })
+      );
   }
 }

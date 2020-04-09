@@ -14,6 +14,7 @@ import { ProfileComponent } from './profile/profile.component'
 import { DatabaseService, AuthenticationService } from '../_services';
 
 import { TermsConditionsComponent, ImgUploadComponent } from "../_misc_components";
+import { VerifyComponent } from './verify/verify.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { TermsConditionsComponent, ImgUploadComponent } from "../_misc_component
     TermsConditionsComponent,
     LoginComponent,
     ProfileComponent,
+    VerifyComponent,
   ],
   imports: [
     Ng5SliderModule,

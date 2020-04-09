@@ -9,8 +9,13 @@ import { LoginComponent } from "./login/login.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { AuthGuard } from "../_helpers";
 import { DatabaseResolverService } from "../_services";
+import { VerifyComponent } from "./verify/verify.component";
 
 const routes: Routes = [
+  {
+    path: "account/verify",
+    component: VerifyComponent,
+  },
   {
     path: "account/student/register",
     component: StudentRegisterComponent,
