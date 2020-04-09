@@ -73,6 +73,10 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/osx,linux,windows
 .vscode
-
+*.code-workspace
+.ycm_extra.conf.py
 #Korbi VENV
 venv/
+# tutor-files and tutor-pics
+backend/naklar-io/tutor-files/*
+backend/naklar-io/tutor-pics/*
