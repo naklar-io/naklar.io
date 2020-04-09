@@ -4,9 +4,9 @@
 export interface SendableTutorData {
   schooldata: number[];
   subjects: number[];
-  verification_file: string;
-  verified: boolean;
-  profile_picture: string;
+  verification_file?: string;
+  verified?: boolean;
+  profile_picture?: string;
 }
 
 export interface SendableStudentData {
@@ -19,10 +19,11 @@ export interface SendableUser {
   email: string;
   password: string;
   first_name: string;
-  last_name: string;
+  last_name?: string;
   state: number;
   terms_accepted: boolean;
   gender: GenderAbbr;
+  email_verified?: boolean;
   studentdata: SendableStudentData | null;
   tutordata: SendableTutorData | null;
 }
@@ -59,6 +60,7 @@ export class User {
     public studentdata: StudentData | null,
     public tutordata: TutorData | null,
     public terms_accepted: boolean,
+    public email_verified: boolean,
     public gender: Gender,
     public token: string,
     public token_expiry: string
@@ -121,6 +123,7 @@ export const localToSendable = (user: User): SendableUser => {
     last_name: user.last_name,
     state: user.state.id,
     gender: user.gender.shortcode,
+    email_verified: user.email_verified,
     studentdata: studentdata,
     tutordata: tutordata,
     terms_accepted: user.terms_accepted,
@@ -153,6 +156,7 @@ export const sendableToLocal = (
         )
       : null,
     user.terms_accepted,
+    user.email_verified,
     constants.genders.find((x) => x.shortcode === user.gender),
     // need to provide token / token_expiry via login
     "",
