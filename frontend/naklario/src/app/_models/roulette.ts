@@ -9,11 +9,15 @@ export interface Match {
   failed_matches: number[];
   created: string;
   user: string;
+  subject: string;
 }
 
 export interface MatchRequest {
-  subject: number;
   match: Match;
+}
+
+export interface StudentRequest extends MatchRequest {
+  subject: number;
 }
 
 export interface MatchAnswer {

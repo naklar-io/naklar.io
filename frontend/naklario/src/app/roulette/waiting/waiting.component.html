@@ -1,1 +1,18 @@
-<p>Warten auf Match</p>
+<div *ngIf="match; else waiting">
+  <div *ngIf="requestType === 'tutor'">
+    <p>Du wurdest mit {{ match.student.first_name }} gematcht!</p>
+    <p>
+      Er braucht Hilfe im Fach {{ match.subject }} und ist im
+      {{ match.student.studentdata.school_data }}
+    </p>
+  </div>
+  <div *ngIf="requestType === 'student'">
+      <p>Du wurdest mit {{ match.tutor.first_name }} {{match.tutor.last_name }} gematcht!</p>
+      <p>{{ match.tutor.first_name }} ist Experte im Fach {{ match.subject }} und kommt aus {{ match.tutor.state }}</p>
+  </div>
+</div>
+<ng-template #waiting>
+    <div>
+        <p>Warte auf Match.</p>
+    </div>
+</ng-template>

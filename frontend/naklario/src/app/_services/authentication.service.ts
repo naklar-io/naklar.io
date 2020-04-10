@@ -11,7 +11,7 @@ import {
   TutorData,
 } from "../_models";
 import { environment } from "../../environments/environment";
-import { map, flatMap, tap, take, mergeMap } from "rxjs/operators";
+import { map, flatMap, tap, take, mergeMap, first } from "rxjs/operators";
 import { DatabaseService } from "./database.service";
 
 interface LoginResponse {
@@ -26,11 +26,15 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   private loggedIn: BehaviorSubject<boolean>;
   private loggedIn$: Observable<boolean>;
+  
+  private lastUpdate: Date;
+  private updateInterval = 60; // account update interval in seconds
 
-  public constants$: Observable<Constants>;
+  private constants$: Observable<Constants>;
+
 
   constructor(private http: HttpClient,
-    private databaseService: DatabaseService) {
+              private databaseService: DatabaseService) {
     let user = JSON.parse(localStorage.getItem("currentUser")) as User;
     let loggedIn = false;
     // is the login still valid ?
@@ -150,35 +154,39 @@ export class AuthenticationService {
       );
   }
 
-  private fetchUserData(constants: Constants) {
+  public fetchUserData(constants: Constants) {
+    if (this.isLoggedIn) {
+      return this.http
+        .get<SendableUser>(`${environment.apiUrl}/account/current/`)
+        .pipe(
+          map((user) => {
+            const u = sendableToLocal(user, constants);
+            const filledUser = Object.assign(u, {
+              token: this.currentUserValue.token,
+              token_expiry: this.currentUserValue.token_expiry,
+            }) as User;
+            this.currentUserSubject.next(filledUser);
+            return filledUser;
+          })
+        );
+    }
+    return this.currentUser;
+  }
+
+  public refreshTutorVerified() {
     return this.http
       .get<SendableUser>(`${environment.apiUrl}/account/current/`)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user, constants);
-          const filledUser = Object.assign(u, {
-            token: this.currentUserValue.token,
-            token_expiry: this.currentUserValue.token_expiry,
+          const updatedUser = Object.assign(this.currentUserValue, {
+            tutordata: Object.assign(this.currentUserValue.tutordata, {
+              verified: user.tutordata.verified,
+            }) as TutorData,
           }) as User;
-          this.currentUserSubject.next(filledUser);
-          return filledUser;
+          this.currentUserSubject.next(updatedUser);
+          return updatedUser;
         })
       );
-  }
-
-  public refreshTutorVerified() {
-    return this.http.get<SendableUser>(`${environment.apiUrl}/account/current/`).pipe(
-      map((user) => {
-        const updatedUser = Object.assign(this.currentUserValue, {
-          tutordata: Object.assign(this.currentUserValue.tutordata, {
-            verified: user.tutordata.verified,
-          }) as TutorData
-        }) as User;
-        this.currentUserSubject.next(updatedUser);
-        return updatedUser;
-      })
-    );
-
   }
 
   /**
