@@ -9,6 +9,7 @@ import {
   localToSendable,
   MatchRequest,
   MatchAnswer,
+  Match,
 } from "../_models";
 import { environment } from "../../environments/environment";
 import { map } from "rxjs/operators";
@@ -51,12 +52,10 @@ export class RouletteService {
       );
   }
 
-  public answerMatch(requestType: RequestType, answer: MatchAnswer) {
-    // TODO: get uuid here
-    const uuid = "";
+  public answerMatch(requestType: RequestType, match: Match, answer: MatchAnswer) {
     this.http
       .post<MatchAnswer>(
-        `${environment.apiUrl}/roulette/${requestType}/match/answer/${uuid}/`,
+        `${environment.apiUrl}/roulette/${requestType}/match/answer/${match.uuid}/`,
         answer
       )
       .pipe(

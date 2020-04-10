@@ -15,21 +15,28 @@ import {
   StudentsComponent,
   TutorsComponent,
 } from "./_misc_components/";
+import { UserResolver } from './_services';
 
 const routes: Routes = [
-  { path: "feedback", component: FeedbackComponent },
-  { path: "support", component: HelpSupportComponent },
-  { path: "parents", component: ParentsComponent },
-  { path: "schools", component: SchoolsComponent },
-  { path: "students", component: StudentsComponent },
-  { path: "tutors", component: TutorsComponent },
-  { path: "terms", component: TermsConditionsComponent },
-  { path: "imprint", component: ImpressumComponent },
-  { path: "privacy", component: ImpressumComponent },
-  { path: "about", component: AboutComponent },
-  { path: "landing", component: LandingComponent },
-  { path: "", component: HomeComponent, pathMatch: "full" },
-  { path: "**", component: PageNotFoundComponent },
+  {
+    path: "",
+    children: [
+      { path: "feedback", component: FeedbackComponent },
+      { path: "support", component: HelpSupportComponent },
+      { path: "parents", component: ParentsComponent },
+      { path: "schools", component: SchoolsComponent },
+      { path: "students", component: StudentsComponent },
+      { path: "tutors", component: TutorsComponent },
+      { path: "terms", component: TermsConditionsComponent },
+      { path: "imprint", component: ImpressumComponent },
+      { path: "privacy", component: ImpressumComponent },
+      { path: "about", component: AboutComponent },
+      { path: "landing", component: LandingComponent },
+      { path: "", component: HomeComponent, pathMatch: "full" },
+      { path: "**", component: PageNotFoundComponent },
+    ],
+    resolve: {"user": UserResolver}
+  },
 ];
 
 @NgModule({
