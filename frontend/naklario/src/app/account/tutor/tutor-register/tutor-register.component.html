@@ -241,10 +241,12 @@
 
     <div class="form-group">
       <label for="file">Hochladen Dokument</label>
-      <input type="file" class="form-control" (change)="onFileChange($event)" />
-      <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
-        <div *ngIf="f.file.errors.required">Wir brauchen hier eine Datei.</div>
-      </div>
+      <input
+        type="file"
+        class="form-control"
+        (change)="onFileChange($event)"
+        accept=".pdf,image/*"
+      />
 
       <p>
         <small>
@@ -254,6 +256,13 @@
           verifizieren können Danke für Dein Verständnis :)!
         </small>
       </p>
+      <div class="invalid-feedback">
+        <div *ngIf="f.file.errors?.required">Wir brauchen hier eine Datei.</div>
+        <div *ngIf="f.file.errors?.fileTooLarge">
+          Die Datei ist zu groß, maximal sind
+          {{ f.file.errors.fileTooLarge.maxSize }}Mb möglich
+        </div>
+      </div>
     </div>
 
     <div class="form-group form-row form-check-inline">

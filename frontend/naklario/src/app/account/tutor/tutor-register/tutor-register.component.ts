@@ -9,7 +9,7 @@ import {
   Constants,
 } from "../../../_models";
 import { AuthenticationService } from "../../../_services";
-import { passwordNotMatchValidator } from "../../../_helpers";
+import { passwordNotMatchValidator, scrollToTop, fileSizeValidator} from "../../../_helpers";
 import { Options } from "ng5-slider";
 import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
 import { first } from "rxjs/operators";
@@ -93,7 +93,7 @@ export class TutorRegisterComponent implements OnInit {
           this.subjects.map((x, i) => this.fb.control(false)),
           Validators.required
         ),
-        file: ["", Validators.required],
+        file: ["", [Validators.required, fileSizeValidator(8)]],
         terms: [false, Validators.requiredTrue],
       },
       { validators: passwordNotMatchValidator }
@@ -122,10 +122,9 @@ export class TutorRegisterComponent implements OnInit {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
 
-      // force obj copy
-      const fileName = "" + file.name;
-      // need to set control value manually
-      this.f.file.setValue(fileName);
+      
+      // value needs to be primitive 
+      this.f.file.setValue("" + file.size);
 
       this.verificationFile$ = Observable.create((observer) => {
         const reader = new FileReader();
@@ -190,6 +189,7 @@ export class TutorRegisterComponent implements OnInit {
             this.loading = false;
             this.submitSuccess = true;
             this.error = null;
+            scrollToTop()
           },
           (error) => {
             this.error = error;

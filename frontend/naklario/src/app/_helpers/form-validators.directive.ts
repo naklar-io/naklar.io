@@ -1,4 +1,9 @@
-import { ValidatorFn, FormGroup, ValidationErrors } from "@angular/forms";
+import {
+  ValidatorFn,
+  FormGroup,
+  ValidationErrors,
+  AbstractControl,
+} from "@angular/forms";
 
 export const passwordNotMatchValidator: ValidatorFn = (
   control: FormGroup
@@ -9,7 +14,17 @@ export const passwordNotMatchValidator: ValidatorFn = (
   //  console.log(notOk, pw, pwRepeat);
   return notOk
     ? {
-        passwordNotMatch: true
+        passwordNotMatch: true,
       }
     : null;
+};
+
+export const fileSizeValidator = (maxSizeMb: number): ValidatorFn | null => {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const size = Number(control.value);
+    console.log(size, maxSizeMb * 1e6);
+    return size >= maxSizeMb * 1e6
+      ? { fileTooLarge: { value: size / 1e6, maxSize: maxSizeMb } }
+      : null;
+  };
 };
