@@ -76,13 +76,13 @@ export class TutorRegisterComponent implements OnInit {
         firstName: ["", Validators.required],
         lastName: ["", Validators.required],
         email: ["", [Validators.required, Validators.email]],
-        state: [null, Validators.required],
-        gender: [null, Validators.required],
+        state: [this.states[0].id, Validators.required],
+        gender: [this.genders[0].shortcode, Validators.required],
         password: ["", [Validators.required, Validators.minLength(8)]],
         passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
         img: ["", Validators.required],
         schoolTypes: this.fb.array(
-          this.schoolTypes.map((x) => this.fb.control(null)),
+          this.schoolTypes.map((x, i) => this.fb.control(i === 0)),
           Validators.required
         ),
         sliders: this.fb.array(
@@ -90,7 +90,7 @@ export class TutorRegisterComponent implements OnInit {
           Validators.required
         ),
         subjects: this.fb.array(
-          this.subjects.map((x) => this.fb.control(null)),
+          this.subjects.map((x, i) => this.fb.control(false)),
           Validators.required
         ),
         file: ["", Validators.required],
@@ -121,6 +121,11 @@ export class TutorRegisterComponent implements OnInit {
   onFileChange(event) {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
+
+      // force obj copy
+      const fileName = "" + file.name;
+      // need to set control value manually
+      this.f.file.setValue(fileName);
 
       this.verificationFile$ = Observable.create((observer) => {
         const reader = new FileReader();
@@ -158,7 +163,7 @@ export class TutorRegisterComponent implements OnInit {
         password: this.f.password.value,
         first_name: this.f.firstName.value,
         last_name: this.f.lastName.value,
-        state: this.f.state.value.id,
+        state: this.f.state.value,
         gender: this.f.gender.value,
         terms_accepted: this.f.terms.value,
         studentdata: null,
@@ -166,7 +171,7 @@ export class TutorRegisterComponent implements OnInit {
           schooldata: grades,
           subjects: this.f.subjects.value
             .map((x, i) => (x ? this.subjects[i].id : x))
-            .filter((x) => Boolean(x)),
+            .filter((x) => x),
           verification_file: verificationFile,
           verified: false,
           profile_picture: this.f.img.value,
