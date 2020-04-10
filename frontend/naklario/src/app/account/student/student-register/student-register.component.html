@@ -52,7 +52,7 @@
       <div class="form-group col">
         <label for="gender">Geschlecht</label>
         <select name="gender" class="form-control" formControlName="gender">
-          <option *ngFor="let gender of genders" [ngValue]="gender.shortcode">{{
+          <option *ngFor="let gender of genders" [value]="gender.shortcode">{{
             gender.gender
           }}</option>
         </select>
@@ -124,7 +124,7 @@
       <div class="from-group col">
         <label for="state">Bundesland</label>
         <select name="state" class="form-control" formControlName="state">
-          <option *ngFor="let state of states" [ngValue]="state">
+          <option *ngFor="let state of states" [value]="state.id">
             {{ state.name }}
           </option>
         </select>
@@ -144,7 +144,7 @@
           class="form-control"
           formControlName="schoolType"
         >
-          <option *ngFor="let schoolType of schoolTypes" [ngValue]="schoolType">
+          <option *ngFor="let schoolType of schoolTypes" [value]="schoolType.id">
             {{ schoolType.name }}
           </option>
         </select>
