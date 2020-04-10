@@ -13,18 +13,29 @@ export class UserResolver implements Resolve<User> {
     private databaseService: DatabaseService
   ) {
     this.constants$ = databaseService.getConstants();
+    this.lastRefresh = Date.now();
+    console.log(this.lastRefresh);
   }
 
   constants$: Observable<Constants>;
+  lastRefresh: number;
+  interval = 60 * 1000;
 
-  resolve(
-    route: ActivatedRouteSnapshot
-  ): Observable<User> | User {
-    return this.constants$.pipe(first(), mergeMap(constants => {
-        return this.authenticationService.fetchUserData(constants).pipe(first(), user => {
-            return user;
-        });
-    }));
+  resolve(route: ActivatedRouteSnapshot): Observable<User> | User {
+    if (Date.now() - this.lastRefresh > this.interval) {
+      this.lastRefresh = Date.now();
+      return this.constants$.pipe(
+        first(),
+        mergeMap((constants) => {
+          return this.authenticationService
+            .fetchUserData(constants)
+            .pipe(first(), (user) => {
+              return user;
+            });
+        })
+      );
+    } else {
+      return this.authenticationService.currentUserValue;
+    }
   }
-
 }
