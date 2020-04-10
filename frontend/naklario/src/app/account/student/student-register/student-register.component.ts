@@ -11,7 +11,7 @@ import {
 import { first } from "rxjs/operators";
 import { Options } from "ng5-slider";
 import { AuthenticationService } from "../../../_services";
-import { FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { passwordNotMatchValidator } from "../../../_helpers";
 import { Router, ActivatedRoute } from "@angular/router";
 
@@ -28,22 +28,8 @@ export class StudentRegisterComponent implements OnInit {
   schoolType: number = -1;
   grade: number = -1;
 
+  registerForm: FormGroup;
   private constants: Constants;
-
-  registerForm = this.fb.group(
-    {
-      firstName: ["", Validators.required],
-      email: ["", [Validators.required, Validators.email]],
-      gender: ["", Validators.required],
-      password: ["", [Validators.required, Validators.minLength(8)]],
-      passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
-      state: [null, Validators.required],
-      schoolType: [null, Validators.required],
-      slider: [10, Validators.required],
-      terms: [false, Validators.requiredTrue],
-    },
-    { validators: passwordNotMatchValidator }
-  );
 
   // slider controls
   options: Options = {
@@ -77,6 +63,20 @@ export class StudentRegisterComponent implements OnInit {
       this.schoolData = data.constants.schoolData;
       this.genders = data.constants.genders;
     });
+    this.registerForm = this.fb.group(
+      {
+        firstName: ["", Validators.required],
+        email: ["", [Validators.required, Validators.email]],
+        gender: ["", Validators.required],
+        password: ["", [Validators.required, Validators.minLength(8)]],
+        passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
+        state: ["", Validators.required],
+        schoolType: ["", Validators.required],
+        slider: [10, Validators.required],
+        terms: [false, Validators.requiredTrue],
+      },
+      { validators: passwordNotMatchValidator }
+    );
   }
 
   onSubmit(): void {
@@ -91,14 +91,14 @@ export class StudentRegisterComponent implements OnInit {
       password: this.f.password.value,
       first_name: this.f.firstName.value,
       last_name: "",
-      state: this.f.state.value.id,
+      state: this.f.state.value,
       terms_accepted: this.f.terms.value,
       gender: this.f.gender.value,
       studentdata: {
         school_data: this.schoolData.find(
           (x) =>
-            x.grade === this.f.slider.value &&
-            x.school_type === this.f.schoolType.value.id
+            x.grade === Number(this.f.slider.value) &&
+            x.school_type === Number(this.f.schoolType.value)
         ).id,
       },
       tutordata: null,

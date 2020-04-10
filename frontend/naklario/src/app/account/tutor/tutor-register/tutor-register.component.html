@@ -12,7 +12,7 @@
       <strong
         >nach einer kurzen Verifizierung Deiner Eingaben freischalten.
       </strong>
-      <br>
+      <br />
       Und schon bist Du startklar und kannst direkt Schülern helfen :)
     </p>
   </div>
@@ -68,7 +68,7 @@
             <select name="gender" class="form-control" formControlName="gender">
               <option
                 *ngFor="let gender of genders"
-                [ngValue]="gender.shortcode"
+                [value]="gender.shortcode"
                 >{{ gender.gender }}</option
               >
             </select>
@@ -97,7 +97,7 @@
           <div class="from-group col">
             <label for="state">Bundesland</label>
             <select name="state" class="form-control" formControlName="state">
-              <option *ngFor="let state of states" [ngValue]="state">
+              <option *ngFor="let state of states" [value]="state.id">
                 {{ state.name }}
               </option>
             </select>
@@ -241,12 +241,7 @@
 
     <div class="form-group">
       <label for="file">Hochladen Dokument</label>
-      <input
-        type="file"
-        class="form-control"
-        (change)="onFileChange($event)"
-        formControlName="file"
-      />
+      <input type="file" class="form-control" (change)="onFileChange($event)" />
       <div *ngIf="f.file.touched && f.file.invalid" class="alert alert-danger">
         <div *ngIf="f.file.errors.required">Wir brauchen hier eine Datei.</div>
       </div>
@@ -283,6 +278,6 @@
         class="spinner-border spinner-border-sm mr-1"
       ></span>
       Absenden
-    </button>{{registerForm.errors | json}}
+    </button>
   </form>
 </div>
