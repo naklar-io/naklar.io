@@ -34,6 +34,7 @@ import { TutorsComponent } from './_misc_components/tutors/tutors.component';
 import { SchoolsComponent } from './_misc_components/schools/schools.component';
 import { HelpSupportComponent } from './_misc_components/help-support/help-support.component';
 import { FeedbackComponent } from './_misc_components/feedback/feedback.component';
+import { AlertsComponent } from './_misc_components/alerts/alerts.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { FeedbackComponent } from './_misc_components/feedback/feedback.componen
     SchoolsComponent,
     HelpSupportComponent,
     FeedbackComponent,
+    AlertsComponent,
   ],
   imports: [
     NgbModule,
