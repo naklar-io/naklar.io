@@ -13,7 +13,9 @@ export interface Match {
 }
 
 export interface MatchRequest {
-  match: Match;
+  match?: Match;
+  failed_matches?: number[];
+  created?: string;
 }
 
 export interface StudentRequest extends MatchRequest {

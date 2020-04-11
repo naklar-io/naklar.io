@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 
-import { AuthenticationService } from "../_services";
+import { AuthenticationService, ToastService } from "../_services";
 import {
   CanActivate,
   Router,
@@ -16,7 +16,8 @@ import {
 export class StudentGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private toastService: ToastService
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -25,7 +26,9 @@ export class StudentGuard implements CanActivate, CanActivateChild {
       if (currentUser.studentdata) {
         return true;
       } else {
-        // TODO: Show error message
+        this.toastService.error(
+          "Du must einen Studenten Account haben, um hier hin zu kommen"
+        );
         this.router.navigate(["/"]);
         return false;
       }
@@ -48,7 +51,8 @@ export class StudentGuard implements CanActivate, CanActivateChild {
 export class TutorGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private toastService: ToastService
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -57,6 +61,9 @@ export class TutorGuard implements CanActivate, CanActivateChild {
       if (currentUser.tutordata && currentUser.tutordata.verified) {
         return true;
       } else {
+        this.toastService.error(
+          "Du must einen Tutor Account haben, um hier hin zu kommen"
+        );
         this.router.navigate(["roulette/student/"]);
         return false;
       }

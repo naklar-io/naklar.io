@@ -165,6 +165,7 @@ export class AuthenticationService {
               token: this.currentUserValue.token,
               token_expiry: this.currentUserValue.token_expiry,
             }) as User;
+            console.log(filledUser);
             this.currentUserSubject.next(filledUser);
             return filledUser;
           })

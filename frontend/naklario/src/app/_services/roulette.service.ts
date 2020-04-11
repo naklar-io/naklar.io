@@ -1,16 +1,6 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { BehaviorSubject, Observable, throwError } from "rxjs";
-import {
-  User,
-  SendableUser,
-  SendableLogin,
-  sendableToLocal,
-  localToSendable,
-  MatchRequest,
-  MatchAnswer,
-  Match,
-} from "../_models";
+import { HttpClient } from "@angular/common/http";
+import { MatchRequest, MatchAnswer, Match, StudentRequest } from "../_models";
 import { environment } from "../../environments/environment";
 import { map } from "rxjs/operators";
 
@@ -20,7 +10,7 @@ type RequestType = "student" | "tutor";
 export class RouletteService {
   constructor(private http: HttpClient) {}
 
-  public createRequest(requestType: RequestType, request: MatchRequest) {
+  public createRequest(requestType: RequestType, request: StudentRequest) {
     return this.http
       .post<MatchRequest>(
         `${environment.apiUrl}/roulette/${requestType}/request/create/`,
@@ -52,7 +42,11 @@ export class RouletteService {
       );
   }
 
-  public answerMatch(requestType: RequestType, match: Match, answer: MatchAnswer) {
+  public answerMatch(
+    requestType: RequestType,
+    match: Match,
+    answer: MatchAnswer
+  ) {
     this.http
       .post<MatchAnswer>(
         `${environment.apiUrl}/roulette/${requestType}/match/answer/${match.uuid}/`,
