@@ -1,7 +1,0 @@
-<div class="alerts">
-  <div *ngFor="let alert of alerts">
-    <ngb-alert *ngIf="!alert.closed" [type]="alert.type" (close)="alert.closed = true">{{
-      alert.message
-    }}</ngb-alert>
-  </div>
-</div>
