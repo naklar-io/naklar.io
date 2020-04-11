@@ -34,6 +34,7 @@ export class TutorRegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   sliderOptions: Options[];
+  selectedItems = [];
 
   submitted = false;
   submitSuccess = false;
@@ -50,11 +51,12 @@ export class TutorRegisterComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe((data: { constants: Constants }) => {
       this.constants = data.constants;
-      this.states = data.constants.states;
+      this.states = data.constants.states.sort((a, b) => a.name.localeCompare(b.name));
       this.subjects = data.constants.subjects;
       this.schoolTypes = data.constants.schoolTypes;
       this.schoolData = data.constants.schoolData;
       this.genders = data.constants.genders;
+     
     });
 
     let data: SchoolData[][] = [];
@@ -136,8 +138,9 @@ export class TutorRegisterComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-
+    console.log(this.f.subjects.value);
     if (this.registerForm.invalid) {
+      console.log("invalid");
       return;
     }
 

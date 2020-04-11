@@ -23,18 +23,18 @@
         <a routerLink="account" class="nav-link">Account</a>
       </li>
     </ul>
-    <ul class="navbar-nav ml-auto">
-      <li *ngIf="user; else login" class="nav-item">
-        <a routerLink="/account">Eingeloggt als: {{ user.email }}</a>
-      </li>
-      <li *ngIf="user">
-        <button (click)="logout()" class="btn btn-danger">Ausloggen</button>
-      </li>
-      <ng-template #login>
-        <li class="nav-item">
-          <a routerLink="/account/login" class="nav-link">Einloggen</a>
-        </li>
-      </ng-template>
-    </ul>
   </div>
+  <ul class="navbar-nav ml-auto">
+    <li *ngIf="loggedIn; else login" class="nav-item">
+      <a routerLink="/account">Eingeloggt als: {{ user.email }}</a>
+    </li>
+    <li *ngIf="loggedIn">
+      <button (click)="logout()" class="btn btn-danger">Ausloggen</button>
+    </li>
+    <ng-template #login>
+      <li class="nav-item">
+        <a routerLink="/account/login" class="nav-link">Einloggen</a>
+      </li>
+    </ng-template>
+  </ul>
 </nav>
