@@ -188,6 +188,7 @@
                 id="school-type-{{ schoolTypes[i].id }}"
                 name="schoolType"
                 class="form-check-input custom-control-input"
+                (click)="onSchoolTypeSelect(i)"
               />
               <label
                 class="form-check-label custom-control-label"
@@ -199,11 +200,12 @@
 
             <div
               class="col-md-9 custom-slider"
-              [hidden]="schoolType.value !== true"
+              [hidden]="!schoolType.value"
             >
               <ng5-slider
                 [options]="sliderOptions[i]"
                 [formControl]="sliderControl.controls[i]"
+                [manualRefresh]="sliderRefresh[i]"
               ></ng5-slider>
             </div>
           </div>
