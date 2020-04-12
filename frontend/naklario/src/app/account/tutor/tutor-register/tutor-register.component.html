@@ -20,273 +20,376 @@
     {{ error | json }}
   </div>
 
-  <form #tutorForm="ngForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <div class="form-row">
-      <div class="col-3">
-        <div class="mx-2 align-middle">
-          <misc-img-upload (img)="onImageChange($event)"></misc-img-upload>
-        </div>
-      </div>
+  <div class="row justify-content-start">
+    <div class="col-md-9">
+      <form
+        #tutorForm="ngForm"
+        [formGroup]="registerForm"
+        (ngSubmit)="onSubmit()"
+      >
+        <br />
 
-      <div class="col-md">
         <div class="form-row">
-          <div class="form-group col">
-            <label for="firstName">Vorname</label>
-            <input
-              type="text"
-              formControlName="firstName"
-              class="form-control"
-            />
-            <div
-              *ngIf="submitted && f.firstName.errors"
-              class="invalid-feedback"
-            >
-              <div *ngIf="f.firstName.errors.required">
-                Du musst einen Vornamen angeben
-              </div>
-            </div>
-          </div>
-          <div class="form-group col">
-            <label for="lastName">Nachname</label>
-            <input
-              type="text"
-              formControlName="lastName"
-              class="form-control"
-            />
-            <div
-              *ngIf="submitted && f.lastName.errors"
-              class="invalid-feedback"
-            >
-              <div *ngIf="f.lastName.errors.required">
-                Du musst einen Nachnamen angeben
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group col">
-            <label for="gender">Geschlecht</label>
-            <select name="gender" class="form-control" formControlName="gender">
-              <option
-                *ngFor="let gender of genders"
-                [value]="gender.shortcode"
-                >{{ gender.gender }}</option
+          <div class="col-md">
+            <div class="form-group form-label-group">
+              <input
+                type="text"
+                formControlName="firstName"
+                class="form-control"
+                placeholder="Vorname"
+              />
+              <label for="firstName">Vorname</label>
+              <div
+                *ngIf="submitted && f.firstName.errors"
+                class="invalid-feedback"
               >
-            </select>
-            <div *ngIf="submitted && f.gender.errors" class="invalid-feedback">
-              <div *ngIf="f.gender.errors.required">
-                Du musst ein Geschlecht angeben
+                <div *ngIf="f.firstName.errors.required">
+                  Du musst einen Vornamen angeben
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="form-group form-label-group">
+              <input
+                type="text"
+                formControlName="lastName"
+                class="form-control"
+                placeholder="Nachname"
+              />
+              <label for="lastName">Nachname</label>
+              <div
+                *ngIf="submitted && f.lastName.errors"
+                class="invalid-feedback"
+              >
+                <div *ngIf="f.lastName.errors.required">
+                  Du musst einen Nachnamen angeben
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <div class="form-row">
-          <div class="from-group col">
-            <label for="email">Email</label>
-            <input type="email" formControlName="email" class="form-control" />
-          </div>
-          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-            <div *ngIf="f.email.errors.required">
-              Du musst eine email angeben
-            </div>
-            <div *ngIf="f.email.errors.email">
-              Diese Email ist invalide
-            </div>
-          </div>
-
-          <div class="from-group col">
-            <label for="state">Bundesland</label>
-            <select name="state" class="form-control" formControlName="state">
-              <option *ngFor="let state of states" [value]="state.id">
-                {{ state.name }}
-              </option>
-            </select>
-            <div *ngIf="submitted && f.state.errors" class="invalid-feedback">
-              <div *ngIf="f.state.errors.required">
-                Du musst ein Bundesland angeben.
+          <div class="col-md">
+            <div class="form-label-group">
+              <input
+                type="email"
+                formControlName="email"
+                class="form-control"
+                placeholder="E-Mail"
+              />
+              <label for="email">E-Mail</label>
+              <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                <div *ngIf="f.email.errors.required">
+                  Du musst eine E-Mail angeben
+                </div>
+                <div *ngIf="f.email.errors.email">
+                  Diese Email ist ungültig
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group col">
-            <label for="password">Passwort</label>
-            <input
-              type="password"
-              formControlName="password"
-              class="form-control"
-            />
-            <div
-              *ngIf="submitted && registerForm.errors?.passwordNotMatch"
-              class="invalid-feedback"
-            >
-              Die beiden Passwörter müssen überein stimmen.
-            </div>
-            <div
-              *ngIf="submitted && f.password.errors"
-              class="invalid-feedback"
-            >
-              <div *ngIf="f.password.errors.required">
-                Du musst ein Passwort angeben
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <p>Geschlecht</p>
+
+                  <div
+                    *ngFor="let gender of genders"
+                    class="custom-control custom-radio custom-control-inline"
+                  >
+                    <input
+                      class="custom-control-input"
+                      type="radio"
+                      [value]="gender.shortcode"
+                      id="gender-{{ gender.shortcode }}"
+                      formControlName="gender"
+                    />
+                    <label
+                      class="custom-control-label"
+                      for="gender-{{ gender.shortcode }}"
+                      >{{ gender.gender }}</label
+                    >
+                  </div>
+
+                  <div
+                    *ngIf="submitted && f.gender.errors"
+                    class="invalid-feedback"
+                  >
+                    <div *ngIf="f.gender.errors.required">
+                      Du musst ein Geschlecht angeben
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div *ngIf="f.password.errors.minlength">
-                Dein Passwort muss mindestens
-                {{ f.password.errors.minlength.requiredLength }} Zeichen lang
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-12">
+                <label for="state">Bundesland</label>
+                <select
+                  name="state"
+                  class="form-control custom-select"
+                  formControlName="state"
+                >
+                  <option *ngFor="let state of states" [value]="state.id">
+                    {{ state.name }}
+                  </option>
+                </select>
+                <div
+                  *ngIf="submitted && f.state.errors"
+                  class="invalid-feedback"
+                >
+                  <div *ngIf="f.state.errors.required">
+                    Du musst ein Bundesland angeben.
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div class="form-group col">
-            <label for="passwordRepeat">Passwort wiederholen</label>
-            <input
-              type="password"
-              formControlName="passwordRepeat"
-              class="form-control"
-              required
-            />
-            <div
-              *ngIf="submitted && registerForm.errors?.passwordNotMatch"
-              class="invalid-feedback"
-            >
-              Die beiden Passwörter müssen überein stimmen
-            </div>
-            <div
-              *ngIf="submitted && f.passwordRepeat.errors"
-              class="invalid-feedback"
-            >
-              <div *ngIf="f.passwordRepeat.errors.required">
-                Du musst ein Passwort angeben
-              </div>
-              <div *ngIf="f.passwordRepeat.errors.minlength">
-                Dein Passwort muss mindestens
-                {{ f.passwordRepeat.errors.minlength.requiredLength }} Zeichen
-                lang
+          <div class="col-md-6">
+            <div class="form-group">
+              <div class="align-items-center align-middle text-center">
+                <label for="imgUpload"
+                  >Bitte lade hier ein Profilbild hoch</label
+                >
+                <misc-img-upload
+                  (img)="onImageChange($event)"
+                  id="imgUpload"
+                ></misc-img-upload>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <label for="schoolType">Schultypen, die du unterrichten möchtest:</label>
-    <div class="form-group">
-      <div
-        *ngFor="let schoolType of schoolTypesControl.controls; let i = index"
-        class="form-row"
-      >
-        <div class="col-3 form-check my-3 align-middle">
-          <input
-            type="checkbox"
-            [formControl]="schoolType"
-            id="school-type-{{ schoolTypes[i].id }}"
-            name="schoolType"
-            class="form-check-input"
-          />
-          <label
-            class="form-check-label"
-            for="school-type-{{ schoolTypes[i].id }}"
+        <div class="form-group">
+          <label for="schoolType"
+            >In welchen Schultypen / Klassen möchtest Du helfen?</label
           >
-            {{ schoolTypes[i].name }}
-          </label>
-        </div>
-        <div
-          class="col-3 text-center align-middle"
-          [hidden]="schoolType.value !== true"
-        >
-          <p>Klasse (von/bis):</p>
-        </div>
-        <div class="col" [hidden]="schoolType.value !== true">
-          <ng5-slider
-            [options]="sliderOptions[i]"
-            [formControl]="sliderControl.controls[i]"
-          ></ng5-slider>
-        </div>
-      </div>
-      <div *ngIf="submitted && f.schoolTypes.errors" class="invalid-feedback">
-        <div *ngIf="f.schoolTypes.errors.required">
-          Du musst einen Schultyp angeben.
-        </div>
-      </div>
-    </div>
+          <div
+            *ngFor="
+              let schoolType of schoolTypesControl.controls;
+              let i = index
+            "
+            class="row"
+            style="min-height: 54px;"
+          >
+            <div
+              class="col-md-3 form-check custom-switch custom-control align-self-center"
+            >
+              <input
+                type="checkbox"
+                [formControl]="schoolType"
+                id="school-type-{{ schoolTypes[i].id }}"
+                name="schoolType"
+                class="form-check-input custom-control-input"
+                (click)="onSchoolTypeSelect(i)"
+              />
+              <label
+                class="form-check-label custom-control-label"
+                for="school-type-{{ schoolTypes[i].id }}"
+              >
+                {{ schoolTypes[i].name }}
+              </label>
+            </div>
 
-    <div class="my-4">
-      <div class="form-row">
-        <label for="subjects"
-          >Für welche Fächer willst du Fragen beantworten:</label
-        >
-      </div>
-      <div class="form-row">
-        <div
-          *ngFor="let subject of subjectsControl.controls; let i = index"
-          class="form-check form-check-inline"
-        >
-          <input
-            type="checkbox"
-            [formControl]="subject"
-            id="subject-{{ subjects[i].id }}"
-            class="from-check-input"
-            [value]="subjects[i]"
-          />
-          <label class="form-check-label" for="subject-{{ subjects[i].id }}"
-            >{{ subjects[i].name }}
-          </label>
-        </div>
-        <div *ngIf="submitted && f.subjects.errors" class="invalid-feedback">
-          <div *ngIf="f.subjects.errors.required">
-            Du musst mindestens ein Fach angeben.
+            <div
+              class="col-md-9 custom-slider"
+              [hidden]="!schoolType.value"
+            >
+              <ng5-slider
+                [options]="sliderOptions[i]"
+                [formControl]="sliderControl.controls[i]"
+                [manualRefresh]="sliderRefresh[i]"
+              ></ng5-slider>
+            </div>
+          </div>
+          <div
+            *ngIf="submitted && f.schoolTypes.errors"
+            class="invalid-feedback"
+          >
+            <div *ngIf="f.schoolTypes.errors.required">
+              Du musst einen Schultyp angeben.
+            </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="form-group">
-      <label for="file">Hochladen Dokument</label>
-      <input
-        type="file"
-        class="form-control"
-        (change)="onFileChange($event)"
-        accept=".pdf,image/*"
-      />
-
-      <p>
-        <small>
-          Der Schutz der Schüler*innen im Internet ist uns sehr wichtig. Bitte
-          lade hier ein Ausweisdokument (Das kann sein: Perso, Pass,
-          Führerschein, Studentenausweis mit Foto) hoch, damit wir Dich
-          verifizieren können Danke für Dein Verständnis :)!
-        </small>
-      </p>
-      <div class="invalid-feedback">
-        <div *ngIf="f.file.errors?.required">Wir brauchen hier eine Datei.</div>
-        <div *ngIf="f.file.errors?.fileTooLarge">
-          Die Datei ist zu groß, maximal sind
-          {{ f.file.errors.fileTooLarge.maxSize }}Mb möglich
+        <!--   <div class="form-row col-12">
+          <label for="subjects">Fächer</label>
+          <ng-select
+            [items]="subjects"
+            bindLabel="name"
+            bindValue="id"
+            [multiple]="true"
+            formControlName="subjects"
+          >
+          </ng-select>
+          <div *ngIf="submitted && f.subjects.errors" class="invalid-feedback">
+            <div *ngIf="f.subjects.errors.required">
+              Du musst mindestens ein Fach angeben.
+            </div>
+          </div>
+        </div> -->
+        <div class="form-group">
+          <label for="subjects"
+            >Für welche Fächer willst du Fragen beantworten?</label
+          >
+          <div
+            class="form-row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5"
+          >
+            <div
+              *ngFor="let subject of subjectsControl.controls; let i = index"
+              class="form-check col colored-select justify-self-center"
+            >
+              <input
+                type="checkbox"
+                [formControl]="subject"
+                id="subject-{{ subjects[i].id }}"
+                class="form-check-input"
+                [value]="subjects[i]"
+              />
+              <label class="form-check-label" for="subject-{{ subjects[i].id }}"
+                >{{ subjects[i].name }}
+              </label>
+            </div>
+          </div>
+          <div *ngIf="submitted && f.subjects.errors" class="invalid-feedback">
+            <div *ngIf="f.subjects.errors.required">
+              Du musst mindestens ein Fach angeben.
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div class="form-group form-row form-check-inline">
-      <input type="checkbox" formControlName="terms" class="form-check-input" />
-      <label for="terms" class="form-check-label"
-        >Ja, ich habe die <a routerLink="/terms">AGB</a> gelesen</label
-      >
-      <div *ngIf="submitted && f.terms.errors" class="invalid-feedback">
-        <div *ngIf="f.terms.errors.required">
-          Du musst die AGB akzeptieren.
+        <p>Hier brauchen wir noch ein Passwort von dir (mind. 8 Zeichen)</p>
+        <div class="form-row">
+          <div class="col-md">
+            <div class="form-group form-label-group">
+              <input
+                type="password"
+                formControlName="password"
+                class="form-control"
+                placeholder="Passwort"
+              />
+              <label for="password">Passwort</label>
+              <div
+                *ngIf="submitted && registerForm.errors?.passwordNotMatch"
+                class="invalid-feedback"
+              >
+                Die beiden Passwörter müssen überein stimmen.
+              </div>
+              <div
+                *ngIf="submitted && f.password.errors"
+                class="invalid-feedback"
+              >
+                <div *ngIf="f.password.errors.required">
+                  Du musst ein Passwort angeben
+                </div>
+                <div *ngIf="f.password.errors.minlength">
+                  Dein Passwort muss mindestens
+                  {{ f.password.errors.minlength.requiredLength }} Zeichen lang
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md">
+            <div class="form-group form-label-group">
+              <input
+                type="password"
+                formControlName="passwordRepeat"
+                class="form-control"
+                placeholder="Passwort wiederholen"
+                required
+              />
+              <label for="passwordRepeat">Passwort wiederholen</label>
+              <div
+                *ngIf="submitted && registerForm.errors?.passwordNotMatch"
+                class="invalid-feedback"
+              >
+                Die beiden Passwörter müssen überein stimmen
+              </div>
+              <div
+                *ngIf="submitted && f.passwordRepeat.errors"
+                class="invalid-feedback"
+              >
+                <div *ngIf="f.passwordRepeat.errors.required">
+                  Du musst ein Passwort angeben
+                </div>
+                <div *ngIf="f.passwordRepeat.errors.minlength">
+                  Dein Passwort muss mindestens
+                  {{ f.passwordRepeat.errors.minlength.requiredLength }} Zeichen
+                  lang
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+        <div class="form-group">
+          <label for="file"
+            >Bitte wähle hier ein dich ausweisendes Dokument aus:</label
+          >
+          <input
+            type="file"
+            class="form-control"
+            (change)="onFileChange($event)"
+          />
+          <div
+            *ngIf="f.file.touched && f.file.invalid"
+            class="alert alert-danger"
+          >
+            <div *ngIf="f.file.errors.required">
+              Wir brauchen hier eine Datei.
+            </div>
+          </div>
 
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="submitSuccess || loading"
-    >
-      <span
-        *ngIf="loading"
-        class="spinner-border spinner-border-sm mr-1"
-      ></span>
-      Absenden
-    </button>
-  </form>
+          <p>
+            <small>
+              Der Schutz der Schüler*innen im Internet ist uns sehr wichtig.
+              Bitte lade hier ein Ausweisdokument (Das kann sein: Perso, Pass,
+              Führerschein, Studentenausweis mit Foto) hoch, damit wir Dich
+              verifizieren können Danke für Dein Verständnis :)!
+            </small>
+          </p>
+        </div>
+
+        <div class="form-group form-row">
+          <div class="custom-control custom-checkbox">
+            <input
+              type="checkbox"
+              id="terms"
+              formControlName="terms"
+              class="custom-control-input"
+            />
+            <label for="terms" class="custom-control-label"
+              >Ja, ich habe die
+              <a routerLink="/terms" target="_blank">AGB</a> und
+              <a routerLink="/privacy" target="_blank">Datenschutzerklärung</a>
+              gelesen</label
+            >
+          </div>
+          <div *ngIf="submitted && f.terms.errors" class="invalid-feedback">
+            <div *ngIf="f.terms.errors.required">
+              Du musst die AGB akzeptieren.
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="submitSuccess || loading"
+        >
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          Absenden
+        </button>
+      </form>
+    </div>
+  </div>
 </div>
