@@ -1,76 +1,78 @@
-<div class="container">
-  <div *ngIf="!embedded">
-    <h1 class="primary-color">Willkommen zurück</h1>
-    <p class="lead">Wir freuen uns dich wieder zu sehen!</p>
-  </div>
+<div *ngIf="!embedded">
+  <h1 class="primary-color">Willkommen zurück</h1>
+  <p class="lead">Wir freuen uns dich wieder zu sehen!</p>
+</div>
 
-  <div *ngIf="error" class="alert alert-danger text-center">
-    {{ error | json }}
-  </div>
-  <div *ngIf="user" class="alert alert-success text-center">
-    Hallo, {{ user.first_name }}, du wirst nun weitergeleitet.
-  </div>
+<div *ngIf="error" class="alert alert-danger text-center">
+  {{ error | json }}
+</div>
+<div *ngIf="user" class="alert alert-success text-center">
+  Hallo, {{ user.first_name }}, du wirst nun weitergeleitet.
+</div>
 
-  <div class="row">
-    <div class="col-md-6">
-      <form #loginFrom="ngForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label for="email">E-Mail</label>
-          <input
-            type="text"
-            name="email"
-            class="form-control"
-            formControlName="email"
-          />
-          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-            <div *ngIf="f.email.errors.required">
-              Du musst eine Emailadresse eingeben.
-            </div>
-            <div *ngIf="f.email.errors.email">
-              Das ist keine gültige Email.
-            </div>
-            <!-- Maybe more error messages -->
+<div class="row justify-content-start">
+  <div class="col-md-6">
+    <form #loginFrom="ngForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="form-label-group">
+        <input
+          type="text"
+          name="email"
+          class="form-control"
+          formControlName="email"
+          id="email"
+          placeholder="E-Mail"
+        />
+        <label for="email">E-Mail</label>
+
+        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+          <div *ngIf="f.email.errors.required">
+            Du musst eine Emailadresse eingeben.
           </div>
-        </div>
-
-        <div class="form-group">
-          <label for="password">Passwort</label>
-          <input
-            type="password"
-            name="password"
-            class="form-control"
-            formControlName="password"
-          />
-          <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-            <div *ngIf="f.password.errors.required">
-              Du musst ein Passwort eingeben
-            </div>
-            <!-- Maybe more error messages -->
+          <div *ngIf="f.email.errors.email">
+            Das ist keine gültige Email.
           </div>
-          <a routerLink="/">Passwort vergessen?</a>
+          <!-- Maybe more error messages -->
         </div>
+      </div>
 
-        <button
-          type="submit"
-          class="btn btn-primary"
-          [disabled]="submitSuccess || loading"
-        >
-          <span
-            *ngIf="loading"
-            class="spinner-border spinner-border-sm mr-1"
-          ></span>
-          Login
-        </button>
+      <div class="form-label-group">
+        <input
+          type="password"
+          name="password"
+          class="form-control"
+          formControlName="password"
+          placeholder="Passwort"
+        />
+        <label for="password">Passwort</label>
+        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+          <div *ngIf="f.password.errors.required">
+            Du musst ein Passwort eingeben
+          </div>
+          <!-- Maybe more error messages -->
+        </div>
+        <a routerLink="/">Passwort vergessen?</a>
+      </div>
 
-        <p>
-          Du hast noch keinen Account?
-          <a [routerLink]="registerUrl">Registrier dich doch</a>
-        </p>
-      </form>
-    </div>
-
-    <div class="col">
-      <pre>cool image!</pre>
-    </div>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="submitSuccess || loading"
+      >
+        <span
+          *ngIf="loading"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+        Login
+      </button>
+    </form>
+    <p class="my-3">
+      Du hast noch keinen Account?
+      <a *ngIf="embedded" [routerLink]="registerUrl">Registrier dich doch</a>
+      <span *ngIf="!embedded"
+        >Registriere dich hier als
+        <a routerLink="/account/tutor/register">Tutor</a> oder
+        <a routerLink="/account/student/register">Schüler</a>.</span
+      >
+    </p>
   </div>
 </div>
