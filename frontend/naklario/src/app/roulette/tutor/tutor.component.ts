@@ -10,6 +10,9 @@ import { MatchRequest, StudentRequest } from "src/app/_models";
 export class TutorComponent implements OnInit {
   @Output() done = new EventEmitter<boolean>();
 
+  loading = false;
+  error: string = null;
+
   constructor(
     private rouletteService: RouletteService,
     private authenticationService: AuthenticationService
@@ -19,11 +22,17 @@ export class TutorComponent implements OnInit {
   onSubmit() {
     const subj = this.authenticationService.currentUserValue.tutordata
       .subjects[0].id;
-    console.log(this.authenticationService.currentUserValue);
     const request: StudentRequest = { subject: subj };
-    this.rouletteService.createRequest("tutor", request).subscribe(
-      (data) => {},
-      (error) => {}
+    this.rouletteService.createMatch("tutor", request).subscribe(
+      (data) => {
+        this.loading = false;
+        this.error = null;
+        this.done.emit(true);
+      },
+      (error) => {
+        this.loading = false;
+        this.error = error;
+      }
     );
   }
 }
