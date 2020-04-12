@@ -36,18 +36,24 @@ export class RouletteComponent implements OnInit, OnDestroy {
   }
 
   onCreateDone(done: boolean) {
-    // advance state
-    this.state = "wait";
+    if (done) {
+      // advance state
+      this.state = "wait";
+    }
   }
 
   onWaitDone(done: boolean) {
-    // advance state
-    this.state = "match";
+    if (done) {
+      // advance state
+      this.state = "match";
+    }
   }
 
   onMatchDone(done: boolean) {
-    // advance state
-    this.state = "session";
+    if (done) {
+      // advance state
+      this.state = "session";
+    }
   }
 
   onSessionDone(done: boolean) {
@@ -55,8 +61,6 @@ export class RouletteComponent implements OnInit, OnDestroy {
     this.router.navigate(["roulette/feedback"]);
   }
 
-
   // cleanup
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 }

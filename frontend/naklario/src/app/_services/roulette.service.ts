@@ -2,48 +2,90 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { MatchRequest, MatchAnswer, Match, StudentRequest } from "../_models";
 import { environment } from "../../environments/environment";
-import { map } from "rxjs/operators";
+import { map, switchMap, filter, take, tap, takeWhile } from "rxjs/operators";
+import { BehaviorSubject, Observable, timer } from "rxjs";
 
-type RequestType = "student" | "tutor";
+export type RouletteRequestType = "student" | "tutor";
 
 @Injectable({ providedIn: "root" })
 export class RouletteService {
-  constructor(private http: HttpClient) {}
+  private matchRequestSubject: BehaviorSubject<MatchRequest>;
+  private isUpdating = false;
 
-  public createRequest(requestType: RequestType, request: StudentRequest) {
+  public matchRequest$: Observable<MatchRequest>;
+
+  constructor(private http: HttpClient) {
+    this.matchRequestSubject = new BehaviorSubject<MatchRequest>(null);
+    this.matchRequest$ = this.matchRequestSubject
+      .asObservable()
+      // filter the first null value
+      .pipe(filter((x) => Boolean(x)));
+  }
+  public get matchRequestValue() {
+    return this.matchRequestSubject.value;
+  }
+
+  public createMatch(
+    requestType: RouletteRequestType,
+    request: StudentRequest
+  ) {
     return this.http
       .post<MatchRequest>(
-        `${environment.apiUrl}/roulette/${requestType}/request/create/`,
+        `${environment.apiUrl}/roulette/${requestType}/request/`,
         request
       )
       .pipe(
         map((matchRequest) => {
           console.log(matchRequest);
+          this.matchRequestSubject.next(matchRequest);
           return matchRequest;
         })
       );
   }
-  public deleteRequest(requestType: RequestType) {
-    return this.http.delete(
-      `${environment.apiUrl}/roulette/${requestType}/request/delete/`
-    );
+
+  public updatingMatch(
+    requestType: RouletteRequestType,
+    interval: number = 1000
+  ) {
+    if (this.isUpdating) {
+      return this.matchRequestSubject;
+    }
+    this.isUpdating = true;
+    timer(0, interval)
+      // can stop the polling from outside this function
+      .pipe(takeWhile((_) => this.isUpdating))
+      .pipe(
+        switchMap((_) =>
+          this.http.get<MatchRequest>(
+            `${environment.apiUrl}/roulette/${requestType}/request/`
+          )
+        )
+      )
+      .pipe(filter((x) => Boolean(x.match)))
+      .pipe(
+        tap((r) => {
+          console.log("Found Match: ", r);
+          this.matchRequestSubject.next(r);
+          this.isUpdating = false;
+        })
+      )
+      // complete when match found
+      .pipe(take(1));
   }
 
-  public updateMatch(requestType: RequestType) {
+  public stopUpdatingMatch(requestType: RouletteRequestType) {
     return this.http
-      .get<MatchRequest>(
-        `${environment.apiUrl}/roulette/${requestType}/request/`
-      )
+      .delete<void>(`${environment.apiUrl}/roulette/${requestType}/request/`)
       .pipe(
-        map((matchRequest) => {
-          console.log(matchRequest);
-          return matchRequest;
+        tap(() => {
+          this.matchRequestSubject.next(null);
+          this.isUpdating = false;
         })
       );
   }
 
   public answerMatch(
-    requestType: RequestType,
+    requestType: RouletteRequestType,
     match: Match,
     answer: MatchAnswer
   ) {
