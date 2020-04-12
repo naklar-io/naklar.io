@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, EventEmitter } from "@angular/core";
 import {
   State,
   Subject,
@@ -9,7 +9,11 @@ import {
   Constants,
 } from "../../../_models";
 import { AuthenticationService } from "../../../_services";
-import { passwordNotMatchValidator, scrollToTop, fileSizeValidator} from "../../../_helpers";
+import {
+  passwordNotMatchValidator,
+  scrollToTop,
+  fileSizeValidator,
+} from "../../../_helpers";
 import { Options } from "ng5-slider";
 import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
 import { first } from "rxjs/operators";
@@ -34,6 +38,8 @@ export class TutorRegisterComponent implements OnInit {
 
   registerForm: FormGroup;
   sliderOptions: Options[];
+  sliderRefresh: EventEmitter<void>[];
+  selectedItems = [];
 
   submitted = false;
   submitSuccess = false;
@@ -50,7 +56,9 @@ export class TutorRegisterComponent implements OnInit {
   ngOnInit(): void {
     this.route.data.subscribe((data: { constants: Constants }) => {
       this.constants = data.constants;
-      this.states = data.constants.states;
+      this.states = data.constants.states.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
       this.subjects = data.constants.subjects;
       this.schoolTypes = data.constants.schoolTypes;
       this.schoolData = data.constants.schoolData;
@@ -70,6 +78,7 @@ export class TutorRegisterComponent implements OnInit {
         ceil: Math.max(...x),
       };
     });
+    this.sliderRefresh = grades.map((x) => new EventEmitter<void>());
 
     this.registerForm = this.fb.group(
       {
@@ -114,6 +123,10 @@ export class TutorRegisterComponent implements OnInit {
     return this.registerForm.get("sliders") as FormArray;
   }
 
+  onSchoolTypeSelect(index: number) {
+    this.sliderRefresh[index].emit()
+  }
+
   onImageChange(img: string) {
     this.f.img.setValue(img);
   }
@@ -122,8 +135,7 @@ export class TutorRegisterComponent implements OnInit {
     if (event.target.files.length > 0) {
       const file = event.target.files[0];
 
-      
-      // value needs to be primitive 
+      // value needs to be primitive
       this.f.file.setValue("" + file.size);
 
       this.verificationFile$ = Observable.create((observer) => {
@@ -136,8 +148,9 @@ export class TutorRegisterComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-
+    console.log(this.f.subjects.value);
     if (this.registerForm.invalid) {
+      console.log("invalid");
       return;
     }
 
@@ -189,7 +202,7 @@ export class TutorRegisterComponent implements OnInit {
             this.loading = false;
             this.submitSuccess = true;
             this.error = null;
-            scrollToTop()
+            scrollToTop();
           },
           (error) => {
             this.error = error;

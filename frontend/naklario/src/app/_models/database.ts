@@ -148,8 +148,12 @@ export const sendableToLocal = (
       : null,
     user.tutordata
       ? new TutorData(
-          constants.schoolData.filter((x) => x.id in user.tutordata.schooldata),
-          constants.subjects.filter((x) => x.id in user.tutordata.subjects),
+          constants.schoolData.filter((x) =>
+            user.tutordata.schooldata.includes(x.id)
+          ),
+          constants.subjects.filter((x) =>
+            user.tutordata.subjects.includes(x.id)
+          ),
           user.tutordata.verification_file,
           user.tutordata.verified,
           user.tutordata.profile_picture

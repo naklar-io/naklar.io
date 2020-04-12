@@ -1,0 +1,18 @@
+.custom-select {
+  height: 3.125em;
+}
+
+::ng-deep {
+  .custom-slider .ng5-slider {
+      .ng5-slider-selection {
+          background: $primary;
+      }
+
+      .ng5-slider-pointer {
+          background: $primary !important;
+      }
+      .ng5-slider-tick.ng5-slider-selected {
+          background: $primary;
+        }
+  }
+}
