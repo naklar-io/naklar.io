@@ -19,6 +19,9 @@ from account.managers import CustomUserManager
 EMAIL_VERIFICATION_PLAINTEXT = get_template("email_verification.txt")
 EMAIL_VERIFICATION_HTMLY = get_template("email_verification.html")
 
+PASSWORD_RESET_PLAINTEXT = get_template("password_reset.txt")
+PASSWORD_RESET_HTMLY = get_template("password_reset.html")
+
 TUTOR_VERIFICATION_PLAINTEXT = get_template("tutor_verification.txt")
 TUTOR_VERIFICATION_HTMLY = get_template("tutor_verification.html")
 
@@ -161,6 +164,16 @@ class VerificationToken(models.Model):
         verbose_name_plural = verbose_name
 
 
+class PasswordResetToken(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created = models.DateTimeField(_("Erstellt"), auto_now_add=True)
+
+    
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("E-Mail"), max_length=254, unique=True)
     email_verified = models.BooleanField(_("E-Mail bestätigt"), default=False)
@@ -221,6 +234,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return True
         else:
             return False
+            
+    def send_reset_mail(self):
+        PasswordResetToken.objects.filter(user=self).delete()
+        token = PasswordResetToken(user=self)
+        token.save()
+        subject, from_email, to = "Passwort zurücksetzen auf naklar.io", "noreply@naklar.io", self.email
+        d = {
+            'user': self,
+            'reset_url': settings.HOST + "/account/reset/{}".format(token.token)
+        }
+        text_content = EMAIL_VERIFICATION_PLAINTEXT.render(d)
+        html_content = EMAIL_VERIFICATION_HTMLY.render(d)
+        msg = EmailMultiAlternatives(
+            subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
     def is_tutor(self):
         return hasattr(self, 'tutordata')
