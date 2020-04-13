@@ -120,6 +120,9 @@ class TutorData(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.__was_verified != self.verified:
             self.send_verified_email()
+        if self.verified:
+            self.verification_file.delete()
+            self.verification_file = None
         return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def send_verified_email(self):
@@ -140,7 +143,7 @@ class TutorData(models.Model):
     def image_tag(self):
         return mark_safe('<img src="/media/%s" width="256" height="256" />' % (self.profile_picture))
 
-    image_tag.short_description = 'Image'
+    image_tag.short_description = 'Profilbild'
 
 
 class VerificationToken(models.Model):
