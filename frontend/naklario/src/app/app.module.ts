@@ -27,13 +27,19 @@ import {
   FooterComponent,
   NavbarComponent,
 } from "./_misc_components";
-import { DatabaseService, AuthenticationService } from "./_services";
-import { ParentsComponent } from './_misc_components/parents/parents.component';
-import { StudentsComponent } from './_misc_components/students/students.component';
-import { TutorsComponent } from './_misc_components/tutors/tutors.component';
-import { SchoolsComponent } from './_misc_components/schools/schools.component';
-import { HelpSupportComponent } from './_misc_components/help-support/help-support.component';
-import { FeedbackComponent } from './_misc_components/feedback/feedback.component';
+
+import {
+  DatabaseService,
+  AuthenticationService,
+  ToastService,
+} from "./_services";
+import { ParentsComponent } from "./_misc_components/parents/parents.component";
+import { StudentsComponent } from "./_misc_components/students/students.component";
+import { TutorsComponent } from "./_misc_components/tutors/tutors.component";
+import { SchoolsComponent } from "./_misc_components/schools/schools.component";
+import { HelpSupportComponent } from "./_misc_components/help-support/help-support.component";
+import { FeedbackComponent } from "./_misc_components/feedback/feedback.component";
+import { ToastsComponent } from "./_misc_components/toasts/toasts.component";
 import { MoreInformationComponent } from './home/more-information/more-information.component';
 
 @NgModule({
@@ -56,6 +62,7 @@ import { MoreInformationComponent } from './home/more-information/more-informati
     SchoolsComponent,
     HelpSupportComponent,
     FeedbackComponent,
+    ToastsComponent,
     MoreInformationComponent,
   ],
   imports: [
@@ -75,6 +82,7 @@ import { MoreInformationComponent } from './home/more-information/more-informati
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     AuthenticationService,
     DatabaseService,
+    ToastService,
   ],
   bootstrap: [AppComponent],
 })
