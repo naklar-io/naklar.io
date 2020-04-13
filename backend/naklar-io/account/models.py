@@ -26,6 +26,10 @@ TUTOR_VERIFICATION_HTMLY = get_template("tutor_verification.html")
 class SchoolType(models.Model):
     name = models.CharField(_("Name des Schultyps"), max_length=50)
 
+    class Meta:
+        verbose_name = _("Schultyp")
+        verbose_name_plural = _("Schultypen")
+
     def __str__(self):
         return self.name
 
@@ -33,6 +37,10 @@ class SchoolType(models.Model):
 class SchoolData(models.Model):
     school_type = models.ForeignKey(SchoolType, on_delete=models.CASCADE)
     grade = models.IntegerField(_("Klasse"))
+
+    class Meta:
+        verbose_name = _("Schultyp- und Klassenkombination")
+        verbose_name_plural = _("Schultyp- und Klassenkombinationen")
 
     def __str__(self):
         return str(self.school_type) + " - " + str(self.grade) + ". Klasse"
@@ -42,12 +50,20 @@ class State(models.Model):
     name = models.CharField(_("Name"), max_length=50, unique=True)
     shortcode = models.CharField(_("Kurzbezeichnung"), max_length=2)
 
+    class Meta:
+        verbose_name = _("Bundesland")
+        verbose_name_plural = _("Bundesländer")
+
     def __str__(self):
         return self.name + " (%s)" % self.shortcode
 
 
 class Subject(models.Model):
     name = models.CharField(_("Name"), max_length=50)
+
+    class Meta:
+        verbose_name = _("Fach")
+        verbose_name_plural = _("Fächer")
 
     def __str__(self):
         return self.name
@@ -59,6 +75,10 @@ class StudentData(models.Model):
 
     school_data = models.ForeignKey(SchoolData, verbose_name=_(
         "Klasse und Schulart"), on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = _("Schülerdaten")
+        verbose_name_plural = verbose_name
 
     def __str__(self):
         return str(self.school_data) + ' - ' + str(self.user)
@@ -76,6 +96,10 @@ class TutorData(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
 
+    class Meta:
+        verbose_name = _("Tutordaten")
+        verbose_name_plural = verbose_name
+
     schooldata = models.ManyToManyField(
         SchoolData, verbose_name=_("Mögliche Schultypen/Klassenstufen"))
     subjects = models.ManyToManyField(Subject, verbose_name=_("Fächer"))
@@ -92,12 +116,19 @@ class TutorData(models.Model):
     def __init__(self, *args, **kwargs):
         super(TutorData, self).__init__(*args, **kwargs)
         self.__was_verified = self.verified
-    
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.__was_verified != self.verified:
             self.send_verified_email()
+        if self.verified:
+            try:
+                self.verification_file.delete()
+                self.verification_file = None
+            except:
+                # Can fail quietly
+                pass
         return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
-    
+
     def send_verified_email(self):
         subject, from_email, to = "Verifizierung für naklar.io", "noreply@naklar.io", self.user.email
         d = {
@@ -116,7 +147,7 @@ class TutorData(models.Model):
     def image_tag(self):
         return mark_safe('<img src="/media/%s" width="256" height="256" />' % (self.profile_picture))
 
-    image_tag.short_description = 'Image'
+    image_tag.short_description = 'Profilbild'
 
 
 class VerificationToken(models.Model):
@@ -124,6 +155,10 @@ class VerificationToken(models.Model):
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, unique=True)
     token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created = models.DateTimeField(_("Erstellt"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = "E-Mail Verifizierungstoken"
+        verbose_name_plural = verbose_name
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -133,9 +168,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(verbose_name=_("Beitritt"), auto_now_add=True)
 
-    state = models.ForeignKey(State, on_delete=models.PROTECT)
+    state = models.ForeignKey(
+        State, on_delete=models.PROTECT, verbose_name=_("Bundesland"))
     first_name = models.CharField(_("Vorname"), max_length=50, blank=False)
     last_name = models.CharField(_("Nachname"), max_length=50, blank=True)
 
@@ -157,6 +193,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'state']
     objects = CustomUserManager()
+
+    class Meta:
+        verbose_name = _("Nutzer")
+        verbose_name_plural = _("Nutzer")
 
     def send_verification_email(self):
         if not self.email_verified:
@@ -184,7 +224,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def is_tutor(self):
         return hasattr(self, 'tutordata')
-    
+
     def is_student(self):
         return hasattr(self, 'studentdata')
 
@@ -192,7 +232,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_tutor.admin_order_field = 'tutordata'
     is_student.boolean = True
     is_student.admin_order_field = 'studentdata'
-    
 
     def __str__(self):
         return self.email + ' <{}>'.format(self.uuid)

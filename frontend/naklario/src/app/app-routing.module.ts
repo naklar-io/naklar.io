@@ -14,6 +14,8 @@ import {
   SchoolsComponent,
   StudentsComponent,
   TutorsComponent,
+  DatenschutzComponent,
+  PrivacyComponent,
 } from "./_misc_components/";
 import { UserResolver } from './_services';
 

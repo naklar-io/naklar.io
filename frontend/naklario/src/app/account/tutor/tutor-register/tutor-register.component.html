@@ -1,27 +1,32 @@
 <div class="container">
-  <h1 class="primary-color">Die Schüler freuen sich auf Dich!</h1>
-  <p class="lead">
-    Mit Deiner Unterstützung können Schüler den Schulstoff meistern und bleiben
-    motiviert. Helfe ihnen bequem von zu Hause und wann immer Du möchtest.
-  </p>
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <h1 class="primary-color">Die Schüler freuen sich auf Dich!</h1>
+      <p class="lead">
+        Mit deiner Unterstützung können Schüler den Schulstoff meistern und
+        bleiben motiviert. Helfe ihnen bequem von zu Hause und wann immer du
+        möchtest.
+      </p>
 
-  <div *ngIf="submitSuccess" class="alert alert-success text-center">
-    <p>
-      Danke für Dein Engagement! Unser Team wird sich Deine Registrierung
-      zeitnah bearbeiten und Dich
-      <strong
-        >nach einer kurzen Verifizierung Deiner Eingaben freischalten.
-      </strong>
-      <br />
-      Und schon bist Du startklar und kannst direkt Schülern helfen :)
-    </p>
-  </div>
-  <div *ngIf="error" class="alert alert-danger text-center">
-    {{ error | json }}
+      <div *ngIf="submitSuccess" class="alert alert-success text-center">
+        <p>
+          Danke für din Engagement! Unser Team wird deine Registrierung zeitnah
+          bearbeiten und dich
+          <strong
+            >nach einer kurzen Verifizierung deiner Eingaben freischalten.
+          </strong>
+          <br />
+          Und schon bist du startklar und kannst direkt Schülern helfen :)
+        </p>
+      </div>
+      <div *ngIf="error" class="alert alert-danger text-center">
+        {{ error | json }}
+      </div>
+    </div>
   </div>
 
-  <div class="row justify-content-start">
-    <div class="col-md-9">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
       <form
         #tutorForm="ngForm"
         [formGroup]="registerForm"
@@ -169,7 +174,7 @@
 
         <div class="form-group">
           <label for="schoolType"
-            >In welchen Schultypen / Klassen möchtest Du helfen?</label
+            >In welchen Schultypen / Klassen möchtest du helfen?</label
           >
           <div
             *ngFor="
@@ -198,10 +203,7 @@
               </label>
             </div>
 
-            <div
-              class="col-md-9 custom-slider"
-              [hidden]="!schoolType.value"
-            >
+            <div class="col-md-9 custom-slider" [hidden]="!schoolType.value">
               <ng5-slider
                 [options]="sliderOptions[i]"
                 [formControl]="sliderControl.controls[i]"
@@ -329,14 +331,15 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="file"
-            >Bitte wähle hier ein dich ausweisendes Dokument aus:</label
-          >
+          <label for="file">Zeugnis mit deinem Namen (zur Verifizierung)</label>
           <input
             type="file"
             class="form-control"
             (change)="onFileChange($event)"
           />
+          <p class="text-primary">
+            Bitte verwende kein Ausweisdokument (also Perso oder Reisepass, o.ä.) 
+          </p>
           <div
             *ngIf="f.file.touched && f.file.invalid"
             class="alert alert-danger"
@@ -347,11 +350,11 @@
           </div>
 
           <p>
-            <small>
-              Der Schutz der Schüler*innen im Internet ist uns sehr wichtig.
-              Bitte lade hier ein Ausweisdokument (Das kann sein: Perso, Pass,
-              Führerschein, Studentenausweis mit Foto) hoch, damit wir Dich
-              verifizieren können Danke für Dein Verständnis :)!
+            <small
+              >Der Schutz der Schüler*innen im Internet ist uns sehr wichtig.
+              Bitte deshalb lade hier ein offizielles Dokument mit deinem Namen
+              hoch, womit wir dich verifizieren. Das Dokument wird im Anschluss
+              an deine Verifizierung gelöscht.
             </small>
           </p>
         </div>
