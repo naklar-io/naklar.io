@@ -1,19 +1,14 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
-import { DatabaseService, AuthenticationService } from "src/app/_services";
 import {
-  State,
-  Subject,
-  SchoolType,
-  SchoolData,
-  User,
-  SendableUser,
-  Constants,
-} from "src/app/_models";
-import { Observable, forkJoin } from "rxjs";
-import { share, tap, first, map } from "rxjs/operators";
+  DatabaseService,
+  AuthenticationService,
+  RouletteService,
+} from "src/app/_services";
+import { User, SendableUser, Constants, StudentRequest } from "src/app/_models";
+import { tap, catchError, mergeMap } from "rxjs/operators";
 import { Options } from "ng5-slider";
-import { RouteConfigLoadEnd, ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "roulette-student",
@@ -24,7 +19,7 @@ import { RouteConfigLoadEnd, ActivatedRoute, Router } from "@angular/router";
 export class StudentComponent implements OnInit {
   @Output() done = new EventEmitter<boolean>();
 
-  user$: Observable<User>;
+  user: User;
 
   constants: Constants;
 
@@ -36,9 +31,9 @@ export class StudentComponent implements OnInit {
   };
 
   studentForm = this.fb.group({
-    subject: [null, Validators.required],
-    state: [null, Validators.required],
-    slider: [5, Validators.required],
+    subject: ["", Validators.required],
+    state: [-1, Validators.required],
+    slider: [-1, Validators.required],
   });
 
   submitted = false;
@@ -53,7 +48,8 @@ export class StudentComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authenticationService: AuthenticationService,
-    private route: ActivatedRoute,
+    private rouletteService: RouletteService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -61,51 +57,56 @@ export class StudentComponent implements OnInit {
       this.constants = data.constants;
     });
 
-    this.user$ = this.authenticationService.currentUser.pipe(share()).pipe(
-      tap((user) => {
-        this.f.state.setValue(user.state);
-        this.f.slider.setValue(user.studentdata.school_data.grade);
-      })
-    );
+    this.user = this.authenticationService.currentUserValue;
+    this.f.state.setValue(this.user.state.id);
+    this.f.slider.setValue(this.user.studentdata.school_data.grade);
   }
 
   onSubmit(): void {
+    this.submitted = true;
+    this.studentForm.markAllAsTouched();
+
     if (this.studentForm.invalid) {
+      console.log("invalid");
       return;
     }
-    this.user$
-      .pipe(first())
-      .pipe(
-        map((user) => {
-          const grade = this.f.slider.value;
-          const selectedSchoolData = this.constants.schoolData.find(
-            (x) =>
-              x.school_type === user.studentdata.school_data.school_type &&
-              x.grade === grade
-          );
-          const partialUser: Partial<SendableUser> = {
-            state: this.f.state.value.id,
-            studentdata: {
-              school_data: selectedSchoolData.id,
-            },
-          };
 
-          this.loading = true;
-          return this.authenticationService
-            .updateUser(partialUser, this.constants)
-            .pipe(first())
-            .subscribe(
-              (data) => {
-                this.loading = false;
-                this.submitSuccess = true;
-                this.error = null;
-              },
-              (error) => {
-                this.error = error;
-                this.loading = true;
-              }
-            );
-        })
+    const grade = this.f.slider.value;
+    const selectedSchoolData = this.constants.schoolData.find(
+      (x) =>
+        x.school_type === this.user.studentdata.school_data.school_type &&
+        x.grade === grade
+    );
+    const partialUser: Partial<SendableUser> = {
+      state: this.f.state.value,
+      studentdata: {
+        school_data: selectedSchoolData.id,
+      },
+    };
+
+    console.log("updating user", partialUser);
+    this.loading = true;
+    this.authenticationService
+      .updateUser(partialUser, this.constants)
+      .pipe(tap((_) => console.log("creating Match")))
+      .pipe(
+        mergeMap((_) =>
+          this.rouletteService.createMatch("student", {
+            subject: this.f.subject.value,
+          })
+        )
+      )
+      .subscribe(
+        (data) => {
+          this.loading = false;
+          this.submitSuccess = true;
+          this.error = null;
+          this.done.emit(true);
+        },
+        (error) => {
+          this.loading = false;
+          this.error = error;
+        }
       );
   }
 }
