@@ -10,6 +10,7 @@
 
       .ng5-slider-pointer {
           background: $primary !important;
+          outline: none;
       }
       .ng5-slider-tick.ng5-slider-selected {
           background: $primary;
