@@ -1,42 +1,53 @@
 <h1 class="primary-color">Finde deinen Tutor</h1>
 
-<div *ngIf="user$ | async as user; else loading">
-  <p>
-    Hey {{ user.first_name }}, Gib uns noch ein paar Informationen von dir,
-    damit wir den perfekten Tutor für dich finden können:
-  </p>
+<p>
+  Hey {{ user.first_name }}, Gib uns noch ein paar Informationen von dir, damit
+  wir den perfekten Tutor für dich finden können:
+</p>
 
-  <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+<form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+  <div class="form-group">
     <label for="subjects">Für welches Fach hast du eine Frage?</label>
     <select name="subjects" class="form-control" [formControl]="f.subject">
-      <option *ngFor="let subject of constants.subjects" [ngValue]="subject">
+      <option *ngFor="let subject of constants.subjects" [value]="subject.id">
         {{ subject.name }}
       </option>
     </select>
+    <div class="invalid-feedback">
+      <div *ngIf="f.subject.errors?.required">
+        Du musst ein Fach auswählen
+      </div>
+    </div>
+  </div>
 
-    <p>Diese Informationen haben wir in deinem Account gefunden:</p>
+  <div class="form-group">
     <div class="form-row">
-      <label for="state">Bundesland</label>
-      <select name="state" class="form-control" [formControl]="f.state">
-        <option *ngFor="let state of constants.states" [ngValue]="state">
-          {{ state.name }}
-        </option>
-      </select>
+      <div class="col-sm">
+        <label for="state">Bundesland</label>
+        <select name="state" class="form-control" [formControl]="f.state">
+          <option *ngFor="let state of constants.states" [value]="state.id">
+            {{ state.name }}
+          </option>
+        </select>
+      </div>
 
-      <div class="from-group col">
+      <div class="col-sm">
+        <label for="class">Klasse</label>
         <ng5-slider
+          name="class"
           [options]="slider_options"
           formControlName="slider"
         ></ng5-slider>
       </div>
     </div>
-
-    <button type="submit" class="btn btn-primary">Finde deinen Tutor</button>
-  </form>
-</div>
-
-<ng-template #loading>
-  <div class="container">
-    <span class="spinner-border spinner-border-sm mr-1"></span>
   </div>
-</ng-template>
+
+  <button
+    type="submit"
+    class="btn btn-primary"
+    [disabled]="submitSuccess || loading"
+  >
+    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+    Absenden
+  </button>
+</form>

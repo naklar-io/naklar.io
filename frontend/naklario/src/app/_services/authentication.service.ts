@@ -83,7 +83,7 @@ export class AuthenticationService {
 
   public updateUser(user: Partial<SendableUser>, constants: Constants) {
     return this.http
-      .put<SendableUser>(`${environment.apiUrl}/account/`, user)
+      .put<SendableUser>(`${environment.apiUrl}/account/current/`, user)
       .pipe(
         map((user) => {
           const u = sendableToLocal(user, constants);
