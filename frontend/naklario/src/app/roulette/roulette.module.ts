@@ -4,12 +4,14 @@ import { CommonModule } from "@angular/common";
 import { RouletteRoutingModule } from "./roulette-routing.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { RouletteComponent } from "./roulette.component";
-import { StudentComponent } from "./student/student.component";
-import { TutorComponent } from "./tutor/tutor.component";
+import { StudentComponent } from "./create/student/student.component";
+import { TutorComponent } from "./create/tutor/tutor.component";
 import { Ng5SliderModule } from "ng5-slider";
-import { WaitingComponent } from "./waiting/waiting.component";
+import { WaitingComponent } from "./wait/waiting.component";
 import { FeedbackComponent } from "./feedback/feedback.component";
-import { RouletteService } from "../_services";
+import { RouletteService, DatabaseService } from "../_services";
+import { TutorWaitComponent } from './wait/tutor-wait/tutor-wait.component';
+import { StudentWaitComponent } from './wait/student-wait/student-wait.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,8 @@ import { RouletteService } from "../_services";
     TutorComponent,
     WaitingComponent,
     FeedbackComponent,
+    TutorWaitComponent,
+    StudentWaitComponent,
   ],
   imports: [
     Ng5SliderModule,
@@ -25,6 +29,5 @@ import { RouletteService } from "../_services";
     ReactiveFormsModule,
     RouletteRoutingModule,
   ],
-  providers: [RouletteService],
 })
 export class RouletteModule {}

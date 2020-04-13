@@ -1,0 +1,11 @@
+<div *ngIf="match; else waiting">
+  <p>
+    Du wurdest mit {{ match.tutor.first_name }}
+    {{ match.tutor.last_name }} gematcht!
+  </p>
+</div>
+<ng-template #waiting>
+  <div>
+    <p>Warte auf Match.</p>
+  </div>
+</ng-template>

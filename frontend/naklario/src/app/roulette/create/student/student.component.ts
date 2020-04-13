@@ -13,7 +13,7 @@ import {
 import { Observable, forkJoin } from "rxjs";
 import { share, tap, first, map } from "rxjs/operators";
 import { Options } from "ng5-slider";
-import { RouteConfigLoadEnd, ActivatedRoute } from '@angular/router';
+import { RouteConfigLoadEnd, ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "roulette-student",
@@ -23,11 +23,6 @@ import { RouteConfigLoadEnd, ActivatedRoute } from '@angular/router';
 })
 export class StudentComponent implements OnInit {
   @Output() done = new EventEmitter<boolean>();
-
-  states$: Observable<State[]>;
-  subjects$: Observable<Subject[]>;
-  schoolTypes$: Observable<SchoolType[]>;
-  schoolData$: Observable<SchoolData[]>;
 
   user$: Observable<User>;
 
@@ -60,9 +55,9 @@ export class StudentComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private route: ActivatedRoute,
   ) {}
-  
+
   ngOnInit(): void {
-    this.route.data.subscribe((data: {constants: Constants}) => {
+    this.route.data.subscribe((data: { constants: Constants }) => {
       this.constants = data.constants;
     });
 
@@ -78,13 +73,12 @@ export class StudentComponent implements OnInit {
     if (this.studentForm.invalid) {
       return;
     }
-    forkJoin(this.user$, this.schoolData$)
+    this.user$
       .pipe(first())
       .pipe(
-        map(([user, schoolData]) => {
-          console.log("promises resolved");
+        map((user) => {
           const grade = this.f.slider.value;
-          const selectedSchoolData = schoolData.find(
+          const selectedSchoolData = this.constants.schoolData.find(
             (x) =>
               x.school_type === user.studentdata.school_data.school_type &&
               x.grade === grade
@@ -97,7 +91,7 @@ export class StudentComponent implements OnInit {
           };
 
           this.loading = true;
-          const auth$ = this.authenticationService
+          return this.authenticationService
             .updateUser(partialUser, this.constants)
             .pipe(first())
             .subscribe(
@@ -111,16 +105,7 @@ export class StudentComponent implements OnInit {
                 this.loading = true;
               }
             );
-          return auth$;
         })
       );
-    Promise.all([this.user$.toPromise(), this.schoolData$.toPromise()])
-      .then(([user, schoolData]) => {})
-      .then(() => {
-        // return back to parent component
-        console.log("done");
-        this.done.emit(true);
-      });
   }
-
 }
