@@ -121,8 +121,12 @@ class TutorData(models.Model):
         if self.__was_verified != self.verified:
             self.send_verified_email()
         if self.verified:
-            self.verification_file.delete()
-            self.verification_file = None
+            try:
+                self.verification_file.delete()
+                self.verification_file = None
+            except:
+                # Can fail quietly
+                pass
         return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def send_verified_email(self):
