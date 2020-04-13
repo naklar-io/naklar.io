@@ -108,8 +108,8 @@ class TutorData(models.Model):
     subjects = models.ManyToManyField(Subject, verbose_name=_("Fächer"))
 
     verified = models.BooleanField(_("Verifiziert"), default=False)
-    verification_file = models.FileField(
-        _("Vefizierungsdatei"), upload_to=tutor_upload_path, null=True)
+    verification_file = models.FileField(verbose_name=_(
+        "Vefizierungsdatei"), upload_to=tutor_upload_path, null=True, blank=True)
 
     profile_picture = models.ImageField(
         _("Profilbild"), upload_to=profile_upload_path, null=True)
@@ -171,8 +171,6 @@ class PasswordResetToken(models.Model):
     token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     created = models.DateTimeField(_("Erstellt"), auto_now_add=True)
 
-    
-
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("E-Mail"), max_length=254, unique=True)
@@ -181,7 +179,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(verbose_name=_("Beitritt"), auto_now_add=True)
+    date_joined = models.DateTimeField(
+        verbose_name=_("Beitritt"), auto_now_add=True)
 
     state = models.ForeignKey(
         State, on_delete=models.PROTECT, verbose_name=_("Bundesland"))
@@ -234,7 +233,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return True
         else:
             return False
-            
+
     def send_reset_mail(self):
         PasswordResetToken.objects.filter(user=self).delete()
         token = PasswordResetToken(user=self)
