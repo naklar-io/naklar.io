@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
-from django.conf.global_settings import DATA_UPLOAD_MAX_MEMORY_SIZE
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,7 +22,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y@e1mtft*fn9@a0p_07=31in#4_i-zgc9)e%cqlfj-q9yzbjts'
+def generate_secret_key(path):
+    with open(path, 'w') as f:
+        f.write("SECRET_KEY='"+get_random_secret_key()+"'\n")
+
+
+try:
+    from .secret_key import SECRET_KEY
+except ImportError:
+    SETTINGS_DIR = os.path.abspath(os.path.dirname(__file__))
+    generate_secret_key(os.path.join(SETTINGS_DIR, 'secret_key.py'))
+    from .secret_key import SECRET_KEY
 
 BBB_SHARED = 'iFsEVFiFzXVJkgYHWEEBdf6PIcu39Az0gLn522K2UI'
 BBB_URL = "https://bbb.goodgrade.de"
@@ -31,7 +41,7 @@ BBB_URL = "https://bbb.goodgrade.de"
 EMAIL_HOST = "localhost"
 EMAIL_PORT = "1025"
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10mb
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb
 
 
 HOST = "https://dev.naklar.io"
@@ -50,11 +60,11 @@ MEDIA_URL = '/media/'
 AUTH_USER_MODEL = 'account.CustomUser'
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-      'Token': {
+        'Token': {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header'
-      }
+        }
     },
     'SECURITY_REQUIREMENTS': [
         {'Token': []},
@@ -67,12 +77,12 @@ SWAGGER_SETTINGS = {
 REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
-#        'rest_framework.parsers.XMLParser',
+        #        'rest_framework.parsers.XMLParser',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-#        'rest_framework_xml.renderers.XMLRenderer',
+        #        'rest_framework_xml.renderers.XMLRenderer',
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
