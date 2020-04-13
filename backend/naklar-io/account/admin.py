@@ -78,12 +78,13 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
+
     inlines = [
         StudentDataInline,
         TutorDataInline
     ]
     list_display = ('email', 'first_name', 'last_name',
-                    'state', 'is_staff', 'is_active', 'is_tutor', 'is_student', 'email_verified')
+                    'state', 'is_staff', 'is_active', 'is_tutor', 'is_student', 'email_verified', 'date_joined')
     list_filter = ('is_staff', 'is_active', 'email_verified', UnverifiedTutorFilter, StudentDataFilter, TutorDataFilter, 'state'
                    )
     fieldsets = (

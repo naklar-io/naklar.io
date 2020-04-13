@@ -168,7 +168,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
+    date_joined = models.DateTimeField(verbose_name=_("Beitritt"), auto_now_add=True)
 
     state = models.ForeignKey(
         State, on_delete=models.PROTECT, verbose_name=_("Bundesland"))
