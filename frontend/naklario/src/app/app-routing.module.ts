@@ -14,6 +14,8 @@ import {
   SchoolsComponent,
   StudentsComponent,
   TutorsComponent,
+  DatenschutzComponent,
+  PrivacyComponent,
 } from "./_misc_components/";
 
 const routes: Routes = [
@@ -25,7 +27,7 @@ const routes: Routes = [
   { path: "tutors", component: TutorsComponent },
   { path: "terms", component: TermsConditionsComponent },
   { path: "imprint", component: ImpressumComponent },
-  { path: "privacy", component: ImpressumComponent },
+  { path: "privacy", component: PrivacyComponent },
   { path: "about", component: AboutComponent },
   { path: "landing", component: LandingComponent },
   { path: "", component: HomeComponent, pathMatch: "full" },

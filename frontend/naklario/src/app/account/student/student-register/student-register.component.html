@@ -1,21 +1,25 @@
 <div class="container">
-  <h1 class="primary-color">
-    Unsere Tutoren sind bereit für deine Fragen! Eine kleine Sache noch...
-  </h1>
-  <p class="lead">
-    Bitte registriere Dich hier kurz. Dann kannst Du sofort loslegen und mit
-    Deinem Tutor kostenlos mit Deinen Fragen löchern!
-  </p>
-
-  <div *ngIf="submitSuccess" class="alert alert-success text-center">
-    <p>Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.</p>
-  </div>
-  <div *ngIf="error" class="alert alert-danger text-center">
-    {{ error | json }}
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <h1 class="primary-color">
+        Unsere Tutoren sind bereit für deine Fragen! Eine kleine Sache noch...
+      </h1>
+      <p class="lead">
+        Bitte registriere Dich hier kurz. Dann kannst Du sofort loslegen und mit
+        Deinem Tutor kostenlos mit Deinen Fragen löchern!
+      </p>
+    
+      <div *ngIf="submitSuccess" class="alert alert-success text-center">
+        <p>Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.</p>
+      </div>
+      <div *ngIf="error" class="alert alert-danger text-center">
+        {{ error | json }}
+      </div>
+    </div>
   </div>
 
   <div class="row justify-content-center">
-    <div class="col-md-9">
+    <div class="col-md-10">
       <form #studentForm [formGroup]="registerForm" (ngSubmit)="onSubmit()">
         <div class="form-row">
           <div class="col-md-6">
