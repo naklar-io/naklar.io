@@ -1,5 +1,5 @@
 from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.utils import get_serializer_class, swagger_auto_schema
 from knox.views import LoginView as KnoxLoginView
 from rest_framework import (exceptions, generics, permissions, serializers,
                             status)
@@ -14,6 +14,7 @@ from account.models import (CustomUser, SchoolData, SchoolType, State, Subject,
                             TutorData, VerificationToken)
 from account.permissions import IsUser
 from account.serializers import (CurrentUserSerializer, CustomUserSerializer,
+                                 PasswordResetRequestSerializer,
                                  SchoolDataSerializer, SchoolTypeSerializer,
                                  StateSerializer, SubjectSerializer,
                                  TutorDataSerializer)
@@ -121,7 +122,7 @@ class UploadVerificationView(APIView):
         return Response(serializer.data)
 
 
-class DeleteVerificationView(APIView):
+class DeleteVerificationView(generics.GenericAPIView):
     serializer_class = CurrentUserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -150,3 +151,13 @@ def verify_email(request, token):
 def resend_verification(request):
     request.user.send_verification_email()
     return Response()
+
+
+@api_view(['POST'])
+def password_reset_request(self):
+    pass
+
+
+@api_view(['POST'])
+def password_reset_verify(self, uuid):
+    pass

@@ -21,6 +21,8 @@ urlpatterns = [
     path('create/', CustomUserCreateView.as_view()),
     path('email/verify/<uuid:token>/', views.verify_email),
     path('email/resend_verification/', views.resend_verification),
+    path('request-password-reset/', views.password_reset_request),
+    path('reset-password/<uuid:token>/', views.password_reset_verify),
     #path('upload_verification/', views.UploadVerificationView.as_view()),
     #path('delete_verification/', views.DeleteVerificationView.as_view()),
     path(r'login/', LoginView.as_view(), name='knox_login'),
