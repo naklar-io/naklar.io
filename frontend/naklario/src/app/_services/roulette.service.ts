@@ -46,34 +46,36 @@ export class RouletteService {
   public updatingMatch(
     requestType: RouletteRequestType,
     interval: number = 1000
-  ) {
-    if (this.isUpdating) {
-      return this.matchRequestSubject;
-    }
-    this.isUpdating = true;
-    timer(0, interval)
-      // can stop the polling from outside this function
-      .pipe(takeWhile((_) => this.isUpdating))
-      .pipe(
-        switchMap((_) =>
-          this.http.get<MatchRequest>(
-            `${environment.apiUrl}/roulette/${requestType}/request/`
+  ): Observable<Match> {
+    if (!this.isUpdating) {
+      this.isUpdating = true;
+      timer(0, interval)
+        // can stop the polling from outside this function
+        .pipe(takeWhile((_) => this.isUpdating))
+        .pipe(
+          switchMap((_) =>
+            this.http.get<MatchRequest>(
+              `${environment.apiUrl}/roulette/${requestType}/request/`
+            )
           )
         )
-      )
-      .pipe(filter((x) => Boolean(x.match)))
-      .pipe(
-        tap((r) => {
-          console.log("Found Match: ", r);
-          this.matchRequestSubject.next(r);
-          this.isUpdating = false;
-        })
-      )
-      // complete when match found
-      .pipe(take(1));
+        .pipe(filter((x) => Boolean(x.match)))
+        .pipe(
+          tap((r) => {
+            console.log("Found Match: ", r);
+            this.matchRequestSubject.next(r.match);
+            this.isUpdating = false;
+          })
+        )
+        // complete when match found
+        .pipe(take(1));
+    }
+    return this.matchRequestSubject
+      .pipe(filter((r) => Boolean(r.match)))
+      .pipe(map((r) => r.match));
   }
 
-  public stopUpdatingMatch(requestType: RouletteRequestType) {
+  public stopUpdatingMatch(requestType: RouletteRequestType): Observable<void> {
     return this.http
       .delete<void>(`${environment.apiUrl}/roulette/${requestType}/request/`)
       .pipe(

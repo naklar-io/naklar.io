@@ -11,7 +11,14 @@
   </div>
 
   <div *ngIf="state === 'wait'">
-    <roulette-waiting (done)="onWaitDone($event)"></roulette-waiting>
+    <roulette-tutor-wait
+      *ngIf="type === 'tutor'"
+      (done)="onWaitDone($event)"
+    ></roulette-tutor-wait>
+    <roulette-student-wait
+      *ngIf="type === 'student'"
+      (done)="onWaitDone($event)"
+    ></roulette-student-wait>
   </div>
 
   <div *ngIf="state === 'match'">

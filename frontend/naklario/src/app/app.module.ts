@@ -11,7 +11,6 @@ import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
 
 // Components
 import { AppComponent } from "./app.component";
-import { RouletteComponent } from "./roulette/roulette.component";
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
 import { AccountModule } from "./account/account.module";
@@ -33,6 +32,7 @@ import {
   DatabaseService,
   AuthenticationService,
   ToastService,
+  RouletteService,
 } from "./_services";
 import { ParentsComponent } from "./_misc_components/parents/parents.component";
 import { StudentsComponent } from "./_misc_components/students/students.component";
@@ -84,6 +84,7 @@ import { MoreInformationComponent } from './home/more-information/more-informati
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     AuthenticationService,
     DatabaseService,
+    RouletteService,
     ToastService,
   ],
   bootstrap: [AppComponent],
