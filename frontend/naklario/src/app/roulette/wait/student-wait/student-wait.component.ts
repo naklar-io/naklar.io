@@ -14,6 +14,10 @@ export class StudentWaitComponent implements OnInit, OnDestroy {
 
   constructor(private rouletteService: RouletteService) {}
 
+  get tutor() {
+    return this.match.tutor;
+  }
+
   ngOnInit(): void {
     this.match = null;
     this.rouletteService.updatingMatch(this.requestType).subscribe(

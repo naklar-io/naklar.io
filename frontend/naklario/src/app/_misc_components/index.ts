@@ -13,3 +13,4 @@ export * from "./parents/parents.component";
 export * from "./schools/schools.component";
 export * from "./students/students.component";
 export * from "./tutors/tutors.component";
+export * from './user-card/user-card.component';

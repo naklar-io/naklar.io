@@ -26,6 +26,7 @@ import {
   PageNotFoundComponent,
   FooterComponent,
   NavbarComponent,
+  UserCardComponent,
 } from "./_misc_components";
 
 import {
@@ -41,7 +42,7 @@ import { SchoolsComponent } from "./_misc_components/schools/schools.component";
 import { HelpSupportComponent } from "./_misc_components/help-support/help-support.component";
 import { FeedbackComponent } from "./_misc_components/feedback/feedback.component";
 import { ToastsComponent } from "./_misc_components/toasts/toasts.component";
-import { MoreInformationComponent } from './home/more-information/more-information.component';
+import { MoreInformationComponent } from "./home/more-information/more-information.component";
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { MoreInformationComponent } from './home/more-information/more-informati
     FeedbackComponent,
     ToastsComponent,
     MoreInformationComponent,
+    UserCardComponent,
   ],
   imports: [
     NgbModule,
