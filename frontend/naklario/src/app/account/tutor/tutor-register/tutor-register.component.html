@@ -37,13 +37,13 @@
         <div class="form-row">
           <div class="col-md">
             <div class="form-group form-label-group">
-              <label for="firstName">Vorname</label>
               <input
                 type="text"
                 formControlName="firstName"
                 class="form-control"
                 placeholder="Vorname"
               />
+              <label for="firstName">Vorname</label>
               <div class="invalid-feedback">
                 <div *ngIf="f.firstName.errors?.required">
                   Du musst einen Vornamen angeben
@@ -53,13 +53,13 @@
           </div>
           <div class="col-md">
             <div class="form-group form-label-group">
-              <label for="lastName">Nachname</label>
               <input
                 type="text"
                 formControlName="lastName"
                 class="form-control"
                 placeholder="Nachname"
               />
+              <label for="lastName">Nachname</label>
               <div class="invalid-feedback">
                 <div *ngIf="f.lastName.errors?.required">
                   Du musst einen Nachnamen angeben
@@ -72,13 +72,13 @@
         <div class="form-row">
           <div class="col-md">
             <div class="form-label-group">
-              <label for="email">E-Mail</label>
               <input
                 type="email"
                 formControlName="email"
                 class="form-control"
                 placeholder="E-Mail"
               />
+              <label for="email">E-Mail</label>
               <div class="invalid-feedback">
                 <div *ngIf="f.email.errors?.required">
                   Du musst eine E-Mail angeben
@@ -334,18 +334,17 @@
 
         <div class="form-group form-row">
           <div class="custom-control custom-checkbox">
-            <label for="terms" class="custom-control-label"
-              >Ja, ich habe die
-              <a routerLink="/terms" target="_blank">AGB</a> und
-              <a routerLink="/privacy" target="_blank">Datenschutzerklärung</a>
-              gelesen</label
-            >
             <input
               type="checkbox"
               id="terms"
               formControlName="terms"
               class="custom-control-input"
-            />
+            /><label for="terms" class="custom-control-label"
+              >Ja, ich habe die
+              <a routerLink="/terms" target="_blank">AGB</a> und
+              <a routerLink="/privacy" target="_blank">Datenschutzerklärung</a>
+              gelesen</label
+            >
             <div class="invalid-feedback">
               <div *ngIf="f.terms.errors?.required">
                 Du musst die AGB akzeptieren.
