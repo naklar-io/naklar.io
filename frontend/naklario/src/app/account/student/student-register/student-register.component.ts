@@ -81,6 +81,7 @@ export class StudentRegisterComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
+    this.registerForm.markAllAsTouched();
 
     if (this.registerForm.invalid) {
       return;

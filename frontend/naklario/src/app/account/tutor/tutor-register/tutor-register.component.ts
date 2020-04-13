@@ -124,7 +124,7 @@ export class TutorRegisterComponent implements OnInit {
   }
 
   onSchoolTypeSelect(index: number) {
-    this.sliderRefresh[index].emit()
+    this.sliderRefresh[index].emit();
   }
 
   onImageChange(img: string) {
@@ -148,7 +148,8 @@ export class TutorRegisterComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    console.log(this.f.subjects.value);
+    this.registerForm.markAllAsTouched();
+
     if (this.registerForm.invalid) {
       console.log("invalid");
       return;
