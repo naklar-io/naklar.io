@@ -74,7 +74,7 @@ export class StudentComponent implements OnInit {
     const grade = this.f.slider.value;
     const selectedSchoolData = this.constants.schoolData.find(
       (x) =>
-        x.school_type === this.user.studentdata.school_data.school_type &&
+        x.school_type.id === this.user.studentdata.school_data.school_type.id &&
         x.grade === grade
     );
     const partialUser: Partial<SendableUser> = {

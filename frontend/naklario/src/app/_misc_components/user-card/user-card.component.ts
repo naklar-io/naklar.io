@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { User } from "src/app/_models";
+import { User, Match } from "src/app/_models";
 import { RouletteRequestType } from "src/app/_services";
 
 @Component({
@@ -10,6 +10,7 @@ import { RouletteRequestType } from "src/app/_services";
 export class UserCardComponent implements OnInit {
   @Input() readonly user: User;
   @Input() readonly type: RouletteRequestType;
+  @Input() readonly match: Match;
 
   img: string;
 
@@ -20,5 +21,12 @@ export class UserCardComponent implements OnInit {
       !(this.user.tutordata.profile_picture as string).includes("undefined")
         ? this.user.tutordata.profile_picture
         : "assets/img/icons/user_default.png";
+  }
+
+  get tutordata() {
+    return this.user.tutordata;
+  }
+  get school_data() {
+    return this.user.studentdata.school_data;
   }
 }

@@ -26,7 +26,6 @@ export class TutorComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.route.data.subscribe((data: { constants: Constants }) => {
-      console.log(data.constants);
       this.constants = data.constants;
     });
   }
