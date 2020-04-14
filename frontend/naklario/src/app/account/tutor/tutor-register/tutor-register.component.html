@@ -338,7 +338,8 @@
             (change)="onFileChange($event)"
           />
           <p class="text-primary">
-            Bitte verwende kein Ausweisdokument (also Perso oder Reisepass, o.ä.) 
+            Bitte verwende kein Ausweisdokument (also Perso oder Reisepass,
+            o.ä.)
           </p>
           <div
             *ngIf="f.file.touched && f.file.invalid"
@@ -363,6 +364,7 @@
           <div class="custom-control custom-checkbox">
             <input
               type="checkbox"
+              name="terms"
               id="terms"
               formControlName="terms"
               class="custom-control-input"
