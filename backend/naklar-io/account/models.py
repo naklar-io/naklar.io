@@ -241,7 +241,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         subject, from_email, to = "Passwort zurücksetzen auf naklar.io", "noreply@naklar.io", self.email
         d = {
             'user': self,
-            'reset_url': settings.HOST + "/account/reset/{}".format(token.token)
+            'reset_url': settings.HOST + "/account/password-reset/{}".format(token.token)
         }
         text_content = PASSWORD_RESET_PLAINTEXT.render(d)
         html_content = PASSWORD_RESET_HTMLY.render(d)
