@@ -4,6 +4,7 @@ import {
   localToSendableUser,
   sendableToLocalUser,
   Constants,
+  Subject
 } from "./database";
 
 export interface SendableMatch {
@@ -15,7 +16,7 @@ export interface SendableMatch {
   failed_matches: number[];
   created: string;
   user: string;
-  subject: string;
+  subject: number;
 }
 
 export interface SendableMatchRequest {
@@ -42,7 +43,7 @@ export class Match {
     public failed_matches: number[],
     public created: string,
     public user: string,
-    public subject: string
+    public subject: Subject
   ) {}
 }
 
@@ -83,7 +84,7 @@ export function localToSendableMatch(m: Match): SendableMatch {
     failed_matches: m.failed_matches,
     created: m.created,
     user: m.user,
-    subject: m.subject,
+    subject: m.subject.id,
   };
 }
 
@@ -100,7 +101,7 @@ export function sendableToLocalMatch(
     m.failed_matches,
     m.created,
     m.user,
-    m.subject
+    m.subject ? constants.subjects.find((x) => x.id === m.subject) : null
   );
 }
 
