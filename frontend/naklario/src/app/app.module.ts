@@ -7,6 +7,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 // Third party modules
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
+import { LoadingBarRouterModule } from "@ngx-loading-bar/router";
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+
 import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
 
 // Components
@@ -40,7 +43,7 @@ import { SchoolsComponent } from "./_misc_components/schools/schools.component";
 import { HelpSupportComponent } from "./_misc_components/help-support/help-support.component";
 import { FeedbackComponent } from "./_misc_components/feedback/feedback.component";
 import { ToastsComponent } from "./_misc_components/toasts/toasts.component";
-import { MoreInformationComponent } from './home/more-information/more-information.component';
+import { MoreInformationComponent } from "./home/more-information/more-information.component";
 
 @NgModule({
   declarations: [
@@ -69,6 +72,9 @@ import { MoreInformationComponent } from './home/more-information/more-informati
     NgbModule,
     BrowserModule,
     HttpClientModule,
+    // Loading bar
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule,
     // Stuff for reactive / template driven forms
     ReactiveFormsModule,
     FormsModule,
