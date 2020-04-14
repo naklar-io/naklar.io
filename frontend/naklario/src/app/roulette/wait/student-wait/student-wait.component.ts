@@ -10,7 +10,7 @@ import { tap, switchMap } from "rxjs/operators";
   styleUrls: ["./student-wait.component.scss"],
 })
 export class StudentWaitComponent implements OnInit, OnDestroy {
-  @Input() readonly requestType: RouletteRequestType;
+  private readonly requestType: RouletteRequestType = "student";
 
   match: Match;
 
@@ -49,6 +49,6 @@ export class StudentWaitComponent implements OnInit, OnDestroy {
       );
   }
   ngOnDestroy(): void {
-    this.rouletteService.stopUpdatingMatch(this.requestType);
+    this.rouletteService.deleteMatch(this.requestType);
   }
 }

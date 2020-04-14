@@ -55,8 +55,13 @@ export class MatchRequest {
 }
 
 export class StudentRequest extends MatchRequest {
-  constructor(public subject: number) {
-    super();
+  constructor(
+    public subject: number,
+    public match?: Match,
+    public failed_matches?: number[],
+    public created?: string
+  ) {
+    super(match, failed_matches, created);
   }
 }
 
@@ -73,8 +78,8 @@ export function localToSendableMatch(m: Match): SendableMatch {
     uuid: m.uuid,
     student_agree: m.student_agree,
     tutor_agree: m.tutor_agree,
-    tutor: localToSendableUser(m.tutor),
-    student: localToSendableUser(m.student),
+    tutor: m.tutor ? localToSendableUser(m.tutor) : undefined,
+    student: m.student ? localToSendableUser(m.student) : undefined,
     failed_matches: m.failed_matches,
     created: m.created,
     user: m.user,
@@ -90,8 +95,8 @@ export function sendableToLocalMatch(
     m.uuid,
     m.student_agree,
     m.tutor_agree,
-    sendableToLocalUser(m.tutor, constants),
-    sendableToLocalUser(m.student, constants),
+    m.tutor ? sendableToLocalUser(m.tutor, constants) : null,
+    m.student ? sendableToLocalUser(m.student, constants) : null,
     m.failed_matches,
     m.created,
     m.user,
@@ -103,7 +108,7 @@ export function localToSendableMatchRequest(
   m: MatchRequest
 ): SendableMatchRequest {
   return {
-    match: localToSendableMatch(m.match),
+    match: m.match ? localToSendableMatch(m.match) : undefined,
     failed_matches: m.failed_matches,
     created: m.created,
   };
@@ -114,7 +119,30 @@ export function sendableToLocalMatchRequest(
   constants: Constants
 ): MatchRequest {
   return new MatchRequest(
-    sendableToLocalMatch(m.match, constants),
+    m.match ? sendableToLocalMatch(m.match, constants) : null,
+    m.failed_matches,
+    m.created
+  );
+}
+
+export function localToSendableStudentRequest(
+  m: StudentRequest
+): SendableStudentRequest {
+  return {
+    subject: m.subject,
+    match: m.match ? localToSendableMatch(m.match) : undefined,
+    failed_matches: m.failed_matches,
+    created: m.created,
+  };
+}
+
+export function sendableToLocalStudentRequest(
+  m: SendableStudentRequest,
+  constants: Constants
+): StudentRequest {
+  return new StudentRequest(
+    m.subject,
+    m.match ? sendableToLocalMatch(m.match, constants) : null,
     m.failed_matches,
     m.created
   );
