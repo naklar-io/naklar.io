@@ -81,40 +81,41 @@ export class RouletteService {
   ): Observable<Match> {
     if (!this.isUpdating) {
       this.isUpdating = true;
-      timer(0, interval)
+      const obs = timer(0, interval)
         // can stop the polling from outside this function
         .pipe(takeWhile((_) => this.isUpdating))
         .pipe(
-          switchMap((_) =>
-            this.http.get<SendableMatchRequest>(
-              `${environment.apiUrl}/roulette/${requestType}/request/`
-            )
-          )
+          switchMap((_) => {
+            const url = `${environment.apiUrl}/roulette/${requestType}/request/`;
+            console.log("polling ", url);
+            return this.http.get<SendableMatchRequest>(url);
+          })
         )
         .pipe(filter((x) => Boolean(x.match)))
         .pipe(map((r) => sendableToLocalMatchRequest(r, constants)))
         .pipe(
           tap((r) => {
             console.log("Found Match: ", r);
-            this.matchRequestSubject.next(r.match);
+            this.matchRequestSubject.next(r);
             this.isUpdating = false;
           })
         )
         // complete when match found
-        .pipe(take(1));
+        .pipe(take(1))
+        // observable is only evaluated on subscription
+        .pipe(publishReplay());
+      (obs as ConnectableObservable<MatchRequest>).connect();
     }
-    return this.matchRequestSubject
+    return this.matchRequest$
       .pipe(filter((r) => Boolean(r.match)))
       .pipe(map((r) => r.match));
   }
 
   public deleteMatch(requestType: RouletteRequestType): Observable<void> {
-    console.log("deleting match", requestType);
     const obs = this.http
       .delete<void>(`${environment.apiUrl}/roulette/${requestType}/request/`)
       .pipe(
         tap(() => {
-          console.log("deleted match");
           this.matchRequestSubject.next(null);
           this.isUpdating = false;
         }),
