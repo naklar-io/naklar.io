@@ -86,6 +86,7 @@ export class RouletteService {
         .pipe(
           switchMap((_) => {
             const url = `${environment.apiUrl}/roulette/${requestType}/request/`;
+            console.log("polling ", url);
             return this.http.get<SendableMatchRequest>(url);
           })
         ) // do we have a match
@@ -97,7 +98,16 @@ export class RouletteService {
             if (!this.matchRequestValue) {
               return true;
             }
-            return !this.matchRequestValue.equals(r);
+            const res = !this.matchRequestValue.equals(r);
+            if (!res) {
+              console.log(
+                "discarding match Request",
+                this.matchRequestValue,
+                r,
+                res
+              );
+            }
+            return res;
           })
         )
         .pipe(
@@ -107,8 +117,10 @@ export class RouletteService {
           })
         )
         // observable is only evaluated on subscription
-        .pipe(publishReplay());
-      (obs as ConnectableObservable<MatchRequest>).connect();
+        //.pipe(publishReplay());
+        // TODO: this is a resource leak
+        .subscribe((d) => d, error => console.log(error))
+      //(obs as ConnectableObservable<MatchRequest>).connect();
     }
     return this.matchRequest$
       .pipe(filter((r) => Boolean(r.match)))
@@ -120,6 +132,7 @@ export class RouletteService {
       .delete<void>(`${environment.apiUrl}/roulette/${requestType}/request/`)
       .pipe(
         tap(() => {
+          console.log("deleting match");
           this.matchRequestSubject.next(null);
           this.isUpdating = false;
         }),
