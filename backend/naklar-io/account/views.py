@@ -10,8 +10,9 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from account.models import (CustomUser, SchoolData, SchoolType, State, Subject,
-                            TutorData, VerificationToken)
+from account.models import (CustomUser, PasswordResetToken, SchoolData,
+                            SchoolType, State, Subject, TutorData,
+                            VerificationToken)
 from account.permissions import IsUser
 from account.serializers import (CurrentUserSerializer, CustomUserSerializer,
                                  PasswordResetRequestSerializer,
@@ -150,14 +151,30 @@ def verify_email(request, token):
 @permission_classes([permissions.IsAuthenticated])
 def resend_verification(request):
     request.user.send_verification_email()
-    return Response()
+    return Response({"success": True})
 
 
+@swagger_auto_schema(method='POST', request_body=openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+    'email': openapi.Schema(type=openapi.TYPE_STRING)}))
 @api_view(['POST'])
-def password_reset_request(self):
-    pass
+def password_reset_request(request):
+    serializer = PasswordResetRequestSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response({"success": True})
 
-
+@swagger_auto_schema(method='POST', request_body=openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+    'password': openapi.Schema(type=openapi.TYPE_STRING)}))
 @api_view(['POST'])
-def password_reset_verify(self, uuid):
-    pass
+def password_reset_verify(request, token):
+    token = get_object_or_404(PasswordResetToken, token=token)
+    password = request.data.get('password', None)
+    if not password:
+        raise exceptions.ValidationError({"email": "E-Mail muss angegeben werden!"})
+    else:
+        user = token.user
+        user.set_password(password)
+        user.save()
+        # delete token after usage
+        token.delete()
+        return Response({"success": True})

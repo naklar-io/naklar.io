@@ -25,7 +25,7 @@ urlpatterns = [
     path('reset-password/<uuid:token>/', views.password_reset_verify),
     #path('upload_verification/', views.UploadVerificationView.as_view()),
     #path('delete_verification/', views.DeleteVerificationView.as_view()),
-    path(r'login/', LoginView.as_view(), name='knox_login'),
-    path(r'logout/', knox_views.LogoutView.as_view(), name='knox_logout'),
-    path(r'logoutall/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
+    path('login/', LoginView.as_view(), name='knox_login'),
+    path('logout/', knox_views.LogoutView.as_view(), name='knox_logout'),
+    path('logoutall/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
 ]
