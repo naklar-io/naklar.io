@@ -99,7 +99,7 @@ export class StudentRegisterComponent implements OnInit {
         school_data: this.schoolData.find(
           (x) =>
             x.grade === Number(this.f.slider.value) &&
-            x.school_type === Number(this.f.schoolType.value)
+            x.school_type.id === Number(this.f.schoolType.value)
         ).id,
       },
       tutordata: null,

@@ -35,6 +35,12 @@ export interface SendableLogin {
   password: string;
 }
 
+export interface SendableSchoolData {
+  id: number;
+  school_type: number;
+  grade: number;
+}
+
 /**
  * local objects
  */
@@ -87,7 +93,7 @@ export class SchoolType {
 export class SchoolData {
   constructor(
     public id: number,
-    public school_type: number,
+    public school_type: SchoolType,
     public grade: number
   ) {}
 }
@@ -99,7 +105,6 @@ export class Gender {
     public shortcode: GenderAbbr
   ) {}
 }
-
 
 /**
  *  conversion functions between User <==> SendableUser
@@ -168,6 +173,25 @@ export function sendableToLocalUser(
     // need to provide token / token_expiry via login
     "",
     ""
+  );
+}
+
+export function localToSendableSchoolData(s: SchoolData): SendableSchoolData {
+  return {
+    id: s.id,
+    school_type: s.school_type.id,
+    grade: s.grade,
+  };
+}
+
+export function sendableToLocalSchoolData(
+  s: SendableSchoolData,
+  types: SchoolType[]
+): SchoolData {
+  return new SchoolData(
+    s.id,
+    types.find((t) => t.id === s.school_type),
+    s.grade
   );
 }
 

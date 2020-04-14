@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from "@angular/core";
 import { User } from "src/app/_models";
+import { RouletteRequestType } from "src/app/_services";
 
 @Component({
   selector: "misc-user-card",
@@ -8,9 +9,16 @@ import { User } from "src/app/_models";
 })
 export class UserCardComponent implements OnInit {
   @Input() readonly user: User;
+  @Input() readonly type: RouletteRequestType;
 
+  img: string;
 
   constructor() {}
   ngOnInit(): void {
+    this.img =
+      this.type === "tutor" &&
+      !(this.user.tutordata.profile_picture as string).includes("undefined")
+        ? this.user.tutordata.profile_picture
+        : "assets/img/icons/user_default.png";
   }
 }

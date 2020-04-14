@@ -1,10 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { RouletteService, AuthenticationService } from "src/app/_services";
 import {
-  SendableMatchRequest,
-  SendableStudentRequest,
   Constants,
-  MatchRequest,
   StudentRequest,
 } from "src/app/_models";
 import { ActivatedRoute } from "@angular/router";
@@ -29,6 +26,7 @@ export class TutorComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.route.data.subscribe((data: { constants: Constants }) => {
+      console.log(data.constants);
       this.constants = data.constants;
     });
   }
