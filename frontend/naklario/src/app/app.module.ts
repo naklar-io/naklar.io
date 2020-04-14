@@ -8,29 +8,32 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 import { LoadingBarRouterModule } from "@ngx-loading-bar/router";
-import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
 
 import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
 
 // Components
 import { AppComponent } from "./app.component";
-import { HomeComponent } from "./home/home.component";
-import { LandingComponent } from "./landing/landing.component";
 import { AccountModule } from "./account/account.module";
 import { RouletteModule } from "./roulette/roulette.module";
 
+import { HomeComponent } from "./home/home.component";
+import { LandingComponent } from "./landing/landing.component";
 import { EmailFormComponent } from "./landing/email-form/email-form.component";
-
-import {
-  ImpressumComponent,
-  AboutComponent,
-  DatenschutzComponent,
-  PrivacyComponent,
-  PageNotFoundComponent,
-  FooterComponent,
-  NavbarComponent,
-  UserCardComponent,
-} from "./_misc_components";
+import { AboutComponent } from "./home/misc/about/about.component";
+import { DatenschutzComponent } from "./home/misc/datenschutz/datenschutz.component";
+import { HelpSupportComponent } from "./home/misc/help-support/help-support.component";
+import { FeedbackComponent } from "./home/misc/feedback/feedback.component";
+import { ImpressumComponent } from "./home/misc/impressum/impressum.component";
+import { ParentsComponent } from "./home/misc/parents/parents.component";
+import { PrivacyComponent } from "./home/misc/privacy/privacy.component";
+import { SchoolsComponent } from "./home/misc/schools/schools.component";
+import { StudentsComponent } from "./home/misc/students/students.component";
+import { TutorsComponent } from "./home/misc/tutors/tutors.component";
+import { TermsConditionsComponent } from "./home/misc/terms-conditions/terms-conditions.component";
+import { FooterComponent } from "./home/misc/footer/footer.component";
+import { NavbarComponent } from "./home/misc/navbar/navbar.component";
+import { PageNotFoundComponent } from "./home/misc/page-not-found/page-not-found.component";
 
 import {
   DatabaseService,
@@ -38,38 +41,31 @@ import {
   ToastService,
   RouletteService,
 } from "./_services";
-import { ParentsComponent } from "./_misc_components/parents/parents.component";
-import { StudentsComponent } from "./_misc_components/students/students.component";
-import { TutorsComponent } from "./_misc_components/tutors/tutors.component";
-import { SchoolsComponent } from "./_misc_components/schools/schools.component";
-import { HelpSupportComponent } from "./_misc_components/help-support/help-support.component";
-import { FeedbackComponent } from "./_misc_components/feedback/feedback.component";
-import { ToastsComponent } from "./_misc_components/toasts/toasts.component";
+
+import { MiscComponentsModule } from "./_misc_components/misc-components.module";
 import { MoreInformationComponent } from "./home/more-information/more-information.component";
 
 @NgModule({
   declarations: [
     AppComponent,
-
     HomeComponent,
     LandingComponent,
-    NavbarComponent,
-    PageNotFoundComponent,
     EmailFormComponent,
-    FooterComponent,
-    ImpressumComponent,
+    MoreInformationComponent,
     AboutComponent,
     DatenschutzComponent,
-    PrivacyComponent,
+    FeedbackComponent,
+    HelpSupportComponent,
+    ImpressumComponent,
     ParentsComponent,
+    PrivacyComponent,
+    SchoolsComponent,
     StudentsComponent,
     TutorsComponent,
-    SchoolsComponent,
-    HelpSupportComponent,
-    FeedbackComponent,
-    ToastsComponent,
-    MoreInformationComponent,
-    UserCardComponent,
+    TermsConditionsComponent,
+    FooterComponent,
+    NavbarComponent,
+    PageNotFoundComponent
   ],
   imports: [
     NgbModule,
@@ -84,6 +80,7 @@ import { MoreInformationComponent } from "./home/more-information/more-informati
     // modules (arbitrary order)
     AccountModule,
     RouletteModule,
+    MiscComponentsModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
   ],

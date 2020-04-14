@@ -8,10 +8,10 @@ import { StudentComponent } from "./create/student/student.component";
 import { TutorComponent } from "./create/tutor/tutor.component";
 import { Ng5SliderModule } from "ng5-slider";
 import { WaitingComponent } from "./wait/waiting.component";
-import { FeedbackComponent } from "./feedback/feedback.component";
 import { RouletteService, DatabaseService } from "../_services";
-import { TutorWaitComponent } from './wait/tutor-wait/tutor-wait.component';
-import { StudentWaitComponent } from './wait/student-wait/student-wait.component';
+import { TutorWaitComponent } from "./wait/tutor-wait/tutor-wait.component";
+import { StudentWaitComponent } from "./wait/student-wait/student-wait.component";
+import { MiscComponentsModule } from "../_misc_components/misc-components.module";
 
 @NgModule({
   declarations: [
@@ -19,7 +19,6 @@ import { StudentWaitComponent } from './wait/student-wait/student-wait.component
     StudentComponent,
     TutorComponent,
     WaitingComponent,
-    FeedbackComponent,
     TutorWaitComponent,
     StudentWaitComponent,
   ],
@@ -28,6 +27,7 @@ import { StudentWaitComponent } from './wait/student-wait/student-wait.component
     CommonModule,
     ReactiveFormsModule,
     RouletteRoutingModule,
+    MiscComponentsModule,
   ],
 })
 export class RouletteModule {}
