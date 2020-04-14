@@ -20,6 +20,8 @@ import {
 import { VerifyComponent } from "./verify/verify.component";
 
 import { NgSelectModule } from "@ng-select/ng-select";
+import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { ResetRequestComponent } from './password-reset/reset-request/reset-request.component';
 @NgModule({
   declarations: [
     TutorComponent,
@@ -31,6 +33,8 @@ import { NgSelectModule } from "@ng-select/ng-select";
     LoginComponent,
     ProfileComponent,
     VerifyComponent,
+    PasswordResetComponent,
+    ResetRequestComponent,
   ],
   imports: [
     Ng5SliderModule,
