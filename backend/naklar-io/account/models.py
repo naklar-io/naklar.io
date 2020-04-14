@@ -19,6 +19,9 @@ from account.managers import CustomUserManager
 EMAIL_VERIFICATION_PLAINTEXT = get_template("email_verification.txt")
 EMAIL_VERIFICATION_HTMLY = get_template("email_verification.html")
 
+PASSWORD_RESET_PLAINTEXT = get_template("password_reset.txt")
+PASSWORD_RESET_HTMLY = get_template("password_reset.html")
+
 TUTOR_VERIFICATION_PLAINTEXT = get_template("tutor_verification.txt")
 TUTOR_VERIFICATION_HTMLY = get_template("tutor_verification.html")
 
@@ -105,8 +108,8 @@ class TutorData(models.Model):
     subjects = models.ManyToManyField(Subject, verbose_name=_("Fächer"))
 
     verified = models.BooleanField(_("Verifiziert"), default=False)
-    verification_file = models.FileField(
-        _("Vefizierungsdatei"), upload_to=tutor_upload_path, null=True)
+    verification_file = models.FileField(verbose_name=_(
+        "Vefizierungsdatei"), upload_to=tutor_upload_path, null=True, blank=True)
 
     profile_picture = models.ImageField(
         _("Profilbild"), upload_to=profile_upload_path, null=True)
@@ -161,6 +164,14 @@ class VerificationToken(models.Model):
         verbose_name_plural = verbose_name
 
 
+class PasswordResetToken(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE
+    )
+    token = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    created = models.DateTimeField(_("Erstellt"), auto_now_add=True)
+
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_("E-Mail"), max_length=254, unique=True)
     email_verified = models.BooleanField(_("E-Mail bestätigt"), default=False)
@@ -168,7 +179,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     uuid = models.UUIDField(unique=True, default=uuid.uuid4, editable=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(verbose_name=_("Beitritt"), auto_now_add=True)
+    date_joined = models.DateTimeField(
+        verbose_name=_("Beitritt"), auto_now_add=True)
 
     state = models.ForeignKey(
         State, on_delete=models.PROTECT, verbose_name=_("Bundesland"))
@@ -221,6 +233,22 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             return True
         else:
             return False
+
+    def send_reset_mail(self):
+        PasswordResetToken.objects.filter(user=self).delete()
+        token = PasswordResetToken(user=self)
+        token.save()
+        subject, from_email, to = "Passwort zurücksetzen auf naklar.io", "noreply@naklar.io", self.email
+        d = {
+            'user': self,
+            'reset_url': settings.HOST + "/account/password-reset/{}".format(token.token)
+        }
+        text_content = PASSWORD_RESET_PLAINTEXT.render(d)
+        html_content = PASSWORD_RESET_HTMLY.render(d)
+        msg = EmailMultiAlternatives(
+            subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
     def is_tutor(self):
         return hasattr(self, 'tutordata')
