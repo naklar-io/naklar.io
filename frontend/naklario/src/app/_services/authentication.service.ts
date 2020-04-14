@@ -5,7 +5,7 @@ import {
   User,
   SendableUser,
   SendableLogin,
-  sendableToLocal,
+  sendableToLocalUser,
   Constants,
   State,
   TutorData,
@@ -86,7 +86,7 @@ export class AuthenticationService {
       .put<SendableUser>(`${environment.apiUrl}/account/current/`, user)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user, constants);
+          const u = sendableToLocalUser(user, constants);
           // replace tokens
           const newUser = Object.assign(u, {
             token: this.currentUserValue.token,
@@ -103,7 +103,7 @@ export class AuthenticationService {
       .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user, constants);
+          const u = sendableToLocalUser(user, constants);
           // this.currentUserSubject.next(u);
           return user;
         })
@@ -160,7 +160,7 @@ export class AuthenticationService {
         .get<SendableUser>(`${environment.apiUrl}/account/current/`)
         .pipe(
           map((user) => {
-            const u = sendableToLocal(user, constants);
+            const u = sendableToLocalUser(user, constants);
             const filledUser = Object.assign(u, {
               token: this.currentUserValue.token,
               token_expiry: this.currentUserValue.token_expiry,

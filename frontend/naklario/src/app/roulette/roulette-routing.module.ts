@@ -3,7 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { RouletteComponent } from "./roulette.component";
 import { LoggedInGuard, StudentGuard, TutorGuard } from "../_helpers";
-import { DatabaseResolverService, UserResolver } from '../_services';
+import { DatabaseResolverService, UserResolver } from "../_services";
 
 const routes: Routes = [
   {
@@ -22,8 +22,8 @@ const routes: Routes = [
         children: [],
       },
     ],
-    resolve: {'constants': DatabaseResolverService, 'user': UserResolver},
-    canActivate: [LoggedInGuard,]
+    resolve: { constants: DatabaseResolverService, user: UserResolver },
+    canActivate: [LoggedInGuard],
   },
 ];
 

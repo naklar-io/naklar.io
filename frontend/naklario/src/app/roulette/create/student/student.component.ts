@@ -6,7 +6,7 @@ import {
   RouletteService,
 } from "src/app/_services";
 import { User, SendableUser, Constants, StudentRequest } from "src/app/_models";
-import { tap, catchError, mergeMap } from "rxjs/operators";
+import { tap, mergeMap } from "rxjs/operators";
 import { Options } from "ng5-slider";
 import { ActivatedRoute } from "@angular/router";
 
@@ -91,9 +91,11 @@ export class StudentComponent implements OnInit {
       .pipe(tap((_) => console.log("creating Match")))
       .pipe(
         mergeMap((_) =>
-          this.rouletteService.createMatch("student", {
-            subject: this.f.subject.value,
-          })
+          this.rouletteService.createMatch(
+            "student",
+            new StudentRequest(this.f.subject.value),
+            this.constants
+          )
         )
       )
       .subscribe(

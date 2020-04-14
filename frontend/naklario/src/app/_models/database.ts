@@ -100,10 +100,11 @@ export class Gender {
   ) {}
 }
 
+
 /**
  *  conversion functions between User <==> SendableUser
  */
-export const localToSendable = (user: User): SendableUser => {
+export function localToSendableUser(user: User): SendableUser {
   const studentdata: SendableStudentData | null = user.studentdata
     ? {
         school_data: user.studentdata.school_data.id,
@@ -130,11 +131,11 @@ export const localToSendable = (user: User): SendableUser => {
     tutordata: tutordata,
     terms_accepted: user.terms_accepted,
   };
-};
-export const sendableToLocal = (
+}
+export function sendableToLocalUser(
   user: SendableUser,
   constants: Constants
-): User => {
+): User {
   return new User(
     user.email,
     user.password,
@@ -168,7 +169,7 @@ export const sendableToLocal = (
     "",
     ""
   );
-};
+}
 
 const addAPIUrl = (url: string) => environment.apiUrl + url;
 const removeAPIUrl = (url: string) => url.replace(environment.apiUrl, "");

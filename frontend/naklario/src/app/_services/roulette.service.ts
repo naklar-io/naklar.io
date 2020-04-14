@@ -1,6 +1,19 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { MatchRequest, MatchAnswer, Match, StudentRequest } from "../_models";
+import {
+  SendableMatchRequest,
+  SendableMatchAnswer,
+  SendableMatch,
+  Constants,
+  MatchRequest,
+  sendableToLocalMatchRequest,
+  StudentRequest,
+  Match,
+  localToSendableMatchRequest,
+  MatchAnswer,
+  localToSendableMatchAnswer,
+  sendableToLocalMatchAnswer,
+} from "../_models";
 import { environment } from "../../environments/environment";
 import { map, switchMap, filter, take, tap, takeWhile } from "rxjs/operators";
 import { BehaviorSubject, Observable, timer } from "rxjs";
@@ -27,13 +40,15 @@ export class RouletteService {
 
   public createMatch(
     requestType: RouletteRequestType,
-    request: StudentRequest
-  ) {
+    request: StudentRequest,
+    constants: Constants
+  ): Observable<MatchRequest> {
     return this.http
-      .post<MatchRequest>(
+      .post<SendableMatchRequest>(
         `${environment.apiUrl}/roulette/${requestType}/request/`,
-        request
+        localToSendableMatchRequest(request)
       )
+      .pipe(map((r) => sendableToLocalMatchRequest(r, constants)))
       .pipe(
         map((matchRequest) => {
           console.log(matchRequest);
@@ -45,6 +60,7 @@ export class RouletteService {
 
   public updatingMatch(
     requestType: RouletteRequestType,
+    constants: Constants,
     interval: number = 1000
   ): Observable<Match> {
     if (!this.isUpdating) {
@@ -54,12 +70,13 @@ export class RouletteService {
         .pipe(takeWhile((_) => this.isUpdating))
         .pipe(
           switchMap((_) =>
-            this.http.get<MatchRequest>(
+            this.http.get<SendableMatchRequest>(
               `${environment.apiUrl}/roulette/${requestType}/request/`
             )
           )
         )
         .pipe(filter((x) => Boolean(x.match)))
+        .pipe(map((r) => sendableToLocalMatchRequest(r, constants)))
         .pipe(
           tap((r) => {
             console.log("Found Match: ", r);
@@ -90,18 +107,14 @@ export class RouletteService {
     requestType: RouletteRequestType,
     match: Match,
     answer: MatchAnswer
-  ) {
-    this.http
-      .post<MatchAnswer>(
+  ): Observable<MatchAnswer> {
+    return this.http
+      .post<SendableMatchAnswer>(
         `${environment.apiUrl}/roulette/${requestType}/match/answer/${match.uuid}/`,
-        answer
+        localToSendableMatchAnswer(answer)
       )
-      .pipe(
-        map((matchAnswer) => {
-          console.log(matchAnswer);
-          return matchAnswer;
-        })
-      );
+      .pipe(map((a) => sendableToLocalMatchAnswer(a)))
+      .pipe(tap((a) => console.log(a)));
   }
 
   public joinMatch() {}
