@@ -243,8 +243,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             'user': self,
             'reset_url': settings.HOST + "/account/reset/{}".format(token.token)
         }
-        text_content = EMAIL_VERIFICATION_PLAINTEXT.render(d)
-        html_content = EMAIL_VERIFICATION_HTMLY.render(d)
+        text_content = PASSWORD_RESET_PLAINTEXT.render(d)
+        html_content = PASSWORD_RESET_HTMLY.render(d)
         msg = EmailMultiAlternatives(
             subject, text_content, from_email, [to])
         msg.attach_alternative(html_content, "text/html")
