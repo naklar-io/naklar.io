@@ -3,6 +3,7 @@ import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { switchMap } from "rxjs/operators";
 import { Observable, Subscription } from "rxjs";
 import { RouletteService } from "../_services";
+import { Match } from "../_models";
 
 // roulette state machine
 type State = "create" | "wait" | "match" | "session";
@@ -19,6 +20,8 @@ export class RouletteComponent implements OnInit, OnDestroy {
   type: UserType = "student";
 
   state: State = "create";
+
+  match: Match;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,8 +47,11 @@ export class RouletteComponent implements OnInit, OnDestroy {
 
   onWaitDone(done: boolean) {
     if (done) {
-      // advance state
+      // accepted match
       this.state = "match";
+    } else {
+      // rejected match
+      this.state = 'create'
     }
   }
 

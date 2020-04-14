@@ -88,10 +88,17 @@ export class MatchRequest {
 
   // TODO: this is untested
   equals(mr: MatchRequest): boolean {
-    return (
-      this.match.equals(mr.match) &&
+    if (
+      this.match === null &&
+      mr.match === null &&
       this.created === mr.created
-    );
+    ) {
+      return true;
+    }
+    if (this.match && mr.match) {
+      return this.match.equals(mr.match) && this.created === mr.created;
+    }
+    return false;
   }
 }
 

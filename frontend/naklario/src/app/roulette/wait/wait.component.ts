@@ -1,27 +1,27 @@
 import {
   Component,
   OnInit,
-  Input,
   OnDestroy,
-  EventEmitter,
   Output,
+  EventEmitter,
+  Input,
 } from "@angular/core";
 import { RouletteService, RouletteRequestType } from "src/app/_services";
-import { Constants, Match } from "src/app/_models";
+import { Match, Constants } from "src/app/_models";
 import { ActivatedRoute } from "@angular/router";
 import { tap, switchMap } from "rxjs/operators";
-import { Subscription } from "rxjs";
+import { Subscribable, Subscription } from "rxjs";
 
 type State = "wait" | "maybe" | "accepted";
 
 @Component({
-  selector: "roulette-student-wait",
-  templateUrl: "./student-wait.component.html",
-  styleUrls: ["./student-wait.component.scss"],
+  selector: "roulette-wait",
+  templateUrl: "./wait.component.html",
+  styleUrls: ["./wait.component.scss"],
 })
-export class StudentWaitComponent implements OnInit, OnDestroy {
+export class WaitComponent implements OnInit, OnDestroy {
+  @Input() readonly requestType: RouletteRequestType;
   @Output() done = new EventEmitter<boolean>();
-  private readonly requestType: RouletteRequestType = "student";
 
   match: Match;
   constants: Constants;
@@ -30,10 +30,13 @@ export class StudentWaitComponent implements OnInit, OnDestroy {
   sub$: Subscription;
 
   constructor(
-    private rouletteService: RouletteService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private rouletteService: RouletteService
   ) {}
 
+  get student() {
+    return this.match.student;
+  }
   get tutor() {
     return this.match.tutor;
   }
