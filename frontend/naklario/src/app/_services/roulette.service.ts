@@ -13,10 +13,26 @@ import {
   MatchAnswer,
   localToSendableMatchAnswer,
   sendableToLocalMatchAnswer,
+  SendableStudentRequest,
+  localToSendableStudentRequest,
+  sendableToLocalStudentRequest,
 } from "../_models";
 import { environment } from "../../environments/environment";
-import { map, switchMap, filter, take, tap, takeWhile } from "rxjs/operators";
-import { BehaviorSubject, Observable, timer } from "rxjs";
+import {
+  map,
+  switchMap,
+  filter,
+  take,
+  tap,
+  takeWhile,
+  publishReplay,
+} from "rxjs/operators";
+import {
+  BehaviorSubject,
+  Observable,
+  timer,
+  ConnectableObservable,
+} from "rxjs";
 
 export type RouletteRequestType = "student" | "tutor";
 
@@ -42,13 +58,13 @@ export class RouletteService {
     requestType: RouletteRequestType,
     request: StudentRequest,
     constants: Constants
-  ): Observable<MatchRequest> {
+  ): Observable<StudentRequest> {
     return this.http
-      .post<SendableMatchRequest>(
+      .post<SendableStudentRequest>(
         `${environment.apiUrl}/roulette/${requestType}/request/`,
-        localToSendableMatchRequest(request)
+        localToSendableStudentRequest(request)
       )
-      .pipe(map((r) => sendableToLocalMatchRequest(r, constants)))
+      .pipe(map((r) => sendableToLocalStudentRequest(r, constants)))
       .pipe(
         map((matchRequest) => {
           console.log(matchRequest);
@@ -92,15 +108,21 @@ export class RouletteService {
       .pipe(map((r) => r.match));
   }
 
-  public stopUpdatingMatch(requestType: RouletteRequestType): Observable<void> {
-    return this.http
+  public deleteMatch(requestType: RouletteRequestType): Observable<void> {
+    console.log("deleting match", requestType);
+    const obs = this.http
       .delete<void>(`${environment.apiUrl}/roulette/${requestType}/request/`)
       .pipe(
         tap(() => {
+          console.log("deleted match");
           this.matchRequestSubject.next(null);
           this.isUpdating = false;
-        })
+        }),
+        publishReplay()
       );
+    // force the call even if no one is subscribed
+    (obs as ConnectableObservable<void>).connect();
+    return obs;
   }
 
   public answerMatch(
