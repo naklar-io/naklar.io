@@ -29,10 +29,9 @@ export class StudentGuard implements CanActivate, CanActivateChild {
         this.toastService.error(
           "Du must einen Studenten Account haben, um hier hin zu kommen"
         );
-        this.router.navigate(["/"]);
-        return false;
       }
     }
+    this.toastService.info("Bitte logge dich ein");
     this.router.navigate(["account/login/"], {
       queryParams: { returnUrl: state.url },
     });
@@ -58,16 +57,21 @@ export class TutorGuard implements CanActivate, CanActivateChild {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const currentUser = this.authenticationService.currentUserValue;
     if (currentUser) {
-      if (currentUser.tutordata && currentUser.tutordata.verified) {
-        return true;
+      if (currentUser.tutordata) {
+        if (currentUser.tutordata.verified) {
+          return true;
+        } else {
+          this.toastService.error(
+            "Dein Account muss verifiziert sein, um hier hin zu kommen"
+          );
+        }
       } else {
         this.toastService.error(
           "Du must einen Tutor Account haben, um hier hin zu kommen"
         );
-        this.router.navigate(["roulette/student/"]);
-        return false;
       }
     }
+    this.toastService.info("Bitte logge dich ein");
     this.router.navigate(["account/login/"], {
       queryParams: { returnUrl: state.url },
     });
