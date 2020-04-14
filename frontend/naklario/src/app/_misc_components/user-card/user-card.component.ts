@@ -9,7 +9,8 @@ import { User } from "src/app/_models";
 export class UserCardComponent implements OnInit {
   @Input() readonly user: User;
 
-  constructor() {}
 
-  ngOnInit(): void {}
+  constructor() {}
+  ngOnInit(): void {
+  }
 }

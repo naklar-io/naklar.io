@@ -1,3 +1,5 @@
+import { environment } from "src/environments/environment";
+
 /**
  * sendable interfaces for communication with the api
  */
@@ -111,9 +113,9 @@ export const localToSendable = (user: User): SendableUser => {
     ? {
         schooldata: user.tutordata.schooldata.map((x) => x.id),
         subjects: user.tutordata.subjects.map((x) => x.id),
-        verification_file: user.tutordata.verification_file,
+        verification_file: removeAPIUrl(user.tutordata.verification_file),
         verified: user.tutordata.verified,
-        profile_picture: user.tutordata.profile_picture,
+        profile_picture: removeAPIUrl(user.tutordata.profile_picture),
       }
     : null;
   return {
@@ -154,9 +156,9 @@ export const sendableToLocal = (
           constants.subjects.filter((x) =>
             user.tutordata.subjects.includes(x.id)
           ),
-          user.tutordata.verification_file,
+          addAPIUrl(user.tutordata.verification_file),
           user.tutordata.verified,
-          user.tutordata.profile_picture
+          addAPIUrl(user.tutordata.profile_picture)
         )
       : null,
     user.terms_accepted,
@@ -167,6 +169,9 @@ export const sendableToLocal = (
     ""
   );
 };
+
+const addAPIUrl = (url: string) => environment.apiUrl + url;
+const removeAPIUrl = (url: string) => url.replace(environment.apiUrl, "");
 
 export class Constants {
   constructor(
