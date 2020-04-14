@@ -1,9 +1,7 @@
 <div *ngIf="match; else waiting">
-  <p>Du wurdest mit {{ match.student.first_name }} gematcht!</p>
-  <p>
-    Er braucht Hilfe im Fach {{ match.subject }} und ist im
-    {{ match.student.studentdata.school_data }}
-  </p>
+  <p>Wir haben dir einen Studenten gefunden:</p>
+  <misc-user-card [user]="student" type="student"></misc-user-card>
+
 </div>
 <ng-template #waiting>
   <div>

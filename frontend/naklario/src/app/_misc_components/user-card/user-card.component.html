@@ -1,11 +1,7 @@
 <div class="container user-card">
   <div class="col-md justify-content-center">
     <div class="profile-img">
-      <img
-        [src]="user.tutordata.profile_picture"
-        alt="tutor profile picture"
-        class="img-fluid"
-      />
+      <img [src]="img" alt="tutor profile picture" class="img-fluid" />
     </div>
 
     <div class="profile-usertitle my-3">
@@ -19,11 +15,17 @@
 
     <hr />
 
-    <div>
+    <div *ngIf="type === 'tutor'">
       Experte für:
+      <br />
       <span *ngFor="let subject of user.tutordata.subjects">
         {{ subject.name }}</span
       >
+    </div>
+    <div *ngIf="type === 'student'">
+      Hat eine Frage in:
+      <br />
+      {{user.studentdata.school_data}}
     </div>
   </div>
 </div>
