@@ -1,0 +1,44 @@
+<div class="row justify-content-center">
+  <div class="col-md-9">
+    <h2 class="text-primary">Du hast dein Passwort vergessen?</h2>
+    <p>
+      Kein Problem, gib hier einfach die E-Mail an, mit der du dich registriert
+      hast. <br />
+      Wir schicken dir dann einen Link, mit dem du dein Passwort zurücksetzen
+      kannst.
+    </p>
+    <div *ngIf="submitSuccess" class="alert alert-success text-center">
+      <p>Die E-Mail wurde versendet. Schau in dein Postfach</p>
+    </div>
+    <div *ngIf="error" class="alert alert-danger text-center">
+      {{ error | json }}
+    </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-label-group">
+        <input
+          type="email"
+          name="email"
+          id="email"
+          placeholder="E-Mail"
+          class="form-control"
+          formControlName="email"
+          required
+        />
+        <label for="email">E-Mail</label>
+        <div class="invalid-feedback">
+          Du musst eine gültige E-Mail angeben.
+        </div>
+      </div>
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="submitSuccess || loading"
+      >
+        Abschicken <span
+          *ngIf="loading"
+          class="spinner-border spinner-border-sm mr-1"
+        ></span>
+      </button>
+    </form>
+  </div>
+</div>

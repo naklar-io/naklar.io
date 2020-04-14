@@ -1,11 +1,14 @@
+from django.contrib.auth import get_user_model
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.translation import gettext_lazy as _
 from drf_base64.fields import Base64FileField
 from drf_base64.serializers import ModelSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from account.managers import CustomUserManager
-from account.models import (CustomUser, SchoolData, SchoolType, State,
-                            StudentData, Subject, TutorData)
+from account.models import (CustomUser, PasswordResetToken, SchoolData,
+                            SchoolType, State, StudentData, Subject, TutorData)
 
 
 class DynamicFieldsModelSerializer(ModelSerializer):
@@ -127,7 +130,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
                     tutordata.profile_picture = data.get('profile_picture')
                 tutordata.save()
         return super(CurrentUserSerializer, self).update(instance, validated_data)
-    
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     tutordata = TutorDataSerializer(fields=['schooldata', 'subjects'])
@@ -137,3 +140,19 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = ["uuid", "first_name", "last_name",
                   "state", "studentdata", "tutordata", "gender"]
         lookup_field = "uuid"
+
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        user = get_user_model().objects.filter(email=value)
+        if user.exists():
+            return value
+        else:
+            raise serializers.ValidationError(
+                _("Kein Nutzer mit dieser E-Mail gefunden!"))
+
+    def save(self):
+        user = CustomUser.objects.get(email=self.validated_data['email'])
+        user.send_reset_mail()

@@ -9,11 +9,22 @@ import { ProfileComponent } from "./profile/profile.component";
 import { LoggedInGuard, NotLoggedInGuard } from "../_helpers";
 import { DatabaseResolverService } from "../_services";
 import { VerifyComponent } from "./verify/verify.component";
+import { PasswordResetComponent } from "./password-reset/password-reset.component";
+import { ResetRequestComponent } from "./password-reset/reset-request/reset-request.component";
 
 const routes: Routes = [
   {
     path: "account/verify",
     component: VerifyComponent,
+  },
+  {
+    path: "account/password-reset/:token",
+    component: PasswordResetComponent,
+  },
+  {
+    path: "account/password-reset",
+    pathMatch: "full",
+    component: ResetRequestComponent,
   },
   {
     path: "account/student/register",

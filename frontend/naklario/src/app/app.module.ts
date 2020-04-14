@@ -7,6 +7,9 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 // Third party modules
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
+import { LoadingBarRouterModule } from "@ngx-loading-bar/router";
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
+
 import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
 
 // Components
@@ -72,6 +75,9 @@ import { MoreInformationComponent } from "./home/more-information/more-informati
     NgbModule,
     BrowserModule,
     HttpClientModule,
+    // Loading bar
+    LoadingBarHttpClientModule,
+    LoadingBarRouterModule,
     // Stuff for reactive / template driven forms
     ReactiveFormsModule,
     FormsModule,

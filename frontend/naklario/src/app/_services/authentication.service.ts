@@ -226,4 +226,20 @@ export class AuthenticationService {
       null
     );
   }
+
+  public requestPasswordReset(email: string) {
+    return this.http.post(
+      `${environment.apiUrl}/account/request-password-reset/`,
+      { email: email }
+    );
+  }
+
+  public resetPassword(newPassword: string, token: string) {
+    return this.http.post(
+      `${environment.apiUrl}/account/reset-password/${token}/`,
+      {
+        password: newPassword,
+      }
+    );
+  }
 }

@@ -10,7 +10,7 @@
 
       <div *ngIf="submitSuccess" class="alert alert-success text-center">
         <p>
-          Danke für din Engagement! Unser Team wird deine Registrierung zeitnah
+          Danke für dein Engagement! Unser Team wird deine Registrierung zeitnah
           bearbeiten und dich
           <strong
             >nach einer kurzen Verifizierung deiner Eingaben freischalten.
@@ -44,11 +44,8 @@
                 placeholder="Vorname"
               />
               <label for="firstName">Vorname</label>
-              <div
-                *ngIf="submitted && f.firstName.errors"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f.firstName.errors.required">
+              <div class="invalid-feedback">
+                <div *ngIf="f.firstName.errors?.required">
                   Du musst einen Vornamen angeben
                 </div>
               </div>
@@ -63,11 +60,8 @@
                 placeholder="Nachname"
               />
               <label for="lastName">Nachname</label>
-              <div
-                *ngIf="submitted && f.lastName.errors"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f.lastName.errors.required">
+              <div class="invalid-feedback">
+                <div *ngIf="f.lastName.errors?.required">
                   Du musst einen Nachnamen angeben
                 </div>
               </div>
@@ -85,11 +79,11 @@
                 placeholder="E-Mail"
               />
               <label for="email">E-Mail</label>
-              <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-                <div *ngIf="f.email.errors.required">
+              <div class="invalid-feedback">
+                <div *ngIf="f.email.errors?.required">
                   Du musst eine E-Mail angeben
                 </div>
-                <div *ngIf="f.email.errors.email">
+                <div *ngIf="f.email.errors?.email">
                   Diese Email ist ungültig
                 </div>
               </div>
@@ -122,11 +116,8 @@
                     >
                   </div>
 
-                  <div
-                    *ngIf="submitted && f.gender.errors"
-                    class="invalid-feedback"
-                  >
-                    <div *ngIf="f.gender.errors.required">
+                  <div class="invalid-feedback">
+                    <div *ngIf="f.gender.errors?.required">
                       Du musst ein Geschlecht angeben
                     </div>
                   </div>
@@ -146,11 +137,8 @@
                     {{ state.name }}
                   </option>
                 </select>
-                <div
-                  *ngIf="submitted && f.state.errors"
-                  class="invalid-feedback"
-                >
-                  <div *ngIf="f.state.errors.required">
+                <div class="invalid-feedback">
+                  <div *ngIf="f.state.errors?.required">
                     Du musst ein Bundesland angeben.
                   </div>
                 </div>
@@ -167,6 +155,17 @@
                   (img)="onImageChange($event)"
                   id="imgUpload"
                 ></misc-img-upload>
+                <!-- bootstrap will only display .invalid-feedback next to .is-invalid object -->
+                <!-- HACK: -->
+                <span
+                  *ngIf="submitted && f.img.errors?.required"
+                  class="is-invalid"
+                ></span>
+                <div class="invalid-feedback">
+                  <div *ngIf="f.img.errors?.required">
+                    Du musst ein Bild angeben
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -211,32 +210,13 @@
               ></ng5-slider>
             </div>
           </div>
-          <div
-            *ngIf="submitted && f.schoolTypes.errors"
-            class="invalid-feedback"
-          >
-            <div *ngIf="f.schoolTypes.errors.required">
+          <div class="invalid-feedback">
+            <div *ngIf="f.schoolTypes.errors?.required">
               Du musst einen Schultyp angeben.
             </div>
           </div>
         </div>
 
-        <!--   <div class="form-row col-12">
-          <label for="subjects">Fächer</label>
-          <ng-select
-            [items]="subjects"
-            bindLabel="name"
-            bindValue="id"
-            [multiple]="true"
-            formControlName="subjects"
-          >
-          </ng-select>
-          <div *ngIf="submitted && f.subjects.errors" class="invalid-feedback">
-            <div *ngIf="f.subjects.errors.required">
-              Du musst mindestens ein Fach angeben.
-            </div>
-          </div>
-        </div> -->
         <div class="form-group">
           <label for="subjects"
             >Für welche Fächer willst du Fragen beantworten?</label
@@ -260,8 +240,8 @@
               </label>
             </div>
           </div>
-          <div *ngIf="submitted && f.subjects.errors" class="invalid-feedback">
-            <div *ngIf="f.subjects.errors.required">
+          <div class="invalid-feedback">
+            <div *ngIf="f.subjects.errors?.required">
               Du musst mindestens ein Fach angeben.
             </div>
           </div>
@@ -278,20 +258,14 @@
                 placeholder="Passwort"
               />
               <label for="password">Passwort</label>
-              <div
-                *ngIf="submitted && registerForm.errors?.passwordNotMatch"
-                class="invalid-feedback"
-              >
-                Die beiden Passwörter müssen überein stimmen.
-              </div>
-              <div
-                *ngIf="submitted && f.password.errors"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f.password.errors.required">
+              <div class="invalid-feedback">
+                <div *ngIf="registerForm.errors?.passwordNotMatch">
+                  Die beiden Passwörter müssen überein stimmen.
+                </div>
+                <div *ngIf="f.password.errors?.required">
                   Du musst ein Passwort angeben
                 </div>
-                <div *ngIf="f.password.errors.minlength">
+                <div *ngIf="f.password.errors?.minlength">
                   Dein Passwort muss mindestens
                   {{ f.password.errors.minlength.requiredLength }} Zeichen lang
                 </div>
@@ -308,20 +282,14 @@
                 required
               />
               <label for="passwordRepeat">Passwort wiederholen</label>
-              <div
-                *ngIf="submitted && registerForm.errors?.passwordNotMatch"
-                class="invalid-feedback"
-              >
-                Die beiden Passwörter müssen überein stimmen
-              </div>
-              <div
-                *ngIf="submitted && f.passwordRepeat.errors"
-                class="invalid-feedback"
-              >
-                <div *ngIf="f.passwordRepeat.errors.required">
+              <div class="invalid-feedback">
+                <div *ngIf="registerForm.errors?.passwordNotMatch">
+                  Die beiden Passwörter müssen überein stimmen
+                </div>
+                <div *ngIf="f.passwordRepeat.errors?.required">
                   Du musst ein Passwort angeben
                 </div>
-                <div *ngIf="f.passwordRepeat.errors.minlength">
+                <div *ngIf="f.passwordRepeat.errors?.minlength">
                   Dein Passwort muss mindestens
                   {{ f.passwordRepeat.errors.minlength.requiredLength }} Zeichen
                   lang
@@ -337,18 +305,22 @@
             class="form-control"
             (change)="onFileChange($event)"
           />
+          <!-- bootstrap will only display .invalid-feedback next to .is-invalid object -->
+          <!-- HACK: -->
+          <span *ngIf="submitted && f.file.errors" class="is-invalid"></span>
+          <div class="invalid-feedback">
+            <div *ngIf="f.file.errors?.required">
+              Wir brauchen hier eine Datei
+            </div>
+            <div *ngIf="f.file.errors?.fileTooLarge">
+              Deine Datei ist zu groß, maximal
+              {{ f.file.errors.fileTooLarge.maxSize }}MB
+            </div>
+          </div>
           <p class="text-primary">
             Bitte verwende kein Ausweisdokument (also Perso oder Reisepass,
             o.ä.)
           </p>
-          <div
-            *ngIf="f.file.touched && f.file.invalid"
-            class="alert alert-danger"
-          >
-            <div *ngIf="f.file.errors.required">
-              Wir brauchen hier eine Datei.
-            </div>
-          </div>
 
           <p>
             <small
@@ -368,17 +340,16 @@
               id="terms"
               formControlName="terms"
               class="custom-control-input"
-            />
-            <label for="terms" class="custom-control-label"
+            /><label for="terms" class="custom-control-label"
               >Ja, ich habe die
               <a routerLink="/terms" target="_blank">AGB</a> und
               <a routerLink="/privacy" target="_blank">Datenschutzerklärung</a>
               gelesen</label
             >
-          </div>
-          <div *ngIf="submitted && f.terms.errors" class="invalid-feedback">
-            <div *ngIf="f.terms.errors.required">
-              Du musst die AGB akzeptieren.
+            <div class="invalid-feedback">
+              <div *ngIf="f.terms.errors?.required">
+                Du musst die AGB akzeptieren.
+              </div>
             </div>
           </div>
         </div>
