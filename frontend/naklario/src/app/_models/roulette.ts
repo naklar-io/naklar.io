@@ -4,7 +4,7 @@ import {
   localToSendableUser,
   sendableToLocalUser,
   Constants,
-  Subject
+  Subject,
 } from "./database";
 
 export interface SendableMatch {
@@ -33,6 +33,25 @@ export interface SendableMatchAnswer {
   agree: boolean;
 }
 
+export interface Meeting {
+  meeting_id?: string;
+  ended?: boolean;
+  time_ended?: string;
+  student?: string;
+  tutor?: string;
+  name: string;
+  feedback_set: number[];
+}
+
+export interface Feedback {
+  receiver?: string;
+  provider?: string;
+  rating: number;
+  message?: string;
+  meeting: string;
+  created?: string;
+}
+
 export class Match {
   constructor(
     public uuid: string,
@@ -45,6 +64,19 @@ export class Match {
     public user: string,
     public subject: Subject
   ) {}
+
+  bothAccepted() {
+    return this.tutor_agree && this.student_agree;
+  }
+
+  // TODO: this is WIP
+  equals(m: Match) {
+    return (
+      this.uuid === m.uuid &&
+      this.student_agree === m.student_agree &&
+      this.tutor_agree === m.tutor_agree
+    );
+  }
 }
 
 export class MatchRequest {
@@ -53,6 +85,14 @@ export class MatchRequest {
     public failed_matches?: number[],
     public created?: string
   ) {}
+
+  // TODO: this is untested
+  equals(mr: MatchRequest): boolean {
+    return (
+      this.match.equals(mr.match) &&
+      this.created === mr.created
+    );
+  }
 }
 
 export class StudentRequest extends MatchRequest {

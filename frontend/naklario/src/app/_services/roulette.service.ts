@@ -3,19 +3,19 @@ import { HttpClient } from "@angular/common/http";
 import {
   SendableMatchRequest,
   SendableMatchAnswer,
-  SendableMatch,
   Constants,
   MatchRequest,
   sendableToLocalMatchRequest,
   StudentRequest,
   Match,
-  localToSendableMatchRequest,
   MatchAnswer,
   localToSendableMatchAnswer,
   sendableToLocalMatchAnswer,
   SendableStudentRequest,
   localToSendableStudentRequest,
   sendableToLocalStudentRequest,
+  Meeting,
+  Feedback,
 } from "../_models";
 import { environment } from "../../environments/environment";
 import {
@@ -66,10 +66,9 @@ export class RouletteService {
       )
       .pipe(map((r) => sendableToLocalStudentRequest(r, constants)))
       .pipe(
-        map((matchRequest) => {
-          console.log(matchRequest);
+        tap((matchRequest) => {
+          console.log("got Match request: ", matchRequest);
           this.matchRequestSubject.next(matchRequest);
-          return matchRequest;
         })
       );
   }
@@ -87,21 +86,26 @@ export class RouletteService {
         .pipe(
           switchMap((_) => {
             const url = `${environment.apiUrl}/roulette/${requestType}/request/`;
-            console.log("polling ", url);
             return this.http.get<SendableMatchRequest>(url);
           })
-        )
+        ) // do we have a match
         .pipe(filter((x) => Boolean(x.match)))
         .pipe(map((r) => sendableToLocalMatchRequest(r, constants)))
+        // does the MatchRequest have new data?
+        .pipe(
+          filter((r) => {
+            if (!this.matchRequestValue) {
+              return true;
+            }
+            return !this.matchRequestValue.equals(r);
+          })
+        )
         .pipe(
           tap((r) => {
             console.log("Found Match: ", r);
             this.matchRequestSubject.next(r);
-            this.isUpdating = false;
           })
         )
-        // complete when match found
-        .pipe(take(1))
         // observable is only evaluated on subscription
         .pipe(publishReplay());
       (obs as ConnectableObservable<MatchRequest>).connect();
@@ -131,14 +135,55 @@ export class RouletteService {
     match: Match,
     answer: MatchAnswer
   ): Observable<MatchAnswer> {
-    return this.http
+    const obs = this.http
       .post<SendableMatchAnswer>(
         `${environment.apiUrl}/roulette/${requestType}/match/answer/${match.uuid}/`,
         localToSendableMatchAnswer(answer)
       )
       .pipe(map((a) => sendableToLocalMatchAnswer(a)))
-      .pipe(tap((a) => console.log(a)));
+      .pipe(tap((a) => console.log("posted match answer", a)))
+      .pipe(publishReplay());
+    (obs as ConnectableObservable<MatchAnswer>).connect();
+    return obs;
   }
 
-  public joinMatch() {}
+  public getMeetings() {
+    return this.http
+      .get<Meeting[]>(`${environment.apiUrl}/roulette/meetings/`)
+      .pipe(tap((m) => console.log("got meetings: ", m)));
+  }
+
+  public joinMeeting(match: Match) {
+    return this.http.post<void>(
+      `${environment.apiUrl}/roulette/meeting/join/${match.uuid}/`,
+      null
+    );
+  }
+
+  public getFeedbackMeeting(meeting: Meeting) {
+    return this.http.get<Feedback>(
+      `${environment.apiUrl}/roulette/meeting/feedback/${meeting.meeting_id}/`
+    );
+  }
+
+  public postFeedback(feedback: Feedback) {
+    return this.http
+      .post(`${environment.apiUrl}/roulette/meeting/feedback/`, feedback)
+      .pipe(tap((f) => console.log("posted feedback", f)));
+  }
+
+  public getFeedback() {
+    return this.http
+      .get<Feedback[]>(`${environment.apiUrl}/roulette/meeting/feedback/`)
+      .pipe(tap((f) => console.log("got feedback", f)));
+  }
+
+  public endMeeting(meeting: Meeting) {
+    return this.http
+      .post<void>(
+        `${environment.apiUrl}/roulette/meeting/end/${meeting.meeting_id}/`,
+        null
+      )
+      .pipe(tap((_) => console.log("ended meeting")));
+  }
 }

@@ -1,8 +1,18 @@
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Input,
+  OnDestroy,
+  EventEmitter,
+  Output,
+} from "@angular/core";
 import { RouletteService, RouletteRequestType } from "src/app/_services";
 import { Constants, Match } from "src/app/_models";
 import { ActivatedRoute } from "@angular/router";
 import { tap, switchMap } from "rxjs/operators";
+import { Subscription } from "rxjs";
+
+type State = "wait" | "maybe" | "accepted";
 
 @Component({
   selector: "roulette-student-wait",
@@ -10,11 +20,14 @@ import { tap, switchMap } from "rxjs/operators";
   styleUrls: ["./student-wait.component.scss"],
 })
 export class StudentWaitComponent implements OnInit, OnDestroy {
+  @Output() done = new EventEmitter<boolean>();
   private readonly requestType: RouletteRequestType = "student";
 
   match: Match;
-
   constants: Constants;
+  state: State;
+
+  sub$: Subscription;
 
   constructor(
     private rouletteService: RouletteService,
@@ -26,8 +39,8 @@ export class StudentWaitComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.match = null;
-    this.route.data
+    this.state = "wait";
+    this.sub$ = this.route.data
       .pipe(
         tap((data: { constants: Constants }) => {
           this.constants = data.constants;
@@ -41,7 +54,10 @@ export class StudentWaitComponent implements OnInit, OnDestroy {
       .subscribe(
         (data) => {
           this.match = data;
-          console.log("got match request:", data);
+          this.state = this.state === "wait" ? "maybe" : this.state;
+          if (this.match.bothAccepted()) {
+            this.done.emit(true);
+          }
         },
         (error) => {
           console.log("error", error);
@@ -50,5 +66,17 @@ export class StudentWaitComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy(): void {
     this.rouletteService.deleteMatch(this.requestType);
+    this.sub$.unsubscribe();
+  }
+
+  onMatchAccepted(agree: boolean) {
+    this.rouletteService.answerMatch(this.requestType, this.match, {
+      agree: agree,
+    });
+    if (agree) {
+      this.state = "accepted";
+    } else {
+      this.done.emit(false);
+    }
   }
 }
