@@ -1,18 +1,25 @@
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { RouletteService, RouletteRequestType } from "src/app/_services";
-import { Match } from "src/app/_models";
+import { Constants, Match } from "src/app/_models";
+import { ActivatedRoute } from "@angular/router";
+import { tap, switchMap } from "rxjs/operators";
 
 @Component({
-  selector: 'roulette-student-wait',
-  templateUrl: './student-wait.component.html',
-  styleUrls: ['./student-wait.component.scss']
+  selector: "roulette-student-wait",
+  templateUrl: "./student-wait.component.html",
+  styleUrls: ["./student-wait.component.scss"],
 })
 export class StudentWaitComponent implements OnInit, OnDestroy {
   @Input() readonly requestType: RouletteRequestType;
 
   match: Match;
 
-  constructor(private rouletteService: RouletteService) {}
+  constants: Constants;
+
+  constructor(
+    private rouletteService: RouletteService,
+    private route: ActivatedRoute
+  ) {}
 
   get tutor() {
     return this.match.tutor;
@@ -20,15 +27,26 @@ export class StudentWaitComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.match = null;
-    this.rouletteService.updatingMatch(this.requestType).subscribe(
-      (data) => {
-        this.match = data;
-        console.log("got match request:", data);
-      },
-      (error) => {
-        console.log("error", error);
-      }
-    );
+    this.route.data
+      .pipe(
+        tap((data: { constants: Constants }) => {
+          this.constants = data.constants;
+        })
+      )
+      .pipe(
+        switchMap((_) =>
+          this.rouletteService.updatingMatch(this.requestType, this.constants)
+        )
+      )
+      .subscribe(
+        (data) => {
+          this.match = data;
+          console.log("got match request:", data);
+        },
+        (error) => {
+          console.log("error", error);
+        }
+      );
   }
   ngOnDestroy(): void {
     this.rouletteService.stopUpdatingMatch(this.requestType);
