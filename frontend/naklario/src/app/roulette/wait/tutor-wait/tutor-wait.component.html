@@ -1,7 +1,10 @@
 <div *ngIf="match; else waiting">
   <p>Wir haben dir einen Studenten gefunden:</p>
-  <misc-user-card [user]="student" type="student"></misc-user-card>
-
+  <misc-user-card
+    [user]="student"
+    [match]="match"
+    type="student"
+  ></misc-user-card>
 </div>
 <ng-template #waiting>
   <div>
