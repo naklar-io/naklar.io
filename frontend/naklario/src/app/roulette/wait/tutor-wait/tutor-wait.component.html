@@ -1,13 +1,41 @@
-<div *ngIf="match; else waiting">
+<div *ngIf="state === 'wait'">
+  <div>
+    <p>Warte auf Match.</p>
+  </div>
+</div>
+
+<div *ngIf="state !== 'wait'">
   <p>Wir haben dir einen Studenten gefunden:</p>
   <misc-user-card
     [user]="student"
     [match]="match"
     type="student"
   ></misc-user-card>
-</div>
-<ng-template #waiting>
-  <div>
-    <p>Warte auf Match.</p>
+
+  <div *ngIf="state === 'maybe'">
+    <div class="row">
+      <p>Möchtest du {{ match.student.first_name }} Helfen?</p>
+    </div>
+    <div class="row">
+      <button class="btn btn-primary" (click)="onMatchAccepted(true)">
+        Ja
+      </button>
+      <button class="btn btn-danger" (click)="onMatchAccepted(false)">
+        Nein
+      </button>
+    </div>
   </div>
-</ng-template>
+
+  <div *ngIf="state === 'accepted'">
+    <div *ngIf="match.bothAccepted(); else pending">
+      {{ match.student.first_name }} hat die Verbindung akzeptiert. Ihr werdet
+      in kürze weitergeleitet.
+    </div>
+
+    <ng-template #pending>
+      Warte bis, {{ match.student.first_name }} die Verbindung ebenfalls
+      akzeptiert hat.
+      <span class="spinner-border spinner-border-sm mr-1"></span>
+    </ng-template>
+  </div>
+</div>
