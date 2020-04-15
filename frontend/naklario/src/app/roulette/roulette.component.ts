@@ -68,5 +68,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
   }
 
   // cleanup
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    this.rouletteService.deleteMatch(this.type);
+  }
 }

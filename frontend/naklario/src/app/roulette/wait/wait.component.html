@@ -14,8 +14,9 @@
     ></misc-user-card>
 
     <div *ngIf="state === 'maybe'">
+      <hr>
       <div class="row">
-        <p>Möchtest du {{ match.student.first_name }} Helfen?</p>
+        <p>Möchtest du {{ match.student.first_name }} helfen?</p>
       </div>
       <div class="row">
         <button class="btn btn-primary" (click)="onMatchAccepted(true)">
@@ -58,9 +59,10 @@
     ></misc-user-card>
 
     <div *ngIf="state === 'maybe'">
+      <hr>
       <div class="row">
         <p>
-          Möchtest du von {{ match.tutor.first_name }} deine Frage ebantworten
+          Möchtest du von {{ match.tutor.first_name }} deine Frage beantworten
           lassen?
         </p>
       </div>

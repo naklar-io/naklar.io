@@ -24,9 +24,9 @@ export class UserCardComponent implements OnInit {
   }
 
   get tutordata() {
-    return this.user.tutordata;
+    return this.match.tutor.tutordata;
   }
   get school_data() {
-    return this.user.studentdata.school_data;
+    return this.match.student.studentdata.school_data;
   }
 }
