@@ -45,7 +45,6 @@ class MatchSerializer(DynamicFieldsModelSerializer):
     tutor = CustomUserSerializer(source='tutor_request.user', read_only=True)
     student = CustomUserSerializer(
         source='student_request.user', read_only=True)
-    subject = serializers.ReadOnlyField(sorce='student_request.subject')
     #student_uuid = serializers.ReadOnlyField(source='student_request.user.uuid')
     subject = serializers.ReadOnlyField(source='student_request.subject.id')
 
