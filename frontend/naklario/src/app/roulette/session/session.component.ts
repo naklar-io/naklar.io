@@ -68,12 +68,18 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   @HostListener("window:resize", ["$event"])
   @HostListener("window:scroll", ["$event"])
   onViewportChange(event) {
-    this.onResize(event.target.innerHeight);
+    this.onResize(window.innerHeight);
   }
   onResize(innerHeight: number) {
     const height = `${
       innerHeight - this.iframe.nativeElement.getBoundingClientRect().y
     } px`;
+    console.log(
+      "updating height: ",
+      innerHeight,
+      this.iframe.nativeElement.getBoundingClientRect(),
+      height
+    );
     this.iframe.nativeElement.height = height;
   }
 
