@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core import validators
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.template import Context
 from django.template.loader import get_template
@@ -15,6 +15,11 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from account.managers import CustomUserManager
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 EMAIL_VERIFICATION_PLAINTEXT = get_template("email_verification.txt")
 EMAIL_VERIFICATION_HTMLY = get_template("email_verification.html")
@@ -123,13 +128,7 @@ class TutorData(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.__was_verified != self.verified:
             self.send_verified_email()
-        if self.verified:
-            try:
-                self.verification_file.delete()
-                self.verification_file = None
-            except:
-                # Can fail quietly
-                pass
+
         return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def send_verified_email(self):
@@ -151,6 +150,16 @@ class TutorData(models.Model):
         return mark_safe('<img src="/media/%s" width="256" height="256" />' % (self.profile_picture))
 
     image_tag.short_description = 'Profilbild'
+
+
+@receiver(pre_save, sender=TutorData)
+def delete_document_if_verified(sender, instance, **kwargs):
+    if instance.verified and instance.verification_file:
+        try:
+            instance.verification_file.delete(save=False)
+            instance.verification_file = None
+        except Exception:
+            logger.exception("Exception occured while trying to delete verified file")
 
 
 class VerificationToken(models.Model):
