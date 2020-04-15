@@ -1,53 +1,62 @@
-<div class="row my-5">
-  <div class="col-md-6">
-    <h1 class="primary-color">
-      Frage deinen Tutor auf Knopfdruck. <br />Kostenlos.
-    </h1>
-    <p class="lead">
-      Wir lassen Schüler*innen nicht im Stich. Ehrenamtliche Tutoren finden
-      leichte Antworten auf schwere Fragen. Und das ganz einfach und für jeden
-      zugänglich per Knopfdruck.
-    </p>
+<app-dashboard *ngIf="isLoggedIn; else notLoggedIn"></app-dashboard>
 
-    <div class="my-5"></div>
-    <!-- TRYOUT -->
-    <p class="text-center">
-      Du hast eine Frage oder willst als Tutor helfen? Direkt starten: Ich
-      bin...
-    </p>
-    <div class="row">
-      <div class="col-6">
-        <a [routerLink]="studentLink" class="btn btn-primary btn-block"
-          >Schüler</a
-        >
-      </div>
-      <div class="col-6">
-        <a [routerLink]="tutorLink" class="btn btn-primary btn-block">Tutor</a>
+<ng-template #notLoggedIn>
+  <div class="row my-5">
+    <div class="col-md-6">
+      <h1 class="primary-color">
+        Frage deinen Tutor auf Knopfdruck. <br />Kostenlos.
+      </h1>
+      <p class="lead">
+        Wir lassen Schüler*innen nicht im Stich. Ehrenamtliche Tutoren finden
+        leichte Antworten auf schwere Fragen. Und das ganz einfach und für jeden
+        zugänglich per Knopfdruck.
+      </p>
+
+      <div class="my-5"></div>
+      <!-- TRYOUT -->
+      <p class="text-center">
+        Du hast eine Frage oder willst als Tutor helfen? Direkt starten: Ich
+        bin...
+      </p>
+      <div class="row">
+        <div class="col-6">
+          <a
+            routerLink="/account/tutor/register"
+            class="btn btn-primary btn-block"
+            >Schüler</a
+          >
+        </div>
+        <div class="col-6">
+          <a
+            routerLink="/account/student/register"
+            class="btn btn-primary btn-block"
+            >Tutor</a
+          >
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="col-md-6 justify-content-center">
-    <img
-      src="assets/img/showcase.png"
-      alt="naklar.io Produkt Showcase"
-      class="img-fluid"
-    />
-    <div class="py-5 text-center">
-      <h3 class="primary-color">Eine Initiative von:</h3>
+    <div class="col-md-6 justify-content-center">
       <img
-        src="assets/img/partners/wirvsvirus.jpg"
-        alt="wirvisvirus logo"
+        src="assets/img/showcase.png"
+        alt="naklar.io Produkt Showcase"
         class="img-fluid"
-        style="width: 75%;"
       />
+      <div class="py-5 text-center">
+        <h3 class="primary-color">Eine Initiative von:</h3>
+        <img
+          src="assets/img/partners/wirvsvirus.jpg"
+          alt="wirvisvirus logo"
+          class="img-fluid"
+          style="width: 75%;"
+        />
+      </div>
     </div>
   </div>
-</div>
-<hr>
-<home-more-information></home-more-information>
+  <hr />
+  <home-more-information></home-more-information>
 
-<!-- FEATURES 
+  <!-- FEATURES 
 <div class="row my-5 justify-content-center">
   <div class="col-6 text-center">
     <h2 class="primary-color">Fragen auf Knopfdruck</h2>
@@ -80,3 +89,4 @@
   </div>
 </div>
  -->
+</ng-template>

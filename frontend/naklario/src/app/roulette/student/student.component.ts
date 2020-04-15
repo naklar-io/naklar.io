@@ -8,7 +8,7 @@ import {
 import { User, SendableUser, Constants, StudentRequest } from "src/app/_models";
 import { tap, mergeMap } from "rxjs/operators";
 import { Options } from "ng5-slider";
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "roulette-student",
@@ -49,7 +49,8 @@ export class StudentComponent implements OnInit {
     private fb: FormBuilder,
     private authenticationService: AuthenticationService,
     private rouletteService: RouletteService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -105,7 +106,9 @@ export class StudentComponent implements OnInit {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
-          this.done.emit(true);
+          this.router.navigate(["/roulette/student"], {
+            queryParams: { state: "wait" },
+          });
         },
         (error) => {
           this.loading = false;

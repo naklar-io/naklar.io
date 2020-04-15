@@ -1,9 +1,15 @@
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
-import { switchMap } from "rxjs/operators";
-import { Observable, Subscription } from "rxjs";
-import { RouletteService } from "../_services";
-import { Match, JoinResponse, Meeting } from "../_models";
+import { RouletteService, AuthenticationService } from "../_services";
+import {
+  Match,
+  JoinResponse,
+  Meeting,
+  StudentRequest,
+  Constants,
+} from "../_models";
+import { map, tap, take, switchMap } from "rxjs/operators";
+import { Observable } from "rxjs";
 
 // roulette state machine
 type State = "create" | "wait" | "session" | "feedback";
@@ -25,11 +31,14 @@ export class RouletteComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private rouletteService: RouletteService
+    private rouletteService: RouletteService,
+    private authenticationService: AuthenticationService
   ) {}
   ngOnInit(): void {
-    this.state = "create";
-    this.type = "student";
+    this.route.queryParams.subscribe((params) => {
+      this.state = params.state && params.state === "wait" ? "wait" : "create";
+    });
+
     if (this.router.url.endsWith("student")) {
       this.type = "student";
     } else if (this.router.url.endsWith("tutor")) {
@@ -37,6 +46,30 @@ export class RouletteComponent implements OnInit, OnDestroy {
     } else {
       this.type = "student";
     }
+
+    let constants$: Observable<any> = this.route.data;
+    if (this.state === "create" && this.type === "tutor") {
+      constants$ = this.tutorMatchCreate(constants$);
+    }
+    constants$.subscribe();
+  }
+
+  tutorMatchCreate(obs: Observable<{ constants: Constants }>) {
+    return obs
+      .pipe(take(1))
+      .pipe(
+        switchMap((data) => {
+          // TODO: is this valid?
+          const subj = this.authenticationService.currentUserValue.tutordata
+            .subjects[0].id;
+          return this.rouletteService.createMatch(
+            "tutor",
+            new StudentRequest(subj),
+            data.constants
+          );
+        })
+      )
+      .pipe(tap((_) => (this.state = "wait")));
   }
 
   onCreateDone(done: boolean) {
@@ -53,7 +86,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
       this.state = "session";
     } else {
       // rejected match
-      this.state = "create";
+      this.router.navigate(["/"]);
     }
   }
 
@@ -62,7 +95,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
       this.state = "feedback";
       this.meeting = meeting;
     } else {
-      this.state = "create";
+      this.router.navigate(["/"]);
     }
   }
 
