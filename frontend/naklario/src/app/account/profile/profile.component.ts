@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "src/app/_services";
 import { Router, ActivatedRoute } from "@angular/router";
-import { FormBuilder } from '@angular/forms';
-import { User } from 'src/app/_models';
+import { FormBuilder } from "@angular/forms";
+import { User } from "src/app/_models";
 
 @Component({
   selector: "account-profile",
@@ -19,9 +19,8 @@ export class ProfileComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthenticationService
   ) {
-    authenticationService.currentUser.subscribe(user => this.user = user);
+    authenticationService.currentUser.subscribe((user) => (this.user = user));
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 }

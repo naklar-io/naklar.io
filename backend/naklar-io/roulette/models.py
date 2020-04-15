@@ -72,12 +72,14 @@ def look_for_match(sender, instance, **kwargs):
         # look for open tutor requests and match the best one
         tutor_requests = TutorRequest.objects.exclude(
             user__in=instance.failed_matches.all())
+
         tutor_requests = tutor_requests.exclude(
             user__tutordata__verified=False).filter(match__isnull=True)
         # filter tutor requests for matching subject
+
         filtered = []
         for r in tutor_requests.all():
-            if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists():
+            if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists() and not (r.failed_matches.filter(pk=instance.user.id).exists()):
                 filtered.append(r)
         if filtered:
             best_tutor = max(
@@ -93,9 +95,14 @@ def look_for_match(sender, instance, **kwargs):
 
         subjects = instance.user.tutordata.subjects.all()
         student_requests = student_requests.filter(subject__in=subjects)
-        if student_requests:
+        filtered = []
+        for r in student_requests.all():
+            if not (r.failed_matches.filter(pk=instance.user.id).exists()):
+                filtered.append(r)
+            
+        if filtered:
             best_student = max(
-                student_requests, key=lambda k: calculate_matching_score(k, instance))
+                filtered, key=lambda k: calculate_matching_score(k, instance))
 
             Match.objects.create(
                 student_request=best_student,

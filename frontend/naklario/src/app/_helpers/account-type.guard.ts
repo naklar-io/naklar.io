@@ -9,8 +9,11 @@ import {
   CanActivateChild,
 } from "@angular/router";
 
+/**
+ * for sites which require a student account
+ */
 @Injectable({ providedIn: "root" })
-export class LoggedInGuard implements CanActivate, CanActivateChild {
+export class StudentGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService,
@@ -18,8 +21,16 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authenticationService.isLoggedIn) {
-      return true;
+    const currentUser = this.authenticationService.currentUserValue;
+    if (currentUser) {
+      if (currentUser.studentdata) {
+        return true;
+      } else {
+        this.toastService.error(
+          "Du must einen Studenten Account haben, um hier hin zu kommen"
+        );
+        return false;
+      }
     } else {
       this.toastService.info("Bitte logge dich ein");
       this.router.navigate(["account/login/"], {
@@ -28,13 +39,17 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
       return false;
     }
   }
+
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.canActivate(route, state);
   }
 }
 
+/**
+ * for sites which require a verified tutor account
+ */
 @Injectable({ providedIn: "root" })
-export class NotLoggedInGuard implements CanActivate, CanActivateChild {
+export class TutorGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService,
@@ -42,16 +57,32 @@ export class NotLoggedInGuard implements CanActivate, CanActivateChild {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (!this.authenticationService.isLoggedIn) {
-      return true;
+    const currentUser = this.authenticationService.currentUserValue;
+    if (currentUser) {
+      if (currentUser.tutordata) {
+        if (currentUser.tutordata.verified) {
+          return true;
+        } else {
+          this.toastService.error(
+            "Dein Account muss verifiziert sein, um hier hin zu kommen"
+          );
+          return false;
+        }
+      } else {
+        this.toastService.error(
+          "Du must einen Tutor Account haben, um hier hin zu kommen"
+        );
+        return false;
+      }
     } else {
       this.toastService.info("Bitte logge dich ein");
-      this.router.navigate(["account/"], {
+      this.router.navigate(["account/login/"], {
         queryParams: { returnUrl: state.url },
       });
       return false;
     }
   }
+
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     return this.canActivate(route, state);
   }
