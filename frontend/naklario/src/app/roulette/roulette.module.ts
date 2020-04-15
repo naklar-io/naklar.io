@@ -10,15 +10,21 @@ import { Ng5SliderModule } from "ng5-slider";
 import { RouletteService, DatabaseService } from "../_services";
 import { WaitComponent } from "./wait/wait.component";
 import { MiscComponentsModule } from "../_misc_components/misc-components.module";
+import { SessionComponent } from './session/session.component';
+import { FeedbackComponent } from './feedback/feedback.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
     RouletteComponent,
     StudentComponent,
     TutorComponent,
-    WaitComponent
+    WaitComponent,
+    SessionComponent,
+    FeedbackComponent,
   ],
   imports: [
+    NgbModule,
     Ng5SliderModule,
     CommonModule,
     ReactiveFormsModule,
