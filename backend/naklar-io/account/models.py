@@ -123,13 +123,7 @@ class TutorData(models.Model):
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.__was_verified != self.verified:
             self.send_verified_email()
-        if self.verified:
-            try:
-                self.verification_file.delete()
-                self.verification_file = None
-            except:
-                # Can fail quietly
-                pass
+
         return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     def send_verified_email(self):
@@ -151,6 +145,17 @@ class TutorData(models.Model):
         return mark_safe('<img src="/media/%s" width="256" height="256" />' % (self.profile_picture))
 
     image_tag.short_description = 'Profilbild'
+
+
+@receiver(post_save, sender=TutorData)
+def delete_document_if_verified(sender, instance, **kwargs):
+    if instance.verified:
+        try:
+            self.verification_file.delete()
+            self.verification_file = None
+        except:
+            # Can fail quietly
+            pass
 
 
 class VerificationToken(models.Model):
