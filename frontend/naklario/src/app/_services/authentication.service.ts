@@ -1,16 +1,18 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { BehaviorSubject, Observable } from "rxjs";
+import { BehaviorSubject, Observable, of } from "rxjs";
 import {
   User,
   SendableUser,
   SendableLogin,
-  sendableToLocal,
+  sendableToLocalUser,
   Constants,
   State,
+  TutorData,
 } from "../_models";
 import { environment } from "../../environments/environment";
-import { map, flatMap, tap } from "rxjs/operators";
+import { map, flatMap, tap, take, mergeMap, first } from "rxjs/operators";
+import { DatabaseService } from "./database.service";
 
 interface LoginResponse {
   token: string;
@@ -24,8 +26,15 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   private loggedIn: BehaviorSubject<boolean>;
   private loggedIn$: Observable<boolean>;
+  
+  private lastUpdate: Date;
+  private updateInterval = 60; // account update interval in seconds
 
-  constructor(private http: HttpClient) {
+  private constants$: Observable<Constants>;
+
+
+  constructor(private http: HttpClient,
+              private databaseService: DatabaseService) {
     let user = JSON.parse(localStorage.getItem("currentUser")) as User;
     let loggedIn = false;
     // is the login still valid ?
@@ -72,16 +81,12 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  public updateUser(user: SendableUser, constants: Constants) {
-    if (!user.password) {
-      // don't send password if it wasn't updated
-      delete user.password;
-    }
+  public updateUser(user: Partial<SendableUser>, constants: Constants) {
     return this.http
-      .put<SendableUser>(`${environment.apiUrl}/account/`, user)
+      .put<SendableUser>(`${environment.apiUrl}/account/current/`, user)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user, constants);
+          const u = sendableToLocalUser(user, constants);
           // replace tokens
           const newUser = Object.assign(u, {
             token: this.currentUserValue.token,
@@ -98,7 +103,7 @@ export class AuthenticationService {
       .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user, constants);
+          const u = sendableToLocalUser(user, constants);
           // this.currentUserSubject.next(u);
           return user;
         })
@@ -149,18 +154,38 @@ export class AuthenticationService {
       );
   }
 
-  private fetchUserData(constants: Constants) {
+  public fetchUserData(constants: Constants) {
+    if (this.isLoggedIn) {
+      return this.http
+        .get<SendableUser>(`${environment.apiUrl}/account/current/`)
+        .pipe(
+          map((user) => {
+            const u = sendableToLocalUser(user, constants);
+            const filledUser = Object.assign(u, {
+              token: this.currentUserValue.token,
+              token_expiry: this.currentUserValue.token_expiry,
+            }) as User;
+            console.log(filledUser);
+            this.currentUserSubject.next(filledUser);
+            return filledUser;
+          })
+        );
+    }
+    return this.currentUser;
+  }
+
+  public refreshTutorVerified() {
     return this.http
       .get<SendableUser>(`${environment.apiUrl}/account/current/`)
       .pipe(
         map((user) => {
-          const u = sendableToLocal(user, constants);
-          const filledUser = Object.assign(u, {
-            token: this.currentUserValue.token,
-            token_expiry: this.currentUserValue.token_expiry,
+          const updatedUser = Object.assign(this.currentUserValue, {
+            tutordata: Object.assign(this.currentUserValue.tutordata, {
+              verified: user.tutordata.verified,
+            }) as TutorData,
           }) as User;
-          this.currentUserSubject.next(filledUser);
-          return filledUser;
+          this.currentUserSubject.next(updatedUser);
+          return updatedUser;
         })
       );
   }
