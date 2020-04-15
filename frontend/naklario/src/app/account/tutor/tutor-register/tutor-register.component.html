@@ -10,8 +10,9 @@
 
       <div *ngIf="submitSuccess" class="alert alert-success text-center">
         <p>
-          Danke für dein Engagement! Unser Team wird deine Registrierung zeitnah
-          bearbeiten und dich
+          Danke für dein Engagement!
+          <strong>Bitte bestätige Deine Email-Adresse.</strong>
+          Unser Team wird deine Registrierung zeitnah bearbeiten und dich
           <strong
             >nach einer kurzen Verifizierung deiner Eingaben freischalten.
           </strong>
@@ -299,7 +300,18 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="file">Zeugnis/offizielles Dokument mit deinem Namen (zur Verifizierung)</label>
+          <label for="file"
+            >Zeugnis/offizielles Dokument mit deinem Namen (zur
+            Verifizierung)</label
+          >
+          <p>
+            <small
+              >Der Schutz der Schüler*innen im Internet ist uns sehr wichtig.
+              Bitte deshalb lade hier ein offizielles Dokument mit deinem Namen
+              hoch, womit wir dich verifizieren. Das Dokument wird im Anschluss
+              an deine Verifizierung gelöscht.
+            </small>
+          </p>
           <input
             type="file"
             class="form-control"
@@ -320,15 +332,6 @@
           <p class="text-primary">
             Bitte verwende kein Ausweisdokument (also Perso oder Reisepass,
             o.ä.)
-          </p>
-
-          <p>
-            <small
-              >Der Schutz der Schüler*innen im Internet ist uns sehr wichtig.
-              Bitte deshalb lade hier ein offizielles Dokument mit deinem Namen
-              hoch, womit wir dich verifizieren. Das Dokument wird im Anschluss
-              an deine Verifizierung gelöscht.
-            </small>
           </p>
         </div>
 
