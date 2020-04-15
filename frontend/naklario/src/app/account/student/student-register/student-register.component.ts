@@ -115,7 +115,7 @@ export class StudentRegisterComponent implements OnInit {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
-          this.router.navigate(["/roulette/student"]);
+          //this.router.navigate(["/roulette/student"]);
         },
         (error) => {
           this.error = error;
