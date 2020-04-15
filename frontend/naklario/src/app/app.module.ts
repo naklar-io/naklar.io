@@ -44,6 +44,7 @@ import {
 
 import { MiscComponentsModule } from "./_misc_components/misc-components.module";
 import { MoreInformationComponent } from "./home/more-information/more-information.component";
+import { BannerComponent } from './home/misc/banner/banner.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { MoreInformationComponent } from "./home/more-information/more-informati
     TermsConditionsComponent,
     FooterComponent,
     NavbarComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    BannerComponent
   ],
   imports: [
     NgbModule,

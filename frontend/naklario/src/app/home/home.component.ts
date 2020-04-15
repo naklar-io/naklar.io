@@ -16,10 +16,12 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.authenticationService.isLoggedIn$.subscribe((loggedIn) => {
-      this.studentLink = loggedIn
+      /*       this.studentLink = loggedIn
         ? "/roulette/student"
         : "/account/student/register";
-      this.tutorLink = loggedIn ? "/roulette/tutor" : "account/tutor/register";
+      this.tutorLink = loggedIn ? "/roulette/tutor" : "account/tutor/register"; */
+      this.studentLink = loggedIn ? "/account" : "/account/student/register";
+      this.tutorLink = loggedIn ? "/account" : "account/tutor/register";
     });
   }
 }
