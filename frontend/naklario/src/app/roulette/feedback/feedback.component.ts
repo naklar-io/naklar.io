@@ -19,6 +19,9 @@ export class FeedbackComponent implements OnInit {
 
   form: FormGroup;
 
+  submitSuccess = false;
+  loading = false;
+
   constructor(
     private fb: FormBuilder,
     private rouletteService: RouletteService,
@@ -26,8 +29,8 @@ export class FeedbackComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.form = this.fb.group({
-      rating: [0, Validators.required],
-      message: ["", Validators.required],
+      rating: [-1, Validators.required],
+      message: [""],
     });
   }
 
@@ -36,12 +39,20 @@ export class FeedbackComponent implements OnInit {
   }
 
   onSubmit() {
+    this.form.markAllAsTouched();
     if (this.form.invalid) {
       return;
     }
+
     const f: Feedback = {
-      receiver: "",
-      provider: "",
+      receiver:
+        this.requestType === "tutor"
+          ? this.meeting.student
+          : this.meeting.tutor,
+      provider:
+        this.requestType === "tutor"
+          ? this.meeting.tutor
+          : this.meeting.student,
       rating: this.f.rating.value,
       message: this.f.message.value,
       meeting: this.meeting.meeting_id,

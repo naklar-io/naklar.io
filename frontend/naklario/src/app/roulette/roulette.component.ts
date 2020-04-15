@@ -17,9 +17,8 @@ type UserType = "student" | "tutor";
 export class RouletteComponent implements OnInit, OnDestroy {
   // type === 'student' => invoke student component
   // type === 'tutor'=> invoke tutor component
-  type: UserType = "student";
-
-  state: State = "create";
+  type: UserType;
+  state: State;
   join: JoinResponse;
   meeting: Meeting;
 
@@ -29,6 +28,8 @@ export class RouletteComponent implements OnInit, OnDestroy {
     private rouletteService: RouletteService
   ) {}
   ngOnInit(): void {
+    this.state = "create";
+    this.type = "student";
     if (this.router.url.endsWith("student")) {
       this.type = "student";
     } else if (this.router.url.endsWith("tutor")) {
