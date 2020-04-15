@@ -5,13 +5,17 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  HostListener,
+  Renderer2,
 } from "@angular/core";
 import {
   RouletteService,
   RouletteRequestType,
   ToastService,
 } from "src/app/_services";
-import { StorageMap } from "@ngx-pwa/local-storage";
 import { Meeting } from "src/app/_models";
 import { map } from "rxjs/operators";
 
@@ -20,16 +24,18 @@ import { map } from "rxjs/operators";
   templateUrl: "./session.component.html",
   styleUrls: ["./session.component.scss"],
 })
-export class SessionComponent implements OnInit, OnDestroy {
+export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() readonly requestType: RouletteRequestType;
   @Input() joinUrl: string;
   @Output() done = new EventEmitter<Meeting>();
+  @ViewChild("iframe") iframe: ElementRef;
 
   meeting: Meeting;
 
   constructor(
     private rouletteService: RouletteService,
-    private ts: ToastService
+    private ts: ToastService,
+    private renderer: Renderer2
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +57,24 @@ export class SessionComponent implements OnInit, OnDestroy {
         (meeting) => (this.meeting = meeting),
         (error) => this.ts.error(error)
       );
+  }
+  ngAfterViewInit(): void {
+    this.onResize(window.innerHeight);
+  }
+
+  // This is kind of hacky and not very performant but works:
+  // The idea is to set the iframe height to the remaining viewport height
+  // after subtracting its top left position.
+  @HostListener("window:resize", ["$event"])
+  @HostListener("window:scroll", ["$event"])
+  onViewportChange(event) {
+    this.onResize(event.target.innerHeight);
+  }
+  onResize(innerHeight: number) {
+    const height = `${
+      innerHeight - this.iframe.nativeElement.getBoundingClientRect().y
+    } px`;
+    this.iframe.nativeElement.height = height;
   }
 
   /**
