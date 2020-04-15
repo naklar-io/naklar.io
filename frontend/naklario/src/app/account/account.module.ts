@@ -13,23 +13,18 @@ import { LoginComponent } from "./login/login.component";
 import { ProfileComponent } from "./profile/profile.component";
 import { DatabaseService, AuthenticationService } from "../_services";
 
-import {
-  TermsConditionsComponent,
-  ImgUploadComponent,
-} from "../_misc_components";
 import { VerifyComponent } from "./verify/verify.component";
 
 import { NgSelectModule } from "@ng-select/ng-select";
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { ResetRequestComponent } from './password-reset/reset-request/reset-request.component';
+import { MiscComponentsModule } from '../_misc_components/misc-components.module';
 @NgModule({
   declarations: [
     TutorComponent,
     StudentComponent,
     TutorRegisterComponent,
-    ImgUploadComponent,
     StudentRegisterComponent,
-    TermsConditionsComponent,
     LoginComponent,
     ProfileComponent,
     VerifyComponent,
@@ -37,6 +32,7 @@ import { ResetRequestComponent } from './password-reset/reset-request/reset-requ
     ResetRequestComponent,
   ],
   imports: [
+    MiscComponentsModule,
     Ng5SliderModule,
     NgSelectModule,
     FormsModule,

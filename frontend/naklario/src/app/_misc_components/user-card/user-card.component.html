@@ -1,0 +1,38 @@
+<div class="row justify-content-center">
+  <div class="col-md-6 col-sm-9 user-card justify-content-center">
+    <div class="justify-content-center">
+      <div class="profile-img">
+        <img [src]="img" alt="profile picture" class="img-fluid" />
+      </div>
+  
+      <div class="profile-usertitle my-3">
+        <div class="profile-usertitle-name">
+          {{ user.first_name }} {{ user.last_name }}
+        </div>
+        <div class="profile-usertitle-state">
+          {{ user.state.name }} ({{ user.state.shortcode }})
+        </div>
+      </div>
+  
+      <hr />
+  
+      <div *ngIf="type === 'tutor'">
+        Experte für:
+        <div class="list-group overflow-auto" style="max-height:225px;">
+        <div class="list-group-item" *ngFor="let subject of tutordata.subjects">
+          {{ subject.name }}</div
+        >
+        </div>
+        
+      </div>
+      <div *ngIf="type === 'student'">
+        Hat eine Frage in:
+        <br />
+        <span>
+          {{ match.subject.name }}
+          ({{ school_data?.school_type.name }}, {{ school_data?.grade }}. Klasse)
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

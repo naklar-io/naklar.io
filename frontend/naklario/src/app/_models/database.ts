@@ -1,3 +1,5 @@
+import { environment } from "src/environments/environment";
+
 /**
  * sendable interfaces for communication with the api
  */
@@ -31,6 +33,12 @@ export interface SendableUser {
 export interface SendableLogin {
   email: string;
   password: string;
+}
+
+export interface SendableSchoolData {
+  id: number;
+  school_type: number;
+  grade: number;
 }
 
 /**
@@ -85,7 +93,7 @@ export class SchoolType {
 export class SchoolData {
   constructor(
     public id: number,
-    public school_type: number,
+    public school_type: SchoolType,
     public grade: number
   ) {}
 }
@@ -101,7 +109,7 @@ export class Gender {
 /**
  *  conversion functions between User <==> SendableUser
  */
-export const localToSendable = (user: User): SendableUser => {
+export function localToSendableUser(user: User): SendableUser {
   const studentdata: SendableStudentData | null = user.studentdata
     ? {
         school_data: user.studentdata.school_data.id,
@@ -111,9 +119,9 @@ export const localToSendable = (user: User): SendableUser => {
     ? {
         schooldata: user.tutordata.schooldata.map((x) => x.id),
         subjects: user.tutordata.subjects.map((x) => x.id),
-        verification_file: user.tutordata.verification_file,
+        verification_file: removeAPIUrl(user.tutordata.verification_file),
         verified: user.tutordata.verified,
-        profile_picture: user.tutordata.profile_picture,
+        profile_picture: removeAPIUrl(user.tutordata.profile_picture),
       }
     : null;
   return {
@@ -128,11 +136,11 @@ export const localToSendable = (user: User): SendableUser => {
     tutordata: tutordata,
     terms_accepted: user.terms_accepted,
   };
-};
-export const sendableToLocal = (
+}
+export function sendableToLocalUser(
   user: SendableUser,
   constants: Constants
-): User => {
+): User {
   return new User(
     user.email,
     user.password,
@@ -154,7 +162,7 @@ export const sendableToLocal = (
           constants.subjects.filter((x) =>
             user.tutordata.subjects.includes(x.id)
           ),
-          user.tutordata.verification_file,
+          addAPIUrl(user.tutordata.verification_file),
           user.tutordata.verified,
           user.tutordata.profile_picture
         )
@@ -166,7 +174,29 @@ export const sendableToLocal = (
     "",
     ""
   );
-};
+}
+
+export function localToSendableSchoolData(s: SchoolData): SendableSchoolData {
+  return {
+    id: s.id,
+    school_type: s.school_type.id,
+    grade: s.grade,
+  };
+}
+
+export function sendableToLocalSchoolData(
+  s: SendableSchoolData,
+  types: SchoolType[]
+): SchoolData {
+  return new SchoolData(
+    s.id,
+    types.find((t) => t.id === s.school_type),
+    s.grade
+  );
+}
+
+const addAPIUrl = (url: string) => environment.apiUrl + url;
+const removeAPIUrl = (url: string) => url.replace(environment.apiUrl, "");
 
 export class Constants {
   constructor(

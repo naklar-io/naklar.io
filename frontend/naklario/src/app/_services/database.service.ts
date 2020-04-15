@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable, throwError, combineLatest } from "rxjs";
 import { environment } from "../../environments/environment";
-import { catchError, map } from "rxjs/operators";
+import { catchError, map, tap } from "rxjs/operators";
 import { of } from "rxjs";
 import {
   State,
@@ -11,6 +11,8 @@ import {
   SchoolData,
   Gender,
   Constants,
+  SendableSchoolData,
+  sendableToLocalSchoolData,
 } from "../_models";
 
 @Injectable({ providedIn: "root" })
@@ -25,7 +27,15 @@ export class DatabaseService {
     this.states = this.get<State[]>("/account/states/");
     this.subjects = this.get<Subject[]>("/account/subjects/");
     this.schoolTypes = this.get<SchoolType[]>("/account/schooltypes/");
-    this.schoolData = this.get<SchoolData[]>("/account/schooldata/");
+    this.schoolData = combineLatest(
+      this.schoolTypes,
+      this.get<SendableSchoolData[]>("/account/schooldata/")
+    ).pipe(
+      map(([schoolTypes, schoolData]) =>
+        schoolData.map((s) => sendableToLocalSchoolData(s, schoolTypes))
+      )
+    );
+
     this.genders = of(
       JSON.parse(
         '[{"id":1,"gender":"Weiblich", "shortcode": "FE"},{"id":2,"gender":"Männlich", "shortcode": "MA"},{"id":3,"gender":"Divers", "shortcode": "DI"}]'

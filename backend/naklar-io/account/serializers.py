@@ -133,7 +133,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    tutordata = TutorDataSerializer(fields=['schooldata', 'subjects'])
+    tutordata = TutorDataSerializer(fields=['schooldata', 'subjects', 'profile_picture'])
+    studentdata = StudentDataSerializer()
 
     class Meta:
         model = CustomUser

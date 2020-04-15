@@ -10,6 +10,8 @@ export class HomeComponent implements OnInit {
   studentLink: string;
   tutorLink: string;
 
+  user = this.authenticationService.currentUserValue;
+
   constructor(private authenticationService: AuthenticationService) {}
 
   ngOnInit(): void {
