@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.core import validators
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.template import Context
 from django.template.loader import get_template
@@ -15,6 +15,11 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from account.managers import CustomUserManager
+
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 EMAIL_VERIFICATION_PLAINTEXT = get_template("email_verification.txt")
 EMAIL_VERIFICATION_HTMLY = get_template("email_verification.html")
@@ -147,15 +152,14 @@ class TutorData(models.Model):
     image_tag.short_description = 'Profilbild'
 
 
-@receiver(post_save, sender=TutorData)
+@receiver(pre_save, sender=TutorData)
 def delete_document_if_verified(sender, instance, **kwargs):
-    if instance.verified:
+    if instance.verified and instance.verification_file:
         try:
-            self.verification_file.delete()
-            self.verification_file = None
-        except:
-            # Can fail quietly
-            pass
+            instance.verification_file.delete(save=False)
+            instance.verification_file = None
+        except Exception:
+            logger.exception("Exception occured while trying to delete verified file")
 
 
 class VerificationToken(models.Model):
