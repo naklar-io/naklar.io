@@ -3,7 +3,7 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
-import { UserResolver } from './_services';
+import { UserResolver, DatabaseResolverService } from "./_services";
 
 import { AboutComponent } from "./home/misc/about/about.component";
 import { FeedbackComponent } from "./home/misc/feedback/feedback.component";
@@ -15,7 +15,6 @@ import { StudentsComponent } from "./home/misc/students/students.component";
 import { TutorsComponent } from "./home/misc/tutors/tutors.component";
 import { TermsConditionsComponent } from "./home/misc/terms-conditions/terms-conditions.component";
 import { PageNotFoundComponent } from "./home/misc/page-not-found/page-not-found.component";
-
 
 const routes: Routes = [
   {
@@ -32,10 +31,15 @@ const routes: Routes = [
       { path: "privacy", component: ImpressumComponent },
       { path: "about", component: AboutComponent },
       { path: "landing", component: LandingComponent },
-      { path: "", component: HomeComponent, pathMatch: "full" },
+      {
+        path: "",
+        component: HomeComponent,
+        pathMatch: "full",
+        resolve: { constants: DatabaseResolverService, user: UserResolver },
+      },
       { path: "**", component: PageNotFoundComponent },
     ],
-    resolve: {"user": UserResolver}
+    resolve: { user: UserResolver },
   },
 ];
 

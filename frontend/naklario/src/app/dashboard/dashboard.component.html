@@ -1,0 +1,93 @@
+<div *ngIf="accountType === 'tutor'" class="row justify-content-center">
+  <div class="col-md-4">
+    <a routerLink="/roulette/tutor">
+      <button class="btn btn-primary text-light">Jetzt Schülern helfen</button>
+    </a>
+  </div>
+</div>
+<div *ngIf="accountType === 'student'">
+  <roulette-student></roulette-student>
+</div>
+
+<div class="row">
+  <div class="col">
+    <p>
+      Community-Mentalität bei naklar.io:
+      <br />
+      <small>
+        Mit eurem großartigen Engagement könnn wir bei naklar.io Schülern unter
+        die Arme greifen und in dieser Zeit unterstützen. Wichtigste Maxime
+        hierbei ist das gegenseitige Vertrauen und der Respekt, sodass dieses
+        Projekt. in dieser Zeit helfen soll einen Mehrwert für die Schüler
+        haben, die bei Schulfragen nicht weiter kommen und basiert auf
+        gegenseitigem Vertrauen.
+        <br />
+
+        Ziel ist es, ihre Fragen schnellstmöglich und verständlich zu klären,
+        sodass sie motiviert bleiben und sich den nächsten Aufgaben widmen
+        können. Es ist wichtig, den richtigen Umgang mit den Kindern zu finden,
+        daher bitten Dich, gewissenhaft mit der Verantwortung, Kinder zu
+        unterrichten, umzugehen. Solltest Du bei pädagogischen Themen nicht
+        weiter kommen, melde Dich gerne jederzeit bei uns - wir helfen gerne
+        weiter!
+      </small>
+    </p>
+  </div>
+
+  <pre *ngIf="accountType === 'student'">
+TODO: create separate text for students</pre
+  >
+
+  <div class="container">
+    <div class="row my-3">
+      <div class="col text-center text-primary">
+        <h3>Wie funktioniert naklar.io?</h3>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-4">
+        <h3 class="text-primary text-center">1.</h3>
+        <p class="text-center">
+          <strong>
+            Bereit? Ein Klick und es geht los.
+          </strong>
+        </p>
+        <p class="text-justify">
+          Klicke einfach auf den Button “jetzt Schülern helfen” um den Schülern
+          zu zeigen, dass du bereit für ihre Fragen bist. Klicke einfach auf den
+          Button “jetzt Schülern helfen” um den Schülern zu zeigen, dass du
+          bereit für ihre Fragen bist.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <h3 class="text-primary text-center">2.</h3>
+        <p class="text-center">
+          <strong>
+            Matching. Schnell und Einfach.
+          </strong>
+        </p>
+        <p class="text-justify">
+          Sobald ein Schüler eine Frage in deinen Fächern hat, bekommst du einen
+          Hinweis über den Schüler (Schulart, Klasse und Bundesland) und über
+          das Fach in dem er Hilfe sucht. Sobald du bestätigst, kann die Session
+          starten.
+        </p>
+      </div>
+      <div class="col-md-4">
+        <h3 class="text-primary text-center">3.</h3>
+        <p class="text-center">
+          <strong>
+            Frage(n) klären. Die Tafel und der Chat.
+          </strong>
+        </p>
+        <p class="text-justify">
+          Du kannst die virtuelle Tafel benutzen, um deine Antworten &
+          Erklärungen zu verdeutlichen. Der Schüler kann dir über den Chat zum
+          Beispiel die Aufgabenstellung schicken. Zudem kannst du deinen
+          Bildschirm teilen oder Dateien zum Bearbeiten hochladen.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

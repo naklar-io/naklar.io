@@ -19,6 +19,7 @@ interface LoginResponse {
   expiry: string;
 }
 
+export type AccountType = "student" | "tutor" | "both";
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
   public currentUser: Observable<User>;
@@ -26,15 +27,16 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   private loggedIn: BehaviorSubject<boolean>;
   private loggedIn$: Observable<boolean>;
-  
+
   private lastUpdate: Date;
   private updateInterval = 60; // account update interval in seconds
 
   private constants$: Observable<Constants>;
 
-
-  constructor(private http: HttpClient,
-              private databaseService: DatabaseService) {
+  constructor(
+    private http: HttpClient,
+    private databaseService: DatabaseService
+  ) {
     let user = JSON.parse(localStorage.getItem("currentUser")) as User;
     let loggedIn = false;
     // is the login still valid ?
@@ -79,6 +81,21 @@ export class AuthenticationService {
   }
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
+  }
+
+
+  public getAccountType(): Observable<AccountType> {
+    return this.currentUserSubject.pipe(
+      map((s) => {
+        if (s.tutordata && s.studentdata) {
+          return "both";
+        } else if (s.tutordata) {
+          return "tutor";
+        } else {
+          return "student";
+        }
+      })
+    );
   }
 
   public updateUser(user: Partial<SendableUser>, constants: Constants) {
