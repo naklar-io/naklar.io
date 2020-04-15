@@ -24,6 +24,7 @@ const routes: Routes = [
     ],
     resolve: { constants: DatabaseResolverService, user: UserResolver },
     canActivate: [LoggedInGuard],
+    canActivateChild: [LoggedInGuard],
   },
 ];
 
