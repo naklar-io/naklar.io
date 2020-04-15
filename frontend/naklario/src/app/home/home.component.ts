@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "../_services";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-home",
@@ -16,12 +17,18 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.authenticationService.isLoggedIn$.subscribe((loggedIn) => {
-      /*       this.studentLink = loggedIn
-        ? "/roulette/student"
+      let studentLoggedIn = "/account";
+      let tutorLoggedIn = "/account";
+
+      // guard roulette behind feature flag
+      if (environment.features.roulette) {
+        studentLoggedIn = "/roulette/student";
+        tutorLoggedIn = "/roulette/tutor";
+      }
+      this.studentLink = loggedIn
+        ? studentLoggedIn
         : "/account/student/register";
-      this.tutorLink = loggedIn ? "/roulette/tutor" : "account/tutor/register"; */
-      this.studentLink = loggedIn ? "/account" : "/account/student/register";
-      this.tutorLink = loggedIn ? "/account" : "account/tutor/register";
+      this.tutorLink = loggedIn ? tutorLoggedIn : "account/tutor/register";
     });
   }
 }
