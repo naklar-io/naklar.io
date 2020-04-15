@@ -164,7 +164,7 @@ export function sendableToLocalUser(
           ),
           addAPIUrl(user.tutordata.verification_file),
           user.tutordata.verified,
-          addAPIUrl(user.tutordata.profile_picture)
+          user.tutordata.profile_picture
         )
       : null,
     user.terms_accepted,
