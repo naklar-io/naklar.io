@@ -1,0 +1,24 @@
+<h1>Feedback</h1>
+
+<p>
+  Wie war dein Meeting? Nimm dir bitte eine Sekunde, um uns zu erzählen, ob
+  alles ok war
+</p>
+
+<form [formGroup]="form" (submit)="onSubmit()">
+  <ngb-rating [formControl]="f.rating"></ngb-rating>
+
+  <textarea
+    name=""
+    id=""
+    cols="30"
+    rows="10"
+    formControlName="message"
+  ></textarea>
+
+  <button type="submit"></button>
+</form>
+
+<pre>
+    {{ meeting | json }}
+</pre>

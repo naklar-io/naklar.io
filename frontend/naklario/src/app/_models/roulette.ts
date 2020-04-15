@@ -44,6 +44,10 @@ export interface Meeting {
   feedback_set: number[];
 }
 
+export interface JoinResponse {
+  join_url: string;
+}
+
 export interface Feedback {
   receiver?: string;
   provider?: string;

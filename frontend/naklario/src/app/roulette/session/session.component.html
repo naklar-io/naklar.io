@@ -1,0 +1,10 @@
+<!-- need to trust the url using the | safe pipe -->
+<div class="bbb-container">
+  <iframe
+    [src]="joinUrl | safe"
+    frameborder="0"
+    allow="microphone *; camera *; geolocation *"
+    class="bbb-session"
+  >
+  </iframe>
+</div>

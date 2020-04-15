@@ -3,10 +3,10 @@ import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { switchMap } from "rxjs/operators";
 import { Observable, Subscription } from "rxjs";
 import { RouletteService } from "../_services";
-import { Match } from "../_models";
+import { Match, JoinResponse, Meeting } from "../_models";
 
 // roulette state machine
-type State = "create" | "wait" | "match" | "session";
+type State = "create" | "wait" | "session" | "feedback";
 type UserType = "student" | "tutor";
 
 @Component({
@@ -20,8 +20,8 @@ export class RouletteComponent implements OnInit, OnDestroy {
   type: UserType = "student";
 
   state: State = "create";
-
-  match: Match;
+  join: JoinResponse;
+  meeting: Meeting;
 
   constructor(
     private route: ActivatedRoute,
@@ -45,26 +45,30 @@ export class RouletteComponent implements OnInit, OnDestroy {
     }
   }
 
-  onWaitDone(done: boolean) {
-    if (done) {
+  onWaitDone(response: JoinResponse) {
+    if (response) {
       // accepted match
-      this.state = "match";
+      this.join = response;
+      this.state = "session";
     } else {
       // rejected match
-      this.state = 'create'
+      this.state = "create";
     }
   }
 
-  onMatchDone(done: boolean) {
+  onSessionDone(meeting: Meeting) {
+    if (meeting) {
+      this.state = "feedback";
+      this.meeting = meeting;
+    } else {
+      this.state = "create";
+    }
+  }
+
+  onFeedbackDone(done: boolean) {
     if (done) {
-      // advance state
-      this.state = "session";
+      this.router.navigate(["/"]);
     }
-  }
-
-  onSessionDone(done: boolean) {
-    // TODO pass router params for correct feedback
-    this.router.navigate(["roulette/feedback"]);
   }
 
   // cleanup
