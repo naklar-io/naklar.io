@@ -68,7 +68,9 @@ export class WaitComponent implements OnInit, OnDestroy {
       );
   }
   ngOnDestroy(): void {
-    this.rouletteService.deleteMatch(this.requestType);
+    if (!this.match?.bothAccepted) {
+      this.rouletteService.deleteMatch(this.requestType);
+    }
     this.sub$.unsubscribe();
   }
 
