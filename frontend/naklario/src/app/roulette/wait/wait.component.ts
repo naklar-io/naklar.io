@@ -6,11 +6,15 @@ import {
   EventEmitter,
   Input,
 } from "@angular/core";
-import { RouletteService, RouletteRequestType } from "src/app/_services";
-import { Match, Constants } from "src/app/_models";
+import {
+  RouletteService,
+  RouletteRequestType,
+  ToastService,
+} from "src/app/_services";
+import { Match, Constants, Meeting, JoinResponse } from "src/app/_models";
 import { ActivatedRoute } from "@angular/router";
-import { tap, switchMap } from "rxjs/operators";
-import { Subscribable, Subscription } from "rxjs";
+import { tap, switchMap, map } from "rxjs/operators";
+import { Subscription, combineLatest, of } from "rxjs";
 
 type State = "wait" | "maybe" | "accepted";
 
@@ -21,17 +25,20 @@ type State = "wait" | "maybe" | "accepted";
 })
 export class WaitComponent implements OnInit, OnDestroy {
   @Input() readonly requestType: RouletteRequestType;
-  @Output() done = new EventEmitter<boolean>();
+  @Output() done = new EventEmitter<JoinResponse>();
 
   match: Match;
+  join: JoinResponse;
   constants: Constants;
   state: State;
 
-  sub$: Subscription;
+  subUpdatingMatch: Subscription;
+  subJoinMeeting: Subscription;
 
   constructor(
     private route: ActivatedRoute,
-    private rouletteService: RouletteService
+    private rouletteService: RouletteService,
+    private ts: ToastService
   ) {}
 
   get student() {
@@ -43,7 +50,7 @@ export class WaitComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.state = "wait";
-    this.sub$ = this.route.data
+    this.subUpdatingMatch = this.route.data
       .pipe(
         tap((data: { constants: Constants }) => {
           this.constants = data.constants;
@@ -66,20 +73,23 @@ export class WaitComponent implements OnInit, OnDestroy {
             this.match = data;
             this.state = this.state === "wait" ? "maybe" : this.state;
             if (this.match.bothAccepted()) {
-              this.done.emit(true);
+              this.onBothAccepted();
             }
           }
         },
         (error) => {
-          console.log("error", error);
+          this.ts.error(error);
         }
       );
   }
   ngOnDestroy(): void {
-    if (!(this.match && this.match.bothAccepted)) {
+    console.log("destroying wait");
+    if (!this.match?.bothAccepted()) {
       this.rouletteService.deleteMatch(this.requestType);
     }
-    this.sub$.unsubscribe();
+    this.rouletteService.stopUpdatingMatch();
+    this.subUpdatingMatch?.unsubscribe();
+    this.subJoinMeeting?.unsubscribe();
   }
 
   onMatchAccepted(agree: boolean) {
@@ -89,7 +99,20 @@ export class WaitComponent implements OnInit, OnDestroy {
     if (agree) {
       this.state = "accepted";
     } else {
-      this.done.emit(false);
+      this.done.emit(null);
     }
+  }
+
+  onBothAccepted() {
+    this.subJoinMeeting = this.rouletteService
+      .joinMeeting(this.match)
+      .subscribe(
+        (data) => {
+          this.join = data;
+          // return to parent
+          this.done.emit(this.join);
+        },
+        (error) => this.ts.error(error)
+      );
   }
 }
