@@ -67,7 +67,7 @@ export class TutorRegisterComponent implements OnInit {
 
     let data: SchoolData[][] = [];
     for (let schoolType of this.schoolTypes) {
-      data.push(this.schoolData.filter((x) => x.school_type === schoolType.id));
+      data.push(this.schoolData.filter((x) => x.school_type.id === schoolType.id));
     }
     let grades = data.map((x) => x.map((y) => y.grade));
     this.sliderOptions = grades.map((x) => {
@@ -163,7 +163,7 @@ export class TutorRegisterComponent implements OnInit {
       }
       let range = this.f.sliders.value[i];
       let g = this.schoolData
-        .filter((x) => x.school_type === schoolType.id)
+        .filter((x) => x.school_type.id === schoolType.id)
         .filter((x) => range[0] <= x.grade && x.grade <= range[1])
         .map((x) => x.id);
       grades.push(...g);
