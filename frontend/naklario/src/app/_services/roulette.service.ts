@@ -16,6 +16,7 @@ import {
   sendableToLocalStudentRequest,
   Meeting,
   Feedback,
+  JoinResponse,
 } from "../_models";
 import { environment } from "../../environments/environment";
 import {
@@ -87,7 +88,9 @@ export class RouletteService {
           switchMap((_) => {
             const url = `${environment.apiUrl}/roulette/${requestType}/request/`;
             console.log("polling ", url);
-            return this.http.get<SendableMatchRequest>(url, {headers: { ignoreLoadingBar: '' }});
+            return this.http.get<SendableMatchRequest>(url, {
+              headers: { ignoreLoadingBar: "" },
+            });
           })
         ) // do we have a match
         //.pipe(filter((x) => Boolean(x.match)))
@@ -99,14 +102,6 @@ export class RouletteService {
               return true;
             }
             const res = !this.matchRequestValue.equals(r);
-            if (!res) {
-              console.log(
-                "discarding match Request",
-                this.matchRequestValue,
-                r,
-                res
-              );
-            }
             return res;
           })
         )
@@ -119,12 +114,21 @@ export class RouletteService {
         // observable is only evaluated on subscription
         //.pipe(publishReplay());
         // TODO: this is a resource leak
-        .subscribe((d) => d, error => console.log(error))
+        .subscribe(
+          (d) => d,
+          (error) => console.log(error)
+        );
       //(obs as ConnectableObservable<MatchRequest>).connect();
     }
-    return this.matchRequest$
-     // .pipe(filter((r) => Boolean(r.match)))
-      .pipe(map((r) => r.match));
+    return (
+      this.matchRequest$
+        // .pipe(filter((r) => Boolean(r.match)))
+        .pipe(map((r) => r.match))
+    );
+  }
+
+  public stopUpdatingMatch() {
+    this.isUpdating = false;
   }
 
   public deleteMatch(requestType: RouletteRequestType): Observable<void> {
@@ -167,10 +171,21 @@ export class RouletteService {
   }
 
   public joinMeeting(match: Match) {
-    return this.http.post<void>(
-      `${environment.apiUrl}/roulette/meeting/join/${match.uuid}/`,
-      null
-    );
+    return this.http
+      .post<JoinResponse>(
+        `${environment.apiUrl}/roulette/meeting/join/${match.uuid}/`,
+        null
+      )
+      .pipe(tap((r) => console.log("got join response: ", r)));
+  }
+  
+  public endMeeting(meeting: Meeting) {
+    return this.http
+      .post<void>(
+        `${environment.apiUrl}/roulette/meeting/end/${meeting.meeting_id}/`,
+        null
+      )
+      .pipe(tap((_) => console.log("ended meeting")));
   }
 
   public getFeedbackMeeting(meeting: Meeting) {
@@ -191,12 +206,4 @@ export class RouletteService {
       .pipe(tap((f) => console.log("got feedback", f)));
   }
 
-  public endMeeting(meeting: Meeting) {
-    return this.http
-      .post<void>(
-        `${environment.apiUrl}/roulette/meeting/end/${meeting.meeting_id}/`,
-        null
-      )
-      .pipe(tap((_) => console.log("ended meeting")));
-  }
 }

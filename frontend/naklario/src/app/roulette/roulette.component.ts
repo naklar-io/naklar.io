@@ -3,10 +3,10 @@ import { ActivatedRoute, Router, ParamMap } from "@angular/router";
 import { switchMap } from "rxjs/operators";
 import { Observable, Subscription } from "rxjs";
 import { RouletteService } from "../_services";
-import { Match } from "../_models";
+import { Match, JoinResponse, Meeting } from "../_models";
 
 // roulette state machine
-type State = "create" | "wait" | "match" | "session";
+type State = "create" | "wait" | "session" | "feedback";
 type UserType = "student" | "tutor";
 
 @Component({
@@ -17,11 +17,10 @@ type UserType = "student" | "tutor";
 export class RouletteComponent implements OnInit, OnDestroy {
   // type === 'student' => invoke student component
   // type === 'tutor'=> invoke tutor component
-  type: UserType = "student";
-
-  state: State = "create";
-
-  match: Match;
+  type: UserType;
+  state: State;
+  join: JoinResponse;
+  meeting: Meeting;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +28,8 @@ export class RouletteComponent implements OnInit, OnDestroy {
     private rouletteService: RouletteService
   ) {}
   ngOnInit(): void {
+    this.state = "create";
+    this.type = "student";
     if (this.router.url.endsWith("student")) {
       this.type = "student";
     } else if (this.router.url.endsWith("tutor")) {
@@ -45,26 +46,30 @@ export class RouletteComponent implements OnInit, OnDestroy {
     }
   }
 
-  onWaitDone(done: boolean) {
-    if (done) {
+  onWaitDone(response: JoinResponse) {
+    if (response) {
       // accepted match
-      this.state = "match";
+      this.join = response;
+      this.state = "session";
     } else {
       // rejected match
-      this.state = 'create'
+      this.state = "create";
     }
   }
 
-  onMatchDone(done: boolean) {
+  onSessionDone(meeting: Meeting) {
+    if (meeting) {
+      this.state = "feedback";
+      this.meeting = meeting;
+    } else {
+      this.state = "create";
+    }
+  }
+
+  onFeedbackDone(done: boolean) {
     if (done) {
-      // advance state
-      this.state = "session";
+      this.router.navigate(["/"]);
     }
-  }
-
-  onSessionDone(done: boolean) {
-    // TODO pass router params for correct feedback
-    this.router.navigate(["roulette/feedback"]);
   }
 
   // cleanup

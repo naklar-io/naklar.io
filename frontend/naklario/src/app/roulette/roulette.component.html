@@ -17,12 +17,20 @@
     ></roulette-wait>
   </div>
 
-  <div *ngIf="state === 'match'">
-    <pre>Match state</pre>
+  <div *ngIf="state === 'session'">
+    <roulette-session
+      [requestType]="type"
+      [joinUrl]="join.join_url"
+      (done)="onSessionDone($event)"
+    ></roulette-session>
   </div>
 
-  <div *ngIf="state === 'session'">
-    <pre>Session state</pre>
+  <div *ngIf="state === 'feedback'">
+    <roulette-feedback
+     [requestType]="type"
+     [meeting]="meeting"
+     (done)="onFeedbackDone($event)"
+    ></roulette-feedback>
   </div>
 
   <hr />
