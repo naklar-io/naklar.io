@@ -87,10 +87,10 @@ export class RouletteService {
           switchMap((_) => {
             const url = `${environment.apiUrl}/roulette/${requestType}/request/`;
             console.log("polling ", url);
-            return this.http.get<SendableMatchRequest>(url);
+            return this.http.get<SendableMatchRequest>(url, {headers: { ignoreLoadingBar: '' }});
           })
         ) // do we have a match
-        .pipe(filter((x) => Boolean(x.match)))
+        //.pipe(filter((x) => Boolean(x.match)))
         .pipe(map((r) => sendableToLocalMatchRequest(r, constants)))
         // does the MatchRequest have new data?
         .pipe(
@@ -123,7 +123,7 @@ export class RouletteService {
       //(obs as ConnectableObservable<MatchRequest>).connect();
     }
     return this.matchRequest$
-      .pipe(filter((r) => Boolean(r.match)))
+     // .pipe(filter((r) => Boolean(r.match)))
       .pipe(map((r) => r.match));
   }
 

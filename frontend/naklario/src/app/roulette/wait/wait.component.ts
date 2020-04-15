@@ -56,10 +56,18 @@ export class WaitComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         (data) => {
-          this.match = data;
-          this.state = this.state === "wait" ? "maybe" : this.state;
-          if (this.match.bothAccepted()) {
-            this.done.emit(true);
+          // Listen for rejected matches
+          if (!data && (this.state == "maybe" || this.state == "accepted")) {
+            this.state = "wait";
+            this.match = null;
+            return;
+          }
+          if (data) {
+            this.match = data;
+            this.state = this.state === "wait" ? "maybe" : this.state;
+            if (this.match.bothAccepted()) {
+              this.done.emit(true);
+            }
           }
         },
         (error) => {
@@ -68,7 +76,7 @@ export class WaitComponent implements OnInit, OnDestroy {
       );
   }
   ngOnDestroy(): void {
-    if (!this.match?.bothAccepted) {
+    if (!(this.match && this.match.bothAccepted)) {
       this.rouletteService.deleteMatch(this.requestType);
     }
     this.sub$.unsubscribe();

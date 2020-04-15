@@ -58,8 +58,10 @@ export class StudentComponent implements OnInit {
     });
 
     this.user = this.authenticationService.currentUserValue;
+    console.log(this.user);
     this.f.state.setValue(this.user.state.id);
     this.f.slider.setValue(this.user.studentdata.school_data.grade);
+    this.f.subject.setValue(this.constants.subjects[0].id);
   }
 
   onSubmit(): void {
