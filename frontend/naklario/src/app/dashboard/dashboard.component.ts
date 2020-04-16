@@ -11,8 +11,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(private authenticationService: AuthenticationService) {}
   ngOnInit(): void {
-    this.authenticationService
-      .getAccountType()
-      .subscribe((t) => (this.accountType = t));
+    this.authenticationService.getAccountType().subscribe((t) => {
+      this.accountType = t;
+    });
   }
 }
