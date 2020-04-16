@@ -40,6 +40,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit(): void {
     window.addEventListener("message", (ev) => {
+      console.log("got bbb event", ev);
       if (ev.data.response === "notInAudio") {
         console.log("bbb-session-done", ev);
         this.done.emit(this.meeting);
@@ -58,10 +59,12 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
         (error) => this.ts.error(error)
       );
   }
+
   ngAfterViewInit(): void {
-    this.onResize(window.innerHeight);
+    //    this.onResize(window.innerHeight);
   }
 
+  /**
   // This is kind of hacky and not very performant but works:
   // The idea is to set the iframe height to the remaining viewport height
   // after subtracting its top left position.
@@ -81,7 +84,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
       height
     );
     this.iframe.nativeElement.height = height;
-  }
+  } */
 
   /**
    * executed after meeting done
