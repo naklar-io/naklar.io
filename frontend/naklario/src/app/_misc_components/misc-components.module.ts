@@ -6,6 +6,9 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { UserCardComponent } from "./user-card/user-card.component";
 import { ToastsComponent } from "./toasts/toasts.component";
 import { ImgUploadComponent } from "./img-upload/img-upload.component";
+
+import { StudentExplanationComponent } from "./student-explanation/student-explanation.component";
+import { TutorExplanationComponent } from "./tutor-explanation/tutor-explanation.component";
 import { SafePipe } from "./safe.pipe";
 
 @NgModule({
@@ -14,8 +17,17 @@ import { SafePipe } from "./safe.pipe";
     ToastsComponent,
     UserCardComponent,
     SafePipe,
+    StudentExplanationComponent,
+    TutorExplanationComponent,
   ],
   imports: [CommonModule, NgbModule],
-  exports: [ImgUploadComponent, ToastsComponent, UserCardComponent, SafePipe],
+  exports: [
+    ImgUploadComponent,
+    ToastsComponent,
+    UserCardComponent,
+    SafePipe,
+    StudentExplanationComponent,
+    TutorExplanationComponent,
+  ],
 })
 export class MiscComponentsModule {}

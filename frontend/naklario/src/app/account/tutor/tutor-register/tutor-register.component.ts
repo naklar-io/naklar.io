@@ -16,7 +16,7 @@ import {
 } from "../../../_helpers";
 import { Options } from "ng5-slider";
 import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
-import { first } from "rxjs/operators";
+import { first, switchMap } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs";
 
@@ -67,7 +67,9 @@ export class TutorRegisterComponent implements OnInit {
 
     let data: SchoolData[][] = [];
     for (let schoolType of this.schoolTypes) {
-      data.push(this.schoolData.filter((x) => x.school_type.id === schoolType.id));
+      data.push(
+        this.schoolData.filter((x) => x.school_type.id === schoolType.id)
+      );
     }
     let grades = data.map((x) => x.map((y) => y.grade));
     this.sliderOptions = grades.map((x) => {
@@ -197,13 +199,21 @@ export class TutorRegisterComponent implements OnInit {
       this.authenticationService
         .register(user, this.constants)
         .pipe(first())
+        .pipe(
+          switchMap((_) =>
+            this.authenticationService.login(
+              { email: user.email, password: user.password },
+              this.constants
+            )
+          )
+        )
         .subscribe(
           (data) => {
-            // this.router.navigate([this.returnUrl]);
             this.loading = false;
             this.submitSuccess = true;
             this.error = null;
             scrollToTop();
+            this.router.navigate(["/"]);
           },
           (error) => {
             this.error = error;

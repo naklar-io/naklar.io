@@ -61,7 +61,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    //    this.onResize(window.innerHeight);
+    window.scroll(0, 0);
   }
 
   /**
