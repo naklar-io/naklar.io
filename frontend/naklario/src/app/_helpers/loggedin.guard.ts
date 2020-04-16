@@ -22,7 +22,7 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
       return true;
     } else {
       this.toastService.info("Bitte logge dich ein");
-      this.router.navigate(["account/login/"], {
+      this.router.navigate(["account/login"], {
         queryParams: { returnUrl: state.url },
       });
       return false;
@@ -46,7 +46,7 @@ export class NotLoggedInGuard implements CanActivate, CanActivateChild {
       return true;
     } else {
       this.toastService.info("Bitte logge dich ein");
-      this.router.navigate(["account/"], {
+      this.router.navigate(["account/login"], {
         queryParams: { returnUrl: state.url },
       });
       return false;

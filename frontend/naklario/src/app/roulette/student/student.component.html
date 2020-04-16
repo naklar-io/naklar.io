@@ -9,7 +9,7 @@
   <div class="form-group">
     <label for="subjects">Für welches Fach hast du eine Frage?</label>
     <select name="subjects" class="form-control" [formControl]="f.subject">
-      <option *ngFor="let subject of constants.subjects" [value]="subject.id">
+      <option *ngFor="let subject of constants?.subjects" [value]="subject.id">
         {{ subject.name }}
       </option>
     </select>
@@ -25,7 +25,7 @@
       <div class="col-sm">
         <label for="state">Bundesland</label>
         <select name="state" class="form-control" [formControl]="f.state">
-          <option *ngFor="let state of constants.states" [value]="state.id">
+          <option *ngFor="let state of constants?.states" [value]="state.id">
             {{ state.name }}
           </option>
         </select>

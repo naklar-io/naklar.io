@@ -6,7 +6,8 @@ import {
   RouletteService,
 } from "src/app/_services";
 import { User, SendableUser, Constants, StudentRequest } from "src/app/_models";
-import { tap, mergeMap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { tap, mergeMap, map } from "rxjs/operators";
 import { Options } from "ng5-slider";
 import { ActivatedRoute, Router } from "@angular/router";
 
@@ -54,15 +55,14 @@ export class StudentComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.data.subscribe((data: { constants: Constants }) => {
+    this.route.data.subscribe((data: { constants: Constants; user: User }) => {
       this.constants = data.constants;
-    });
+      this.f.subject.setValue(this.constants.subjects[0].id);
 
-    this.user = this.authenticationService.currentUserValue;
-    console.log(this.user);
-    this.f.state.setValue(this.user.state.id);
-    this.f.slider.setValue(this.user.studentdata.school_data.grade);
-    this.f.subject.setValue(this.constants.subjects[0].id);
+      this.user = data.user;
+      this.f.state.setValue(this.user.state.id);
+      this.f.slider.setValue(this.user.studentdata.school_data.grade);
+    });
   }
 
   onSubmit(): void {
