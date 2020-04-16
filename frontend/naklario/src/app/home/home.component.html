@@ -1,6 +1,3 @@
-<app-dashboard *ngIf="isLoggedIn; else notLoggedIn"></app-dashboard>
-
-<ng-template #notLoggedIn>
   <div class="row my-5">
     <div class="col-md-6">
       <h1 class="primary-color">
@@ -21,14 +18,14 @@
       <div class="row">
         <div class="col-6">
           <a
-            routerLink="/account/tutor/register"
+            routerLink="/account/student/register"
             class="btn btn-primary btn-block"
             >Schüler</a
           >
         </div>
         <div class="col-6">
           <a
-            routerLink="/account/student/register"
+            routerLink="/account/tutor/register"
             class="btn btn-primary btn-block"
             >Tutor</a
           >
@@ -89,4 +86,3 @@
   </div>
 </div>
  -->
-</ng-template>
