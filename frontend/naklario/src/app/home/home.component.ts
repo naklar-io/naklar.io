@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "../_services";
 import { environment } from "src/environments/environment";
 import { User } from "../_models";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-home",
@@ -9,13 +10,14 @@ import { User } from "../_models";
   styleUrls: ["./home.component.scss"],
 })
 export class HomeComponent implements OnInit {
-  isLoggedIn: boolean;
-
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(
+    private authenticationService: AuthenticationService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.authenticationService.isLoggedIn$.subscribe(
-      (loggedIn) => (this.isLoggedIn = loggedIn)
+    this.authenticationService.isLoggedIn$.subscribe((_) =>
+      this.router.navigate(["/dashboard"])
     );
   }
 }

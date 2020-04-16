@@ -15,11 +15,19 @@ import { StudentsComponent } from "./home/misc/students/students.component";
 import { TutorsComponent } from "./home/misc/tutors/tutors.component";
 import { TermsConditionsComponent } from "./home/misc/terms-conditions/terms-conditions.component";
 import { PageNotFoundComponent } from "./home/misc/page-not-found/page-not-found.component";
+import { DashboardComponent } from "./dashboard/dashboard.component";
+import { LoggedInGuard } from "./_helpers";
 
 const routes: Routes = [
   {
     path: "",
     children: [
+      {
+        path: "dashboard",
+        component: DashboardComponent,
+        canActivate: [LoggedInGuard],
+        resolve: { constants: DatabaseResolverService, user: UserResolver },
+      },
       { path: "feedback", component: FeedbackComponent },
       { path: "support", component: HelpSupportComponent },
       { path: "parents", component: ParentsComponent },
@@ -35,7 +43,6 @@ const routes: Routes = [
         path: "",
         component: HomeComponent,
         pathMatch: "full",
-        resolve: { constants: DatabaseResolverService, user: UserResolver },
       },
       { path: "**", component: PageNotFoundComponent },
     ],

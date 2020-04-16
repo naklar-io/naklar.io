@@ -86,7 +86,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
       this.state = "session";
     } else {
       // rejected match
-      this.router.navigate(["/"]);
+      this.router.navigate(["/dashboard"]);
     }
   }
 
@@ -95,13 +95,13 @@ export class RouletteComponent implements OnInit, OnDestroy {
       this.state = "feedback";
       this.meeting = meeting;
     } else {
-      this.router.navigate(["/"]);
+      this.router.navigate(["/dashboard"]);
     }
   }
 
   onFeedbackDone(done: boolean) {
     if (done) {
-      this.router.navigate(["/"]);
+      this.router.navigate(["/dashboard"]);
     }
   }
 

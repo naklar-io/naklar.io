@@ -14,6 +14,7 @@ import { AuthenticationService } from "../../../_services";
 import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { passwordNotMatchValidator } from "../../../_helpers";
 import { Router, ActivatedRoute } from "@angular/router";
+import { switchMap } from "rxjs/operators";
 
 @Component({
   selector: "app-student-register",
@@ -110,12 +111,23 @@ export class StudentRegisterComponent implements OnInit {
     this.authenticationService
       .register(user, this.constants)
       .pipe(first())
+      .pipe(
+        switchMap((_) =>
+          this.authenticationService.login(
+            {
+              email: user.email,
+              password: user.password,
+            },
+            this.constants
+          )
+        )
+      )
       .subscribe(
         (data) => {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
-          //this.router.navigate(["/roulette/student"]);
+          this.router.navigate(["/"]);
         },
         (error) => {
           this.error = error;
