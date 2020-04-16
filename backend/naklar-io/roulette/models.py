@@ -108,7 +108,7 @@ def look_for_match(sender, instance, **kwargs):
             for r in student_requests.all():
                 if not (r.failed_matches.filter(pk=instance.user.id).exists()):
                     filtered.append(r)
-                
+
             if filtered:
                 best_student = max(
                     filtered, key=lambda k: calculate_matching_score(k, instance))
@@ -152,25 +152,21 @@ class Match(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
 
-@receiver(post_save, sender=Match)
-def on_match_change(sender, instance, created, **kwargs):
-    if created:
-        # send update to requests
-        pass
-    else:
-        if instance.student_agree and instance.tutor_agree and not hasattr(instance, 'meeting'):
-            meeting = Meeting(match=instance, name="naklar.io - Meeting")
-            # meeting.users.add(instance.student_request.user
-            # )
-            meeting.save()
-            meeting.users.add(instance.student_request.user,
-                              instance.tutor_request.user)
-            meeting.tutor = instance.tutor_request.user
-            meeting.student = instance.student_request.user
-            meeting.save()
-            meeting.create_meeting()
+@receiver(pre_save, sender=Match)
+def on_match_change(sender, instance, **kwargs):
+    if instance.student_agree and instance.tutor_agree and not hasattr(instance, 'meeting'):
+        meeting = Meeting(match=instance, name="naklar.io - Meeting")
+        # meeting.users.add(instance.student_request.user
+        # )
+        meeting.save()
+        meeting.users.add(instance.student_request.user,
+                          instance.tutor_request.user)
+        meeting.tutor = instance.tutor_request.user
+        meeting.student = instance.student_request.user
+        meeting.save()
+        meeting.create_meeting()
 
-            # send update with meeting to requests
+        # send update with meeting to requests
 
 
 @receiver(post_delete, sender=Match)
@@ -234,10 +230,10 @@ class Meeting(models.Model):
             self.is_establishing = True
             self.save()
             parameters = {'name': 'naklar.io',
-                        'meetingID': str(self.meeting_id),
-                        'meta_endCallBackUrl': settings.HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
-                        'logoutURL': settings.HOST,
-                        'welcome': 'Herzlich willkommen bei naklar.io!'}
+                          'meetingID': str(self.meeting_id),
+                          'meta_endCallBackUrl': settings.HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
+                          'logoutURL': settings.HOST,
+                          'welcome': 'Herzlich willkommen bei naklar.io!'}
             r = requests.get(self.build_api_request("create", parameters))
             root = ET.fromstring(r.content)
             if r.status_code == 200:
