@@ -77,8 +77,14 @@ class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generi
     permission_classes = [permissions.IsAuthenticated, AccessPermission]
 
     def perform_create(self, serializer):
-        self.get_queryset().filter(user=self.request.user).delete()
+#        self.get_queryset().filter(user=self.request.user).delete()
+        # TODO: Fix properly with custom object manager
+        for i in self.get_queryset().filter(user=self.request.user):
+            i.manual_delete()
         serializer.save(user=self.request.user)
+    
+    def perform_destroy(self, instance):
+        instance.manual_delete()
 
 
 class MeetingListView(generics.ListAPIView):

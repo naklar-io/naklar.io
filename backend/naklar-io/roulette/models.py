@@ -52,6 +52,13 @@ class Request(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
 
+    is_manual_deleted = models.BooleanField(default=False)
+
+    def manual_delete(self):
+        self.is_manual_deleted = True
+        self.save()
+        self.delete()
+
     class Meta:
         abstract = True
 
@@ -69,46 +76,47 @@ class TutorRequest(Request):
 @receiver(post_save, sender=TutorRequest)
 @receiver(post_save, sender=StudentRequest)
 def look_for_match(sender, instance, **kwargs):
-    if sender is StudentRequest:
-        # look for open tutor requests and match the best one
-        tutor_requests = TutorRequest.objects.exclude(
-            user__in=instance.failed_matches.all())
+    if not hasattr(instance, 'match'):
+        if sender is StudentRequest:
+            # look for open tutor requests and match the best one
+            tutor_requests = TutorRequest.objects.exclude(
+                user__in=instance.failed_matches.all())
 
-        tutor_requests = tutor_requests.exclude(
-            user__tutordata__verified=False).filter(match__isnull=True)
-        # filter tutor requests for matching subject
+            tutor_requests = tutor_requests.exclude(
+                user__tutordata__verified=False).filter(match__isnull=True)
+            # filter tutor requests for matching subject
 
-        filtered = []
-        for r in tutor_requests.all():
-            if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists() and not (r.failed_matches.filter(pk=instance.user.id).exists()):
-                filtered.append(r)
-        if filtered:
-            best_tutor = max(
-                filtered, key=lambda k: calculate_matching_score(instance, k))
-            Match.objects.create(
-                student_request=instance,
-                tutor_request=best_tutor
-            )
-    elif sender is TutorRequest:
-        student_requests = StudentRequest.objects.exclude(
-            user__in=instance.failed_matches.all())
-        student_requests = student_requests.filter(match__isnull=True)
+            filtered = []
+            for r in tutor_requests.all():
+                if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists() and not (r.failed_matches.filter(pk=instance.user.id).exists()):
+                    filtered.append(r)
+            if filtered:
+                best_tutor = max(
+                    filtered, key=lambda k: calculate_matching_score(instance, k))
+                Match.objects.create(
+                    student_request=instance,
+                    tutor_request=best_tutor
+                )
+        elif sender is TutorRequest:
+            student_requests = StudentRequest.objects.exclude(
+                user__in=instance.failed_matches.all())
+            student_requests = student_requests.filter(match__isnull=True)
 
-        subjects = instance.user.tutordata.subjects.all()
-        student_requests = student_requests.filter(subject__in=subjects)
-        filtered = []
-        for r in student_requests.all():
-            if not (r.failed_matches.filter(pk=instance.user.id).exists()):
-                filtered.append(r)
-            
-        if filtered:
-            best_student = max(
-                filtered, key=lambda k: calculate_matching_score(k, instance))
+            subjects = instance.user.tutordata.subjects.all()
+            student_requests = student_requests.filter(subject__in=subjects)
+            filtered = []
+            for r in student_requests.all():
+                if not (r.failed_matches.filter(pk=instance.user.id).exists()):
+                    filtered.append(r)
+                
+            if filtered:
+                best_student = max(
+                    filtered, key=lambda k: calculate_matching_score(k, instance))
 
-            Match.objects.create(
-                student_request=best_student,
-                tutor_request=instance
-            )
+                Match.objects.create(
+                    student_request=best_student,
+                    tutor_request=instance
+                )
 
 
 def calculate_matching_score(student_request: StudentRequest, tutor_request: TutorRequest):
@@ -174,10 +182,12 @@ def on_match_delete(sender, instance: Match, **kwargs):
         # add to both requests failed matches and save --> should re-start matching
         tutor = instance.tutor_request.user
         student = instance.student_request.user
-        instance.student_request.failed_matches.add(tutor)
-        instance.tutor_request.failed_matches.add(student)
-        instance.student_request.save()
-        instance.tutor_request.save()
+        if not instance.tutor_request.is_manual_deleted:
+            instance.tutor_request.failed_matches.add(student)
+            instance.tutor_request.save()
+        if not instance.student_request.is_manual_deleted:
+            instance.student_request.failed_matches.add(tutor)
+            instance.student_request.save()
 
 
 class Meeting(models.Model):
