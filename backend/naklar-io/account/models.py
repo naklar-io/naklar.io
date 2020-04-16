@@ -135,7 +135,7 @@ class TutorData(models.Model):
         subject, from_email, to = "Verifizierung für naklar.io", "noreply@naklar.io", self.user.email
         d = {
             "user": self.user,
-            "login_url": "https://dev.naklar.io",
+            "login_url": settings.HOST,
         }
         text_content = TUTOR_VERIFICATION_PLAINTEXT.render(d)
         html_content = TUTOR_VERIFICATION_HTMLY.render(d)
