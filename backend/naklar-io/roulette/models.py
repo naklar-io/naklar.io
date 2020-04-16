@@ -15,6 +15,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from account.models import StudentData, Subject, TutorData
+import time
 
 
 class Feedback(models.Model):
@@ -159,11 +160,12 @@ def on_match_change(sender, instance, created, **kwargs):
             meeting.tutor = instance.tutor_request.user
             meeting.student = instance.student_request.user
             meeting.save()
+            meeting.create_meeting()
 
             # send update with meeting to requests
 
 
-@receiver(pre_delete, sender=Match)
+@receiver(post_delete, sender=Match)
 def on_match_delete(sender, instance: Match, **kwargs):
     if instance.student_agree and instance.tutor_agree:
         # TODO: do nothing? request feedback?
@@ -201,6 +203,7 @@ class Meeting(models.Model):
     moderator_pw = models.CharField(max_length=120, null=True)
 
     established = models.BooleanField(default=False)
+    is_establishing = models.BooleanField(default=False)
     time_established = models.DateTimeField(
         _("Aufgebaut"), null=True, blank=True)
 
@@ -217,19 +220,27 @@ class Meeting(models.Model):
         return request
 
     def create_meeting(self):
-        parameters = {'name': 'naklar.io',
-                      'meetingID': str(self.meeting_id),
-                      'meta_endCallBackUrl': settings.HOST + "/roulette/end_callback/"+str(self.meeting_id)+"/",
-                      'logoutURL': 'https://dev.naklar.io/',
-                      'welcome': 'Herzlich willkommen bei naklar.io!'}
-        r = requests.get(self.build_api_request("create", parameters))
-        root = ET.fromstring(r.content)
-        if r.status_code == 200:
-            self.attendee_pw = root.find("attendeePW").text
-            self.moderator_pw = root.find("moderatorPW").text
-            self.established = True
-#        self._add_webhook()
-        self.save()
+        if not self.is_establishing:
+            self.is_establishing = True
+            self.save()
+            parameters = {'name': 'naklar.io',
+                        'meetingID': str(self.meeting_id),
+                        'meta_endCallBackUrl': settings.HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
+                        'logoutURL': settings.HOST,
+                        'welcome': 'Herzlich willkommen bei naklar.io!'}
+            r = requests.get(self.build_api_request("create", parameters))
+            root = ET.fromstring(r.content)
+            if r.status_code == 200:
+                self.attendee_pw = root.find("attendeePW").text
+                self.moderator_pw = root.find("moderatorPW").text
+                self.established = True
+                self.is_establishing = False
+    #        self._add_webhook()
+            self.save()
+        else:
+            while self.is_establishing:
+                time.sleep(0.05)
+                self.refresh_from_db(fields=['is_establishing'])
 
     def _add_webhook(self):
         # TODO: Add ability to receive data from this webhook
