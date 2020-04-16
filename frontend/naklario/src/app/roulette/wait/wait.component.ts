@@ -10,6 +10,7 @@ import {
   RouletteService,
   RouletteRequestType,
   ToastService,
+  AuthenticationService,
 } from "src/app/_services";
 import { Match, Constants, Meeting, JoinResponse } from "src/app/_models";
 import { ActivatedRoute } from "@angular/router";
@@ -64,7 +65,7 @@ export class WaitComponent implements OnInit, OnDestroy {
       .subscribe(
         (data) => {
           // Listen for rejected matches
-          if (!data && (this.state == "maybe" || this.state == "accepted")) {
+          if (!data && (this.state === "maybe" || this.state === "accepted")) {
             this.state = "wait";
             this.match = null;
             return;
@@ -101,6 +102,13 @@ export class WaitComponent implements OnInit, OnDestroy {
     } else {
       this.done.emit(null);
     }
+  }
+
+  playSound() {
+    const audio = new Audio();
+    audio.src = "/assets/notification/just-saying.mp3";
+    audio.load();
+    audio.play();
   }
 
   onBothAccepted() {

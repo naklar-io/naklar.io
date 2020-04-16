@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   submitSuccess = false;
   loading = false;
   returnUrl: string =
-    this.route.snapshot.queryParams["returnUrl"] || "/account";
+    this.route.snapshot.queryParams["returnUrl"] || "/dashboard";
   error: string = null;
 
   user: User = null;
