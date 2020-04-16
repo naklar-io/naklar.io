@@ -9,7 +9,7 @@
   <roulette-student></roulette-student>
 </div>
 
-<div class="row">
+<div *ngIf="accountType === 'tutor'" class="row">
   <div class="col">
     <p>
       Community-Mentalität bei naklar.io:
@@ -33,61 +33,11 @@
       </small>
     </p>
   </div>
-
-  <pre *ngIf="accountType === 'student'">
-TODO: create separate text for students</pre
-  >
-
-  <div class="container">
-    <div class="row my-3">
-      <div class="col text-center text-primary">
-        <h3>Wie funktioniert naklar.io?</h3>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-4">
-        <h3 class="text-primary text-center">1.</h3>
-        <p class="text-center">
-          <strong>
-            Bereit? Ein Klick und es geht los.
-          </strong>
-        </p>
-        <p class="text-justify">
-          Klicke einfach auf den Button “jetzt Schülern helfen” um den Schülern
-          zu zeigen, dass du bereit für ihre Fragen bist. Klicke einfach auf den
-          Button “jetzt Schülern helfen” um den Schülern zu zeigen, dass du
-          bereit für ihre Fragen bist.
-        </p>
-      </div>
-      <div class="col-md-4">
-        <h3 class="text-primary text-center">2.</h3>
-        <p class="text-center">
-          <strong>
-            Matching. Schnell und Einfach.
-          </strong>
-        </p>
-        <p class="text-justify">
-          Sobald ein Schüler eine Frage in deinen Fächern hat, bekommst du einen
-          Hinweis über den Schüler (Schulart, Klasse und Bundesland) und über
-          das Fach in dem er Hilfe sucht. Sobald du bestätigst, kann die Session
-          starten.
-        </p>
-      </div>
-      <div class="col-md-4">
-        <h3 class="text-primary text-center">3.</h3>
-        <p class="text-center">
-          <strong>
-            Frage(n) klären. Die Tafel und der Chat.
-          </strong>
-        </p>
-        <p class="text-justify">
-          Du kannst die virtuelle Tafel benutzen, um deine Antworten &
-          Erklärungen zu verdeutlichen. Der Schüler kann dir über den Chat zum
-          Beispiel die Aufgabenstellung schicken. Zudem kannst du deinen
-          Bildschirm teilen oder Dateien zum Bearbeiten hochladen.
-        </p>
-      </div>
-    </div>
-  </div>
 </div>
+
+<misc-tutor-explanation
+  *ngIf="accountType === 'tutor'"
+></misc-tutor-explanation>
+<misc-student-explanation
+  *ngIf="accountType === 'student'"
+></misc-student-explanation>

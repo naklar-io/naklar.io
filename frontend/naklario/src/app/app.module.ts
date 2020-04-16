@@ -44,8 +44,8 @@ import {
 
 import { MiscComponentsModule } from "./_misc_components/misc-components.module";
 import { MoreInformationComponent } from "./home/more-information/more-information.component";
-import { BannerComponent } from './home/misc/banner/banner.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
+import { BannerComponent } from "./home/misc/banner/banner.component";
+import { DashboardComponent } from "./dashboard/dashboard.component";
 
 @NgModule({
   declarations: [
