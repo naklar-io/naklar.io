@@ -39,11 +39,7 @@ const routes: Routes = [
       { path: "privacy", component: ImpressumComponent },
       { path: "about", component: AboutComponent },
       { path: "landing", component: LandingComponent },
-      {
-        path: "",
-        component: HomeComponent,
-        pathMatch: "full",
-      },
+      { path: "", component: HomeComponent },
       { path: "**", component: PageNotFoundComponent },
     ],
     resolve: { user: UserResolver },
