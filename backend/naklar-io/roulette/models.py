@@ -15,6 +15,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from account.models import StudentData, Subject, TutorData
+import time
 
 
 class Feedback(models.Model):
@@ -51,6 +52,13 @@ class Request(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
 
+    is_manual_deleted = models.BooleanField(default=False)
+
+    def manual_delete(self):
+        self.is_manual_deleted = True
+        self.save()
+        self.delete()
+
     class Meta:
         abstract = True
 
@@ -68,46 +76,47 @@ class TutorRequest(Request):
 @receiver(post_save, sender=TutorRequest)
 @receiver(post_save, sender=StudentRequest)
 def look_for_match(sender, instance, **kwargs):
-    if sender is StudentRequest:
-        # look for open tutor requests and match the best one
-        tutor_requests = TutorRequest.objects.exclude(
-            user__in=instance.failed_matches.all())
+    if not hasattr(instance, 'match'):
+        if sender is StudentRequest:
+            # look for open tutor requests and match the best one
+            tutor_requests = TutorRequest.objects.exclude(
+                user__in=instance.failed_matches.all())
 
-        tutor_requests = tutor_requests.exclude(
-            user__tutordata__verified=False).filter(match__isnull=True)
-        # filter tutor requests for matching subject
+            tutor_requests = tutor_requests.exclude(
+                user__tutordata__verified=False).filter(match__isnull=True)
+            # filter tutor requests for matching subject
 
-        filtered = []
-        for r in tutor_requests.all():
-            if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists() and not (r.failed_matches.filter(pk=instance.user.id).exists()):
-                filtered.append(r)
-        if filtered:
-            best_tutor = max(
-                filtered, key=lambda k: calculate_matching_score(instance, k))
-            Match.objects.create(
-                student_request=instance,
-                tutor_request=best_tutor
-            )
-    elif sender is TutorRequest:
-        student_requests = StudentRequest.objects.exclude(
-            user__in=instance.failed_matches.all())
-        student_requests = student_requests.filter(match__isnull=True)
+            filtered = []
+            for r in tutor_requests.all():
+                if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists() and not (r.failed_matches.filter(pk=instance.user.id).exists()):
+                    filtered.append(r)
+            if filtered:
+                best_tutor = max(
+                    filtered, key=lambda k: calculate_matching_score(instance, k))
+                Match.objects.create(
+                    student_request=instance,
+                    tutor_request=best_tutor
+                )
+        elif sender is TutorRequest:
+            student_requests = StudentRequest.objects.exclude(
+                user__in=instance.failed_matches.all())
+            student_requests = student_requests.filter(match__isnull=True)
 
-        subjects = instance.user.tutordata.subjects.all()
-        student_requests = student_requests.filter(subject__in=subjects)
-        filtered = []
-        for r in student_requests.all():
-            if not (r.failed_matches.filter(pk=instance.user.id).exists()):
-                filtered.append(r)
-            
-        if filtered:
-            best_student = max(
-                filtered, key=lambda k: calculate_matching_score(k, instance))
+            subjects = instance.user.tutordata.subjects.all()
+            student_requests = student_requests.filter(subject__in=subjects)
+            filtered = []
+            for r in student_requests.all():
+                if not (r.failed_matches.filter(pk=instance.user.id).exists()):
+                    filtered.append(r)
+                
+            if filtered:
+                best_student = max(
+                    filtered, key=lambda k: calculate_matching_score(k, instance))
 
-            Match.objects.create(
-                student_request=best_student,
-                tutor_request=instance
-            )
+                Match.objects.create(
+                    student_request=best_student,
+                    tutor_request=instance
+                )
 
 
 def calculate_matching_score(student_request: StudentRequest, tutor_request: TutorRequest):
@@ -159,11 +168,12 @@ def on_match_change(sender, instance, created, **kwargs):
             meeting.tutor = instance.tutor_request.user
             meeting.student = instance.student_request.user
             meeting.save()
+            meeting.create_meeting()
 
             # send update with meeting to requests
 
 
-@receiver(pre_delete, sender=Match)
+@receiver(post_delete, sender=Match)
 def on_match_delete(sender, instance: Match, **kwargs):
     if instance.student_agree and instance.tutor_agree:
         # TODO: do nothing? request feedback?
@@ -172,10 +182,12 @@ def on_match_delete(sender, instance: Match, **kwargs):
         # add to both requests failed matches and save --> should re-start matching
         tutor = instance.tutor_request.user
         student = instance.student_request.user
-        instance.student_request.failed_matches.add(tutor)
-        instance.tutor_request.failed_matches.add(student)
-        instance.student_request.save()
-        instance.tutor_request.save()
+        if not instance.tutor_request.is_manual_deleted:
+            instance.tutor_request.failed_matches.add(student)
+            instance.tutor_request.save()
+        if not instance.student_request.is_manual_deleted:
+            instance.student_request.failed_matches.add(tutor)
+            instance.student_request.save()
 
 
 class Meeting(models.Model):
@@ -201,6 +213,7 @@ class Meeting(models.Model):
     moderator_pw = models.CharField(max_length=120, null=True)
 
     established = models.BooleanField(default=False)
+    is_establishing = models.BooleanField(default=False)
     time_established = models.DateTimeField(
         _("Aufgebaut"), null=True, blank=True)
 
@@ -217,19 +230,27 @@ class Meeting(models.Model):
         return request
 
     def create_meeting(self):
-        parameters = {'name': 'naklar.io',
-                      'meetingID': str(self.meeting_id),
-                      'meta_endCallBackUrl': settings.HOST + "/roulette/end_callback/"+str(self.meeting_id)+"/",
-                      'logoutURL': 'https://dev.naklar.io/',
-                      'welcome': 'Herzlich willkommen bei naklar.io!'}
-        r = requests.get(self.build_api_request("create", parameters))
-        root = ET.fromstring(r.content)
-        if r.status_code == 200:
-            self.attendee_pw = root.find("attendeePW").text
-            self.moderator_pw = root.find("moderatorPW").text
-            self.established = True
-#        self._add_webhook()
-        self.save()
+        if not self.is_establishing:
+            self.is_establishing = True
+            self.save()
+            parameters = {'name': 'naklar.io',
+                        'meetingID': str(self.meeting_id),
+                        'meta_endCallBackUrl': settings.HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
+                        'logoutURL': settings.HOST,
+                        'welcome': 'Herzlich willkommen bei naklar.io!'}
+            r = requests.get(self.build_api_request("create", parameters))
+            root = ET.fromstring(r.content)
+            if r.status_code == 200:
+                self.attendee_pw = root.find("attendeePW").text
+                self.moderator_pw = root.find("moderatorPW").text
+                self.established = True
+                self.is_establishing = False
+    #        self._add_webhook()
+            self.save()
+        else:
+            while self.is_establishing:
+                time.sleep(0.05)
+                self.refresh_from_db(fields=['is_establishing'])
 
     def _add_webhook(self):
         # TODO: Add ability to receive data from this webhook
