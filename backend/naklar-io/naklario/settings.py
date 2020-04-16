@@ -34,8 +34,9 @@ except ImportError:
     generate_secret_key(os.path.join(SETTINGS_DIR, 'secret_key.py'))
     from .secret_key import SECRET_KEY
 
-BBB_SHARED = 'iFsEVFiFzXVJkgYHWEEBdf6PIcu39Az0gLn522K2UI'
-BBB_URL = "https://bbb.goodgrade.de"
+# Deploy: create file bbb_secret.py with BBB_SHARED = '{{SECRET}}'
+from .bbb_secret import BBB_SHARED
+BBB_URL = "https://bbb.naklar.io"
 
 # configure for production, see https://docs.djangoproject.com/en/3.0/ref/settings/#email-backend
 EMAIL_HOST = "localhost"
@@ -53,6 +54,7 @@ ALLOWED_HOSTS = ['bbb.goodgrade.de', 'localhost', '127.0.0.1']
 
 CORS_ORIGIN_WHITELIST = [
     "https://dev.naklar.io",
+    BBB_URL
 ]
 
 MEDIA_URL = '/media/'
