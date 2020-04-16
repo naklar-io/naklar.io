@@ -1,11 +1,28 @@
 <div *ngIf="requestType === 'tutor'">
   <div *ngIf="state === 'wait'">
-    <div>
-      <p>Warte auf Match.</p>
+    <div class="row">
+      <div class="col">
+        <p>
+          Toll, dass Du Dir gerade Zeit für Schüler nimmst! Wir suchen nach
+          einem(r) passenden Schüler*in für Dich. Sobald jemand gefunden wurde
+          ertönt eine Hinweiston - Du kannst Dich in der Zwischenzeit daher
+          gerne mit anderen Sachen beschäftigen.
+        </p>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col">
+          <span
+            class="spinner-border spinner-border-sm mr-1 text-primary text-xl"
+          ></span>
+        </div>
+      </div>
     </div>
   </div>
 
   <div *ngIf="state !== 'wait'">
+    <misc-audio-autoplay></misc-audio-autoplay>
+
     <p>Wir haben dir einen Studenten gefunden:</p>
     <misc-user-card
       [user]="student"
@@ -14,7 +31,7 @@
     ></misc-user-card>
 
     <div *ngIf="state === 'maybe'">
-      <hr>
+      <hr />
       <div class="row">
         <p>Möchtest du {{ match.student.first_name }} helfen?</p>
       </div>
@@ -51,6 +68,7 @@
   </div>
 
   <div *ngIf="state !== 'wait'">
+    <misc-audio-autoplay></misc-audio-autoplay>
     <p>Wir haben den perfekten Tutor für dich gefunden</p>
     <misc-user-card
       [user]="tutor"
@@ -59,7 +77,7 @@
     ></misc-user-card>
 
     <div *ngIf="state === 'maybe'">
-      <hr>
+      <hr />
       <div class="row">
         <p>
           Möchtest du von {{ match.tutor.first_name }} deine Frage beantworten
