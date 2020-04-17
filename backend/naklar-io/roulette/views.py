@@ -1,4 +1,8 @@
+import logging
+from datetime import datetime
+
 from django.db.models import Q
+from django.utils import timezone
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -13,6 +17,8 @@ from .models import Match, Meeting, Request, StudentRequest, TutorRequest
 from .serializers import (MatchSerializer, MeetingSerializer,
                           StudentRequestSerializer, TutorRequestSerializer)
 
+logger = logging.getLogger(__name__)
+
 
 class MatchUserMixin(object):
     """
@@ -22,7 +28,12 @@ class MatchUserMixin(object):
     def get_object(self):
         obj = self.get_queryset().filter(user=self.request.user)
         if obj:
-            return obj.get()
+            obj = obj.get()
+            if hasattr(obj, 'last_poll'):
+                obj.last_poll = timezone.now()
+                logger.info("Updating last_poll")
+                obj.save()
+            return obj
         else:
             raise exceptions.NotFound(detail="Kein Request gefunden!")
 
@@ -77,12 +88,12 @@ class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generi
     permission_classes = [permissions.IsAuthenticated, AccessPermission]
 
     def perform_create(self, serializer):
-#        self.get_queryset().filter(user=self.request.user).delete()
+        #        self.get_queryset().filter(user=self.request.user).delete()
         # TODO: Fix properly with custom object manager
         for i in self.get_queryset().filter(user=self.request.user):
             i.manual_delete()
         serializer.save(user=self.request.user)
-    
+
     def perform_destroy(self, instance):
         instance.manual_delete()
 

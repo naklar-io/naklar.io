@@ -16,6 +16,7 @@ from django.utils.translation import gettext_lazy as _
 
 from account.models import StudentData, Subject, TutorData
 import time
+from django.utils import timezone
 
 
 class Feedback(models.Model):
@@ -53,6 +54,8 @@ class Request(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     is_manual_deleted = models.BooleanField(default=False)
+
+    last_poll = models.DateTimeField(default=timezone.now)
 
     def manual_delete(self):
         self.is_manual_deleted = True
