@@ -17,6 +17,7 @@ import { TermsConditionsComponent } from "./home/misc/terms-conditions/terms-con
 import { PageNotFoundComponent } from "./home/misc/page-not-found/page-not-found.component";
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { LoggedInGuard } from "./_helpers";
+import { PrivacyComponent } from './home/misc/privacy/privacy.component';
 
 const routes: Routes = [
   {
@@ -36,7 +37,7 @@ const routes: Routes = [
       { path: "tutors", component: TutorsComponent },
       { path: "terms", component: TermsConditionsComponent },
       { path: "imprint", component: ImpressumComponent },
-      { path: "privacy", component: ImpressumComponent },
+      { path: "privacy", component: PrivacyComponent },
       { path: "about", component: AboutComponent },
       { path: "landing", component: LandingComponent },
       { path: "", component: HomeComponent },
