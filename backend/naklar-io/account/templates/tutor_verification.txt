@@ -1,22 +1,19 @@
 Liebe/r {{ user.first_name }},
 
-vielen Dank für Deine Registrierung bei naklar.io. Wir haben Dein Profil geprüft und Dich freigeschalten. Jetzt kannst du Schülern flexibel und einfach bei Schulfragen helfen. 
 
-Diesen Donnerstag und Freitag läuft die Beta-Phase, sprich es kann sein, dass das ein oder andere Feature noch nicht komplett rund läuft. Weitere Funktionen werden im Laufe der nächsten Tage erst hinzugefügt. Wenn Dir etwas auffällt, oder Du Ideen bzw. Vorschläge hast, schreib uns gerne. 
+vielen Dank für Deine Registrierung bei naklar.io. Wir haben Dein Profil geprüft und Dich freigeschalten. Jetzt kannst du Schülern flexibel und einfach bei Schulfragen helfen.
 
-Damit die Plattform in der Testphase gebündelt genutzt wird und möglichst geringe Wartezeiten entstehen, haben wir folgende Zeitslots zur Beantwortung der Schülerfragen festgelegt: 
+Damit die Plattform möglichst effizient genutzt werden kann und kürzere Wartezeiten entstehen, empfehlen wir naklar.io verstärkt zu folgenden Zeiten zu nutzen: 
 
-Donnerstag 14 - 17h (16. April) | Freitag 10 - 13h (17. April) 
+Zwischen 10-12 Uhr und 15-17 Uhr
 
-Viele Informationen… jetzt gehts aber los! Melde dich einfach zu den beschriebenen Zeiten auf naklar.io an und helfe Schülern! In Deinem Login-Bereich findest du zusätzlich noch eine kurze Anleitung. Bei Fragen kannst Du uns jederzeit kontaktieren. 
+Melde Dich einfach zu den beschriebenen Zeiten auf naklar.io an und helfe Schülern! In Deinem Login-Bereich findest du zusätzlich noch eine kurze Anleitung.
 
-Die Schüler freuen sich schon auf Dich. Viel Spaß!
+Bei Fragen kannst Du uns jederzeit kontaktieren.
+
+Die Schüler freuen sich schon auf Dich. Vielen Dank für Dein Engagement und viel Spaß!
+
 
 Liebe Grüße
-Dein naklar.io-Team
-
-PS: Gerne kannst du naklar.io auch Freunden / Schülern / Eltern /Bekannten empfehlen, die ebenfalls naklar.io nutzen möchten!
-_________________________
-naklar.io
-E-mail               info@naklario.de
-Internet    www.naklar.io
+Dein naklar.io-Team 
+PS: naklar.io lebt von der Größe der Community! Erzähle Deinen Freunden / Schülern / Eltern /Bekannten daher bitte unbedingt von der Initiative. Danke! 
