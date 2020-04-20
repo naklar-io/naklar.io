@@ -1,6 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "src/app/_services";
 import { User } from "src/app/_models";
+import { ActivatedRoute } from "@angular/router";
+import { BannerData } from "src/app/_services/banner-resolver.service";
 
 type BannerType = "error" | "warning" | "info";
 interface BannerMessage {
@@ -15,15 +17,24 @@ interface BannerMessage {
 })
 export class BannerComponent implements OnInit {
   user: User;
-  loggedIn: boolean;
+  display: boolean;
+  isLoggedIn: boolean;
 
-  constructor(private authenticationService: AuthenticationService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private authenticationService: AuthenticationService
+  ) {}
 
   ngOnInit(): void {
+    /**
+    this.route.data.subscribe((data: { banner: BannerData }) => {
+      console.log("resolved", data);
+      if (data.banner) {
+        this.display = data.banner.display;
+      }
+    }); */
     this.authenticationService.currentUser.subscribe((u) => (this.user = u));
-    this.authenticationService.isLoggedIn$.subscribe(
-      (x) => (this.loggedIn = x)
-    );
+    this.authenticationService.isLoggedIn$.subscribe((x) => (this.display = x));
   }
 
   getClass(type: BannerType): string {
