@@ -44,11 +44,9 @@ export class PasswordResetComponent implements OnInit {
   }
 
   onSubmit(): void {
-    console.log("test");
     this.form.markAllAsTouched();
     if (this.form.invalid) {
       console.log("invalid");
-      console.log(this.f.password);
       return;
     }
 
@@ -58,7 +56,7 @@ export class PasswordResetComponent implements OnInit {
       .pipe(first())
       .subscribe(
         (data) => {
-          console.log(data);
+          // console.log(data);
           this.loading = false;
           this.error = null;
           this.submitSuccess = true;
