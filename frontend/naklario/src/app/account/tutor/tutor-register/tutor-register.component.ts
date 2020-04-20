@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter } from "@angular/core";
+import { Component, OnInit, EventEmitter, Inject, PLATFORM_ID } from "@angular/core";
 import {
   State,
   Subject,
@@ -19,6 +19,7 @@ import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
 import { first, switchMap } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs";
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: "account-tutor-register",
@@ -41,18 +42,25 @@ export class TutorRegisterComponent implements OnInit {
   sliderRefresh: EventEmitter<void>[];
   selectedItems = [];
 
+
   submitted = false;
   submitSuccess = false;
   loading = false;
   returnUrl: string = this.route.snapshot.queryParams["returnUrl"] || "/";
   error: string = null;
 
+  //FIX for ng-slider
+  isBrowser: boolean;
+
   constructor(
+    @Inject(PLATFORM_ID) private platformId,
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService
-  ) {}
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
   ngOnInit(): void {
     this.route.data.subscribe((data: { constants: Constants }) => {
       this.constants = data.constants;
