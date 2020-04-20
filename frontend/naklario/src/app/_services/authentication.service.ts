@@ -39,7 +39,7 @@ export class AuthenticationService {
     private http: HttpClient,
     private databaseService: DatabaseService
   ) {
-    let user = null;
+    let user;
     // Only use localStorage in Browser
     if (isPlatformBrowser(platformId)) {
       user = JSON.parse(localStorage.getItem("currentUser")) as User;
