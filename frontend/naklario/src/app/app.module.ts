@@ -1,4 +1,7 @@
-import { BrowserModule } from "@angular/platform-browser";
+import {
+  BrowserModule,
+  BrowserTransferStateModule,
+} from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
@@ -73,7 +76,8 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
   ],
   imports: [
     NgbModule,
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
+    BrowserModule.withServerTransition({ appId: "serverApp" }),
+    BrowserTransferStateModule,
     HttpClientModule,
     // Loading bar
     LoadingBarHttpClientModule,
