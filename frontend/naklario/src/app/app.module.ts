@@ -73,7 +73,7 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
   ],
   imports: [
     NgbModule,
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
     // Loading bar
     LoadingBarHttpClientModule,
