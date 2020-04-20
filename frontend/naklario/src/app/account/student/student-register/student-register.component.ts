@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Inject, PLATFORM_ID } from "@angular/core";
 
 import {
   State,
@@ -15,6 +15,7 @@ import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { passwordNotMatchValidator } from "../../../_helpers";
 import { Router, ActivatedRoute } from "@angular/router";
 import { switchMap } from "rxjs/operators";
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: "app-student-register",
@@ -45,16 +46,21 @@ export class StudentRegisterComponent implements OnInit {
   loading = false;
   error: string = null;
 
+  isBrowser: boolean;
+
   get f() {
     return this.registerForm.controls;
   }
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId,
     private fb: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
     private authenticationService: AuthenticationService
-  ) {}
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit(): void {
     this.route.data.subscribe((data: { constants: Constants }) => {
