@@ -143,7 +143,8 @@
 
           <div class="col-sm-8 col-md-6">
             <label for="class">Klassenstufe</label>
-            <div class="custom-slider">
+            <!-- isBrowser: https://github.com/angular-slider/ng5-slider/issues/66-->
+            <div *ngIf="isBrowser" class="custom-slider">
               <ng5-slider
                 [options]="options"
                 formControlName="slider"
