@@ -3,7 +3,11 @@ import { Routes, RouterModule } from "@angular/router";
 
 import { HomeComponent } from "./home/home.component";
 import { LandingComponent } from "./landing/landing.component";
-import { UserResolver, DatabaseResolverService } from "./_services";
+import {
+  UserResolver,
+  DatabaseResolverService,
+  BannerResolverService,
+} from "./_services";
 
 import { AboutComponent } from "./home/misc/about/about.component";
 import { FeedbackComponent } from "./home/misc/feedback/feedback.component";
@@ -17,7 +21,7 @@ import { TermsConditionsComponent } from "./home/misc/terms-conditions/terms-con
 import { PageNotFoundComponent } from "./home/misc/page-not-found/page-not-found.component";
 import { DashboardComponent } from "./dashboard/dashboard.component";
 import { LoggedInGuard } from "./_helpers";
-import { PrivacyComponent } from './home/misc/privacy/privacy.component';
+import { PrivacyComponent } from "./home/misc/privacy/privacy.component";
 
 const routes: Routes = [
   {
@@ -27,7 +31,11 @@ const routes: Routes = [
         path: "dashboard",
         component: DashboardComponent,
         canActivate: [LoggedInGuard],
-        resolve: { constants: DatabaseResolverService, user: UserResolver },
+        resolve: {
+          constants: DatabaseResolverService,
+          user: UserResolver,
+          banner: BannerResolverService,
+        },
       },
       { path: "feedback", component: FeedbackComponent },
       { path: "support", component: HelpSupportComponent },
