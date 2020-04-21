@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, EventEmitter } from "@angular/core";
 
 import {
   State,
@@ -40,6 +40,8 @@ export class StudentRegisterComponent implements OnInit {
     ceil: 13,
   };
 
+  sliderRefresh = new EventEmitter<void>();
+
   submitted = false;
   submitSuccess = false;
   loading = false;
@@ -78,6 +80,21 @@ export class StudentRegisterComponent implements OnInit {
       },
       { validators: passwordNotMatchValidator }
     );
+    this.sliderRefresh.emit();
+    this.refreshSliderOptions();
+
+  }
+
+  refreshSliderOptions() {
+    let grades = this.schoolData
+      .filter((x) => x.school_type.id == this.f.schoolType.value)
+      .map((x) => x.grade);
+    const newOptions = Object.assign({
+      
+    }, this.options) as Options;
+    newOptions.floor = Math.min(...grades);
+    newOptions.ceil = Math.max(...grades);
+    this.options = newOptions;
   }
 
   onSubmit(): void {
@@ -123,7 +140,7 @@ export class StudentRegisterComponent implements OnInit {
         )
       )
       .subscribe(
-        (data) => {
+        () => {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
