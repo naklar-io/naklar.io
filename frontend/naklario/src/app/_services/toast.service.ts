@@ -1,4 +1,5 @@
-import { Injectable, TemplateRef } from "@angular/core";
+import { Injectable, TemplateRef, Inject, PLATFORM_ID } from "@angular/core";
+import { isPlatformBrowser } from '@angular/common';
 
 type ToastType = "danger" | "warning" | "info" | "success";
 
@@ -15,10 +16,19 @@ class Toast {
 
 @Injectable({ providedIn: "root" })
 export class ToastService {
+
   toasts: Toast[] = [];
 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+
+  }
+
   private show(toast: Toast) {
-    this.toasts.push(toast);
+    if (isPlatformBrowser(this.platformId)){
+      this.toasts.push(toast);
+    } else {
+      console.log("Not showing toast, because not in browser");
+    }
     return toast;
   }
 

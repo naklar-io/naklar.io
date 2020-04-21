@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import {
@@ -13,6 +13,7 @@ import {
 import { environment } from "../../environments/environment";
 import { map, flatMap, tap, take, mergeMap, first } from "rxjs/operators";
 import { DatabaseService } from "./database.service";
+import { isPlatformBrowser } from "@angular/common";
 
 interface LoginResponse {
   token: string;
@@ -34,10 +35,15 @@ export class AuthenticationService {
   private constants$: Observable<Constants>;
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient,
     private databaseService: DatabaseService
   ) {
-    let user = JSON.parse(localStorage.getItem("currentUser")) as User;
+    let user;
+    // Only use localStorage in Browser
+    if (isPlatformBrowser(platformId)) {
+      user = JSON.parse(localStorage.getItem("currentUser")) as User;
+    }
     let loggedIn = false;
     // is the login still valid ?
     if (user && user.token && Date.parse(user.token_expiry) > Date.now()) {
@@ -68,9 +74,12 @@ export class AuthenticationService {
     this.currentUserSubject = new BehaviorSubject<User>(user);
     this.currentUser = this.currentUserSubject.asObservable();
     // automatically update User in localStorage on change
-    this.currentUser.subscribe((user) =>
-      localStorage.setItem("currentUser", JSON.stringify(user))
-    );
+    // only if in browser
+    if (isPlatformBrowser(platformId)) {
+      this.currentUser.subscribe((user) =>
+        localStorage.setItem("currentUser", JSON.stringify(user))
+      );
+    }
   }
 
   public get isLoggedIn(): boolean {
@@ -82,7 +91,6 @@ export class AuthenticationService {
   public get currentUserValue(): User {
     return this.currentUserSubject.value;
   }
-
 
   public getAccountType(): Observable<AccountType> {
     return this.currentUserSubject.pipe(

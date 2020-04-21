@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
       email: this.f.email.value,
       password: this.f.password.value,
     };
-    console.log("Logging in user: ", login, this.constants);
+    //console.log("Logging in user: ", login, this.constants);
 
     this.loading = true;
     this.authenticationService
