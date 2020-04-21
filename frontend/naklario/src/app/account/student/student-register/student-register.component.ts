@@ -1,4 +1,10 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Inject,
+  PLATFORM_ID,
+} from "@angular/core";
 
 import {
   State,
@@ -15,7 +21,7 @@ import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { passwordNotMatchValidator } from "../../../_helpers";
 import { Router, ActivatedRoute } from "@angular/router";
 import { switchMap } from "rxjs/operators";
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from "@angular/common";
 
 @Component({
   selector: "app-student-register",
@@ -40,6 +46,8 @@ export class StudentRegisterComponent implements OnInit {
     floor: 5,
     ceil: 13,
   };
+
+  sliderRefresh = new EventEmitter<void>();
 
   submitted = false;
   submitSuccess = false;
@@ -84,6 +92,18 @@ export class StudentRegisterComponent implements OnInit {
       },
       { validators: passwordNotMatchValidator }
     );
+    this.sliderRefresh.emit();
+    this.refreshSliderOptions();
+  }
+
+  refreshSliderOptions() {
+    let grades = this.schoolData
+      .filter((x) => x.school_type.id == this.f.schoolType.value)
+      .map((x) => x.grade);
+    const newOptions = Object.assign({}, this.options) as Options;
+    newOptions.floor = Math.min(...grades);
+    newOptions.ceil = Math.max(...grades);
+    this.options = newOptions;
   }
 
   onSubmit(): void {
@@ -129,7 +149,7 @@ export class StudentRegisterComponent implements OnInit {
         )
       )
       .subscribe(
-        (data) => {
+        () => {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;

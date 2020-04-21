@@ -115,7 +115,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             if not data:
                 StudentData.objects.filter(user=instance).delete()
             else:
-                StudentData.objects.update_or_create(user=instance, **data)
+                StudentData.objects.update_or_create(user=instance, defaults=data)
         if 'tutordata' in validated_data:
             data = validated_data.pop('tutordata')
             if not data:
