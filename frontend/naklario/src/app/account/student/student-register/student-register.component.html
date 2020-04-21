@@ -126,6 +126,7 @@
               name="school-type"
               class="form-control custom-select"
               formControlName="schoolType"
+              (change)="refreshSliderOptions()"
             >
               <option
                 *ngFor="let schoolType of schoolTypes"
@@ -148,6 +149,7 @@
               <ng5-slider
                 [options]="options"
                 formControlName="slider"
+                [manualRefresh]="sliderRefresh"
               ></ng5-slider>
             </div>
           </div>

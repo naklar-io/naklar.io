@@ -5,11 +5,18 @@ import {
   AuthenticationService,
   RouletteService,
 } from "src/app/_services";
-import { User, SendableUser, Constants, StudentRequest } from "src/app/_models";
+import {
+  User,
+  SendableUser,
+  Constants,
+  StudentRequest,
+  SchoolType,
+} from "src/app/_models";
 import { Observable } from "rxjs";
 import { tap, mergeMap, map } from "rxjs/operators";
 import { Options } from "ng5-slider";
 import { ActivatedRoute, Router } from "@angular/router";
+import { NONE_TYPE } from "@angular/compiler";
 
 @Component({
   selector: "roulette-student",
@@ -62,7 +69,19 @@ export class StudentComponent implements OnInit {
       this.user = data.user;
       this.f.state.setValue(this.user.state.id);
       this.f.slider.setValue(this.user.studentdata.school_data.grade);
+      let minMaxGrades = this.getSchoolTypeMinMax(
+        this.user.studentdata.school_data.school_type.id
+      )
+      this.slider_options.floor = minMaxGrades[0];
+      this.slider_options.ceil = minMaxGrades[1];
     });
+  }
+
+  getSchoolTypeMinMax(schoolTypeID: number): any {
+    let grades = this.constants.schoolData
+      .filter((x) => x.school_type.id == schoolTypeID)
+      .map((x) => x.grade);
+    return [Math.min(...grades), Math.max(...grades)];
   }
 
   onSubmit(): void {
