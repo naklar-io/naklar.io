@@ -61,9 +61,32 @@
 </div>
 
 <div *ngIf="requestType === 'student'">
+  <div class="row justify-content-center">
+    <div class="col-sm-6">
+      <div class="alert alert-danger">
+        Wichtig:
+        <strong
+          >Bitte wähle nach dem Match <mark>Mit Mikrofon</mark> und drücke beim
+          Echotest auf <mark class="text-success">JA</mark></strong
+        >
+      </div>
+    </div>
+  </div>
   <div *ngIf="state === 'wait'">
-    <div>
-      <p>Warte auf Match.</p>
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-sm-6 text-center">
+          <p>
+            Hey {{ user.first_name }}, bitte habe ein paar Momente Geduld -<br />
+            Wir suchen gerade nach einem Tutor für dich!
+          </p>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Sucht...</span>
+        </div>
+      </div>
     </div>
   </div>
 

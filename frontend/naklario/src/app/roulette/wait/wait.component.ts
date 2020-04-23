@@ -39,7 +39,8 @@ export class WaitComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private rouletteService: RouletteService,
-    private ts: ToastService
+    private ts: ToastService,
+    private authenticationService: AuthenticationService
   ) {}
 
   get student() {
@@ -47,6 +48,10 @@ export class WaitComponent implements OnInit, OnDestroy {
   }
   get tutor() {
     return this.match.tutor;
+  }
+
+  get user(){
+    return this.authenticationService.currentUserValue;
   }
 
   ngOnInit(): void {
