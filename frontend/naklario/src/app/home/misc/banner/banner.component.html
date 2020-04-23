@@ -1,18 +1,13 @@
 <div
   *ngIf="display"
-  class="banner alert d-flex justify-content-center"
+  class="d-flex justify-content-center"
   [ngClass]="getClass('info')"
 >
-  <div class="col-lg-10">
-    <p>
-      <span class="text-sm-left">
-        <br />
-        Willkommen {{ user?.first_name }}!
-        <strong>
-          Nutze naklar.io am besten zwischen 10-12 Uhr und 15-17 Uhr.
-        </strong>
-        Zu diesen Zeiten sind die meisten Nutzer online :)
-      </span>
-    </p>
-  </div>
+  <span class="col-md-6 text-sm-left my-1 mx-1 px-0">
+    Willkommen {{ user?.first_name }}!
+    <strong>
+      Nutze naklar.io am besten zwischen 10-12 Uhr und 15-17 Uhr.
+    </strong>
+    Zu diesen Zeiten sind die meisten Nutzer online :)
+  </span>
 </div>
