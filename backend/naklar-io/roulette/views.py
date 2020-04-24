@@ -130,6 +130,7 @@ class FeedbackListView(generics.ListCreateAPIView):
             else:
                 provider = meeting.tutor
                 receiver = meeting.student
+        meeting.end_meeting()
 
         serializer.save(provider=provider, receiver=receiver)
 
@@ -213,7 +214,7 @@ def join_meeting(request, match_uuid):
         raise exceptions.NotFound(detail="No matching meeting found")
 
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 def end_callback(request, meeting_id):
     meeting = Meeting.objects.filter(pk=meeting_id)
     if meeting:

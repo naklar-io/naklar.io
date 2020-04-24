@@ -99,7 +99,7 @@ class CustomUserAdmin(UserAdmin):
                 'email', 'first_name', 'state', 'password1', 'password2',
                     'is_staff', 'is_active')}), )
     search_fields = ('email',)
-    ordering = ('email',)
+    ordering = ['-date_joined']
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
