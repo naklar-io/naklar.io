@@ -32,7 +32,7 @@ class Feedback(models.Model):
 
     rating = models.PositiveSmallIntegerField(_("Bewertung"), validators=[
         MinValueValidator(0), MaxValueValidator(5)])
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(verbose_name=_("Erstellt"),auto_now_add=True)
 
     class Meta:
         unique_together = [['receiver', 'provider', 'meeting']]
@@ -244,6 +244,7 @@ class Meeting(models.Model):
                 self.moderator_pw = root.find("moderatorPW").text
                 self.established = True
                 self.is_establishing = False
+                self.time_established = timezone.now()
     #        self._add_webhook()
             self.save()
         else:
@@ -269,11 +270,14 @@ class Meeting(models.Model):
         parameters = {'meetingID': str(self.meeting_id),
                       'password': self.moderator_pw}
         r = requests.get(self.build_api_request("end", parameters))
+        self.ended = True
+        self.time_ended = timezone.now()
         if self.match:
             match = self.match.get()
             tutor_request = match.tutor_request
             match.student_request.delete()
             tutor_request.delete()
+        self.save()
 
     def create_join_link(self, user, moderator=False):
         if not self.established:

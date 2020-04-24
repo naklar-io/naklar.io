@@ -54,7 +54,9 @@ ALLOWED_HOSTS = ['bbb.goodgrade.de', 'localhost', '127.0.0.1']
 
 CORS_ORIGIN_WHITELIST = [
     "https://dev.naklar.io",
-    BBB_URL
+    BBB_URL,
+    "http://localhost:4000",
+    "http://localhost:4200",
 ]
 
 MEDIA_URL = '/media/'
