@@ -271,7 +271,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_student.admin_order_field = 'studentdata'
 
     def __str__(self):
-        return self.email + ' <{}>'.format(self.uuid)
+        return self.email
 
 
 @receiver(post_save, sender=CustomUser)

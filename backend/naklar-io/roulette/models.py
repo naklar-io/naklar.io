@@ -273,10 +273,10 @@ class Meeting(models.Model):
         self.ended = True
         self.time_ended = timezone.now()
         if self.match:
-            match = self.match.get()
+            match = self.match
             tutor_request = match.tutor_request
-            match.student_request.delete()
-            tutor_request.delete()
+            match.student_request.manual_delete()
+            tutor_request.manual_delete()
         self.save()
 
     def create_join_link(self, user, moderator=False):
