@@ -1,10 +1,12 @@
 from django.apps import apps
 from django.contrib.auth.models import BaseUserManager
-
+from django.core.exceptions import ValidationError
 
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, first_name, state, password=None, **extra_fields):
+        # Convert email to lower case.
+        email = email.lower()
         State = apps.get_model('account.State')
         if not isinstance(state, State):
             state = State(pk=state)
@@ -25,3 +27,6 @@ class CustomUserManager(BaseUserManager):
         user.set_password(password)
         user.save()
         return user
+
+    def get_by_natural_key(self, email):
+        return self.get(email__iexact=email)

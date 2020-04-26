@@ -18,11 +18,14 @@ export class UserResolver implements Resolve<User> {
   }
 
   constants$: Observable<Constants>;
-  lastRefresh: number;
+  lastRefresh: number = -1;
   interval = 60 * 1000;
 
   resolve(route: ActivatedRouteSnapshot): Observable<User> | User {
-    if (Date.now() - this.lastRefresh > this.interval) {
+    if (
+      this.authenticationService.currentUserValue?.first_name != "" &&
+      Date.now() - this.lastRefresh > this.interval
+    ) {
       this.lastRefresh = Date.now();
       return this.constants$.pipe(
         first(),
@@ -30,6 +33,7 @@ export class UserResolver implements Resolve<User> {
           return this.authenticationService
             .fetchUserData(constants)
             .pipe(first(), (user) => {
+              console.log(user);
               return user;
             });
         })
