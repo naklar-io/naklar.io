@@ -173,6 +173,7 @@ export class AuthenticationService {
       .pipe(
         flatMap(() => {
           const user$ = this.fetchUserData(constants);
+          user$.subscribe();
           console.log("Logged in user:", this.currentUserValue);
           return user$;
         })

@@ -131,6 +131,11 @@ class CurrentUserSerializer(serializers.ModelSerializer):
                 tutordata.save()
         return super(CurrentUserSerializer, self).update(instance, validated_data)
 
+    def validate_email(self, value):
+        if CustomUser.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError("Nutzer mit dieser Mail existiert bereits!")
+
+
 
 class CustomUserSerializer(serializers.ModelSerializer):
     tutordata = TutorDataSerializer(fields=['schooldata', 'subjects', 'profile_picture'])

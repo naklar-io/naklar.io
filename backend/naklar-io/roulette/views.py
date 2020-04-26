@@ -32,7 +32,7 @@ class MatchUserMixin(object):
             if hasattr(obj, 'last_poll'):
                 obj.last_poll = timezone.now()
                 logger.info("Updating last_poll")
-                obj.save()
+                obj.save(update_fields=['last_poll'])
             return obj
         else:
             raise exceptions.NotFound(detail="Kein Request gefunden!")
