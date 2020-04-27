@@ -36,7 +36,8 @@
           class="btn btn-primary"
           style="width: 50%;"
         >
-          Login
+          <span *ngIf="!loggedIn">Login</span>
+          <span *ngIf="loggedIn">Weiter</span>
         </a>
       </div>
       <div class="col-sm"></div>
