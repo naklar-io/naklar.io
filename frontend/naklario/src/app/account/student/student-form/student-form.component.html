@@ -1,16 +1,11 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-10">
-      <h1 class="primary-color">
-        Unsere Tutoren sind bereit für deine Fragen! Eine kleine Sache noch...
-      </h1>
-      <p class="lead">
-        Bitte registriere dich hier kurz. Dann kannst Du sofort loslegen und
-        deinen Tutor kostenlos mit deinen Fragen löchern!
-      </p>
-
-      <div *ngIf="submitSuccess" class="alert alert-success text-center">
-        <p>Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.</p>
+      <div *ngIf="!register && submitSuccess" class="alert alert-success text-center">
+        Dein Profil wurde erfolgreich aktualisiert.
+      </div>
+      <div *ngIf="register && submitSuccess" class="alert alert-success text-center">
+        Wir haben deine Anmeldung erhalten und überprüfen diese jetzt.
       </div>
       <div *ngIf="error" class="alert alert-danger text-center">
         {{ error | json }}
@@ -155,7 +150,8 @@
           </div>
         </div>
 
-        <p>Hier brauchen wir noch ein Passwort von dir (mind. 8 Zeichen)</p>
+        <p *ngIf="register;else">Hier brauchen wir noch ein Passwort von dir (mind. 8 Zeichen)</p>
+        <p #else>Passwort ändern (mind. 8 Zeichen)</p>
         <div class="form-row">
           <div class="col-md">
             <div class="form-group form-label-group">
@@ -164,6 +160,7 @@
                 formControlName="password"
                 class="form-control"
                 placeholder="Passwort"
+                [required]="register"
               />
               <label for="password">Passwort</label>
               <div class="invalid-feedback">
@@ -175,7 +172,7 @@
                 </div>
                 <div *ngIf="f.password.errors?.minlength">
                   Dein Passwort muss mindestens
-                  {{ f.password.errors.minlength.requiredLength }} Zeichen lang
+                  {{ f.password.errors.minlength.requiredLength }} Zeichen lang sein
                 </div>
               </div>
             </div>
@@ -187,7 +184,7 @@
                 formControlName="passwordRepeat"
                 class="form-control"
                 placeholder="Passwort wiederholen"
-                required
+                [required]="register"
               />
               <label for="passwordRepeat">Passwort wiederholen</label>
               <div class="invalid-feedback">
@@ -200,13 +197,13 @@
                 <div *ngIf="f.passwordRepeat.errors?.minlength">
                   Dein Passwort muss mindestens
                   {{ f.passwordRepeat.errors.minlength.requiredLength }} Zeichen
-                  lang
+                  lang sein
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="form-group form-row my-3">
+        <div *ngIf="register" class="form-group form-row my-3">
           <div class="custom-control custom-checkbox">
             <input
               type="checkbox"
@@ -231,7 +228,7 @@
         <button
           type="submit"
           class="btn btn-primary"
-          [disabled]="submitSuccess || loading"
+          [disabled]="(submitSuccess && register) || loading"
         >
           <span
             *ngIf="loading"

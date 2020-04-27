@@ -1,4 +1,11 @@
-import { Component, OnInit, EventEmitter, Inject, PLATFORM_ID } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Inject,
+  PLATFORM_ID,
+  Input,
+} from "@angular/core";
 import {
   State,
   Subject,
@@ -7,6 +14,7 @@ import {
   Gender,
   SendableUser,
   Constants,
+  User,
 } from "../../../_models";
 import { AuthenticationService } from "../../../_services";
 import {
@@ -19,14 +27,17 @@ import { FormGroup, FormBuilder, Validators, FormArray } from "@angular/forms";
 import { first, switchMap } from "rxjs/operators";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs";
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from "@angular/common";
+import { ThrowStmt } from "@angular/compiler";
 
 @Component({
-  selector: "account-tutor-register",
-  templateUrl: "./tutor-register.component.html",
-  styleUrls: ["./tutor-register.component.scss"],
+  selector: "account-tutor-form",
+  templateUrl: "./tutor-form.component.html",
+  styleUrls: ["./tutor-form.component.scss"],
 })
-export class TutorRegisterComponent implements OnInit {
+export class TutorFormComponent implements OnInit {
+  @Input() register: boolean;
+
   states: State[];
   subjects: Subject[];
   schoolTypes: SchoolType[];
@@ -42,6 +53,7 @@ export class TutorRegisterComponent implements OnInit {
   sliderRefresh: EventEmitter<void>[];
   selectedItems = [];
 
+  user: User;
 
   submitted = false;
   submitSuccess = false;
@@ -51,6 +63,8 @@ export class TutorRegisterComponent implements OnInit {
 
   //FIX for ng-slider
   isBrowser: boolean;
+
+  existingProfile: string;
 
   constructor(
     @Inject(PLATFORM_ID) private platformId,
@@ -62,7 +76,7 @@ export class TutorRegisterComponent implements OnInit {
     this.isBrowser = isPlatformBrowser(platformId);
   }
   ngOnInit(): void {
-    this.route.data.subscribe((data: { constants: Constants }) => {
+    this.route.data.subscribe((data: { constants: Constants; user: User }) => {
       this.constants = data.constants;
       this.states = data.constants.states.sort((a, b) =>
         a.name.localeCompare(b.name)
@@ -71,6 +85,7 @@ export class TutorRegisterComponent implements OnInit {
       this.schoolTypes = data.constants.schoolTypes;
       this.schoolData = data.constants.schoolData;
       this.genders = data.constants.genders;
+      this.user = data.user;
     });
 
     let data: SchoolData[][] = [];
@@ -117,6 +132,60 @@ export class TutorRegisterComponent implements OnInit {
       },
       { validators: passwordNotMatchValidator }
     );
+
+    if (!this.register) {
+      this.f.firstName.setValue(this.user.first_name);
+      this.f.lastName.setValue(this.user.last_name);
+      this.f.email.setValue(this.user.email);
+      this.f.state.setValue(this.user.state.id);
+      this.f.gender.setValue(this.user.gender.shortcode);
+      this.f.img.setValue(this.user.tutordata.profile_picture);
+      this.f.subjects.setValue(
+        this.subjects.map((s) =>
+          this.user.tutordata.subjects.map((s) => s.id).includes(s.id)
+        )
+      );
+      this.f.terms.clearValidators();
+      this.f.password.setValidators(Validators.minLength(8));
+      this.f.passwordRepeat.setValidators(Validators.minLength(8));
+      this.f.file.clearValidators();
+      this.f.schoolTypes.setValue(
+        this.schoolTypes.map(
+          (s) =>
+            this.user.tutordata.schooldata.filter(
+              (x) => x.school_type.id == s.id
+            ).length > 0
+        )
+      );
+      this.existingProfile = this.user.tutordata.profile_picture;
+      /* this.f.sliders.setValue(this.schoolTypes.map((type) => {
+        let datas = this.user.tutordata.schooldata.filter((data) => data.school_type.id == type.id);
+        if 
+      })); */
+      let data: SchoolData[][] = [];
+      for (let schoolType of this.schoolTypes) {
+        data.push(
+          this.schoolData.filter((x) => x.school_type.id === schoolType.id)
+        );
+      }
+      this.f.sliders.setValue(
+        this.schoolTypes.map((type) => {
+          let filtered = this.schoolData.filter(
+            (x) => x.school_type.id === type.id
+          );
+          let userFiltered = this.user.tutordata.schooldata.filter(
+            (s) => s.school_type.id === type.id
+          );
+          if (userFiltered.length > 0) {
+            filtered = userFiltered;
+          }
+          return [
+            Math.min(...filtered.map((x) => x.grade)),
+            Math.max(...filtered.map((x) => x.grade)),
+          ];
+        })
+      );
+    }
   }
 
   get f() {
@@ -132,6 +201,8 @@ export class TutorRegisterComponent implements OnInit {
   get sliderControl() {
     return this.registerForm.get("sliders") as FormArray;
   }
+
+  fetchProfilePicture(url: string) {}
 
   onSchoolTypeSelect(index: number) {
     this.sliderRefresh[index].emit();
@@ -179,9 +250,59 @@ export class TutorRegisterComponent implements OnInit {
       grades.push(...g);
     }
 
-    // wait for file
-    this.verificationFile$.subscribe((verificationFile) => {
-      const user: SendableUser = {
+    if (this.register) {
+      // wait for file
+      this.verificationFile$.subscribe((verificationFile) => {
+        const user: SendableUser = {
+          email: this.f.email.value,
+          password: this.f.password.value,
+          first_name: this.f.firstName.value,
+          last_name: this.f.lastName.value,
+          state: this.f.state.value,
+          gender: this.f.gender.value,
+          terms_accepted: this.f.terms.value,
+          studentdata: null,
+          tutordata: {
+            schooldata: grades,
+            subjects: this.f.subjects.value
+              .map((x, i) => (x ? this.subjects[i].id : x))
+              .filter((x) => x),
+            verification_file: verificationFile,
+            verified: false,
+            profile_picture: this.f.img.value,
+          },
+        };
+
+        console.log("About to send Data: ", user);
+
+        this.loading = true;
+        this.authenticationService
+          .register(user, this.constants)
+          .pipe(first())
+          .pipe(
+            switchMap((_) =>
+              this.authenticationService.login(
+                { email: user.email, password: user.password },
+                this.constants
+              )
+            )
+          )
+          .subscribe(
+            (data) => {
+              this.loading = false;
+              this.submitSuccess = true;
+              this.error = null;
+              scrollToTop();
+              this.router.navigate(["/"]);
+            },
+            (error) => {
+              this.error = error;
+              this.loading = false;
+            }
+          );
+      });
+    } else {
+      const user: Partial<SendableUser> = {
         email: this.f.email.value,
         password: this.f.password.value,
         first_name: this.f.firstName.value,
@@ -195,39 +316,26 @@ export class TutorRegisterComponent implements OnInit {
           subjects: this.f.subjects.value
             .map((x, i) => (x ? this.subjects[i].id : x))
             .filter((x) => x),
-          verification_file: verificationFile,
           verified: false,
           profile_picture: this.f.img.value,
         },
       };
-
-      console.log("About to send Data: ", user);
-
+      if (this.f.password.value.length === 0) {
+        delete user.password;
+      }
       this.loading = true;
-      this.authenticationService
-        .register(user, this.constants)
-        .pipe(first())
-        .pipe(
-          switchMap((_) =>
-            this.authenticationService.login(
-              { email: user.email, password: user.password },
-              this.constants
-            )
-          )
-        )
-        .subscribe(
-          (data) => {
-            this.loading = false;
-            this.submitSuccess = true;
-            this.error = null;
-            scrollToTop();
-            this.router.navigate(["/"]);
-          },
-          (error) => {
-            this.error = error;
-            this.loading = false;
-          }
-        );
-    });
+      this.authenticationService.updateUser(user, this.constants).subscribe(
+        () => {
+          this.loading = false;
+          this.submitSuccess = true;
+          this.error = null;
+        },
+        (error) => {
+          this.loading = false;
+          this.submitSuccess = false;
+          this.error = error;
+        }
+      );
+    }
   }
 }

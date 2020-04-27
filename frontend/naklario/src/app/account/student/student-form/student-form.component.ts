@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Inject,
   PLATFORM_ID,
+  Input,
 } from "@angular/core";
 
 import {
@@ -13,6 +14,7 @@ import {
   Gender,
   Constants,
   SendableUser,
+  User,
 } from "../../../_models/database";
 import { first } from "rxjs/operators";
 import { Options } from "ng5-slider";
@@ -24,17 +26,21 @@ import { switchMap } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
 
 @Component({
-  selector: "app-student-register",
-  templateUrl: "./student-register.component.html",
-  styleUrls: ["./student-register.component.scss"],
+  selector: "account-student-form",
+  templateUrl: "./student-form.component.html",
+  styleUrls: ["./student-form.component.scss"],
 })
-export class StudentRegisterComponent implements OnInit {
+export class StudentFormComponent implements OnInit {
+  @Input() register: boolean;
+
   states: State[];
   schoolTypes: SchoolType[];
   schoolData: SchoolData[];
   genders: Gender[];
   schoolType: number = -1;
   grade: number = -1;
+
+  private user: User;
 
   registerForm: FormGroup;
   private constants: Constants;
@@ -71,13 +77,15 @@ export class StudentRegisterComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.data.subscribe((data: { constants: Constants }) => {
+    this.route.data.subscribe((data: { constants: Constants; user: User }) => {
       this.constants = data.constants;
       this.states = data.constants.states;
       this.schoolTypes = data.constants.schoolTypes;
       this.schoolData = data.constants.schoolData;
       this.genders = data.constants.genders;
+      this.user = data.user;
     });
+
     this.registerForm = this.fb.group(
       {
         firstName: ["", Validators.required],
@@ -92,6 +100,22 @@ export class StudentRegisterComponent implements OnInit {
       },
       { validators: passwordNotMatchValidator }
     );
+
+    console.log(this.register);
+    if (!this.register) {
+      this.f.firstName.setValue(this.user.first_name);
+      this.f.email.setValue(this.user.email);
+      this.f.gender.setValue(this.user.gender.shortcode);
+      this.f.state.setValue(this.user.state.id);
+      this.f.schoolType.setValue(this.user.studentdata.school_data.school_type.id);
+      this.f.slider.setValue(this.user.studentdata.school_data.grade);
+      this.f.terms.clearValidators();
+      this.f.password.setValidators(Validators.minLength(8));
+      this.f.passwordRepeat.setValidators(Validators.minLength(8));
+      //this.f.password.clearValidators()
+      //this.f.passwordRepeat.clearValidators();
+      this.refreshSliderOptions();
+    }
     this.sliderRefresh.emit();
     this.refreshSliderOptions();
   }
@@ -132,33 +156,54 @@ export class StudentRegisterComponent implements OnInit {
       tutordata: null,
     };
     console.log("About to send student Data: ", user);
-
-    this.loading = true;
-    this.authenticationService
-      .register(user, this.constants)
-      .pipe(first())
-      .pipe(
-        switchMap((_) =>
-          this.authenticationService.login(
-            {
-              email: user.email,
-              password: user.password,
-            },
-            this.constants
+    if (this.register) {
+      this.loading = true;
+      this.authenticationService
+        .register(user, this.constants)
+        .pipe(first())
+        .pipe(
+          switchMap((_) =>
+            this.authenticationService.login(
+              {
+                email: user.email,
+                password: user.password,
+              },
+              this.constants
+            )
           )
         )
-      )
-      .subscribe(
+        .subscribe(
+          () => {
+            this.loading = false;
+            this.submitSuccess = true;
+            this.error = null;
+            this.router.navigate(["/"]);
+          },
+          (error) => {
+            this.error = error;
+            this.loading = false;
+          }
+        );
+    } else {
+      console.log("Updating user");
+      this.loading = true;
+      let toSend = user;
+      if (toSend.password.length == 0) {
+        delete toSend.password;
+      }
+      this.authenticationService.updateUser(toSend, this.constants).subscribe(
         () => {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
-          this.router.navigate(["/"]);
         },
         (error) => {
-          this.error = error;
           this.loading = false;
+          this.submitSuccess = false;
+          this.error = error;
         }
-      );
+      )
+    }
+    
   }
 }

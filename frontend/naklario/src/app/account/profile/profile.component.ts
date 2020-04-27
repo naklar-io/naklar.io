@@ -12,6 +12,7 @@ import { User } from "src/app/_models";
 export class ProfileComponent implements OnInit {
   user: User;
   profileForm: FormBuilder;
+  verifyResent = false;
 
   constructor(
     private fb: FormBuilder,
@@ -22,5 +23,17 @@ export class ProfileComponent implements OnInit {
     authenticationService.currentUser.subscribe((user) => (this.user = user));
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
+
+  resendLink(): void {
+    this.authenticationService.resendVerify().subscribe(() => {
+      this.verifyResent = true;
+    });
+  }
+
+  logoutAll(): void {
+    this.authenticationService.logoutAll();
+    this.router.navigate(['/'])
+  }
 }
