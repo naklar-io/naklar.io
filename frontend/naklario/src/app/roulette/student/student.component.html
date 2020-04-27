@@ -8,7 +8,7 @@
 <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
   <div class="form-group">
     <label for="subjects">Für welches Fach hast du eine Frage?</label>
-    <select name="subjects" class="form-control" [formControl]="f.subject">
+    <select name="subjects" class="form-control custom-select" [formControl]="f.subject">
       <option *ngFor="let subject of constants?.subjects" [value]="subject.id">
         {{ subject.name }}
       </option>
@@ -16,28 +16,6 @@
     <div class="invalid-feedback">
       <div *ngIf="f.subject.errors?.required">
         Du musst ein Fach auswählen
-      </div>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="form-row">
-      <div class="col-sm">
-        <label for="state">Bundesland</label>
-        <select name="state" class="form-control" [formControl]="f.state">
-          <option *ngFor="let state of constants?.states" [value]="state.id">
-            {{ state.name }}
-          </option>
-        </select>
-      </div>
-
-      <div class="col-sm">
-        <label for="class">Klasse</label>
-        <ng5-slider
-          name="class"
-          [options]="slider_options"
-          formControlName="slider"
-        ></ng5-slider>
       </div>
     </div>
   </div>
