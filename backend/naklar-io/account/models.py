@@ -274,6 +274,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if self.__email.lower() != self.email.lower():
+            self.email_verified = False
             self.send_verification_email()
 
         return super(CustomUser, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
