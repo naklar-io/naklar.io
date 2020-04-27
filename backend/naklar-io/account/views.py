@@ -60,7 +60,7 @@ class CustomUserView(generics.RetrieveAPIView):
 
 class CustomUserCreateView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = CustomUserSerializer
+    serializer_class = CurrentUserSerializer
 
 
 class CurrentUserView(generics.RetrieveUpdateDestroyAPIView):
