@@ -23,7 +23,7 @@
   <div *ngIf="state !== 'wait'">
     <misc-audio-autoplay></misc-audio-autoplay>
 
-    <p>Wir haben dir einen Studenten gefunden:</p>
+    <p>Wir haben dir einen Schüler gefunden:</p>
     <misc-user-card
       [user]="student"
       [match]="match"
@@ -36,12 +36,22 @@
         <p>Möchtest du {{ match.student.first_name }} helfen?</p>
       </div>
       <div class="row">
-        <button class="btn btn-primary" (click)="onMatchAccepted(true)">
-          Ja
-        </button>
-        <button class="btn btn-danger" (click)="onMatchAccepted(false)">
-          Nein
-        </button>
+        <div class="col-6">
+          <button
+            class="btn btn-primary btn-block"
+            (click)="onMatchAccepted(true)"
+          >
+            Ja
+          </button>
+        </div>
+        <div class="col-6">
+          <button
+            class="btn btn-danger btn-block"
+            (click)="onMatchAccepted(false)"
+          >
+            Nein
+          </button>
+        </div>
       </div>
     </div>
 
@@ -61,18 +71,24 @@
 </div>
 
 <div *ngIf="requestType === 'student'">
-  <div class="row justify-content-center">
-    <div class="col-sm-6">
-      <div class="alert alert-danger">
-        Wichtig:
-        <strong
-          >Bitte wähle nach dem Match <mark>Mit Mikrofon</mark> und drücke beim
-          Echotest auf <mark class="text-success">JA</mark></strong
-        >
+  
+  <div *ngIf="state === 'wait'">
+    <div class="row justify-content-center">
+      <div class="col-sm-6">
+        <div class="alert alert-primary">
+          <strong
+            >Bitte rede mit unseren Tutoren! Das macht es uns
+            leichter, deine Fragen zu beantworten.</strong>
+            <br>
+            Erlaube hierfür den <mark>Zugriff auf dein Mikrofon.</mark>
+          
+          <!--  <strong
+            >Bitte wähle nach dem Match <mark>Mit Mikrofon</mark> und drücke beim
+            Echotest auf <mark class="text-success">JA</mark></strong
+          > -->
+        </div>
       </div>
     </div>
-  </div>
-  <div *ngIf="state === 'wait'">
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-sm-6 text-center">
@@ -92,35 +108,65 @@
 
   <div *ngIf="state !== 'wait'">
     <misc-audio-autoplay></misc-audio-autoplay>
-    <p>Wir haben den perfekten Tutor für dich gefunden</p>
+    <div *ngIf="state === 'maybe'">
+      <div class="row">
+        <p>
+          Möchtest du deine Frage von {{ match.tutor.first_name }} beantworten
+          lassen?
+        </p>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <button
+            class="btn btn-primary btn-block"
+            (click)="onMatchAccepted(true)"
+          >
+            Ja
+          </button>
+        </div>
+        <div class="col-6">
+          <button
+            class="btn btn-danger btn-block"
+            (click)="onMatchAccepted(false)"
+          >
+            Nein
+          </button>
+        </div>
+      </div>
+    </div>
+    <hr />
     <misc-user-card
       [user]="tutor"
       [match]="match"
       type="tutor"
     ></misc-user-card>
 
-    <div *ngIf="state === 'maybe'">
+    <!--     <div *ngIf="state === 'maybe'">
       <hr />
       <div class="row">
         <p>
-          Möchtest du von {{ match.tutor.first_name }} deine Frage beantworten
+          Möchtest du deine Frage von {{ match.tutor.first_name }} beantworten
           lassen?
         </p>
       </div>
       <div class="row">
-        <button class="btn btn-primary" (click)="onMatchAccepted(true)">
-          Ja
-        </button>
-        <button class="btn btn-danger" (click)="onMatchAccepted(false)">
-          Nein
-        </button>
+        <div class="col-6">
+          <button class="btn btn-primary btn-block" (click)="onMatchAccepted(true)">
+            Ja
+          </button>
+        </div>
+        <div class="col-6">
+          <button class="btn btn-danger btn-block" (click)="onMatchAccepted(false)">
+            Nein
+          </button>
+        </div>
       </div>
-    </div>
+    </div> -->
 
     <div *ngIf="state === 'accepted'">
       <div *ngIf="match.bothAccepted(); else pending">
         {{ match.tutor.first_name }} hat die Verbindung akzeptiert. Ihr werdet
-        in kürze weitergeleitet.
+        in Kürze weitergeleitet.
       </div>
 
       <ng-template #pending>

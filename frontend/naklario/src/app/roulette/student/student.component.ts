@@ -67,13 +67,6 @@ export class StudentComponent implements OnInit {
       this.f.subject.setValue(this.constants.subjects[0].id);
 
       this.user = data.user;
-      this.f.state.setValue(this.user.state.id);
-      this.f.slider.setValue(this.user.studentdata.school_data.grade);
-      let minMaxGrades = this.getSchoolTypeMinMax(
-        this.user.studentdata.school_data.school_type.id
-      )
-      this.slider_options.floor = minMaxGrades[0];
-      this.slider_options.ceil = minMaxGrades[1];
     });
   }
 
@@ -93,32 +86,13 @@ export class StudentComponent implements OnInit {
       return;
     }
 
-    const grade = this.f.slider.value;
-    const selectedSchoolData = this.constants.schoolData.find(
-      (x) =>
-        x.school_type.id === this.user.studentdata.school_data.school_type.id &&
-        x.grade === grade
-    );
-    const partialUser: Partial<SendableUser> = {
-      state: this.f.state.value,
-      studentdata: {
-        school_data: selectedSchoolData.id,
-      },
-    };
-
-    console.log("updating user", partialUser);
     this.loading = true;
-    this.authenticationService
-      .updateUser(partialUser, this.constants)
-      .pipe(tap((_) => console.log("creating Match")))
-      .pipe(
-        mergeMap((_) =>
-          this.rouletteService.createMatch(
-            "student",
-            new StudentRequest(this.f.subject.value),
-            this.constants
-          )
-        )
+    console.log("creating Request");
+    this.rouletteService
+      .createMatch(
+        "student",
+        new StudentRequest(this.f.subject.value),
+        this.constants
       )
       .subscribe(
         (data) => {
