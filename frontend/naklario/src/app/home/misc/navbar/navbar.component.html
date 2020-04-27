@@ -18,9 +18,12 @@
     id="navbarSupportedContent"
   >
     <ul class="navbar-nav mr-auto" routerLinkActive="active">
-      <li class="nav-item"><a routerLink="" class="nav-link">Home</a></li>
-      <li class="nav-item">
-        <a routerLink="account" class="nav-link">Account</a>
+      <li class="nav-item"><a routerLink="/dashboard" class="nav-link">Dashboard</a></li>
+      <li class="nav-item" *ngIf="loggedIn">
+        <a routerLink="/account/feedback" class="nav-link">Feedback</a>
+      </li>
+      <li class="nav-item" *ngIf="loggedIn">
+        <a routerLink="/account" class="nav-link">Profil</a>
       </li>
     </ul>
   </div>

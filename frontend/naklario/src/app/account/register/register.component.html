@@ -1,0 +1,60 @@
+<div class="container">
+  <div *ngIf="type === null">
+    <div class="text-center">
+      <h4>
+        Als was möchtest du dich registrieren?
+      </h4>
+      <p>Gib das nur kurz an und schon kann es losgehen!</p>
+    </div>
+    <div class="row">
+      <div class="col-6">
+        <a
+          routerLink="/account/student/register"
+          class="btn btn-primary btn-block"
+          >Schüler</a
+        >
+      </div>
+      <div class="col-6">
+        <a
+          routerLink="/account/tutor/register"
+          class="btn btn-primary btn-block"
+          >Tutor</a
+        >
+      </div>
+    </div>
+  </div>
+  <div *ngIf="type === 'student'">
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <h1 class="primary-color">
+          Unsere Tutoren sind bereit für deine Fragen! Eine kleine Sache noch...
+        </h1>
+        <p class="lead">
+          Bitte registriere dich hier kurz. Dann kannst Du sofort loslegen und
+          deinen Tutor kostenlos mit deinen Fragen löchern!
+        </p>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="type === 'tutor'">
+    <div class="row justify-content-center">
+      <div class="col-md-10">
+        <h1 class="primary-color">Die Schüler freuen sich auf Dich!</h1>
+        <p class="lead">
+          Mit deiner Unterstützung können Schüler den Schulstoff meistern und
+          bleiben motiviert. Helfe ihnen bequem von zu Hause und wann immer du
+          möchtest.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<account-student-form
+  *ngIf="type === 'student'"
+  [register]="true"
+></account-student-form>
+<account-tutor-form
+  *ngIf="type === 'tutor'"
+  [register]="true"
+></account-tutor-form>

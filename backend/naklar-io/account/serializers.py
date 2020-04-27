@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.translation import gettext_lazy as _
-from drf_base64.fields import Base64FileField
+from drf_base64.fields import Base64FileField, Base64ImageField
 from drf_base64.serializers import ModelSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -133,8 +133,9 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         if CustomUser.objects.filter(email__iexact=value).exists():
-            raise serializers.ValidationError("Nutzer mit dieser Mail existiert bereits!")
-
+            if self.instance.email != value:
+                raise serializers.ValidationError("Nutzer mit dieser Mail existiert bereits!")
+        return value
 
 
 class CustomUserSerializer(serializers.ModelSerializer):

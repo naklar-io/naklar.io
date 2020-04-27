@@ -159,7 +159,8 @@ def delete_document_if_verified(sender, instance, **kwargs):
             instance.verification_file.delete(save=False)
             instance.verification_file = None
         except Exception:
-            logger.exception("Exception occured while trying to delete verified file")
+            logger.exception(
+                "Exception occured while trying to delete verified file")
 
 
 class VerificationToken(models.Model):
@@ -219,6 +220,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("Nutzer")
         verbose_name_plural = _("Nutzer")
 
+    __email = None
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__email = self.email
+
     def send_verification_email(self):
         if not self.email_verified:
             token = VerificationToken.objects.get_or_create(user=self)[0]
@@ -264,6 +271,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def is_student(self):
         return hasattr(self, 'studentdata')
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.__email.lower() != self.email.lower():
+            self.send_verification_email()
+
+        return super(CustomUser, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
 
     is_tutor.boolean = True
     is_tutor.admin_order_field = 'tutordata'

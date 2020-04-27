@@ -60,40 +60,15 @@ class CustomUserView(generics.RetrieveAPIView):
 
 class CustomUserCreateView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
-    serializer_class = CurrentUserSerializer
+    serializer_class = CustomUserSerializer
 
 
 class CurrentUserView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CurrentUserSerializer
     queryset = CustomUser.objects.all()
 
-    def get(self, request):
-        serializer = CurrentUserSerializer(request.user)
-        return Response(serializer.data)
-
-    def put(self, request):
-        serializer = CurrentUserSerializer(
-            instance=request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            raise serializers.ValidationError(serializer.errors)
-
-    def patch(self, request):
-        serializer = CurrentUserSerializer(
-            instance=request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            raise serializers.ValidationError(serializer.errors)
-
-    def delete(self, request):
-        user = request.user
-        user.is_active = False
-        user.save()
-        return Response(status=status.HTTP_202_ACCEPTED)
+    def get_object(self):
+        return self.request.user
 
     permission_classes = [permissions.IsAuthenticated]
 

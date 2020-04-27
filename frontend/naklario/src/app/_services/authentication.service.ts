@@ -108,7 +108,7 @@ export class AuthenticationService {
 
   public updateUser(user: Partial<SendableUser>, constants: Constants) {
     return this.http
-      .put<SendableUser>(`${environment.apiUrl}/account/current/`, user)
+      .patch<SendableUser>(`${environment.apiUrl}/account/current/`, user)
       .pipe(
         map((user) => {
           const u = sendableToLocalUser(user, constants);
@@ -220,7 +220,7 @@ export class AuthenticationService {
    * logout current user
    */
   public logout() {
-    this.http.post(`${environment.apiUrl}/account/logout/`, null);
+    this.http.post(`${environment.apiUrl}/account/logout/`, null).subscribe();
     this.currentUserSubject.next(null);
     this.loggedIn.next(false);
   }
@@ -229,7 +229,7 @@ export class AuthenticationService {
    * logout all devices (invalidates all user tokens)
    */
   public logoutAll() {
-    this.http.post(`${environment.apiUrl}/account/logoutall/`, null);
+    this.http.post(`${environment.apiUrl}/account/logoutall/`, null).subscribe();
     this.currentUserSubject.next(null);
     this.loggedIn.next(false);
   }

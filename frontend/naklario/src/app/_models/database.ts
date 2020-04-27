@@ -73,6 +73,10 @@ export class User {
     public token: string,
     public token_expiry: string
   ) {}
+
+  isStudent(): boolean {
+    return !this.studentdata === null;
+  }
 }
 
 export class State {
@@ -119,9 +123,9 @@ export function localToSendableUser(user: User): SendableUser {
     ? {
         schooldata: user.tutordata.schooldata.map((x) => x.id),
         subjects: user.tutordata.subjects.map((x) => x.id),
-        verification_file: removeAPIUrl(user.tutordata.verification_file),
+        verification_file: user.tutordata.verification_file,
         verified: user.tutordata.verified,
-        profile_picture: removeAPIUrl(user.tutordata.profile_picture),
+        profile_picture: user.tutordata.profile_picture,
       }
     : null;
   return {
@@ -162,7 +166,7 @@ export function sendableToLocalUser(
           constants.subjects.filter((x) =>
             user.tutordata.subjects.includes(x.id)
           ),
-          addAPIUrl(user.tutordata.verification_file),
+          user.tutordata.verification_file,
           user.tutordata.verified,
           user.tutordata.profile_picture
         )

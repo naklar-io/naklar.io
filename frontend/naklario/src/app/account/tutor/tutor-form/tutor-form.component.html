@@ -1,24 +1,24 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-10">
-      <h1 class="primary-color">Die Schüler freuen sich auf Dich!</h1>
-      <p class="lead">
-        Mit deiner Unterstützung können Schüler den Schulstoff meistern und
-        bleiben motiviert. Helfe ihnen bequem von zu Hause und wann immer du
-        möchtest.
-      </p>
-
-      <div *ngIf="submitSuccess" class="alert alert-success text-center">
-        <p>
-          Danke für dein Engagement!
-          <strong>Bitte bestätige Deine Email-Adresse.</strong>
-          Unser Team wird deine Registrierung zeitnah bearbeiten und dich
-          <strong
-            >nach einer kurzen Verifizierung deiner Eingaben freischalten.
-          </strong>
-          <br />
-          Und schon bist du startklar und kannst direkt Schülern helfen :)
-        </p>
+      <div
+        *ngIf="register && submitSuccess"
+        class="alert alert-success text-center"
+      >
+        Danke für dein Engagement!
+        <strong>Bitte bestätige Deine Email-Adresse.</strong>
+        Unser Team wird deine Registrierung zeitnah bearbeiten und dich
+        <strong
+          >nach einer kurzen Verifizierung deiner Eingaben freischalten.
+        </strong>
+        <br />
+        Und schon bist du startklar und kannst direkt Schülern helfen :)
+      </div>
+      <div
+        *ngIf="!register && submitSuccess"
+        class="alert alert-success text-center"
+      >
+        Dein Profil wurde aktualisiert!
       </div>
       <div *ngIf="error" class="alert alert-danger text-center">
         {{ error | json }}
@@ -150,11 +150,15 @@
             <div class="form-group">
               <div class="align-items-center align-middle text-center">
                 <label for="imgUpload"
-                  >Bitte lade hier ein Profilbild hoch</label
+                  ><span *ngIf="register"
+                    >Bitte lade hier ein Profilbild hoch</span
+                  >
+                  <span *ngIf="!register">Profilbild</span></label
                 >
                 <misc-img-upload
                   (img)="onImageChange($event)"
                   id="imgUpload"
+                  [existingURL]="existingProfile"
                 ></misc-img-upload>
                 <!-- bootstrap will only display .invalid-feedback next to .is-invalid object -->
                 <!-- HACK: -->
@@ -203,7 +207,11 @@
               </label>
             </div>
             <!-- isBrowser: https://github.com/angular-slider/ng5-slider/issues/66-->
-            <div *ngIf="isBrowser" class="col-md-9 custom-slider" [hidden]="!schoolType.value">
+            <div
+              *ngIf="isBrowser"
+              class="col-md-9 custom-slider"
+              [hidden]="!schoolType.value"
+            >
               <ng5-slider
                 [options]="sliderOptions[i]"
                 [formControl]="sliderControl.controls[i]"
@@ -248,7 +256,8 @@
           </div>
         </div>
 
-        <p>Hier brauchen wir noch ein Passwort von dir (mind. 8 Zeichen)</p>
+        <p *ngIf="register">Hier brauchen wir noch ein Passwort von dir (mind. 8 Zeichen)</p>
+        <p *ngIf="!register">Passwort ändern (mind. 8 Zeichen)</p>
         <div class="form-row">
           <div class="col-md">
             <div class="form-group form-label-group">
@@ -257,6 +266,7 @@
                 formControlName="password"
                 class="form-control"
                 placeholder="Passwort"
+                [required]="register"
               />
               <label for="password">Passwort</label>
               <div class="invalid-feedback">
@@ -280,7 +290,7 @@
                 formControlName="passwordRepeat"
                 class="form-control"
                 placeholder="Passwort wiederholen"
-                required
+                [required]="register"
               />
               <label for="passwordRepeat">Passwort wiederholen</label>
               <div class="invalid-feedback">
@@ -299,7 +309,7 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
+        <div *ngIf="register" class="form-group">
           <label for="file"
             >Zeugnis/offizielles Dokument mit deinem Namen (zur
             Verifizierung)</label
@@ -335,7 +345,7 @@
           </p>
         </div>
 
-        <div class="form-group form-row">
+        <div *ngIf="register" class="form-group form-row">
           <div class="custom-control custom-checkbox">
             <input
               type="checkbox"
@@ -360,7 +370,7 @@
         <button
           type="submit"
           class="btn btn-primary"
-          [disabled]="submitSuccess || loading"
+          [disabled]="(register && submitSuccess) || loading"
         >
           <span
             *ngIf="loading"

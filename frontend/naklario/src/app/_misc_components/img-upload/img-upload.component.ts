@@ -1,5 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
 import { CompressorService } from "src/app/_services";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "misc-img-upload",
@@ -10,11 +11,18 @@ import { CompressorService } from "src/app/_services";
 export class ImgUploadComponent implements OnInit {
   @Output() img = new EventEmitter<string>();
   img_file: string;
+  @Input() existingURL;
 
-  constructor(private compressorService: CompressorService) {}
+  constructor(
+    private compressorService: CompressorService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.img_file = "assets/img/icons/user_default.png";
+    if (this.existingURL) {
+      this.img_file = this.existingURL;
+    }
   }
 
   processImg(event) {

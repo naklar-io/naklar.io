@@ -1,33 +1,43 @@
 <div class="container">
-  <p>Hier kannst du dein Profil ändern.</p>
-  <form>
-    <div class="col-md-6">
-      <div class="form-group row">
-        <label for="first_name" class="col-sm-3 col-form-label">Vorname</label>
-        <div class="col-sm-9">
-          <input
-            type="text"
-            class="form-control"
-            id="first_name"
-            [(ngModel)]="user.first_name"
-            name="first_name"
-          />
-        </div>
-      </div>
+  <h4>Hier kannst du dein Profil ändern.</h4>
+  <div *ngIf="!user.email_verified" class="alert alert-danger text-center">
+    Deine E-Mail wurde noch nicht bestätigt! Bitte tue dies, damit du deinen
+    Account voll nutzen kannst.
+    <br />
+    <div *ngIf="!verifyResent">
+      Link nicht erhalten?
+      <button (click)="resendLink()" class="btn btn-danger">
+        Erneut senden
+      </button>
     </div>
-    <div class="col-md-6">
-      <div class="form-group row">
-        <label for="last_name" class="col-sm-3 col-form-label">Nachname</label>
-        <div class="col-sm-9">
-          <input
-            type="text"
-            class="form-control"
-            id="last_name"
-            [(ngModel)]="user.last_name"
-            name="last_name"
-          />
-        </div>
-      </div>
+    <div *ngIf="verifyResent" class="text-success" #sent>
+      <strong>Der Link wurde erfolgreich erneut versendet</strong>
     </div>
-  </form>
+  </div>
+  <account-student-form
+    *ngIf="user.studentdata != null"
+    [register]="false"
+  ></account-student-form>
+  <account-tutor-form
+    *ngIf="user.tutordata !== null"
+    [register]="false"
+  ></account-tutor-form>
+</div>
+
+<hr />
+<div class="container">
+  <h4>Sicherheit</h4>
+  <p>
+    Wenn du das Gefühl hast, dass sich jemand anderes in deinen Account
+    eingeloggt hat, und du sicherstellen möchtest dass nur du angemeldet bist,
+    benutze diesen Knopf.
+  </p>
+  <p>
+    Danach musst du dich auf allen Geräten erneut einloggen. <br />
+    Außerdem empfehlen wir dir, dein <strong>Passwort zu ändern</strong>.
+  </p>
+
+  <button class="btn btn-danger" (click)="logoutAll()">
+    Alle Geräte ausloggen
+  </button>
 </div>
