@@ -182,7 +182,7 @@ export class RouletteService {
   public endMeeting(meeting: Meeting) {
     return this.http
       .post<void>(
-        `${environment.apiUrl}/roulette/meeting/end/${meeting.meeting_id}/`,
+        `${environment.apiUrl}/roulette/meeting/end/${meeting.meetingId}/`,
         null
       )
       .pipe(tap((_) => console.log("ended meeting")));
@@ -190,7 +190,7 @@ export class RouletteService {
 
   public getFeedbackMeeting(meeting: Meeting) {
     return this.http.get<Feedback>(
-      `${environment.apiUrl}/roulette/meeting/feedback/${meeting.meeting_id}/`
+      `${environment.apiUrl}/roulette/meeting/feedback/${meeting.meetingId}/`
     );
   }
 

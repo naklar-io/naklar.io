@@ -46,7 +46,7 @@ export class AuthenticationService {
     }
     let loggedIn = false;
     // is the login still valid ?
-    if (user && user.token && Date.parse(user.token_expiry) > Date.now()) {
+    if (user && user.token && Date.parse(user.tokenExpiry) > Date.now()) {
       console.log("loaded logged in user from local storage");
       loggedIn = true;
     } else {
@@ -115,7 +115,7 @@ export class AuthenticationService {
           // replace tokens
           const newUser = Object.assign(u, {
             token: this.currentUserValue.token,
-            token_expiry: this.currentUserValue.token_expiry,
+            tokenExpiry: this.currentUserValue.tokenExpiry,
           });
           this.currentUserSubject.next(newUser);
           return user;
@@ -164,7 +164,7 @@ export class AuthenticationService {
             ""
           );
           user.token = response.token;
-          user.token_expiry = response.expiry;
+          user.tokenExpiry = response.expiry;
           this.currentUserSubject.next(user);
           this.loggedIn.next(true);
           return response;
@@ -189,7 +189,7 @@ export class AuthenticationService {
             const u = sendableToLocalUser(user, constants);
             const filledUser = Object.assign(u, {
               token: this.currentUserValue.token,
-              token_expiry: this.currentUserValue.token_expiry,
+              tokenExpiry: this.currentUserValue.tokenExpiry,
             }) as User;
             console.log(filledUser);
             this.currentUserSubject.next(filledUser);
@@ -240,7 +240,7 @@ export class AuthenticationService {
       .pipe(
         tap((v) => {
           // set verified to true
-          this.currentUserValue.email_verified = true;
+          this.currentUserValue.emailVerified = true;
           this.currentUserSubject.next(this.currentUserValue);
         })
       );

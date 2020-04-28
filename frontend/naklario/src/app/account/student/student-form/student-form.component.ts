@@ -103,12 +103,12 @@ export class StudentFormComponent implements OnInit {
 
     console.log(this.register);
     if (!this.register) {
-      this.f.firstName.setValue(this.user.first_name);
+      this.f.firstName.setValue(this.user.firstName);
       this.f.email.setValue(this.user.email);
       this.f.gender.setValue(this.user.gender.shortcode);
       this.f.state.setValue(this.user.state.id);
-      this.f.schoolType.setValue(this.user.studentdata.school_data.school_type.id);
-      this.f.slider.setValue(this.user.studentdata.school_data.grade);
+      this.f.schoolType.setValue(this.user.studentdata.schoolData.schoolType.id);
+      this.f.slider.setValue(this.user.studentdata.schoolData.grade);
       this.f.terms.clearValidators();
       this.f.password.setValidators(Validators.minLength(8));
       this.f.passwordRepeat.setValidators(Validators.minLength(8));
@@ -122,7 +122,7 @@ export class StudentFormComponent implements OnInit {
 
   refreshSliderOptions() {
     let grades = this.schoolData
-      .filter((x) => x.school_type.id == this.f.schoolType.value)
+      .filter((x) => x.schoolType.id == this.f.schoolType.value)
       .map((x) => x.grade);
     const newOptions = Object.assign({}, this.options) as Options;
     newOptions.floor = Math.min(...grades);
@@ -141,16 +141,16 @@ export class StudentFormComponent implements OnInit {
     const user: SendableUser = {
       email: this.f.email.value,
       password: this.f.password.value,
-      first_name: this.f.firstName.value,
-      last_name: "",
+      firstName: this.f.firstName.value,
+      lastName: "",
       state: this.f.state.value,
-      terms_accepted: this.f.terms.value,
+      termsAccepted: this.f.terms.value,
       gender: this.f.gender.value,
       studentdata: {
-        school_data: this.schoolData.find(
+        schoolData: this.schoolData.find(
           (x) =>
             x.grade === Number(this.f.slider.value) &&
-            x.school_type.id === Number(this.f.schoolType.value)
+            x.schoolType.id === Number(this.f.schoolType.value)
         ).id,
       },
       tutordata: null,

@@ -33,7 +33,7 @@
     <div *ngIf="state === 'maybe'">
       <hr />
       <div class="row">
-        <p>Möchtest du {{ match.student.first_name }} helfen?</p>
+        <p>Möchtest du {{ match.student.firstName }} helfen?</p>
       </div>
       <div class="row">
         <div class="col-6">
@@ -57,12 +57,12 @@
 
     <div *ngIf="state === 'accepted'">
       <div *ngIf="match.bothAccepted(); else pending">
-        {{ match.student.first_name }} hat die Verbindung akzeptiert. Ihr werdet
+        {{ match.student.firstName }} hat die Verbindung akzeptiert. Ihr werdet
         in kürze weitergeleitet.
       </div>
 
       <ng-template #pending>
-        Warte bis, {{ match.student.first_name }} die Verbindung ebenfalls
+        Warte bis, {{ match.student.firstName }} die Verbindung ebenfalls
         akzeptiert hat.
         <span class="spinner-border spinner-border-sm mr-1"></span>
       </ng-template>
@@ -93,7 +93,7 @@
       <div class="row justify-content-center">
         <div class="col-sm-6 text-center">
           <p>
-            Hey {{ user.first_name }}, bitte habe ein paar Momente Geduld -<br />
+            Hey {{ user.firstName }}, bitte habe ein paar Momente Geduld -<br />
             Wir suchen gerade nach einem Tutor für dich!
           </p>
         </div>
@@ -111,7 +111,7 @@
     <div *ngIf="state === 'maybe'">
       <div class="row">
         <p>
-          Möchtest du deine Frage von {{ match.tutor.first_name }} beantworten
+          Möchtest du deine Frage von {{ match.tutor.firstName }} beantworten
           lassen?
         </p>
       </div>
@@ -165,12 +165,12 @@
 
     <div *ngIf="state === 'accepted'">
       <div *ngIf="match.bothAccepted(); else pending">
-        {{ match.tutor.first_name }} hat die Verbindung akzeptiert. Ihr werdet
+        {{ match.tutor.firstName }} hat die Verbindung akzeptiert. Ihr werdet
         in Kürze weitergeleitet.
       </div>
 
       <ng-template #pending>
-        Warte bis, {{ match.tutor.first_name }} die Verbindung ebenfalls
+        Warte bis, {{ match.tutor.firstName }} die Verbindung ebenfalls
         akzeptiert hat.
         <span class="spinner-border spinner-border-sm mr-1"></span>
       </ng-template>

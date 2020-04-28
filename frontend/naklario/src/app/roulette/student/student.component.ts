@@ -72,7 +72,7 @@ export class StudentComponent implements OnInit {
 
   getSchoolTypeMinMax(schoolTypeID: number): any {
     let grades = this.constants.schoolData
-      .filter((x) => x.school_type.id == schoolTypeID)
+      .filter((x) => x.schoolType.id == schoolTypeID)
       .map((x) => x.grade);
     return [Math.min(...grades), Math.max(...grades)];
   }

@@ -91,7 +91,7 @@ export class TutorFormComponent implements OnInit {
     let data: SchoolData[][] = [];
     for (let schoolType of this.schoolTypes) {
       data.push(
-        this.schoolData.filter((x) => x.school_type.id === schoolType.id)
+        this.schoolData.filter((x) => x.schoolType.id === schoolType.id)
       );
     }
     let grades = data.map((x) => x.map((y) => y.grade));
@@ -134,12 +134,12 @@ export class TutorFormComponent implements OnInit {
     );
 
     if (!this.register) {
-      this.f.firstName.setValue(this.user.first_name);
-      this.f.lastName.setValue(this.user.last_name);
+      this.f.firstName.setValue(this.user.firstName);
+      this.f.lastName.setValue(this.user.lastName);
       this.f.email.setValue(this.user.email);
       this.f.state.setValue(this.user.state.id);
       this.f.gender.setValue(this.user.gender.shortcode);
-      this.f.img.setValue(this.user.tutordata.profile_picture);
+      this.f.img.setValue(this.user.tutordata.profilePicture);
       this.f.subjects.setValue(
         this.subjects.map((s) =>
           this.user.tutordata.subjects.map((s) => s.id).includes(s.id)
@@ -153,11 +153,11 @@ export class TutorFormComponent implements OnInit {
         this.schoolTypes.map(
           (s) =>
             this.user.tutordata.schooldata.filter(
-              (x) => x.school_type.id == s.id
+              (x) => x.schoolType.id == s.id
             ).length > 0
         )
       );
-      this.existingProfile = this.user.tutordata.profile_picture;
+      this.existingProfile = this.user.tutordata.profilePicture;
       /* this.f.sliders.setValue(this.schoolTypes.map((type) => {
         let datas = this.user.tutordata.schooldata.filter((data) => data.school_type.id == type.id);
         if 
@@ -165,16 +165,16 @@ export class TutorFormComponent implements OnInit {
       let data: SchoolData[][] = [];
       for (let schoolType of this.schoolTypes) {
         data.push(
-          this.schoolData.filter((x) => x.school_type.id === schoolType.id)
+          this.schoolData.filter((x) => x.schoolType.id === schoolType.id)
         );
       }
       this.f.sliders.setValue(
         this.schoolTypes.map((type) => {
           let filtered = this.schoolData.filter(
-            (x) => x.school_type.id === type.id
+            (x) => x.schoolType.id === type.id
           );
           let userFiltered = this.user.tutordata.schooldata.filter(
-            (s) => s.school_type.id === type.id
+            (s) => s.schoolType.id === type.id
           );
           if (userFiltered.length > 0) {
             filtered = userFiltered;
@@ -244,7 +244,7 @@ export class TutorFormComponent implements OnInit {
       }
       let range = this.f.sliders.value[i];
       let g = this.schoolData
-        .filter((x) => x.school_type.id === schoolType.id)
+        .filter((x) => x.schoolType.id === schoolType.id)
         .filter((x) => range[0] <= x.grade && x.grade <= range[1])
         .map((x) => x.id);
       grades.push(...g);
@@ -256,20 +256,20 @@ export class TutorFormComponent implements OnInit {
         const user: SendableUser = {
           email: this.f.email.value,
           password: this.f.password.value,
-          first_name: this.f.firstName.value,
-          last_name: this.f.lastName.value,
+          firstName: this.f.firstName.value,
+          lastName: this.f.lastName.value,
           state: this.f.state.value,
           gender: this.f.gender.value,
-          terms_accepted: this.f.terms.value,
+          termsAccepted: this.f.terms.value,
           studentdata: null,
           tutordata: {
             schooldata: grades,
             subjects: this.f.subjects.value
               .map((x, i) => (x ? this.subjects[i].id : x))
               .filter((x) => x),
-            verification_file: verificationFile,
+            verificationFile: verificationFile,
             verified: false,
-            profile_picture: this.f.img.value,
+            profilePicture: this.f.img.value,
           },
         };
 
@@ -305,11 +305,11 @@ export class TutorFormComponent implements OnInit {
       const user: Partial<SendableUser> = {
         email: this.f.email.value,
         password: this.f.password.value,
-        first_name: this.f.firstName.value,
-        last_name: this.f.lastName.value,
+        firstName: this.f.firstName.value,
+        lastName: this.f.lastName.value,
         state: this.f.state.value,
         gender: this.f.gender.value,
-        terms_accepted: this.f.terms.value,
+        termsAccepted: this.f.terms.value,
         studentdata: null,
         tutordata: {
           schooldata: grades,
@@ -317,7 +317,7 @@ export class TutorFormComponent implements OnInit {
             .map((x, i) => (x ? this.subjects[i].id : x))
             .filter((x) => x),
           verified: false,
-          profile_picture: this.f.img.value,
+          profilePicture: this.f.img.value,
         },
       };
       if (this.f.password.value.length === 0) {

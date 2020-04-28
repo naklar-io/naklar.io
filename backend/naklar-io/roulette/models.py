@@ -32,7 +32,8 @@ class Feedback(models.Model):
 
     rating = models.PositiveSmallIntegerField(_("Bewertung"), validators=[
         MinValueValidator(0), MaxValueValidator(5)])
-    created = models.DateTimeField(verbose_name=_("Erstellt"),auto_now_add=True)
+    created = models.DateTimeField(
+        verbose_name=_("Erstellt"), auto_now_add=True)
 
     class Meta:
         unique_together = [['receiver', 'provider', 'meeting']]
@@ -88,10 +89,11 @@ def look_for_match(sender, instance, **kwargs):
             tutor_requests = tutor_requests.exclude(
                 user__tutordata__verified=False).filter(match__isnull=True)
             # filter tutor requests for matching subject
-
             filtered = []
             for r in tutor_requests.all():
-                if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists() and not (r.failed_matches.filter(pk=instance.user.id).exists()):
+                if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists() \
+                   and not (r.failed_matches.filter(pk=instance.user.id).exists()) \
+                   and r.user.tutordata.schooldata.filter(id=instance.user.studentdata.school_data.id).exists():
                     filtered.append(r)
             if filtered:
                 best_tutor = max(
@@ -106,7 +108,9 @@ def look_for_match(sender, instance, **kwargs):
             student_requests = student_requests.filter(match__isnull=True)
 
             subjects = instance.user.tutordata.subjects.all()
-            student_requests = student_requests.filter(subject__in=subjects)
+            schooldata = instance.user.tutordata.schooldata.all()
+            student_requests = student_requests.filter(subject__in=subjects).filter(
+                user__studentdata__school_data__in=schooldata)
             filtered = []
             for r in student_requests.all():
                 if not (r.failed_matches.filter(pk=instance.user.id).exists()):

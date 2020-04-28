@@ -18,15 +18,15 @@ export class UserCardComponent implements OnInit {
   ngOnInit(): void {
     this.img =
       this.type === "tutor" &&
-      !(this.user.tutordata.profile_picture as string).includes("undefined")
-        ? this.user.tutordata.profile_picture
+      !(this.user.tutordata.profilePicture as string).includes("undefined")
+        ? this.user.tutordata.profilePicture
         : "assets/img/icons/user_default.png";
   }
 
   get tutordata() {
     return this.match.tutor.tutordata;
   }
-  get school_data() {
-    return this.match.student.studentdata.school_data;
+  get schoolData() {
+    return this.match.student.studentdata.schoolData;
   }
 }

@@ -9,6 +9,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 
 from account.models import (CustomUser, PasswordResetToken, SchoolData,
                             SchoolType, State, Subject, TutorData,
@@ -63,7 +64,7 @@ class CustomUserCreateView(generics.CreateAPIView):
     serializer_class = CurrentUserSerializer
 
 
-class CurrentUserView(generics.RetrieveUpdateDestroyAPIView):
+class CurrentUserView(ModelViewSet):
     serializer_class = CurrentUserSerializer
     queryset = CustomUser.objects.all()
 

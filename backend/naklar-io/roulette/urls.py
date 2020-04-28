@@ -23,6 +23,6 @@ urlpatterns = [
     path('meeting/feedback/', views.FeedbackListView.as_view()),
     path('meeting/feedback/<uuid:meeting>',
          views.FeedbackDetailView.as_view()),
-    path('meeting/end/<uuid:uuid>/', views.end_callback),
+    path('meeting/end/<uuid:meeting>/', views.end_callback),
     re_path(r'^(?P<type>(student|tutor))/', include(typed_patterns)),
 ]
