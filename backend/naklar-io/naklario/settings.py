@@ -45,6 +45,8 @@ EMAIL_PORT = "1025"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb
 
 
+
+
 HOST = "https://dev.naklar.io"
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -59,7 +61,6 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:4200",
 ]
 
-MEDIA_URL = '/media/'
 # Set custom user model
 AUTH_USER_MODEL = 'account.CustomUser'
 SWAGGER_SETTINGS = {
@@ -80,19 +81,26 @@ SWAGGER_SETTINGS = {
 # Rest framework
 REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
-        'rest_framework.parsers.JSONParser',
+        'djangorestframework_camel_case.parser.CamelCaseFormParser',
+        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+        #'rest_framework.parsers.JSONParser',
         #        'rest_framework.parsers.XMLParser',
     ],
     'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+        #'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
+      
         #        'rest_framework_xml.renderers.XMLRenderer',
     ],
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'knox.auth.TokenAuthentication',
-    ]
+    ],
+    'UPLOADED_FILES_USE_URL': True,
 }
 
 # Application definition
@@ -104,6 +112,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'knox',
     # 3rd party libs
     'channels',
     'drf_yasg',
@@ -115,8 +125,7 @@ INSTALLED_APPS = [
     'roulette',
     'landing',
     # 3rd party that needs to load last
-    'rest_framework',
-    'knox'
+    
 ]
 
 MIDDLEWARE = [
@@ -233,3 +242,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+MEDIA_URL = '/media/'

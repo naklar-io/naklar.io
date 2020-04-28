@@ -7,7 +7,7 @@
   
       <div class="profile-usertitle my-3">
         <div class="profile-usertitle-name">
-          {{ user.first_name }} {{ user.last_name }}
+          {{ user.firstName }} {{ user.lastName }}
         </div>
         <div class="profile-usertitle-state">
           {{ user.state.name }} ({{ user.state.shortcode }})
@@ -30,7 +30,7 @@
         <br />
         <span>
           {{ match.subject.name }}
-          ({{ school_data?.school_type.name }}, {{ school_data?.grade }}. Klasse)
+          ({{ schoolData?.schoolType.name }}, {{ schoolData?.grade }}. Klasse)
         </span>
       </div>
     </div>

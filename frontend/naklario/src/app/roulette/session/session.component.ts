@@ -53,7 +53,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log("opening iframe: ", this.joinUrl);
     this.rouletteService
       .getMeetings()
-      .pipe(map((m) => m.find((x) => x.meeting_id === meetingID)))
+      .pipe(map((m) => m.find((x) => x.meetingId === meetingID)))
       .subscribe(
         (meeting) => (this.meeting = meeting),
         (error) => this.ts.error(error)

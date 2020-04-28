@@ -23,9 +23,10 @@ export class UserResolver implements Resolve<User> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<User> | User {
     if (
-      this.authenticationService.currentUserValue?.first_name != "" &&
+      this.authenticationService.currentUserValue?.firstName == ""|| 
       Date.now() - this.lastRefresh > this.interval
     ) {
+      console.log("refreshing");
       this.lastRefresh = Date.now();
       return this.constants$.pipe(
         first(),

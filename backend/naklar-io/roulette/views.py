@@ -8,6 +8,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import exceptions, generics, mixins, permissions
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from roulette.models import Feedback
@@ -215,10 +216,7 @@ def join_meeting(request, match_uuid):
 
 
 @api_view(['POST', 'GET'])
-def end_callback(request, meeting_id):
-    meeting = Meeting.objects.filter(pk=meeting_id)
-    if meeting:
-        meeting = meeting.get()
-        meeting.end_meeting()
-    else:
-        raise exceptions.NotFound(detail="No matching meeting found!")
+def end_callback(request, meeting):
+    meeting = get_object_or_404(Meeting.objects.all(), pk=meeting)
+    meeting.end_meeting()
+    return Response(MeetingSerializer(instance=meeting).data)

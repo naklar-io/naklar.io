@@ -10,11 +10,11 @@ import {
 
 export interface SendableMatch {
   uuid: string;
-  student_agree: boolean;
-  tutor_agree: boolean;
+  studentAgree: boolean;
+  tutorAgree: boolean;
   tutor: SendableUser;
   student: SendableUser;
-  failed_matches: number[];
+  failedMatches: number[];
   created: string;
   user: string;
   subject: number
@@ -22,7 +22,7 @@ export interface SendableMatch {
 
 export interface SendableMatchRequest {
   match?: SendableMatch;
-  failed_matches?: number[];
+  failedMatches?: number[];
   created?: string;
 }
 
@@ -35,17 +35,17 @@ export interface SendableMatchAnswer {
 }
 
 export interface Meeting {
-  meeting_id?: string;
+  meetingId?: string;
   ended?: boolean;
-  time_ended?: string;
+  timeEnded?: string;
   student?: string;
   tutor?: string;
   name: string;
-  feedback_set: number[];
+  feedbackSet: number[];
 }
 
 export interface JoinResponse {
-  join_url: string;
+  joinUrl: string;
 }
 
 export interface Feedback {
@@ -60,26 +60,26 @@ export interface Feedback {
 export class Match {
   constructor(
     public uuid: string,
-    public student_agree: boolean,
-    public tutor_agree: boolean,
+    public studentAgree: boolean,
+    public tutorAgree: boolean,
     public tutor: User,
     public student: User,
-    public failed_matches: number[],
+    public failedMatches: number[],
     public created: string,
     public user: string,
     public subject: Subject
   ) {}
 
   bothAccepted() {
-    return this.tutor_agree && this.student_agree;
+    return this.tutorAgree && this.studentAgree;
   }
 
   // TODO: this is WIP
   equals(m: Match) {
     return (
       this.uuid === m.uuid &&
-      this.student_agree === m.student_agree &&
-      this.tutor_agree === m.tutor_agree
+      this.studentAgree === m.studentAgree &&
+      this.tutorAgree === m.tutorAgree
     );
   }
 }
@@ -87,7 +87,7 @@ export class Match {
 export class MatchRequest {
   constructor(
     public match?: Match,
-    public failed_matches?: number[],
+    public failedMatches?: number[],
     public created?: string
   ) {}
 
@@ -111,10 +111,10 @@ export class StudentRequest extends MatchRequest {
   constructor(
     public subject: number,
     public match?: Match,
-    public failed_matches?: number[],
+    public failedMatches?: number[],
     public created?: string
   ) {
-    super(match, failed_matches, created);
+    super(match, failedMatches, created);
   }
 }
 
@@ -129,11 +129,11 @@ export class MatchAnswer {
 export function localToSendableMatch(m: Match): SendableMatch {
   return {
     uuid: m.uuid,
-    student_agree: m.student_agree,
-    tutor_agree: m.tutor_agree,
+    studentAgree: m.studentAgree,
+    tutorAgree: m.tutorAgree,
     tutor: m.tutor ? localToSendableUser(m.tutor) : undefined,
     student: m.student ? localToSendableUser(m.student) : undefined,
-    failed_matches: m.failed_matches,
+    failedMatches: m.failedMatches,
     created: m.created,
     user: m.user,
     subject: m.subject.id
@@ -146,11 +146,11 @@ export function sendableToLocalMatch(
 ): Match {
   return new Match(
     m.uuid,
-    m.student_agree,
-    m.tutor_agree,
+    m.studentAgree,
+    m.tutorAgree,
     m.tutor ? sendableToLocalUser(m.tutor, constants) : null,
     m.student ? sendableToLocalUser(m.student, constants) : null,
-    m.failed_matches,
+    m.failedMatches,
     m.created,
     m.user,
     m.subject ? constants.subjects.find((x) => x.id === m.subject) : null
@@ -162,7 +162,7 @@ export function localToSendableMatchRequest(
 ): SendableMatchRequest {
   return {
     match: m.match ? localToSendableMatch(m.match) : undefined,
-    failed_matches: m.failed_matches,
+    failedMatches: m.failedMatches,
     created: m.created,
   };
 }
@@ -173,7 +173,7 @@ export function sendableToLocalMatchRequest(
 ): MatchRequest {
   return new MatchRequest(
     m.match ? sendableToLocalMatch(m.match, constants) : null,
-    m.failed_matches,
+    m.failedMatches,
     m.created
   );
 }
@@ -184,7 +184,7 @@ export function localToSendableStudentRequest(
   return {
     subject: m.subject,
     match: m.match ? localToSendableMatch(m.match) : undefined,
-    failed_matches: m.failed_matches,
+    failedMatches: m.failedMatches,
     created: m.created,
   };
 }
@@ -196,7 +196,7 @@ export function sendableToLocalStudentRequest(
   return new StudentRequest(
     m.subject,
     m.match ? sendableToLocalMatch(m.match, constants) : null,
-    m.failed_matches,
+    m.failedMatches,
     m.created
   );
 }

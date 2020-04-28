@@ -55,7 +55,7 @@ export class FeedbackComponent implements OnInit {
           : this.meeting.student,
       rating: this.f.rating.value,
       message: this.f.message.value,
-      meeting: this.meeting.meeting_id,
+      meeting: this.meeting.meetingId,
       created: new Date().toISOString(),
     };
 

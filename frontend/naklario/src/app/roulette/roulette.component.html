@@ -9,7 +9,7 @@
   <div *ngIf="state === 'session'">
     <roulette-session
       [requestType]="type"
-      [joinUrl]="join.join_url"
+      [joinUrl]="join.joinUrl"
       (done)="onSessionDone($event)"
     ></roulette-session>
   </div>

@@ -6,13 +6,13 @@ import { environment } from "src/environments/environment";
 export interface SendableTutorData {
   schooldata: number[];
   subjects: number[];
-  verification_file?: string;
+  verificationFile?: string;
   verified?: boolean;
-  profile_picture?: string;
+  profilePicture?: string;
 }
 
 export interface SendableStudentData {
-  school_data: number;
+  schoolData: number;
 }
 
 type GenderAbbr = "MA" | "FE" | "DI";
@@ -20,12 +20,12 @@ type GenderAbbr = "MA" | "FE" | "DI";
 export interface SendableUser {
   email: string;
   password: string;
-  first_name: string;
-  last_name?: string;
+  firstName: string;
+  lastName?: string;
   state: number;
-  terms_accepted: boolean;
+  termsAccepted: boolean;
   gender: GenderAbbr;
-  email_verified?: boolean;
+  emailVerified?: boolean;
   studentdata: SendableStudentData | null;
   tutordata: SendableTutorData | null;
 }
@@ -37,7 +37,7 @@ export interface SendableLogin {
 
 export interface SendableSchoolData {
   id: number;
-  school_type: number;
+  schoolType: number;
   grade: number;
 }
 
@@ -45,16 +45,16 @@ export interface SendableSchoolData {
  * local objects
  */
 export class StudentData {
-  constructor(public school_data: SchoolData) {}
+  constructor(public schoolData: SchoolData) {}
 }
 
 export class TutorData {
   constructor(
     public schooldata: SchoolData[],
     public subjects: Subject[],
-    public verification_file: string,
+    public verificationFile: string,
     public verified: boolean,
-    public profile_picture
+    public profilePicture
   ) {}
 }
 
@@ -62,16 +62,16 @@ export class User {
   constructor(
     public email: string,
     public password: string,
-    public first_name: string,
-    public last_name: string,
+    public firstName: string,
+    public lastName: string,
     public state: State,
     public studentdata: StudentData | null,
     public tutordata: TutorData | null,
-    public terms_accepted: boolean,
-    public email_verified: boolean,
+    public termsAccepted: boolean,
+    public emailVerified: boolean,
     public gender: Gender,
     public token: string,
-    public token_expiry: string
+    public tokenExpiry: string
   ) {}
 
   isStudent(): boolean {
@@ -97,7 +97,7 @@ export class SchoolType {
 export class SchoolData {
   constructor(
     public id: number,
-    public school_type: SchoolType,
+    public schoolType: SchoolType,
     public grade: number
   ) {}
 }
@@ -116,29 +116,29 @@ export class Gender {
 export function localToSendableUser(user: User): SendableUser {
   const studentdata: SendableStudentData | null = user.studentdata
     ? {
-        school_data: user.studentdata.school_data.id,
+        schoolData: user.studentdata.schoolData.id,
       }
     : null;
   const tutordata: SendableTutorData | null = user.tutordata
     ? {
         schooldata: user.tutordata.schooldata.map((x) => x.id),
         subjects: user.tutordata.subjects.map((x) => x.id),
-        verification_file: user.tutordata.verification_file,
+        verificationFile: user.tutordata.verificationFile,
         verified: user.tutordata.verified,
-        profile_picture: user.tutordata.profile_picture,
+        profilePicture: user.tutordata.profilePicture,
       }
     : null;
   return {
     email: user.email,
     password: user.password,
-    first_name: user.first_name,
-    last_name: user.last_name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     state: user.state.id,
     gender: user.gender.shortcode,
-    email_verified: user.email_verified,
+    emailVerified: user.emailVerified,
     studentdata: studentdata,
     tutordata: tutordata,
-    terms_accepted: user.terms_accepted,
+    termsAccepted: user.termsAccepted,
   };
 }
 export function sendableToLocalUser(
@@ -148,13 +148,13 @@ export function sendableToLocalUser(
   return new User(
     user.email,
     user.password,
-    user.first_name,
-    user.last_name,
+    user.firstName,
+    user.lastName,
     constants.states.find((x) => x.id === user.state),
     user.studentdata
       ? new StudentData(
           constants.schoolData.find(
-            (x) => x.id === user.studentdata.school_data
+            (x) => x.id === user.studentdata.schoolData
           )
         )
       : null,
@@ -166,13 +166,13 @@ export function sendableToLocalUser(
           constants.subjects.filter((x) =>
             user.tutordata.subjects.includes(x.id)
           ),
-          user.tutordata.verification_file,
+          user.tutordata.verificationFile,
           user.tutordata.verified,
-          user.tutordata.profile_picture
+          user.tutordata.profilePicture
         )
       : null,
-    user.terms_accepted,
-    user.email_verified,
+    user.termsAccepted,
+    user.emailVerified,
     constants.genders.find((x) => x.shortcode === user.gender),
     // need to provide token / token_expiry via login
     "",
@@ -183,7 +183,7 @@ export function sendableToLocalUser(
 export function localToSendableSchoolData(s: SchoolData): SendableSchoolData {
   return {
     id: s.id,
-    school_type: s.school_type.id,
+    schoolType: s.schoolType.id,
     grade: s.grade,
   };
 }
@@ -194,7 +194,7 @@ export function sendableToLocalSchoolData(
 ): SchoolData {
   return new SchoolData(
     s.id,
-    types.find((t) => t.id === s.school_type),
+    types.find((t) => t.id === s.schoolType),
     s.grade
   );
 }
