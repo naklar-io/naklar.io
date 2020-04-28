@@ -287,7 +287,7 @@ class Meeting(models.Model):
         if not self.established:
             self.create_meeting()
         if user in self.users.all() and self.established:
-            parameters = {'fullName': user.first_name + ' ' + user.last_name,
+            parameters = {'fullName': user.first_name,
                           'userID': str(user.uuid),
                           # TODO: Play around with this one, to maybe make a request in AJAX possible
                           'redirect': 'true',
