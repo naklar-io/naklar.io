@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "dev:ssr": "ng run naklario:serve-ssr",
-    "serve:ssr": "node dist/naklario/server/main.js",
+    "serve:ssr": "nice -10 node dist/naklario/server/main.js",
     "build:ssr": "ng build --prod && ng run naklario:server:production",
     "prerender": "ng run naklario:prerender"
   },
