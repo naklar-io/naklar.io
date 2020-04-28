@@ -144,7 +144,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ["uuid", "first_name", "last_name",
+        fields = ["uuid", "first_name",
                   "state", "studentdata", "tutordata", "gender"]
         lookup_field = "uuid"
 
