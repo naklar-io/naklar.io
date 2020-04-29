@@ -39,6 +39,9 @@ class Feedback(models.Model):
         unique_together = [['receiver', 'provider', 'meeting']]
 
 
+class Report(models.Model):
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, to_field='uuid', related_name='received_reports')    
+
 class Request(models.Model):
     """superclass for request of a Meeting, either on Student or on Teacher side
 
@@ -238,7 +241,7 @@ class Meeting(models.Model):
             self.save()
             parameters = {'name': 'naklar.io',
                           'meetingID': str(self.meeting_id),
-                          'meta_endCallBackUrl': settings.HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
+                          'meta_endCallbackUrl': settings.HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
                           'logoutURL': settings.HOST,
                           'welcome': 'Herzlich willkommen bei naklar.io!'}
             r = requests.get(self.build_api_request("create", parameters))
