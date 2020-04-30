@@ -241,7 +241,7 @@ class Meeting(models.Model):
             self.save()
             parameters = {'name': 'naklar.io',
                           'meetingID': str(self.meeting_id),
-                          'meta_endCallbackUrl': settings.HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
+                          'meta_endCallbackUrl': settings.API_HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
                           'logoutURL': settings.HOST,
                           'welcome': 'Herzlich willkommen bei naklar.io!'}
             r = requests.get(self.build_api_request("create", parameters))

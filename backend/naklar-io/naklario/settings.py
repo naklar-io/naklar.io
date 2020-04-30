@@ -45,8 +45,7 @@ EMAIL_PORT = "1025"
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb
 
 
-
-
+API_HOST = "https://dev.api.naklar.io"
 HOST = "https://dev.naklar.io"
 
 # SECURITY WARNING: don't run with debug turned on in production!
