@@ -177,7 +177,7 @@ export class StudentFormComponent implements OnInit {
             this.loading = false;
             this.submitSuccess = true;
             this.error = null;
-            this.router.navigate(["/"]);
+            this.router.navigate(["/account"]);
           },
           (error) => {
             this.error = error;

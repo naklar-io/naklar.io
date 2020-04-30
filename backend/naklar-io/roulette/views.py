@@ -77,6 +77,8 @@ class UserBelongsToMatch(permissions.BasePermission):
 
 class AccessPermission(permissions.BasePermission):
     def has_permission(self, request, view):
+        if not request.user.email_verified:
+            return False
         type = view.kwargs.get('type', None)
         if type == 'student':
             if hasattr(request.user, 'studentdata'):

@@ -293,7 +293,7 @@ export class TutorFormComponent implements OnInit {
               this.submitSuccess = true;
               this.error = null;
               scrollToTop();
-              this.router.navigate(["/"]);
+              this.router.navigate(["/account"]);
             },
             (error) => {
               this.error = error;
