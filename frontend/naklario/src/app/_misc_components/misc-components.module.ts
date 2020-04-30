@@ -10,6 +10,7 @@ import { ImgUploadComponent } from "./img-upload/img-upload.component";
 import { StudentExplanationComponent } from "./student-explanation/student-explanation.component";
 import { TutorExplanationComponent } from "./tutor-explanation/tutor-explanation.component";
 import { SafePipe } from "./safe.pipe";
+import { CloseModalDirective } from "./closeModal.directive";
 import { AudioAutoplayComponent } from "./audio-autoplay/audio-autoplay.component";
 
 @NgModule({
@@ -21,6 +22,7 @@ import { AudioAutoplayComponent } from "./audio-autoplay/audio-autoplay.componen
     StudentExplanationComponent,
     TutorExplanationComponent,
     AudioAutoplayComponent,
+    CloseModalDirective,
   ],
   imports: [CommonModule, NgbModule],
   exports: [
@@ -31,6 +33,7 @@ import { AudioAutoplayComponent } from "./audio-autoplay/audio-autoplay.componen
     StudentExplanationComponent,
     TutorExplanationComponent,
     AudioAutoplayComponent,
+    CloseModalDirective,
   ],
 })
 export class MiscComponentsModule {}

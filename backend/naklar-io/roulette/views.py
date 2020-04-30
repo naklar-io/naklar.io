@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.utils import timezone
 from django_filters.rest_framework.backends import DjangoFilterBackend
@@ -8,11 +9,12 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import exceptions, generics, mixins, permissions
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import get_object_or_404
+from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListCreateAPIView, get_object_or_404
 from rest_framework.response import Response
 
-from roulette.models import Feedback
-from roulette.serializers import FeedbackSerializer
+from roulette.models import Feedback, Report
+from roulette.serializers import FeedbackSerializer, ReportSerializer
 
 from .models import Match, Meeting, Request, StudentRequest, TutorRequest
 from .serializers import (MatchSerializer, MeetingSerializer,
@@ -110,6 +112,24 @@ class MeetingListView(generics.ListAPIView):
         return self.queryset.filter(Q(student=self.request.user) | Q(tutor=self.request.user))
 
 
+class ReportListView(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = ReportSerializer
+    queryset = Report.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.filter(Q(provider=self.request.user))
+
+    def perform_create(self, serializer):
+        meeting = serializer.validated_data.get('meeting')
+        if meeting.student and meeting.tutor:
+            provider = self.request.user
+            receiver = meeting.tutor if provider == meeting.student else meeting.student
+            serializer.save(provider=provider, receiver=receiver)
+        else:
+            raise ValidationError("Meeting muss Schüler und Tutor haben")
+
+
 class FeedbackListView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FeedbackSerializer
@@ -122,15 +142,9 @@ class FeedbackListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         meeting = serializer.validated_data.get('meeting')
-        provider = None
-        receiver = None
-        if meeting.student and meeting.tutor:
-            if meeting.student == self.request.user:
-                provider = meeting.student
-                receiver = meeting.tutor
-            else:
-                provider = meeting.tutor
-                receiver = meeting.student
+        provider = self.request.user
+        receiver = meeting.tutor if provider == meeting.student else meeting.student
+
         meeting.end_meeting()
 
         serializer.save(provider=provider, receiver=receiver)

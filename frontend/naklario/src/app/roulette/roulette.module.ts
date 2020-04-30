@@ -11,6 +11,7 @@ import { MiscComponentsModule } from "../_misc_components/misc-components.module
 import { SessionComponent } from "./session/session.component";
 import { FeedbackComponent } from "./feedback/feedback.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { ReportComponent } from './feedback/report/report.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
     WaitComponent,
     SessionComponent,
     FeedbackComponent,
+    ReportComponent,
   ],
   imports: [
     NgbModule,

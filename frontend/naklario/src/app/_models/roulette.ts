@@ -5,7 +5,6 @@ import {
   sendableToLocalUser,
   Constants,
   Subject,
-  SchoolData,
 } from "./database";
 
 export interface SendableMatch {
@@ -55,6 +54,11 @@ export interface Feedback {
   message?: string;
   meeting: string;
   created?: string;
+}
+
+export class Report {
+  meeting: string;
+  message: string;
 }
 
 export class Match {

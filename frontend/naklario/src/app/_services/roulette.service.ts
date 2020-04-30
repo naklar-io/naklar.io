@@ -17,6 +17,7 @@ import {
   Meeting,
   Feedback,
   JoinResponse,
+  Report,
 } from "../_models";
 import { environment } from "../../environments/environment";
 import {
@@ -178,7 +179,7 @@ export class RouletteService {
       )
       .pipe(tap((r) => console.log("got join response: ", r)));
   }
-  
+
   public endMeeting(meeting: Meeting) {
     return this.http
       .post<void>(
@@ -206,4 +207,9 @@ export class RouletteService {
       .pipe(tap((f) => console.log("got feedback", f)));
   }
 
+  public postReportMeeting(report: Report) {
+    return this.http
+      .post<Report>(`${environment.apiUrl}/roulette/meeting/report/`, report)
+      .pipe(tap((r) => console.log("posted report", r)));
+  }
 }

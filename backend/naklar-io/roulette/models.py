@@ -19,11 +19,29 @@ import time
 from django.utils import timezone
 
 
+class Report(models.Model):
+    provider = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                 to_field='uuid', related_name='provided_reports')
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                 to_field='uuid', related_name='received_reports')
+
+    message = models.TextField(_("Nachricht"))
+
+    meeting = models.ForeignKey('roulette.Meeting', on_delete=models.CASCADE, null=True)
+
+    created = models.DateTimeField(
+        verbose_name=_("Erstellt"), auto_now_add=True, editable=False)
+
+    class Meta:
+        verbose_name = "Meldung"
+        verbose_name_plural = "Meldungen"
+
+
 class Feedback(models.Model):
-    receiver = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 on_delete=models.CASCADE, to_field='uuid', related_name='received_feedback')
     provider = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, to_field='uuid', related_name='provided_feedback')
+    receiver = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 on_delete=models.CASCADE, to_field='uuid', related_name='received_feedback')
 
     message = models.TextField(_("Nachricht"), blank=True)
 

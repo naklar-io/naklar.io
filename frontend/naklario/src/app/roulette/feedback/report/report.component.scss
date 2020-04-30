@@ -1,0 +1,18 @@
+#report-component {
+  .overlay {
+    background-color: rgba($color: #000000, $alpha: 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+  }
+
+  .float-modal {
+    background-color: white;
+    z-index: 2;
+    border-radius: 10px;
+    box-shadow: 5px 5px 20px rgba($color: #000000, $alpha: 0.2)
+  }
+}
