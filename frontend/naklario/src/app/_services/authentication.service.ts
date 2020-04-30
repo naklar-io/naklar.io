@@ -220,9 +220,11 @@ export class AuthenticationService {
    * logout current user
    */
   public logout() {
-    this.http.post(`${environment.apiUrl}/account/logout/`, null).subscribe();
-    this.currentUserSubject.next(null);
-    this.loggedIn.next(false);
+    if (this.isLoggedIn) {
+      this.http.post(`${environment.apiUrl}/account/logout/`, null).subscribe();
+      this.currentUserSubject.next(null);
+      this.loggedIn.next(false);
+    }
   }
 
   /**
