@@ -18,7 +18,7 @@ urlpatterns = [
     path('schooldata/<int:school_type>/', SchoolDataList.as_view()),
     path('users/<uuid:uuid>/', CustomUserView.as_view(), name="user_view"),
     path('current/', CurrentUserView.as_view(
-        {'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name="account-view"),
+        {'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name="account_view"),
     path('create/', CustomUserCreateView.as_view(), name="account_create"),
     path('email/verify/<uuid:token>/', views.verify_email),
     path('email/resend_verification/', views.resend_verification),
