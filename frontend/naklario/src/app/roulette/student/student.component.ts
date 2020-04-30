@@ -4,6 +4,7 @@ import {
   DatabaseService,
   AuthenticationService,
   RouletteService,
+  ToastService,
 } from "src/app/_services";
 import {
   User,
@@ -58,7 +59,8 @@ export class StudentComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private rouletteService: RouletteService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -80,7 +82,10 @@ export class StudentComponent implements OnInit {
   onSubmit(): void {
     this.submitted = true;
     this.studentForm.markAllAsTouched();
-
+    if (!this.user.emailVerified) {
+      this.toast.error("Deine E-Mail muss bestätigt sein um hierhin zu kommen!")
+      this.router.navigate(['/account'])
+    }
     if (this.studentForm.invalid) {
       console.log("invalid");
       return;

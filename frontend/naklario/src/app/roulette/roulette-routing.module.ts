@@ -4,6 +4,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { RouletteComponent } from "./roulette.component";
 import { LoggedInGuard, StudentGuard, TutorGuard } from "../_helpers";
 import { DatabaseResolverService, UserResolver } from "../_services";
+import { MailVerifiedGuard } from '../_helpers/email-verified.guard';
 
 const routes: Routes = [
   {
@@ -23,8 +24,8 @@ const routes: Routes = [
       },
     ],
     resolve: { constants: DatabaseResolverService, user: UserResolver },
-    canActivate: [LoggedInGuard],
-    canActivateChild: [LoggedInGuard],
+    canActivate: [LoggedInGuard, MailVerifiedGuard],
+    canActivateChild: [LoggedInGuard, MailVerifiedGuard],
   },
 ];
 
