@@ -6,6 +6,7 @@ import {
 } from "src/app/_services";
 import { Meeting, Feedback } from "src/app/_models";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { rangeValidator } from "src/app/_helpers";
 
 @Component({
   selector: "roulette-feedback",
@@ -29,7 +30,7 @@ export class FeedbackComponent implements OnInit {
   ) {}
   ngOnInit(): void {
     this.form = this.fb.group({
-      rating: [-1, Validators.required],
+      rating: [-1, [Validators.required, rangeValidator(1, 6)]],
       message: [""],
     });
   }
@@ -65,7 +66,7 @@ export class FeedbackComponent implements OnInit {
         this.done.emit(true);
       },
       (error) => {
-        this.ts.error(error);
+        this.ts.error(JSON.stringify(error));
       }
     );
   }

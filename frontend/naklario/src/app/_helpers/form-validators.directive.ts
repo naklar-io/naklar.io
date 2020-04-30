@@ -28,3 +28,18 @@ export const fileSizeValidator = (maxSizeMb: number): ValidatorFn | null => {
       : null;
   };
 };
+
+/**
+ * min <= x < max 
+ * error: { outOfRange: { value: x, min: min, max: max } }
+ * @param min 
+ * @param max 
+ */
+export const rangeValidator = (min: number, max: number): ValidatorFn | null => {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const x = control.value
+    return min <= x && x < max
+      ? null
+      : { outOfRange: { value: x, min: min, max: max } }
+  };
+};
