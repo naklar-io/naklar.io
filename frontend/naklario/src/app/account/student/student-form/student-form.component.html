@@ -150,8 +150,8 @@
           </div>
         </div>
 
-        <p *ngIf="register;else">Hier brauchen wir noch ein Passwort von dir (mind. 8 Zeichen)</p>
-        <p #else>Passwort ändern (mind. 8 Zeichen)</p>
+        <p *ngIf="register">Hier brauchen wir noch ein Passwort von dir (mind. 8 Zeichen)</p>
+        <p *ngIf="!register">Passwort ändern (mind. 8 Zeichen)</p>
         <div class="form-row">
           <div class="col-md">
             <div class="form-group form-label-group">
