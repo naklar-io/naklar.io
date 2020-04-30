@@ -2,8 +2,8 @@ from django.conf import settings
 from rest_framework import serializers
 
 from account.serializers import CustomUserSerializer
-from roulette.models import (Feedback, Match, Meeting, Request, StudentRequest,
-                             TutorRequest)
+from roulette.models import (Feedback, Match, Meeting, Report, Request,
+                             StudentRequest, TutorRequest)
 
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
@@ -77,3 +77,14 @@ class MeetingSerializer(serializers.ModelSerializer):
         model = Meeting
         fields = ['meeting_id', 'ended',
                   'time_ended', 'student', 'tutor', 'name', 'feedback_set']
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ['provider', 'receiver', 'message', 'meeting', 'created']
+        read_only_fields = ['provider', 'receiver', 'created']
+        extra_kwargs = {
+            'message': {'required': True},
+            'meeting': {'required': True}
+        }

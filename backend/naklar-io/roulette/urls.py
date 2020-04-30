@@ -24,5 +24,6 @@ urlpatterns = [
     path('meeting/feedback/<uuid:meeting>',
          views.FeedbackDetailView.as_view()),
     path('meeting/end/<uuid:meeting>/', views.end_callback),
+    path('meeting/report/', views.ReportListView.as_view()),
     re_path(r'^(?P<type>(student|tutor))/', include(typed_patterns)),
 ]

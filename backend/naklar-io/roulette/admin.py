@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin.templatetags.admin_list import date_hierarchy
 
-from roulette.models import Feedback
+from roulette.models import Feedback, Report
 
 from .models import Match, Meeting, StudentRequest, TutorRequest
 
@@ -14,6 +14,7 @@ class FeedbackAdmin(admin.ModelAdmin):
     list_display = ('provider', 'rating', 'created')
     date_hierarchy = ('created')
     ordering = ['-created']
+    raw_id_fields = ['provider', 'receiver', 'meeting']
 
 
 class FeedbackInline(admin.StackedInline):
@@ -31,6 +32,7 @@ class MeetingAdmin(admin.ModelAdmin):
     search_fields = ('tutor__email', 'student__email')
     date_hierarchy = ('time_established')
     ordering = ['-time_established']
+    raw_id_fields = ('tutor', 'student', 'users')
 
     inlines = [
         FeedbackInline
@@ -46,6 +48,7 @@ class StudentRequestAdmin(admin.ModelAdmin):
     model = StudentRequest
     list_display = ('user', 'created', 'subject',
                     'number_failed_matches', 'has_match')
+    raw_id_fields = ('user', )
 
     def number_failed_matches(self, obj):
         return obj.failed_matches.count()
@@ -60,6 +63,7 @@ class StudentRequestAdmin(admin.ModelAdmin):
 class TutorRequestAdmin(admin.ModelAdmin):
     model = TutorRequest
     list_display = ('user', 'created', 'number_failed_matches', 'has_match')
+    raw_id_fields = ('user', )
 
     def number_failed_matches(self, obj):
         return obj.failed_matches.count()
@@ -69,3 +73,11 @@ class TutorRequestAdmin(admin.ModelAdmin):
         return hasattr(obj, 'match')
     has_match.boolean = True
 
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    model = Report
+    list_display = ('provider', 'receiver', 'created')
+    raw_id_fields = ['provider', 'receiver', 'meeting']
+    date_hierarchy = ('created')
+    ordering = ['-created']
