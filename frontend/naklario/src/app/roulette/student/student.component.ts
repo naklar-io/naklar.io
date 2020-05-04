@@ -67,8 +67,9 @@ export class StudentComponent implements OnInit {
     this.route.data.subscribe((data: { constants: Constants; user: User }) => {
       this.constants = data.constants;
       this.f.subject.setValue(this.constants.subjects[0].id);
-
-      this.user = data.user;
+    });
+    this.authenticationService.currentUser.subscribe((user) => {
+      this.user = user;
     });
   }
 
@@ -83,8 +84,10 @@ export class StudentComponent implements OnInit {
     this.submitted = true;
     this.studentForm.markAllAsTouched();
     if (!this.user.emailVerified) {
-      this.toast.error("Deine E-Mail muss bestätigt sein um hierhin zu kommen!")
-      this.router.navigate(['/account'])
+      this.toast.error(
+        "Deine E-Mail muss bestätigt sein um hierhin zu kommen!"
+      );
+      this.router.navigate(["/account"]);
     }
     if (this.studentForm.invalid) {
       console.log("invalid");
