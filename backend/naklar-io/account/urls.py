@@ -20,7 +20,7 @@ urlpatterns = [
     path('current/', CurrentUserView.as_view(
         {'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'}), name="account_view"),
     path('create/', CustomUserCreateView.as_view(), name="account_create"),
-    path('email/verify/<uuid:token>/', views.verify_email),
+    path('email/verify/<uuid:token>/', views.verify_email, name="email_verify"),
     path('email/resend_verification/', views.resend_verification),
     path('request-password-reset/', views.password_reset_request),
     path('reset-password/<uuid:token>/', views.password_reset_verify),

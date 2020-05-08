@@ -1,5 +1,6 @@
 import base64
 import json
+import uuid
 from django.core import mail
 from django.urls import reverse
 from rest_framework import status
@@ -161,6 +162,11 @@ class AccountLoginTest(APITestCase):
         self.assertSequenceEqual(
             response.data['tutordata']['subjects'], self.tutor_data.subjects.values_list('id', flat=True))
 
+    def test_email_verify(self):
+        """
+        test email-verification link works
+        """
+
 
 class AccountChangeTest(APITestCase):
     """
@@ -178,17 +184,19 @@ class AccountChangeTest(APITestCase):
         cls.subject2 = Subject.objects.create(name="TestSubject")
         cls.state1 = State.objects.create(name="Teststate1")
         cls.state2 = State.objects.create(name="Teststate2")
-        cls.student = CustomUser.objects.create_user(
-            "student@test.com", "Student", cls.state1, "12345678")
-        cls.student_data = StudentData.objects.create(
-            user=cls.student, school_data=cls.school_data1)
-        cls.tutor = CustomUser.objects.create_user(
-            "tutor@test.com", "Tutor", cls.state1, "12345678")
-        cls.tutor_data = TutorData(
-            user=cls.tutor)
-        cls.tutor_data.save()
-        cls.tutor_data.schooldata.set([cls.school_data1])
-        cls.tutor_data.subjects.set([cls.subject1])
+
+    def setUp(self):
+        self.student = CustomUser.objects.create_user(
+            "student@test.com", "Student", self.state1, "12345678", email_verified=True)
+        self.student_data = StudentData.objects.create(
+            user=self.student, school_data=self.school_data1)
+        self.tutor = CustomUser.objects.create_user(
+            "tutor@test.com", "Tutor", self.state1, "12345678", email_verified=True)
+        self.tutor_data = TutorData(
+            user=self.tutor)
+        self.tutor_data.save()
+        self.tutor_data.schooldata.set([self.school_data1])
+        self.tutor_data.subjects.set([self.subject1])
 
     def test_patch_student_account(self):
         self.client.force_authenticate(self.student)
@@ -246,3 +254,38 @@ class AccountChangeTest(APITestCase):
         self.assertFalse(tutor.email_verified)
         self.assertTrue(VerificationToken.objects.filter(
             user=tutor).exists())
+
+
+class EmailVerifyTest(APITestCase):
+    """
+    Change if email verification API works
+    """
+    @classmethod
+    def setUpTestData(cls):
+        cls.school_type = SchoolType.objects.create(name="TestSchoolType")
+        cls.school_data = SchoolData.objects.create(
+            school_type=cls.school_type, grade=10)
+        cls.state = State.objects.create(name="TestState")
+
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            first_name="Bob", email="bob@example.com", state=self.state)
+
+    def test_email_verify(self):
+        self.assertTrue(VerificationToken.objects.filter(
+            user=self.user).exists())
+        token = VerificationToken.objects.get(user=self.user)
+        response = self.client.post(
+            reverse("account:email_verify", args=[token.token]))
+        user = CustomUser.objects.get()
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(user.email_verified)
+        self.assertFalse(VerificationToken.objects.all().exists())
+
+    def test_email_verify_fail(self):
+        response = self.client.post(
+            reverse("account:email_verify", args=[uuid.uuid4()]))
+        user = CustomUser.objects.get()
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(user.email_verified)
+        self.assertTrue(VerificationToken.objects.all().exists())
