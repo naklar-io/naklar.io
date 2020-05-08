@@ -29,6 +29,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+    - name: Create bbb_secret.py
+      uses: finnp/create-file-action@1.0.0
+      env: 
+        FILE_NAME: backend/naklar-io/naklario/bbb_secret.py
+        FILE_DATA: 12345678
     - name: Run Tests
       working-directory: backend/naklar-io
       run: |
