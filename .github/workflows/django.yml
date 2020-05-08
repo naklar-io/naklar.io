@@ -33,7 +33,7 @@ jobs:
       uses: finnp/create-file-action@1.0.0
       env: 
         FILE_NAME: backend/naklar-io/naklario/bbb_secret.py
-        FILE_DATA: 12345678
+        FILE_DATA: BBB_SHARED="12345678"
     - name: Run Tests
       working-directory: backend/naklar-io
       run: |
