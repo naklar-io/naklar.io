@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ToastsComponent } from './toasts-component';
+import { ToastsComponent } from './toasts.component';
 
 describe('AlertsComponent', () => {
   let component: ToastsComponent;
