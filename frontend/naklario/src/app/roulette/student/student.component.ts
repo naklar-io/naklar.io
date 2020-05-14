@@ -26,7 +26,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 export class StudentComponent implements OnInit {
   @Output() done = new EventEmitter<boolean>();
 
-  readonly FEATURE_RELEASE_DATE = new Date("2020-05-13T00:00:00+02:00");
+  readonly FEATURE_RELEASE_DATE = new Date("2020-05-14T00:00:00+02:00");
 
   user: User;
 
