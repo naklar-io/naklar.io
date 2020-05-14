@@ -6,7 +6,6 @@ import { LandingComponent } from "./landing/landing.component";
 import {
   UserResolver,
   DatabaseResolverService,
-  BannerResolverService,
 } from "./_services";
 
 import { AboutComponent } from "./home/misc/about/about.component";
@@ -34,7 +33,6 @@ const routes: Routes = [
         resolve: {
           constants: DatabaseResolverService,
           user: UserResolver,
-          banner: BannerResolverService,
         },
       },
       { path: "feedback", component: FeedbackComponent },
@@ -57,7 +55,10 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { scrollPositionRestoration: "enabled", initialNavigation: 'enabled' }),
+    RouterModule.forRoot(routes, {
+      scrollPositionRestoration: "enabled",
+      initialNavigation: "enabled",
+    }),
   ],
   exports: [RouterModule],
 })

@@ -43,6 +43,7 @@ import {
   AuthenticationService,
   ToastService,
   RouletteService,
+  BannerService,
 } from "./_services";
 
 import { MiscComponentsModule } from "./_misc_components/misc-components.module";
@@ -99,6 +100,7 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
     DatabaseService,
     RouletteService,
     ToastService,
+    BannerService,
   ],
   bootstrap: [AppComponent],
 })

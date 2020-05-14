@@ -1,23 +1,21 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import {
+  Component,
+  OnInit,
+  Output,
+  EventEmitter,
+  OnDestroy,
+} from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import {
   DatabaseService,
   AuthenticationService,
   RouletteService,
   ToastService,
+  BannerService,
 } from "src/app/_services";
-import {
-  User,
-  SendableUser,
-  Constants,
-  StudentRequest,
-  SchoolType,
-} from "src/app/_models";
-import { Observable } from "rxjs";
-import { tap, mergeMap, map } from "rxjs/operators";
+import { User, Constants, StudentRequest } from "src/app/_models";
 import { Options } from "ng5-slider";
 import { ActivatedRoute, Router } from "@angular/router";
-import { NONE_TYPE } from "@angular/compiler";
 
 @Component({
   selector: "roulette-student",
@@ -27,6 +25,8 @@ import { NONE_TYPE } from "@angular/compiler";
 })
 export class StudentComponent implements OnInit {
   @Output() done = new EventEmitter<boolean>();
+
+  readonly FEATURE_RELEASE_DATE = new Date("2020-05-13T00:00:00+02:00");
 
   user: User;
 
@@ -50,6 +50,9 @@ export class StudentComponent implements OnInit {
   loading = false;
   error: string = null;
 
+  shouldShowInstructionVideo = true;
+  isInstructionVideoShowing = false;
+
   get f() {
     return this.studentForm.controls;
   }
@@ -71,6 +74,23 @@ export class StudentComponent implements OnInit {
     this.authenticationService.currentUser.subscribe((user) => {
       this.user = user;
     });
+
+    // fetch, if the last meeting was done, before we implemented the "instruction video". if so, mark to show the video
+    this.rouletteService.getMeetings().subscribe((meetings) => {
+      if (!meetings || 0 >= meetings.length) {
+        this.shouldShowInstructionVideo = true;
+        return;
+      }
+
+      const lastMeeting = meetings[meetings.length - 1];
+      const lastMeetingDate = new Date(lastMeeting.timeEnded);
+      const featureStart = this.FEATURE_RELEASE_DATE;
+
+      const lastMeetingWasBeforeFeatureStart =
+        lastMeetingDate.getTime() < featureStart.getTime();
+
+      this.shouldShowInstructionVideo = lastMeetingWasBeforeFeatureStart;
+    });
   }
 
   getSchoolTypeMinMax(schoolTypeID: number): any {
@@ -80,7 +100,7 @@ export class StudentComponent implements OnInit {
     return [Math.min(...grades), Math.max(...grades)];
   }
 
-  onSubmit(): void {
+  onFormSubmit(): void {
     this.submitted = true;
     this.studentForm.markAllAsTouched();
     if (!this.user.emailVerified) {
@@ -88,12 +108,29 @@ export class StudentComponent implements OnInit {
         "Deine E-Mail muss bestätigt sein um hierhin zu kommen!"
       );
       this.router.navigate(["/account"]);
+      return;
     }
     if (this.studentForm.invalid) {
       console.log("invalid");
       return;
     }
 
+    if (this.shouldShowInstructionVideo) {
+      this.isInstructionVideoShowing = true;
+    } else {
+      this.createMatchRequest();
+    }
+  }
+
+  onVideoPrev(): void {
+    this.isInstructionVideoShowing = false;
+  }
+
+  onVideoNext(): void {
+    this.createMatchRequest();
+  }
+
+  createMatchRequest() {
     this.loading = true;
     console.log("creating Request");
     this.rouletteService
