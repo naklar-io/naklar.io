@@ -1,31 +1,42 @@
 <h1 class="primary-color">Finde deinen Tutor</h1>
 
-<p>
-  Hey {{ user.firstName }}, Gib uns noch ein paar Informationen von dir, damit
-  wir den perfekten Tutor für dich finden können:
-</p>
+<ng-container [ngSwitch]="isInstructionVideoShowing">
+  <ng-container *ngSwitchCase="false">
+    <p>
+      Hey {{ user.firstName }}, Gib uns noch ein paar Informationen von dir, damit
+      wir den perfekten Tutor für dich finden können:
+    </p>
 
-<form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <label for="subjects">Für welches Fach hast du eine Frage?</label>
-    <select name="subjects" class="form-control custom-select" [formControl]="f.subject">
-      <option *ngFor="let subject of constants?.subjects" [value]="subject.id">
-        {{ subject.name }}
-      </option>
-    </select>
-    <div class="invalid-feedback">
-      <div *ngIf="f.subject.errors?.required">
-        Du musst ein Fach auswählen
+    <form [formGroup]="studentForm" (ngSubmit)="onFormSubmit()">
+      <div class="form-group">
+        <label for="subjects">Für welches Fach hast du eine Frage?</label>
+        <select name="subjects" class="form-control custom-select" [formControl]="f.subject">
+          <option *ngFor="let subject of constants?.subjects" [value]="subject.id">
+            {{ subject.name }}
+          </option>
+        </select>
+        <div class="invalid-feedback">
+          <div *ngIf="f.subject.errors?.required">
+            Du musst ein Fach auswählen
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <button
-    type="submit"
-    class="btn btn-primary"
-    [disabled]="submitSuccess || loading"
-  >
-    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-    Absenden
-  </button>
-</form>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="submitSuccess || loading"
+      >
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Absenden
+      </button>
+    </form>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="true">
+    <roulette-strudent-instruction-video
+      (prevClick)="onVideoPrev()"
+      (nextClick)="onVideoNext()"
+    ></roulette-strudent-instruction-video>
+  </ng-container>
+</ng-container>

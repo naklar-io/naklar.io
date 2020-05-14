@@ -1,0 +1,48 @@
+<p>
+  Schau dir unser kurzes Video an, dann weißt du genau, wie es jetzt weiter
+  geht. Klicke dann auf "Weiter" und wir starten mit der Suche nach deinem
+  Tutor!
+</p>
+
+<div class="row">
+  <div class="col-12 col-md-8 offset-md-2">
+    <div class="row">
+      <div class="col-12">
+        <video
+          class="w-100"
+          playsinline
+          controls
+          autoplay
+          (play)="onVideoPlaying()"
+          (error)="onVideoError()"
+        >
+          <source src="assets/video/Wartefilmchen_2.mp4" type="video/mp4" />
+          <source src="assets/video/Wartefilmchen_2.webm" type="video/webm" />
+          Video-Tag nicht unterstützt. Klicke
+          <a href="" (click)="onNext()">hier</a>, damit es weiter geht. Lade das
+          Video
+          <a href="assets/video/Wartefilmchen_2.mp4" download="true">hier</a>
+          herunter, falls du es dir noch anschauen möchtest.
+        </video>
+      </div>
+    </div>
+    <div class="row my-2">
+      <div class="col-12 d-flex justify-content-around">
+        <button type="button" class="btn btn-danger" (click)="onBack()">
+          Zurück
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary text-center"
+          [disabled]="skipDisabledTimer > 0"
+          (click)="onNext()"
+        >
+          Weiter
+          <ng-container *ngIf="skipDisabledTimer > 0" class="muted"
+            >({{ skipDisabledTimer }})</ng-container
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

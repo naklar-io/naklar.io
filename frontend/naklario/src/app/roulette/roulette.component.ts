@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, OnDestroy } from "@angular/core";
 import { ActivatedRoute, Router, ParamMap } from "@angular/router";
-import { RouletteService, AuthenticationService } from "../_services";
+import {
+  RouletteService,
+  AuthenticationService,
+  BannerService,
+} from "../_services";
 import {
   Match,
   JoinResponse,
@@ -32,9 +36,11 @@ export class RouletteComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private rouletteService: RouletteService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private bannerService: BannerService
   ) {}
   ngOnInit(): void {
+    this.bannerService.showBanner();
     this.route.queryParams.subscribe((params) => {
       this.state = params.state && params.state === "wait" ? "wait" : "create";
     });
@@ -108,5 +114,6 @@ export class RouletteComponent implements OnInit, OnDestroy {
   // cleanup
   ngOnDestroy(): void {
     this.rouletteService.deleteMatch(this.type);
+    this.bannerService.hideBanner();
   }
 }
