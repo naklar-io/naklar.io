@@ -21,8 +21,6 @@ import { AccountModule } from "./account/account.module";
 import { RouletteModule } from "./roulette/roulette.module";
 
 import { HomeComponent } from "./home/home.component";
-import { LandingComponent } from "./landing/landing.component";
-import { EmailFormComponent } from "./landing/email-form/email-form.component";
 import { AboutComponent } from "./home/misc/about/about.component";
 import { DatenschutzComponent } from "./home/misc/datenschutz/datenschutz.component";
 import { HelpSupportComponent } from "./home/misc/help-support/help-support.component";
@@ -55,8 +53,6 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
   declarations: [
     AppComponent,
     HomeComponent,
-    LandingComponent,
-    EmailFormComponent,
     MoreInformationComponent,
     AboutComponent,
     DatenschutzComponent,

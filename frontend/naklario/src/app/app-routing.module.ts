@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
 import { HomeComponent } from "./home/home.component";
-import { LandingComponent } from "./landing/landing.component";
 import {
   UserResolver,
   DatabaseResolverService,
@@ -45,7 +44,6 @@ const routes: Routes = [
       { path: "imprint", component: ImpressumComponent },
       { path: "privacy", component: PrivacyComponent },
       { path: "about", component: AboutComponent },
-      { path: "landing", component: LandingComponent },
       { path: "", component: HomeComponent },
       { path: "**", component: PageNotFoundComponent },
     ],
