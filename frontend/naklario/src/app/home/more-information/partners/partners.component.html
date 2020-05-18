@@ -1,0 +1,56 @@
+<div class="row">
+  <div class="col-12">
+    <ngb-carousel
+      class="d-none d-lg-block"
+      [interval]="carouselChangeInterval"
+      [showNavigationArrows]="false"
+      [keyboard]="false"
+      [pauseOnHover]="false"
+      [showNavigationIndicators]="false">
+      <ng-template ngbSlide *ngFor="let logoGroup of partnerGroupsDesktop; let i = index">
+        <div class="row mx-0">
+          <div class="col logoParent" *ngFor="let logo of logoGroup">
+            <a
+              [href]="logo.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="position-relative"
+            >
+              <img
+                [src]="logo.src"
+                [alt]="logo.alt"
+                class="img-fluid"
+              />
+            </a>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-carousel>
+    <ngb-carousel
+      class="d-block d-lg-none"
+      interval="4000"
+      [showNavigationArrows]="false"
+      [keyboard]="false"
+      [pauseOnHover]="false"
+      [showNavigationIndicators]="false">
+      <ng-template ngbSlide *ngFor="let logoGroup of partnerGroupsMobile; let i = index">
+        <div class="row mx-0">
+          <div class="col logoParentMobile" *ngFor="let logo of logoGroup">
+            <a
+              [href]="logo.href"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="position-relative"
+            >
+              <img
+                [src]="logo.src"
+                [alt]="logo.alt"
+                class="img-fluid"
+              />
+            </a>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-carousel>
+  </div>
+</div>
