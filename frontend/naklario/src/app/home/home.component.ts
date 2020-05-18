@@ -1,7 +1,5 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthenticationService } from "../_services";
-import { environment } from "src/environments/environment";
-import { User } from "../_models";
 import { Router } from "@angular/router";
 import { Meta, Title } from "@angular/platform-browser";
 
@@ -20,7 +18,7 @@ export class HomeComponent implements OnInit {
     this.meta.addTag({
       name: "description",
       content:
-        "Ehrenamtliche Tutoren geben Schüler*innen kostenlose Nachhilfe - ganz einfach und für jeden zugänglich.",
+        "Ehrenamtliche Tutoren geben Schülern kostenlose Nachhilfe - ganz einfach und für jeden zugänglich.",
     });
     this.title.setTitle(
       "naklar.io - Kostenlose Nachhilfe - Tutoren helfen ehrenamtlich"

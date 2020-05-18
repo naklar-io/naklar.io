@@ -7,8 +7,8 @@ export const flatFormErrors = (f: FormGroup) => {
 };
 
 export const scrollToTop = () => {
-  let scrollToTop = window.setInterval(() => {
-    let pos = window.pageYOffset;
+  const scrollToTop = window.setInterval(() => {
+    const pos = window.pageYOffset;
     if (pos > 0) {
       window.scrollTo(0, pos - 40); // how far to scroll on each step
     } else {
@@ -16,3 +16,16 @@ export const scrollToTop = () => {
     }
   }, 16);
 };
+
+
+export const ggT = (m, n) => {
+  if (n === 0) {
+    return m;
+  } else {
+    return ggT(n, m % n)
+  }
+}
+
+export const kgV = (m, n) => {
+  return (m * n) / ggT(m, n)
+}
