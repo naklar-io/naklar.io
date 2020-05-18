@@ -1,43 +1,59 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" routerLink=""
-    ><img src="assets/img/Logo.png" height="40px"
-  /></a>
-  <button
-    class="navbar-toggler"
-    type="button"
-    (click)="isNavbarCollapsed = !isNavbarCollapsed"
-    aria-controls="navbarSupportedContent"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div
-    [ngbCollapse]="isNavbarCollapsed"
-    class="collapse navbar-collapse"
-    id="navbarSupportedContent"
-  >
-    <ul class="navbar-nav mr-auto" routerLinkActive="active">
-      <li class="nav-item"><a routerLink="/dashboard" class="nav-link">Dashboard</a></li>
-<!--       <li class="nav-item" *ngIf="loggedIn">
-        <a routerLink="/account/feedback" class="nav-link">Feedback</a>
-      </li> -->
-      <li class="nav-item" *ngIf="loggedIn">
-        <a routerLink="/account" class="nav-link">Profil</a>
-      </li>
-    </ul>
-  </div>
-  <ul class="navbar-nav ml-auto">
-    <li *ngIf="loggedIn; else login" class="nav-item">
-      <a routerLink="/account">Eingeloggt als: {{ user.email }}</a>
-    </li>
-    <li *ngIf="loggedIn">
-      <button (click)="logout()" class="btn btn-danger">Ausloggen</button>
-    </li>
-    <ng-template #login>
-      <li class="nav-item">
-        <a routerLink="/account/login" class="nav-link">Einloggen</a>
-      </li>
-    </ng-template>
-  </ul>
+<nav class="navbar navbar-expand-sm sticky-top navbar-light bg-light">
+  <ng-container [ngSwitch]="loggedIn">
+    <ng-container *ngSwitchCase="true">
+      <a class="navbar-brand" routerLink="/dashboard">
+        <img src="assets/img/Logo_navbar.png" height="40px"/>
+      </a>
+
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item" ngbDropdown placement="auto" display="dynamic">
+          <button
+            class="btn btn-sm btn-outline-secondary d-flex justify-content-between align-items-center"
+            style="border-radius: 17px"
+            id="dropdownBasic1"
+            ngbDropdownToggle>
+            <ng-container [ngSwitch]="!!user.tutordata">
+              <ng-container *ngSwitchCase="true">
+                <img [src]="user.tutordata.profilePicture" style="height: 24px; border-radius: 12px;" alt="Profilbild">
+              </ng-container>
+              <ng-container *ngSwitchCase="false">
+                <i class="material-icons">account_circle</i>
+              </ng-container>
+            </ng-container>
+            <span class="ml-1" style="height: 24px;">{{ user.firstName }}</span>
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem routerLink="/dashboard">Dashboard</button>
+            <button ngbDropdownItem routerLink="/account">Profil</button>
+            <div class="dropdown-divider"></div>
+            <button class="text-danger" ngbDropdownItem (click)="logout()">Logout</button>
+          </div>
+        </li>
+      </ul>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="false">
+      <a class="navbar-brand" routerLink="">
+        <img src="assets/img/Logo_navbar.png" height="40px"/>
+      </a>
+
+      <ul class="navbar-nav mr-auto d-none d-sm-flex" >
+        <li class="nav-item"><a routerLinkActive="active" routerLink="/tutors" class="nav-link">Für Tutoren</a></li>
+        <li class="nav-item"><a routerLinkActive="active" routerLink="/students" class="nav-link">Für Schüler</a></li>
+        <li class="nav-item"><a routerLinkActive="active" routerLink="/parents" class="nav-link">Für Eltern</a></li>
+        <li class="nav-item"><a routerLinkActive="active" routerLink="/about" class="nav-link">Über uns</a></li>
+      </ul>
+
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <button
+            class="btn btn-outline-primary"
+            style="border-radius: 17px"
+            routerLink="/account/login">
+            <span class="px-2">Login</span>
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+  </ng-container>
 </nav>

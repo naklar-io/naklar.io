@@ -1,216 +1,53 @@
-<!-- FEATURES -->
-<div class="container">
-  <div class="row my-5 justify-content-center">
-    <div class="col-6 text-center align-self-center">
-      <svg
-        class="bi bi-chat text-primary"
-        width="3em"
-        height="3em"
-        viewBox="0 0 16 16"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M2.678 11.894a1 1 0 01.287.801 10.97 10.97 0 01-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 01.71-.074A8.06 8.06 0 008 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 01-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 00.244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 01-2.347-.306c-.52.263-1.639.742-3.468 1.105z"
-          clip-rule="evenodd"
-        />
-      </svg>
-      <h2 class="text-primary">Fragen auf Knopfdruck</h2>
-      <p>
-        Eine Vielzahl an engagierten Tutor*innen steht jederzeit für Dich auf
-        Knopfdruck zur Verfügung. Probiere es gleich aus und stelle Deine Frage!
-      </p>
+<div bodyScrollSpy [spiedTags]="['DIV']" (sectionChange)="onScrollSectionChange($event)">
+
+  <!-- PARTNERS -->
+  <div class="px-0 py-5 mt-5 full-width bg-light" id="partners">
+    <!--  <hr>-->
+
+    <!--  <div class="row" style="margin-top: -1.85rem">-->
+    <!--    <div class="col-12 text-center" style="color: rgba(0,0,0,0.4);">-->
+    <!--      <span -->
+    <!--        style="background: white; padding: 7px 15px; border-radius: 1.4rem; border: 1px solid rgba(0,0,0,0.1); border-top: none"-->
+    <!--      >UNTERSTÜTZT VON</span>-->
+    <!--    </div>-->
+    <!--  </div>-->
+    <div class="container">
+      <home-more-information-partners></home-more-information-partners>
     </div>
-    <div class="col-6 text-center align-self-center">
-      <svg
-        class="bi bi-person-check-fill text-primary"
-        width="3em"
-        height="3em"
-        viewBox="0 0 16 16"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 100-6 3 3 0 000 6zm9.854-2.854a.5.5 0 010 .708l-3 3a.5.5 0 01-.708 0l-1.5-1.5a.5.5 0 01.708-.708L12.5 7.793l2.646-2.647a.5.5 0 01.708 0z"
-          clip-rule="evenodd"
-        />
-      </svg>
-      <h2 class="text-primary">Geprüfte Tutor*innen</h2>
-      <p>
-        Sicherheit und Vertrauen sind wichtig. Unser Tutor*innen werden einzeln
-        überprüft und mithilfe eines Bewertungssystems kontrolliert.
-      </p>
-    </div>
-    <div class="col-6 text-center align-self-center">
-      <svg
-        class="bi bi-people text-primary"
-        width="3em"
-        height="3em"
-        viewBox="0 0 16 16"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          d="M15 14s1 0 1-1-1-4-5-4-5 3-5 4 1 1 1 1h8zm-7.995-.944v-.002.002zM7.022 13h7.956a.274.274 0 00.014-.002l.008-.002c-.002-.264-.167-1.03-.76-1.72C13.688 10.629 12.718 10 11 10c-1.717 0-2.687.63-3.24 1.276-.593.69-.759 1.457-.76 1.72a1.05 1.05 0 00.022.004zm7.973.056v-.002.002zM11 7a2 2 0 100-4 2 2 0 000 4zm3-2a3 3 0 11-6 0 3 3 0 016 0zM6.936 9.28a5.88 5.88 0 00-1.23-.247A7.35 7.35 0 005 9c-4 0-5 3-5 4 0 .667.333 1 1 1h4.216A2.238 2.238 0 015 13c0-1.01.377-2.042 1.09-2.904.243-.294.526-.569.846-.816zM4.92 10c-1.668.02-2.615.64-3.16 1.276C1.163 11.97 1 12.739 1 13h3c0-1.045.323-2.086.92-3zM1.5 5.5a3 3 0 116 0 3 3 0 01-6 0zm3-2a2 2 0 100 4 2 2 0 000-4z"
-          clip-rule="evenodd"
-        />
-      </svg>
-      <h2 class="text-primary">Für jeden zugänglich</h2>
-      <p>
-        Jeder kann helfen. Und helfen kann so einfach sein! Engagierte können
-        ganz einfach Tutor werden und in ihren verfügbaren Zeiten flexibel
-        Schüler*innen helfen. Der kostenlose Zugang ermöglicht Schülerinnen und
-        Schülern per Knopfdruck auf Tutor*innen zuzugreifen und bequem ihre
-        Fragen zu stellen.
-      </p>
-    </div>
+
+    <!--  <hr>-->
   </div>
 
-  <hr />
+
+  <!-- FEATURES -->
+  <div class="container mt-5" id="features">
+    <home-more-information-features></home-more-information-features>
+  </div>
+
 
   <!-- VIDEO -->
-  <div class="row justify-content-center my-5">
-    <div class="col-9 text-center">
-      <h3 class="my-3">naklar.io kurz erklärt!</h3>
-      <div class="embed-responsive embed-responsive-16by9">
-        <iframe
-          src="https://www.youtube.com/embed/nCtjwHyj0OU"
-          srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}img,span{position:absolute;width:100%;top:0;bottom:0;margin:auto}span{height:1.5em;text-align:center;font:48px/1.5 sans-serif;color:white;text-shadow:0 0 0.5em black}</style><a href=https://www.youtube.com/embed/nCtjwHyj0OU?autoplay=1><img src=https://img.youtube.com/vi/nCtjwHyj0OU/hqdefault.jpg alt='NAKLAR.io | Die Plattform für Schüler*innen | #WirVsVirusHack'><span>▶</span></a>"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-          title="NAKLAR.io | Die Plattform für Schüler*innen | #WirVsVirusHack"
-          class="embed-responsive-item"
-        ></iframe>
-      </div>
+  <div class="full-width bg-gradient-primary" id="video">
+    <div class="container">
+      <home-more-information-video></home-more-information-video>
     </div>
   </div>
-</div>
 
-<!-- PARTNERS -->
-<div class=".mx-auto px-0 full-width">
-  <div class="row py-5 bg-gradient-primary justify-content-center">
-    <div class="col-md-10 text-center">
-      <h3>Unterstützt von:</h3>
-      <div class="d-flex">
-        <div class="row justify-content-between align-items-center">
-          <div class="partner-logo col-2 ml-3">
-            <a
-              href="https://www.unternehmertum.de/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="assets/img/partners/logo_ManageAndMore.png"
-                alt="TUM Manage and More Logo"
-                class="img-fluid"
-              />
-            </a>
-          </div>
-          <div class="partner-logo col-2 mx-1">
-            <a
-              href="https://wirvsvirushackathon.org"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="assets/img/partners/logo_wirvsvirus.png"
-                alt="Hackathon WirVsVirus Logo"
-                class="img-fluid"
-              />
-            </a>
-          </div>
-          <div class="partner-logo col-2 mx-1">
-            <a
-              href="https://km-bw.de"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="assets/img/partners/logo_kultusministerium_bw.png"
-                alt="Kultusministerium Baden-Württemberg"
-                class="img-fluid"
-              />
-            </a>
-          </div>
-          <div class="partner-logo col-2 mr-3">
-            <a
-              href="https://www.tum.de/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src="assets/img/partners/logo_tum.png"
-                alt="TUM Logo"
-                class="img-fluid"
-              />
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="container">
   <!-- MISSION -->
-  <div class="row justify-content-center my-5">
-    <div class="col-10 text-center">
-      <h1>Unsere Mission:<br />Keinen Schüler zurücklassen</h1>
-      <p class="lead">
-        Seit dem 16. März 2020 sind Schulen in Deutschland geschlossen. Ca. 11
-        Millionen Schüler*innen befinden sich zu Hause und sind gezwungen den
-        Lernstoff zum Großteil selbst zu erarbeiten. Wir möchten engagierte
-        Menschen (Studierende, Berufstätige, Lehrende, Pensionäre…) in
-        Deutschland mit Schüler*innen zusammenbringen. So können wir ihnen eine
-        bestmögliche Hilfestellung anbieten und jedem Schüler*in in dieser Zeit
-        die Hand reichen.
-      </p>
-    </div>
+  <div class="container" id="mission">
+    <home-more-information-mission></home-more-information-mission>
   </div>
-</div>
 
-<!-- NUMBERS -->
-<div class="mx-auto px-0 bg-gray" style="color: rgb(122, 122, 122);">
-  <div class="row text-center py-3">
-    <div class="col">
-      <h3>
-        Unsere engagierte Community wächst täglich
-      </h3>
-    </div>
-  </div>
-  <div class="row text-center py-5">
-    <div class="col-sm-6">
-      <pre class="display-3 text-primary">15</pre>
-      <p class="lead">Fächer</p>
-    </div>
-    <div class="col-sm-6">
-      <pre class="display-3 text-primary">{{ 1000 * 1.5 }}+</pre>
-      <p class="lead">Nutzer</p>
-    </div>
-  </div>
-</div>
 
-<!-- TEAM -->
-<div class="container my-5">
-  <div class="row">
-    <div class="col-sm-6">
-      <div class="my-5 mx-5">
-        <img
-          src="assets/img/team/group_picture.jpg"
-          alt="team image"
-          class="img-fluid"
-        />
-      </div>
-    </div>
-    <div class="col-sm-6 align-self-center">
-      <a routerLink="/about"><h4 class="text-primary">Das Team</h4></a>
-      <p class="lead">
-        Das Team hinter naklar.io – engagiert und motiviert, Schüler*innen in
-        dieser Zeit mit der richtigen Unterstützung unter die Arme zu greifen.
-      </p>
-    </div>
+  <!-- NUMBERS -->
+  <div class="mx-auto px-0 bg-gray" style="color: rgb(122, 122, 122);" id="numbers">
+    <home-more-information-numbers [parentCurrentScrollSectionId]="currentScrollSection$$"></home-more-information-numbers>
   </div>
+
+
+  <!-- TEAM -->
+  <div class="container my-5" id="team">
+    <home-more-information-team></home-more-information-team>
+  </div>
+
 </div>
