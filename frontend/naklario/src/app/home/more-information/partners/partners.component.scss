@@ -1,0 +1,103 @@
+//.partner-logo-mobile {
+//  display: inline-flex;
+//  align-items: center;
+//  //float: left;
+//  width: 50%;
+//  padding: 0 10px;
+//  transition: margin-left 2s ease;
+//
+//
+//  margin-left: 2rem;
+//
+//
+//  //&:first-child.page-1 {
+//  //  margin-left: calc(-100% - 2rem);
+//  //}
+//  //
+//  //&:first-child.page-2 {
+//  //  margin-left: calc(-200% - 4rem);
+//  //}
+//  //
+//  //&:first-child.page-3 {
+//  //  margin-left: calc(-300% - 6rem);
+//  //}
+//  //
+//  //&:nth-child(2n+1) {
+//  //  padding-left: 0;
+//  //  padding-right: 2rem;
+//  //}
+//  //
+//  //&:not(:first-child) {
+//  //  padding-left: 2rem;
+//  //  padding-right: 0;
+//  //}
+//  //
+//  //&:last-child {
+//  //  margin-left: 2rem;
+//  //}
+//
+//}
+
+
+@keyframes carouselSlideIn {
+  0% { transform: translateX(105%); }
+  100% { transform: translateX(0); }
+}
+@keyframes carouselSlideOut {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-105%); }
+}
+
+::ng-deep .carousel-item {
+  //display: flex !important;
+  ////position: absolute;
+  ////transform: translateY(100%);
+  //opacity: 0;
+  //transition:all  .6s;
+
+  animation-duration: 1s;
+  // ease in out cubic
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+  animation-fill-mode: both;
+  opacity: 0;
+  &.active {
+    width: 100%;
+    animation-name: carouselSlideIn;
+    opacity: 1;
+  }
+  &:not(.active) {
+    display: table-cell;
+    animation-name: carouselSlideOut;
+    opacity: 0;
+
+    transition: opacity 4s;
+  }
+
+  .logoParent {
+    padding: 0 2rem
+  }
+
+  .logoParent:first-child {
+    padding-left: 0;
+    padding-right: 4rem;
+  }
+
+  .logoParent:last-child {
+    padding-left: 4rem;
+    padding-right: 0;
+  }
+
+  .logoParentMobile {
+    padding: 0 .5rem
+  }
+
+  .logoParentMobile:first-child {
+    padding-left: 0;
+    padding-right: 1rem;
+  }
+
+  .logoParentMobile:last-child {
+    padding-left: 1rem;
+    padding-right: 0;
+  }
+}

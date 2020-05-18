@@ -48,6 +48,13 @@ import { MiscComponentsModule } from "./_misc_components/misc-components.module"
 import { MoreInformationComponent } from "./home/more-information/more-information.component";
 import { BannerComponent } from "./home/misc/banner/banner.component";
 import { DashboardComponent } from "./dashboard/dashboard.component";
+import { ScrollSpyDirective } from './_helpers/scroll-spy.directive';
+import { PartnersComponent } from './home/more-information/partners/partners.component';
+import { FeaturesComponent } from './home/more-information/features/features.component';
+import { VideoComponent } from './home/more-information/video/video.component';
+import { MissionComponent } from './home/more-information/mission/mission.component';
+import { NumbersComponent } from './home/more-information/numbers/numbers.component';
+import { TeamComponent } from './home/more-information/team/team.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +77,13 @@ import { DashboardComponent } from "./dashboard/dashboard.component";
     PageNotFoundComponent,
     BannerComponent,
     DashboardComponent,
+    ScrollSpyDirective,
+    PartnersComponent,
+    FeaturesComponent,
+    VideoComponent,
+    MissionComponent,
+    NumbersComponent,
+    TeamComponent,
   ],
   imports: [
     NgbModule,
