@@ -10,9 +10,10 @@ import { take, takeWhile } from 'rxjs/operators'
 export class NumbersComponent implements OnInit {
   @Input() parentCurrentScrollSectionId: BehaviorSubject<string>
 
-  userCounter = 0
   // to be gotten externally in future
   readonly USERS_COUNT = 3000
+  userCounter = this.USERS_COUNT
+  private hasCounted = false
 
   constructor() {
   }
@@ -22,7 +23,8 @@ export class NumbersComponent implements OnInit {
   }
 
   onParentScrollSectionChange(id: string) {
-    if (id === 'numbers' && this.userCounter === 0) {
+    if (id === 'numbers' && !this.hasCounted) {
+      this.hasCounted = true
       interval(30).pipe(take(106)).subscribe(() => this.userCounter += 19, () => {
         },
         () => interval(50).pipe(take(38)).subscribe(() => this.userCounter += 19, () => {
