@@ -24,6 +24,7 @@ export class NumbersComponent implements OnInit {
 
   onParentScrollSectionChange(id: string) {
     if (id === 'numbers' && !this.hasCounted) {
+      this.userCounter = 0
       this.hasCounted = true
       interval(30).pipe(take(106)).subscribe(() => this.userCounter += 19, () => {
         },
