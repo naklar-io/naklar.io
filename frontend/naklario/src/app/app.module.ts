@@ -55,6 +55,7 @@ import { VideoComponent } from './home/more-information/video/video.component';
 import { MissionComponent } from './home/more-information/mission/mission.component';
 import { NumbersComponent } from './home/more-information/numbers/numbers.component';
 import { TeamComponent } from './home/more-information/team/team.component';
+import { JoinTheCommunityComponent } from './home/more-information/join-the-community/join-the-community.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { TeamComponent } from './home/more-information/team/team.component';
     MissionComponent,
     NumbersComponent,
     TeamComponent,
+    JoinTheCommunityComponent,
   ],
   imports: [
     NgbModule,
