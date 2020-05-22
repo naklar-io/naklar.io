@@ -68,24 +68,21 @@ export class PartnersComponent implements OnInit {
 
   calculateItems<T>(array: T[], pageSize): T[][] {
     const mustItemCount = kgV(array.length, pageSize)
-    console.log(mustItemCount)
+    // console.log(mustItemCount)
     const pagesCount = mustItemCount / pageSize
-    console.log(pagesCount)
+    // console.log(pagesCount)
 
     const returnArray: T[][] = []
 
     for (let page = 0; page < pagesCount; page++) {
       const itemId = page * pageSize
       const startIndex = itemId % array.length
-
       const pageArray: T[] = []
 
       for (let i = 0; i < pageSize; i++) {
         const index = (startIndex + i) % array.length
-
         pageArray.push(array[index])
       }
-
       returnArray.push(pageArray)
     }
 
