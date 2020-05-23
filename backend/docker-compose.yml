@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  web:
+    image: naklario/backend:latest
+    command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
+    working_dir: /code/naklar-io
+    volumes:
+      - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
+      - type: bind
+        source: ./media
+        target: /opt/media
+      - type: volume
+        source: static
+        target: /opt/static
+
+  celery_worker:
+    image: naklario/backend:latest
+    working_dir: /code/naklar-io
+    volumes:
+      - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
+    command: celery -A naklario worker -l info
+    depends_on:
+      - rabbitmq
+      - web
+
+  celery_beat:
+    image: naklario/backend:latest
+    working_dir: /code/naklar-io
+    volumes:
+      - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
+    command: celery -A naklario beat -S django -l info
+    depends_on:
+      - rabbitmq
+      - web
+
+  rabbitmq:
+    image: rabbitmq
+
+  nginx:
+    image: nginx:stable
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - type: bind
+        source: ./media
+        target: /opt/media
+      - type: volume
+        source: static
+        target: /opt/static
+        volume:
+          nocopy: true
+    ports:
+      - 8000:80
+
+volumes:
+  static:
