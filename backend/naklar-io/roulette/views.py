@@ -29,7 +29,7 @@ class MatchUserMixin(object):
     """
 
     def get_object(self):
-        obj = self.get_queryset().filter(user=self.request.user)
+        obj = self.get_queryset().filter(user=self.request.user).filter(is_active=True)
         if obj:
             obj = obj.get()
             if hasattr(obj, 'last_poll'):
@@ -96,11 +96,12 @@ class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generi
         #        self.get_queryset().filter(user=self.request.user).delete()
         # TODO: Fix properly with custom object manager
         for i in self.get_queryset().filter(user=self.request.user):
-            i.manual_delete()
+            i.deactivate()
         serializer.save(user=self.request.user)
 
     def perform_destroy(self, instance):
-        instance.manual_delete()
+        instance.deactivate()
+        #instance.manual_delete()
 
 
 class MeetingListView(generics.ListAPIView):

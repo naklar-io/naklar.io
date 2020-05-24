@@ -9,7 +9,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         Match.objects.filter(student_agree=False).filter(tutor_agree=True).filter(
-            last_changed__lte=timezone.now()-timedelta(seconds=30)).delete()
+            changed_time__lte=timezone.now()-timedelta(seconds=30)).delete()
         Match.objects.filter(student_agree=True).filter(tutor_agree=False).filter(
-            last_changed__lte=timezone.now()-timedelta(seconds=30)).delete()
-        print("deleted!")
+            changed_time__lte=timezone.now()-timedelta(seconds=30)).delete()
+        Match.objects.filter(student_agree=False).filter(tutor_agree=False).filter(
+            changed_time__lte=timezone.now()-timedelta(seconds=35)).delete()
