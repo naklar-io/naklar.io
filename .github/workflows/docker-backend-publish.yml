@@ -82,4 +82,6 @@ jobs:
           # tag it as release if tag applies
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && docker tag $IMAGE_NAME $IMAGE_ID:release
           
-          docker push $IMAGE_ID:$VERSION
+          # docker push $IMAGE_ID:$VERSION
+          # push all tags
+          docker push $IMAGE_ID
