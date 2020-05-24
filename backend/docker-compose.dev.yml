@@ -3,8 +3,11 @@ version: "3.8"
 services:
   web:
     build: .
-    command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
+    #command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
+    command: ./manage.py runserver 0.0.0.0:8000
     working_dir: /code/naklar-io
+    ports:
+      - 8000:8000
     volumes:
       - type: bind
         source: ./naklar-io
@@ -25,7 +28,9 @@ services:
     working_dir: /code/naklar-io
     command: celery -A naklario worker -l info
     volumes:
-      - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
+      - type: bind
+        source: ./naklar-io
+        target: /code/naklar-io
     depends_on:
       - rabbitmq
       - web
@@ -35,7 +40,9 @@ services:
     working_dir: /code/naklar-io
     command: celery -A naklario beat -S django -l info
     volumes:
-      - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
+      - type: bind
+        source: ./naklar-io
+        target: /code/naklar-io
     depends_on:
       - rabbitmq
       - web
@@ -56,7 +63,7 @@ services:
         volume:
           nocopy: true
     ports:
-      - 8000:80
+      - 8080:80
 
 volumes:
   static:
