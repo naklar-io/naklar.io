@@ -95,7 +95,7 @@ class Request(models.Model):
 
     @property
     def duration(self):
-        if self.deactivated:
+        if self.deactivated is not None:
             return self.deactivated - self.created
         else:
             return timezone.now() - self.created
@@ -106,13 +106,14 @@ class Request(models.Model):
         self.delete()
 
     def deactivate(self):
-        self.is_active = False
-        self.deactivated = timezone.now()
-        if isinstance(self, TutorRequest):
-            Match.objects.filter(tutor_request__id=self.id).delete()
-        if isinstance(self, StudentRequest):
-            Match.objects.filter(student_request__id=self.id).delete()
-        self.save()
+        if self.is_active:
+            self.is_active = False
+            self.deactivated = timezone.now()
+            if isinstance(self, TutorRequest):
+                Match.objects.filter(tutor_request__id=self.id).delete()
+            if isinstance(self, StudentRequest):
+                Match.objects.filter(student_request__id=self.id).delete()
+            self.save()
 
     class Meta:
         abstract = True
