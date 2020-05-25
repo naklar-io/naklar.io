@@ -5,14 +5,14 @@ from datetime import timedelta
 
 
 class Command(BaseCommand):
-    help = "deletes requests that haven't been polled since 10 seconds"
+    help = "deletes requests that haven't been polled since 30 seconds"
 
     def handle(self, *args, **options):
         r = StudentRequest.objects.filter(
-            last_poll__lte=timezone.now()-timedelta(seconds=10)).filter(is_active=True)
+            last_poll__lte=timezone.now()-timedelta(seconds=20)).filter(is_active=True)
         for i in r:
             i.deactivate()
         r = TutorRequest.objects.filter(
-            last_poll__lte=timezone.now()-timedelta(seconds=10)).filter(is_active=True)
+            last_poll__lte=timezone.now()-timedelta(seconds=30)).filter(is_active=True)
         for i in r:
             i.deactivate()
