@@ -13,6 +13,6 @@ class Command(BaseCommand):
         for i in r:
             i.deactivate()
         r = TutorRequest.objects.filter(
-            last_poll__lte=timezone.now()-timedelta(seconds=30)).filter(is_active=True)
+            last_poll__lte=timezone.now()-timedelta(seconds=60)).filter(is_active=True)
         for i in r:
             i.deactivate()
