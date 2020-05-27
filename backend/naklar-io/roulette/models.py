@@ -225,6 +225,11 @@ def on_match_change(sender, instance, **kwargs):
                           instance.tutor_request.user)
         meeting.tutor = instance.tutor_request.user
         meeting.student = instance.student_request.user
+        # Add meeting to corresponding requests
+        instance.tutor_request.meeting = meeting
+        instance.student_request.meeting = meeting
+        instance.tutor_request.save(update_fields=('meeting', ))
+        instance.student_request.save(update_fields=('meeting', ))
         meeting.save()
         meeting.create_meeting()
 
