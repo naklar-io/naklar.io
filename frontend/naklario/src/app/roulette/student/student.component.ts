@@ -82,12 +82,28 @@ export class StudentComponent implements OnInit {
         return;
       }
 
-      const lastMeeting = meetings[meetings.length - 1];
-      const lastMeetingDate = new Date(lastMeeting.timeEnded);
-      const featureStart = this.FEATURE_RELEASE_DATE;
+
+      let lastMeetingDate = null
+
+      for (const meeting of meetings) {
+        const meetingDate = new Date(meeting.timeEnded)
+
+        if (!lastMeetingDate) {
+          lastMeetingDate = meetingDate
+          continue
+        }
+
+        if (meetingDate.getTime() > lastMeetingDate.getTime()) {
+          lastMeetingDate = meetingDate
+        }
+      }
+
+      if (!lastMeetingDate) {
+        return
+      }
 
       const lastMeetingWasBeforeFeatureStart =
-        lastMeetingDate.getTime() < featureStart.getTime();
+        lastMeetingDate.getTime() < this.FEATURE_RELEASE_DATE.getTime();
 
       this.shouldShowInstructionVideo = lastMeetingWasBeforeFeatureStart;
     });
