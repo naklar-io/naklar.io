@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "~9.1.9",
     "@angular/platform-server": "~9.1.9",
     "@angular/router": "~9.1.9",
+    "@angular/service-worker": "~9.1.9",
     "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "@ng-select/ng-select": "^4.0.0",
     "@nguniversal/express-engine": "^9.1.1",
