@@ -56,6 +56,8 @@ import { MissionComponent } from './home/more-information/mission/mission.compon
 import { NumbersComponent } from './home/more-information/numbers/numbers.component';
 import { TeamComponent } from './home/more-information/team/team.component';
 import { JoinTheCommunityComponent } from './home/more-information/join-the-community/join-the-community.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -104,6 +106,7 @@ import { JoinTheCommunityComponent } from './home/more-information/join-the-comm
     MiscComponentsModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
