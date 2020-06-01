@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 
@@ -15,8 +16,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from account.managers import CustomUserManager
-
-import logging
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,9 @@
-from django.core.management.base import BaseCommand
-from roulette.models import StudentRequest, TutorRequest
-from django.utils import timezone
 from datetime import timedelta
+
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from roulette.models import StudentRequest, TutorRequest
 
 
 class Command(BaseCommand):
