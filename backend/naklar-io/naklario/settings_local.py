@@ -39,6 +39,5 @@ DATABASES = {
 WEBPUSH_SETTINGS = {
     "VAPID_PUBLIC_KEY": "Public Key",
     "VAPID_PRIVATE_KEY": "Private Key",
-    "VAPID_ADMIN_EMAIL": "admin@example.org
+    "VAPID_ADMIN_EMAIL": "admin@example.org"
 }
-### MY CONFIG
