@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.contrib.admin.templatetags.admin_list import date_hierarchy
+from django.db.models import QuerySet
 
 from roulette.models import Feedback, Report
 
 from .models import Match, Meeting, StudentRequest, TutorRequest
-from django.db.models import QuerySet
 
 admin.site.register(Match)
 

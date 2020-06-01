@@ -1,12 +1,13 @@
+import csv
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.http import HttpResponse
 from django.utils.translation import gettext as _
 
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import (CustomUser, SchoolData, SchoolType, State, StudentData,
                      Subject, TutorData)
-from django.http import HttpResponse
-import csv
 
 admin.site.register(SchoolData)
 admin.site.register(SchoolType)
