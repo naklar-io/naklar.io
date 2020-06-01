@@ -21,6 +21,9 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 # TODO
+ALLOWED_HOSTS = ["*"]
+
+# TODO
 EMAIL_HOST = "smtpd"
 EMAIL_PORT = "1025"
 
@@ -31,3 +34,11 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# TODO
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY": "Public Key",
+    "VAPID_PRIVATE_KEY": "Private Key",
+    "VAPID_ADMIN_EMAIL": "admin@example.org
+}
+### MY CONFIG
