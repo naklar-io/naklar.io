@@ -43,6 +43,11 @@ const partnerLogos: PartnerLogo[] = [
     href: 'https://tatkraeftig.org/projekt/ehrenamtliche-tutorinnen-fuer-schuelerinnen-im-homeschooling-gesucht/',
     src: 'assets/img/partners/07 tatkraeftig.png',
     alt: 'Tatkräftig e.V.'
+  },
+  {
+    href: 'https://www.pi-muenchen.de/',
+    src: 'assets/img/partners/08 pi.png',
+    alt: 'Pädagogisches Institut München'
   }
 ]
 
