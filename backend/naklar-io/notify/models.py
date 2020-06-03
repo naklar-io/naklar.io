@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta
 
 from django.conf import settings
@@ -6,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from multiselectfield import MultiSelectField
 from push_notifications.models import WebPushDevice
-import json
+from post_office import mail
 
 
 class NotificationSettings(models.Model):
@@ -77,23 +78,23 @@ class Notification(models.Model):
     title = models.TextField(verbose_name="Titel")
     body = models.TextField(verbose_name="Details")
 
-
     sent = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
-    
+
     reacted = models.BooleanField(default=False)
     reacted_date = models.DateTimeField(null=True, blank=True)
 
     # generic relation
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True, blank=True)
     object_id = models.PositiveIntegerField(null=True, blank=True)
     content_object = GenericForeignKey()
 
     def send(self):
         """The send method assumes that sending is allowed
         """
-        settings = self.user.notificationsettings
-        if settings.enable_push:
+        not_settings = self.user.notificationsettings
+        if not_settings.enable_push:
             angular_payload = {
                 "notification": {
                     "title": self.title,
@@ -103,10 +104,19 @@ class Notification(models.Model):
                             "action": "explore",
                             "title": "Jetzt helfen!"
                         }
-                    ]
+                    ],
+                    "data": {
+                        # TODO: Insert meaningful URLS (maybe with Sign-In-Tokens that expire in 1 Minute?)
+                        "url": settings.HOST
+                    }
                 }
             }
-            WebPushDevice.objects.filter(user=self.user).send_message(message=json.dumps(angular_payload))
-        if settings.enable_mail:
-            ## todo: send mail
-            print("Send mail!")
+            WebPushDevice.objects.filter(user=self.user).send_message(
+                message=json.dumps(angular_payload))
+        if not_settings.enable_mail:
+            email_payload = {
+                "msg": self.body,
+                "subject": self.title
+            }
+            mail.send(self.user.email, sender="noreply@naklar.io",
+                      template='notification', context=email_payload)
