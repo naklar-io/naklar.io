@@ -23,6 +23,13 @@ CORS_ORIGIN_WHITELIST = [
 # TODO
 ALLOWED_HOSTS = ["*"]
 
+PUSH_NOTIFICATIONS_SETTINGS = {
+    "WP_PRIVATE_KEY": os.path.join(BASE_DIR, "private_key.pem"),
+    "WP_CLAIMS": {
+        "sub": "mailto:kstein@inforbi.de"
+    }
+}
+
 # TODO
 EMAIL_HOST = "smtpd"
 EMAIL_PORT = "1025"

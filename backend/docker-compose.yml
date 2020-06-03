@@ -7,6 +7,8 @@ services:
     working_dir: /code/naklar-io
     volumes:
       - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
+      # Private VAPID key https://github.com/jazzband/django-push-notifications/#settings-list
+      - ./naklar-io/private_key.pem:/code/naklar-io/private_key.pem
       - type: bind
         source: ./media
         target: /opt/media
