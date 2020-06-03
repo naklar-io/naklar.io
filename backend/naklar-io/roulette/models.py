@@ -20,6 +20,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from account.models import CustomUser, StudentData, Subject, TutorData
+from django.contrib.contenttypes.fields import GenericRelation
 
 
 class Report(models.Model):
@@ -82,6 +83,8 @@ class Request(models.Model):
     deactivated = models.DateTimeField(null=True)
 
     last_poll = models.DateTimeField(default=timezone.now)
+
+    notifications = GenericRelation('notify.Notification')
 
     meeting = models.OneToOneField(
         "roulette.Meeting", on_delete=models.SET_NULL, null=True, default=None, related_name='+')

@@ -307,6 +307,6 @@ export class AuthenticationService {
       auth: pushJSON.keys.auth,
       browser: this.browser.toUpperCase()
     };
-    return this.http.post<WebPushDevice>(`${environment.apiUrl}/notify/pushdevice/wp/`, wpDevice);
+    return this.http.post<WebPushDevice>(`${environment.apiUrl}/notify/push/device/wp/`, wpDevice);
   }
 }
