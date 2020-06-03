@@ -35,6 +35,12 @@
       >
         <br />
 
+        <div *ngIf="!register" class="form-row">
+          <div class="col-md form-group">
+            <button type="button" (click)="subscribeToNotifications()" class="btn btn-primary">Push-Benachrichtigungen aktivieren</button>
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="col-md">
             <div class="form-group form-label-group">
