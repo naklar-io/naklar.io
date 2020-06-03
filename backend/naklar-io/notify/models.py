@@ -1,8 +1,12 @@
 from datetime import timedelta
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from multiselectfield import MultiSelectField
+from push_notifications.models import WebPushDevice
+import json
 
 
 class NotificationSettings(models.Model):
@@ -57,3 +61,52 @@ class Notification(models.Model):
     - Store notification content
     - Provide abstraction over WebPush/Mail/More?
     """
+    STUDENT_REQUEST = 'SR'
+    OTHER = 'OT'
+
+    NOTIFICATION_TYPES = (
+        (STUDENT_REQUEST, 'Student Request'),
+        (OTHER, 'Other'),
+    )
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+
+    notification_type = models.CharField(
+        max_length=3, choices=NOTIFICATION_TYPES)
+    title = models.TextField(verbose_name="Titel")
+    body = models.TextField(verbose_name="Details")
+
+
+    sent = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+    
+    reacted = models.BooleanField(default=False)
+    reacted_date = models.DateTimeField(null=True, blank=True)
+
+    # generic relation
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    content_object = GenericForeignKey()
+
+    def send(self):
+        """The send method assumes that sending is allowed
+        """
+        settings = self.user.notificationsettings
+        if settings.enable_push:
+            angular_payload = {
+                "notification": {
+                    "title": self.title,
+                    "body": self.body,
+                    "actions": [
+                        {
+                            "action": "explore",
+                            "title": "Jetzt helfen!"
+                        }
+                    ]
+                }
+            }
+            WebPushDevice.objects.filter(user=self.user).send_message(message=json.dumps(angular_payload))
+        if settings.enable_mail:
+            ## todo: send mail
+            print("Send mail!")
