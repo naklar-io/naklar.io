@@ -112,6 +112,7 @@ INSTALLED_APPS = [
     'landing',
     'notify',
     # 3rd party that needs to load last
+    'post_office',
     'push_notifications',
     'multiselectfield'
     
@@ -243,6 +244,11 @@ CELERY_BROKER_URL = "amqp://rabbitmq"
 
 CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 
+
+# as we're using CELERY
+POST_OFFICE = {
+    'DEFAULT_PRIORITY': 'now'
+}
 
 try:
     from .settings_local import *
