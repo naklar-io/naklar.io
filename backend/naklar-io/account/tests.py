@@ -3,12 +3,16 @@ import json
 import uuid
 from django.core import mail
 from django.urls import reverse
+from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from account.models import CustomUser, SchoolData, SchoolType, State, StudentData, Subject, TutorData, VerificationToken
 
 
+@override_settings(CELERY_TASK_EAGER_PROPAGATES=True,
+                   CELERY_TASK_ALWAYS_EAGER=True,
+                   BROKER_BACKEND='memory')
 class AccountCreateTest(APITestCase):
     """
     Account creation test cases
@@ -99,6 +103,9 @@ class AccountCreateTest(APITestCase):
             user=user).exists())
 
 
+@override_settings(CELERY_TASK_EAGER_PROPAGATES=True,
+                   CELERY_TASK_ALWAYS_EAGER=True,
+                   BROKER_BACKEND='memory')
 class AccountLoginTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
@@ -168,6 +175,9 @@ class AccountLoginTest(APITestCase):
         """
 
 
+@override_settings(CELERY_TASK_EAGER_PROPAGATES=True,
+                   CELERY_TASK_ALWAYS_EAGER=True,
+                   BROKER_BACKEND='memory')
 class AccountChangeTest(APITestCase):
     """
     Account change test-cases
@@ -256,6 +266,9 @@ class AccountChangeTest(APITestCase):
             user=tutor).exists())
 
 
+@override_settings(CELERY_TASK_EAGER_PROPAGATES=True,
+                   CELERY_TASK_ALWAYS_EAGER=True,
+                   BROKER_BACKEND='memory')
 class EmailVerifyTest(APITestCase):
     """
     Change if email verification API works
