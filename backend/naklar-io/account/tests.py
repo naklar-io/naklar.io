@@ -271,7 +271,7 @@ class AccountChangeTest(APITestCase):
                    BROKER_BACKEND='memory')
 class EmailVerifyTest(APITestCase):
     """
-    Change if email verification API works
+    Test if email verification API works
     """
     @classmethod
     def setUpTestData(cls):
