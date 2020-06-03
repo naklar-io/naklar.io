@@ -59,26 +59,33 @@ SWAGGER_SETTINGS = {
 # Rest framework
 REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
-        'djangorestframework_camel_case.parser.CamelCaseFormParser',
+         'djangorestframework_camel_case.parser.CamelCaseFormParser',
         'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
-        #'rest_framework.parsers.JSONParser',
+        # 'rest_framework.parsers.JSONParser',
         #        'rest_framework.parsers.XMLParser',
     ],
     'DEFAULT_RENDERER_CLASSES': [
         'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
         'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
-        #'rest_framework.renderers.JSONRenderer',
+        # 'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
       
         #        'rest_framework_xml.renderers.XMLRenderer',
     ],
+    'JSON_UNDERSCOREIZE': {
+        'no_underscore_before_number': True,
+    },
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'knox.auth.TokenAuthentication',
     ],
     'UPLOADED_FILES_USE_URL': True,
+}
+
+REST_KNOX = {
+    "TOKEN_TTL": None
 }
 
 # Application definition
@@ -103,7 +110,10 @@ INSTALLED_APPS = [
     'call',
     'roulette',
     'landing',
+    'notify',
     # 3rd party that needs to load last
+    'push_notifications',
+    'multiselectfield'
     
 ]
 
@@ -230,6 +240,8 @@ MEDIA_ROOT = '/opt/media/'
 # Celery:
 CELERY_APP = "naklario.celery"
 CELERY_BROKER_URL = "amqp://rabbitmq"
+
+CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 
 
 try:
