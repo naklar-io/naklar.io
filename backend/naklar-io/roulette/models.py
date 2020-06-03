@@ -1,5 +1,6 @@
 import datetime
 import hashlib
+import json
 import random
 import time
 import uuid
@@ -18,7 +19,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from account.models import StudentData, Subject, TutorData
+from account.models import CustomUser, StudentData, Subject, TutorData
 
 
 class Report(models.Model):
@@ -84,7 +85,6 @@ class Request(models.Model):
 
     meeting = models.OneToOneField(
         "roulette.Meeting", on_delete=models.SET_NULL, null=True, default=None, related_name='+')
-    
 
     def _successful(self):
         if self.meeting:
@@ -131,65 +131,9 @@ class TutorRequest(Request):
 
 @receiver(post_save, sender=TutorRequest)
 @receiver(post_save, sender=StudentRequest)
-def look_for_match(sender, instance, **kwargs):
-    if instance.is_active and not hasattr(instance, 'match'):
-        if sender is StudentRequest:
-            # look for open tutor requests and match the best one
-            tutor_requests = TutorRequest.objects.exclude(
-                user__in=instance.failed_matches.all())
-
-            tutor_requests = tutor_requests.exclude(is_active=False).exclude(
-                user__tutordata__verified=False).filter(match__isnull=True)
-            # filter tutor requests for matching subject
-            filtered = []
-            for r in tutor_requests.all():
-                if r.user.tutordata.subjects.filter(pk=instance.subject.id).exists() \
-                   and not (r.failed_matches.filter(pk=instance.user.id).exists()):
-                   # and r.user.tutordata.schooldata.filter(id=instance.user.studentdata.school_data.id).exists(): TODO: Reinsert after enough tutors
-                    filtered.append(r)
-            if filtered:
-                best_tutor = max(
-                    filtered, key=lambda k: calculate_matching_score(instance, k))
-                Match.objects.create(
-                    student_request=instance,
-                    tutor_request=best_tutor
-                )
-        elif sender is TutorRequest:
-            student_requests = StudentRequest.objects.exclude(is_active=False).exclude(
-                user__in=instance.failed_matches.all())
-            student_requests = student_requests.filter(match__isnull=True)
-
-            subjects = instance.user.tutordata.subjects.all()
-            schooldata = instance.user.tutordata.schooldata.all()
-            student_requests = student_requests.filter(subject__in=subjects)
-            # .filter(
-            #    user__studentdata__school_data__in=schooldata)
-            filtered = []
-            for r in student_requests.all():
-                if not (r.failed_matches.filter(pk=instance.user.id).exists()):
-                    filtered.append(r)
-
-            if filtered:
-                best_student = max(
-                    filtered, key=lambda k: calculate_matching_score(k, instance))
-
-                Match.objects.create(
-                    student_request=best_student,
-                    tutor_request=instance
-                )
-
-
-def calculate_matching_score(student_request: StudentRequest, tutor_request: TutorRequest):
-    score = 1
-    student = student_request.user
-    tutor = tutor_request.user
-    if student.state == tutor.state:
-        score += 5
-    if student.gender == tutor.gender:
-        score += 3
-    if student.studentdata.school_data in tutor.tutordata.schooldata.all():
-        score += 10
-    return score
+def task_look_for_match(sender, instance, **kwargs):
+    pass
+   #  look_for_match_task.delay(sender, instance, **kwargs)
 
 
 class Match(models.Model):

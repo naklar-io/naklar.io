@@ -16,6 +16,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from account.managers import CustomUserManager
+from account.tasks import send_email_task
 
 logger = logging.getLogger(__name__)
 
@@ -238,7 +239,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             msg = EmailMultiAlternatives(
                 subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            send_email_task.delay(msg)
 
     def check_email_verification(self, check_token):
         if str(self.verificationtoken.token) == str(check_token):
@@ -263,7 +264,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         msg = EmailMultiAlternatives(
             subject, text_content, from_email, [to])
         msg.attach_alternative(html_content, "text/html")
-        msg.send()
+        send_email_task.delay(msg)
 
     def is_tutor(self):
         return hasattr(self, 'tutordata')
