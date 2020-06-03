@@ -9,6 +9,7 @@ import {
   Constants,
   State,
   TutorData,
+  WebPushDevice,
 } from "../_models";
 import { environment } from "../../environments/environment";
 import { map, flatMap, tap, take, mergeMap, first } from "rxjs/operators";
@@ -21,6 +22,14 @@ interface LoginResponse {
 }
 
 export type AccountType = "student" | "tutor" | "both";
+enum Browser {
+  Chrome = "Chrome",
+  Opera = "Opera",
+  Firefox = "Firefox",
+  Safari = "Safari",
+  Unknown = ""
+}
+
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
   public currentUser: Observable<User>;
@@ -39,14 +48,18 @@ export class AuthenticationService {
     private http: HttpClient,
     private databaseService: DatabaseService
   ) {
-    let user;
+    let user: User;
     // Only use localStorage in Browser
     if (isPlatformBrowser(platformId)) {
       user = JSON.parse(localStorage.getItem("currentUser")) as User;
     }
     let loggedIn = false;
     // is the login still valid ?
-    if (user && user.token && Date.parse(user.tokenExpiry) > Date.now()) {
+    if (
+      user &&
+      user.token &&
+      (!user.tokenExpiry || Date.parse(user.tokenExpiry) > Date.now())
+    ) {
       console.log("loaded logged in user from local storage");
       loggedIn = true;
     } else {
@@ -79,6 +92,18 @@ export class AuthenticationService {
       this.currentUser.subscribe((user) =>
         localStorage.setItem("currentUser", JSON.stringify(user))
       );
+    }
+  }
+
+  private get browser(): Browser {
+    if (isPlatformBrowser(this.platformId)) {
+      for (let b in Browser) {
+        if (navigator.userAgent.indexOf(b) != -1) {
+          return Browser[b];
+        }
+      }
+    } else {
+      return Browser.Unknown
     }
   }
 
@@ -231,7 +256,9 @@ export class AuthenticationService {
    * logout all devices (invalidates all user tokens)
    */
   public logoutAll() {
-    this.http.post(`${environment.apiUrl}/account/logoutall/`, null).subscribe();
+    this.http
+      .post(`${environment.apiUrl}/account/logoutall/`, null)
+      .subscribe();
     this.currentUserSubject.next(null);
     this.loggedIn.next(false);
   }
@@ -269,5 +296,17 @@ export class AuthenticationService {
         password: newPassword,
       }
     );
+  }
+
+  public addPushSubscription(sub: PushSubscription) {
+    let pushJSON = sub.toJSON();
+    let wpDevice: WebPushDevice;
+    wpDevice = {
+      registrationId: pushJSON.endpoint.split("/").slice(-1).pop(),
+      p256dh: pushJSON.keys.p256dh,
+      auth: pushJSON.keys.auth,
+      browser: this.browser.toUpperCase()
+    };
+    return this.http.post<WebPushDevice>(`${environment.apiUrl}/notify/pushdevice/wp/`, wpDevice);
   }
 }
