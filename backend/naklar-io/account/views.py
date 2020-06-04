@@ -146,7 +146,7 @@ def password_reset_verify(request, token):
     token = get_object_or_404(PasswordResetToken, token=token)
     password = request.data.get('password', None)
     if not password:
-        raise exceptions.ValidationError({"email": "E-Mail muss angegeben werden!"})
+        raise exceptions.ValidationError({"password": "Passwort muss angegeben werden!"})
     else:
         user = token.user
         user.set_password(password)

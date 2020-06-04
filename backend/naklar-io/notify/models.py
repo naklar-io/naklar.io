@@ -120,3 +120,6 @@ class Notification(models.Model):
             }
             mail.send(self.user.email, sender="noreply@naklar.io",
                       template='notification', context=email_payload)
+
+        self.sent = True
+        self.save(update_fields=["sent"])
