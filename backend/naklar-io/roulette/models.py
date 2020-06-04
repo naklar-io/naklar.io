@@ -208,7 +208,7 @@ class Meeting(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False)
 
     match = models.OneToOneField(Match, to_field='uuid',
-                                 on_delete=models.SET_NULL, null=True)
+                                 on_delete=models.SET_NULL, null=True, blank=True)
 
     tutor = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='tutor_meetings', to_field='uuid')
@@ -229,6 +229,9 @@ class Meeting(models.Model):
 
     ended = models.BooleanField(default=False)
     time_ended = models.DateTimeField(_("Beendet"), null=True, blank=True)
+
+    class Meta:
+        ordering = ['-time_established']
 
     @property
     def duration(self):
