@@ -23,7 +23,8 @@ export class UserResolver implements Resolve<User> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<User> | User {
     if (
-      this.authenticationService.currentUserValue?.firstName == ""|| 
+      (this.authenticationService.isLoggedIn &&
+        this.authenticationService.currentUserValue?.firstName == "") ||
       Date.now() - this.lastRefresh > this.interval
     ) {
       console.log("refreshing");

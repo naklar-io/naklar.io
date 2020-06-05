@@ -236,9 +236,9 @@ export class TutorFormComponent implements OnInit {
         serverPublicKey: environment.vapidKey,
       })
       .then((sub) => {
-        this.authenticationService.addPushSubscription(sub).subscribe((sub) => {
-          console.log(sub);
-        });
+        // this.authenticationService.addPushSubscription(sub).subscribe((sub) => {
+        //  console.log(sub);
+        //});
       })
       .catch((err) => {
         console.log(err);

@@ -1,78 +1,80 @@
-<div *ngIf="!embedded">
-  <h1 class="primary-color">Willkommen zurück</h1>
-  <p class="lead">Wir freuen uns dich wieder zu sehen!</p>
-</div>
-
-<div *ngIf="error" class="alert alert-danger text-center">
-  {{ error | json }}
-</div>
-<div *ngIf="user" class="alert alert-success text-center">
-  Hallo, {{ user.firstName }}, du wirst nun weitergeleitet.
-</div>
-
-<div class="row justify-content-start">
-  <div class="col-md-6">
-    <form #loginFrom="ngForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-label-group">
-        <input
-          type="email"
-          name="email"
-          class="form-control"
-          formControlName="email"
-          id="email"
-          placeholder="E-Mail"
-        />
-        <label for="email">E-Mail</label>
-
-        <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
-          <div *ngIf="f.email.errors.required">
-            Du musst eine Emailadresse eingeben.
+<div class="container">
+  <div *ngIf="!embedded">
+    <h1 class="primary-color">Willkommen zurück</h1>
+    <p class="lead">Wir freuen uns dich wieder zu sehen!</p>
+  </div>
+  
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error | json }}
+  </div>
+  <div *ngIf="user" class="alert alert-success text-center">
+    Hallo, {{ user.firstName }}, du wirst nun weitergeleitet.
+  </div>
+  
+  <div class="row justify-content-start">
+    <div class="col-md-6">
+      <form #loginFrom="ngForm" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-label-group">
+          <input
+            type="email"
+            name="email"
+            class="form-control"
+            formControlName="email"
+            id="email"
+            placeholder="E-Mail"
+          />
+          <label for="email">E-Mail</label>
+  
+          <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+            <div *ngIf="f.email.errors.required">
+              Du musst eine Emailadresse eingeben.
+            </div>
+            <div *ngIf="f.email.errors.email">
+              Das ist keine gültige Email.
+            </div>
+            <!-- Maybe more error messages -->
           </div>
-          <div *ngIf="f.email.errors.email">
-            Das ist keine gültige Email.
-          </div>
-          <!-- Maybe more error messages -->
         </div>
-      </div>
-
-      <div class="form-label-group">
-        <input
-          type="password"
-          name="password"
-          class="form-control"
-          formControlName="password"
-          placeholder="Passwort"
-        />
-        <label for="password">Passwort</label>
-        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-          <div *ngIf="f.password.errors.required">
-            Du musst ein Passwort eingeben
+  
+        <div class="form-label-group">
+          <input
+            type="password"
+            name="password"
+            class="form-control"
+            formControlName="password"
+            placeholder="Passwort"
+          />
+          <label for="password">Passwort</label>
+          <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+            <div *ngIf="f.password.errors.required">
+              Du musst ein Passwort eingeben
+            </div>
+            <!-- Maybe more error messages -->
           </div>
-          <!-- Maybe more error messages -->
+          <a routerLink="../password-reset">Passwort vergessen?</a>
         </div>
-        <a routerLink="../password-reset">Passwort vergessen?</a>
-      </div>
-
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="submitSuccess || loading"
-      >
-        <span
-          *ngIf="loading"
-          class="spinner-border spinner-border-sm mr-1"
-        ></span>
-        Login
-      </button>
-    </form>
-    <p class="my-3">
-      Du hast noch keinen Account?
-      <a *ngIf="embedded" [routerLink]="registerUrl">Registrier dich doch</a>
-      <span *ngIf="!embedded"
-        >Registriere dich hier als
-        <a routerLink="/account/tutor/register">Tutor</a> oder
-        <a routerLink="/account/student/register">Schüler</a>.</span
-      >
-    </p>
+  
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="submitSuccess || loading"
+        >
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm mr-1"
+          ></span>
+          Login
+        </button>
+      </form>
+      <p class="my-3">
+        Du hast noch keinen Account?
+        <a *ngIf="embedded" [routerLink]="registerUrl">Registrier dich doch</a>
+        <span *ngIf="!embedded"
+          >Registriere dich hier als
+          <a routerLink="/account/tutor/register">Tutor</a> oder
+          <a routerLink="/account/student/register">Schüler</a>.</span
+        >
+      </p>
+    </div>
   </div>
 </div>

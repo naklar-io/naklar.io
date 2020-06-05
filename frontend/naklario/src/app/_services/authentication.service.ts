@@ -22,13 +22,6 @@ interface LoginResponse {
 }
 
 export type AccountType = "student" | "tutor" | "both";
-enum Browser {
-  Chrome = "Chrome",
-  Opera = "Opera",
-  Firefox = "Firefox",
-  Safari = "Safari",
-  Unknown = ""
-}
 
 @Injectable({ providedIn: "root" })
 export class AuthenticationService {
@@ -92,18 +85,6 @@ export class AuthenticationService {
       this.currentUser.subscribe((user) =>
         localStorage.setItem("currentUser", JSON.stringify(user))
       );
-    }
-  }
-
-  private get browser(): Browser {
-    if (isPlatformBrowser(this.platformId)) {
-      for (let b in Browser) {
-        if (navigator.userAgent.indexOf(b) != -1) {
-          return Browser[b];
-        }
-      }
-    } else {
-      return Browser.Unknown
     }
   }
 
@@ -296,17 +277,5 @@ export class AuthenticationService {
         password: newPassword,
       }
     );
-  }
-
-  public addPushSubscription(sub: PushSubscription) {
-    let pushJSON = sub.toJSON();
-    let wpDevice: WebPushDevice;
-    wpDevice = {
-      registrationId: pushJSON.endpoint.split("/").slice(-1).pop(),
-      p256dh: pushJSON.keys.p256dh,
-      auth: pushJSON.keys.auth,
-      browser: this.browser.toUpperCase()
-    };
-    return this.http.post<WebPushDevice>(`${environment.apiUrl}/notify/push/device/wp/`, wpDevice);
   }
 }
