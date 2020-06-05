@@ -1,0 +1,42 @@
+<div class="card">
+  <ng-form [formGroup]="rangeForm">
+    <div class="card-body">
+      <div class="row">
+        <div class="form-group col">
+          <label for="startTime">Startzeit</label>
+          <input
+            type="time"
+            id="startTime"
+            formControlName="startTime"
+            class="form-control"
+          />
+        </div>
+        <div class="form-group col">
+          <label for="endTime">Endzeit</label>
+          <input
+            type="time"
+            id="endTime"
+            formControlName="endTime"
+            class="form-control"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col">
+          <p>Wochentage</p>
+          <p-multiSelect
+            [options]="days"
+            [filter]="false"
+            [showToggleAll]="false"
+            [showHeader]="false"
+            formControlName="days"
+            defaultLabel="Tage auswählen"
+            selectedItemsLabel="{0} Tage ausgewählt"
+            tooltip="Wähle hier die Tage aus"
+            id="days"
+          ></p-multiSelect>
+        </div>
+      </div>
+    </div>
+  </ng-form>
+</div>

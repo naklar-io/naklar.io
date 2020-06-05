@@ -42,6 +42,7 @@ import {
   ToastService,
   RouletteService,
   BannerService,
+  NotifyService,
 } from "./_services";
 
 import { MiscComponentsModule } from "./_misc_components/misc-components.module";
@@ -58,6 +59,8 @@ import { TeamComponent } from './home/more-information/team/team.component';
 import { JoinTheCommunityComponent } from './home/more-information/join-the-community/join-the-community.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { NotifyModule } from './notify/notify.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -93,6 +96,7 @@ import { environment } from '../environments/environment';
     NgbModule,
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserTransferStateModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     // Loading bar
     LoadingBarHttpClientModule,
@@ -104,9 +108,11 @@ import { environment } from '../environments/environment';
     AccountModule,
     RouletteModule,
     MiscComponentsModule,
+    NotifyModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    //ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('custom-service-worker.js', { enabled: environment.production }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -116,6 +122,7 @@ import { environment } from '../environments/environment';
     RouletteService,
     ToastService,
     BannerService,
+    NotifyService,
   ],
   bootstrap: [AppComponent],
 })

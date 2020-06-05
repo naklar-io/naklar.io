@@ -15,7 +15,8 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~9.1.9",
+    "@angular/animations": "^9.1.9",
+    "@angular/cdk": "^9.2.4",
     "@angular/common": "~9.1.9",
     "@angular/compiler": "~9.1.9",
     "@angular/core": "~9.1.9",
@@ -38,6 +39,8 @@
     "http-proxy-middleware": "^1.0.3",
     "material-design-icons": "^3.0.1",
     "ng5-slider": "^1.2.4",
+    "primeicons": "^4.0.0-rc.2",
+    "primeng": "^9.1.0",
     "rxjs": "~6.5.5",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
