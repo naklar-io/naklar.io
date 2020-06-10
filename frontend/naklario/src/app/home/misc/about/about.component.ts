@@ -36,8 +36,7 @@ export class AboutComponent implements OnInit {
     {
       name: "Sebastian",
       text: `Helfen kann so einfach sein! Ich finde es großartig, dass man so flexibel als Tutor helfen kann. Einfach PC/Handy an und los gehts 🚀. Man verpflichtet sich nicht, kann Schülern aber einfach und direkt helfen! Es ist schön zu sehen welch große Community an Tutoren bereits bei naklar.io mitwirken und Ihren Beitrag während Corona leisten. Das motiviert mich sehr 💪🏼😁🚀
-      Euer Sebastian
-`
+      Euer Sebastian`
     },
     {
       name: "Julius",
@@ -46,7 +45,8 @@ export class AboutComponent implements OnInit {
     },
     {
       name: "Vera",
-      text: `Ich bastle mit an naklar.io. Dabei unterstütze ich die Jungs von der Technik 👩🏼‍💻 bei der Frontend-Entwicklung und feile mit dem ganzen Team an neuen kreativen Ideen, um für Fragen ❓von Schülern schnelle Antworten💡zu finden. Eure Vera 🙂`
+      text: `Ich bastle mit an naklar.io. Dabei unterstütze ich die Jungs von der Technik 👩🏼‍💻 bei der Frontend-Entwicklung und feile mit dem ganzen Team an neuen kreativen Ideen, um für Fragen ❓von Schülern schnelle Antworten💡zu finden.
+      Eure Vera 🙂`
     },
     {
       name: "Julian",
