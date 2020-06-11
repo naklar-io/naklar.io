@@ -57,6 +57,8 @@ export class AboutComponent implements OnInit {
 
   activeMemberPicture = -1
 
+  joinMailToLink = `mailto:info@naklar.io?subject=Verst%C3%A4rkung%20f%C3%BCr's%20Team%20naklar.io&body=Liebes%20naklar.io-Team%2C%0D%0A%0D%0Agerne%20w%C3%BCrde%20ich%20euch%20unterst%C3%BCtzen.%20Kurz%20zu%20mir%3A%0D%0A-%20Zeitengagement%20pro%20Woche%20in%20Stunden%3A%0D%0A-%20Meine%20St%C3%A4rken%3A%0D%0A-%20Meine%20Motivation%3A%0D%0A-%20Meine%20Handynummer%3A%0D%0A-%20Mein%20Name%3A%0D%0AIch%20freue%20mich%20%C3%BCber%20eine%20Kontaktaufnahme%20per%20Telefon.%0D%0A%0D%0AViele%20Gr%C3%BC%C3%9Fe`
+
   constructor() { }
 
   ngOnInit(): void {
