@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-12 my-3 col-md-6 my-lg-0 col-lg-3" *ngFor="let socialLink of socialLinks">
+    <a
+      [href]="socialLink.link"
+      target="_blank"
+    ><img
+      src="assets/img/icons/socialicons/{{socialLink.platform}}.svg"
+      alt="{{socialLink.platform}}"
+      class="img-fluid social-link-image"
+    /></a>
+  </div>
+</div>

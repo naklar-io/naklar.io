@@ -56,6 +56,7 @@ import { MissionComponent } from './home/more-information/mission/mission.compon
 import { NumbersComponent } from './home/more-information/numbers/numbers.component';
 import { TeamComponent } from './home/more-information/team/team.component';
 import { JoinTheCommunityComponent } from './home/more-information/join-the-community/join-the-community.component';
+import { SocialIconsComponent } from './home/misc/social-icons/social-icons.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { JoinTheCommunityComponent } from './home/more-information/join-the-comm
     NumbersComponent,
     TeamComponent,
     JoinTheCommunityComponent,
+    SocialIconsComponent,
   ],
   imports: [
     NgbModule,
