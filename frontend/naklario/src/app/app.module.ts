@@ -57,6 +57,7 @@ import { NumbersComponent } from './home/more-information/numbers/numbers.compon
 import { TeamComponent } from './home/more-information/team/team.component';
 import { JoinTheCommunityComponent } from './home/more-information/join-the-community/join-the-community.component';
 import { SocialIconsComponent } from './home/misc/social-icons/social-icons.component';
+import { PressComponent } from './home/misc/press/press.component';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,7 @@ import { SocialIconsComponent } from './home/misc/social-icons/social-icons.comp
     TeamComponent,
     JoinTheCommunityComponent,
     SocialIconsComponent,
+    PressComponent,
   ],
   imports: [
     NgbModule,
