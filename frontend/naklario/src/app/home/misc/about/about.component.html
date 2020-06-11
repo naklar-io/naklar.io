@@ -36,37 +36,33 @@
     <div class="col-12">
       <h3>DAS TEAM</h3>
     </div>
-    <div class="col-12">
-      <div class="row">
-        <div
-          class="col-12 col-sm-6 col-lg-4 team-picture mb-4"
-          [class.active]="i === activeMemberPicture"
-          *ngFor="let member of team; let i = index"
-          (click)="activeMemberPicture = i">
-          <div class="position-relative" style="overflow: hidden;">
-            <div class="d-block position-relative">
-              <div>
-                <div class="personal-text">
-                  <div
-                    class="position-absolute text-center"
-                    style="top: -25px; left: 0; ; width: 100%; z-index: 3;  color: rgba(255, 255, 255, 0.8)">
-                    <i class="material-icons" style="font-size: 30px; text-shadow: 0 0 2px black">keyboard_arrow_up</i>
-                  </div>
-                  {{member.text}}
-                  <br/><br/>
-                </div>
+    <div
+      class="col-12 col-sm-6 col-lg-4 team-picture mb-4"
+      [class.active]="i === activeMemberPicture"
+      *ngFor="let member of team; let i = index"
+      (click)="activeMemberPicture = i">
+      <div class="position-relative" style="overflow: hidden;">
+        <div class="d-block position-relative">
+          <div>
+            <div class="personal-text">
+              <div
+                class="position-absolute text-center"
+                style="top: -25px; left: 0; ; width: 100%; z-index: 3;  color: rgba(255, 255, 255, 0.8)">
+                <i class="material-icons" style="font-size: 30px; text-shadow: 0 0 2px black">keyboard_arrow_up</i>
               </div>
-              <img
-                src="assets/img/team/{{member.name}}.jpg"
-                alt="Bild von {{member.name}}"
-                class="img-fluid d-block"
-              >
+              {{member.text}}
+              <br/><br/>
             </div>
-            <div class="shadow-box"></div>
           </div>
-          <h4 class="text-center mt-1">{{member.name}}</h4>
+          <img
+            src="assets/img/team/{{member.name}}.jpg"
+            alt="Bild von {{member.name}}"
+            class="img-fluid d-block"
+          >
         </div>
+        <div class="shadow-box"></div>
       </div>
+      <h4 class="text-center mt-1">{{member.name}}</h4>
     </div>
   </div>
 </div>
