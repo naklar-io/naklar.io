@@ -57,26 +57,6 @@ export class AboutComponent implements OnInit {
 
   activeMemberPicture = -1
 
-  socialLinks = [
-    {
-      platform: 'tiktok',
-      link: 'https://www.tiktok.com/@naklar.io'
-    },
-    {
-      platform: 'instagram',
-      link: 'https://www.instagram.com/naklar.io'
-    },
-    {
-      platform: 'twitter',
-      link: 'https://twitter.com/IoNaklar'
-    },
-    {
-      platform: 'facebook',
-      link: 'https://www.facebook.com/naklario'
-    },
-  ]
-
-
   constructor() { }
 
   ngOnInit(): void {
