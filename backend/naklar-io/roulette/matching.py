@@ -69,6 +69,8 @@ def generate_notifications():
     all_tutors = CustomUser.objects.prefetch_related('tutordata').filter(
         tutordata__isnull=False, email_verified=True, tutordata__verified=True,
         notificationsettings__isnull=False)
+        
+    all_tutors = all_tutors.exclude(meeting__ended=False)
 
     # find those who have notifications turned on and interval is okay
     all_tutors = all_tutors.filter(
