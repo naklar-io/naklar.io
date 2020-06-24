@@ -1,8 +1,13 @@
 <div class="card">
+  <div class="card-header">
+    <div class="text-right">
+      <button type="button" class="btn btn-danger" (click)="delete()">Löschen</button>
+    </div>
+  </div>
   <ng-form [formGroup]="rangeForm">
     <div class="card-body">
       <div class="row">
-        <div class="form-group col">
+        <div class="form-group col-sm-12 col-md-6">
           <label for="startTime">Startzeit</label>
           <input
             type="time"
@@ -11,7 +16,7 @@
             class="form-control"
           />
         </div>
-        <div class="form-group col">
+        <div class="form-group col-sm-12 col-md-6">
           <label for="endTime">Endzeit</label>
           <input
             type="time"
@@ -23,18 +28,12 @@
       </div>
       <div class="row">
         <div class="form-group col">
-          <p>Wochentage</p>
-          <p-multiSelect
-            [options]="days"
-            [filter]="false"
-            [showToggleAll]="false"
-            [showHeader]="false"
-            formControlName="days"
-            defaultLabel="Tage auswählen"
-            selectedItemsLabel="{0} Tage ausgewählt"
-            tooltip="Wähle hier die Tage aus"
-            id="days"
-          ></p-multiSelect>
+          <mat-form-field>
+            <mat-label>Wochentage</mat-label>
+            <mat-select formControlName="days" multiple>
+              <mat-option *ngFor="let day of days" [value]="day.value">{{day.label}}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
       </div>
     </div>

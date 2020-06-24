@@ -28,4 +28,5 @@ export interface NotificationRange {
   days: Day[];
   startTime: string;
   endTime: string;
+  pk?: number;
 }

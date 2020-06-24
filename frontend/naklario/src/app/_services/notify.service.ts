@@ -16,6 +16,7 @@ enum Browser {
   Unknown = "",
 }
 
+const saneModulus = (a, b) => ((a % b) + b) % b;
 const supportedBrowsers = [Browser.Chrome, Browser.Opera, Browser.Firefox];
 
 const defaultSettings = {
@@ -111,6 +112,7 @@ export class NotifyService {
       .get<NotificationSettings>(`${environment.apiUrl}/notify/settings/`)
       .subscribe(
         (settings) => {
+          settings = this.convertToLocal(settings);
           this.settings.next(settings);
         },
         (error) => {
@@ -174,19 +176,100 @@ export class NotifyService {
   }
 
   public updateSettings(
-    newSettings: Partial<NotificationSettings>
+    newSettings: NotificationSettings
   ): Observable<NotificationSettings> {
     return this.http
-      .patch<NotificationSettings>(
+      .put<NotificationSettings>(
         `${environment.apiUrl}/notify/settings/`,
-        newSettings
+        this.convertToUTC(newSettings)
       )
       .pipe(
         map((settings) => {
+          settings = this.convertToLocal(settings);
           this.settings.next(settings);
           return settings;
         })
       );
+  }
+
+  private convertToUTC(settings: NotificationSettings): NotificationSettings {
+    return Object.assign(settings, {
+      ranges: settings.ranges.map((range) => {
+        return {
+          days: range.days,
+          startTime: NotifyService.convertToUTC(range.startTime),
+          endTime: NotifyService.convertToUTC(range.endTime),
+          pk: range.pk,
+        };
+      }),
+    });
+  }
+
+  private convertToLocal(settings: NotificationSettings): NotificationSettings {
+   return Object.assign(settings, {
+      ranges: settings.ranges.map((range) => {
+        return {
+          days: range.days,
+          startTime: NotifyService.convertToLocal(range.startTime),
+          endTime: NotifyService.convertToLocal(range.endTime),
+          pk: range.pk
+        };
+      }),
+    });
+  }
+
+  /* Converts time to UTC */
+  public static convertToUTC(time: string): string {
+    let splits = time.split(":");
+    // assume max 00:00:00
+    let seconds = 0;
+    if (splits.length == 3) {
+      seconds += 3600 * parseInt(splits[0]);
+      seconds += 60 * parseInt(splits[1]);
+      seconds += parseInt(splits[2]);
+    } else if (splits.length == 2) {
+      seconds += 3600 * parseInt(splits[0]);
+      seconds += 60 * parseInt(splits[1]);
+    }
+    seconds = seconds + new Date().getTimezoneOffset() * 60;
+    let hours = saneModulus(Math.floor(seconds / 3600), 24);
+    let minutes = saneModulus(Math.floor((seconds % 3600) / 60), 60);
+    seconds = saneModulus(seconds, 60);
+    console.log(hours, minutes, seconds);
+    return (
+      hours.toString().padStart(2, "0") +
+      ":" +
+      minutes.toString().padStart(2, "0") +
+      ":" +
+      seconds.toString().padStart(2, "0")
+    );
+  }
+  /* Converts time to local time */
+  public static convertToLocal(time: string): string {
+    let splits = time.split(":");
+    // assume max 00:00:00
+    // min 00 seconds
+    let seconds = 0;
+    if (splits.length == 3) {
+      seconds += 3600 * parseInt(splits[0]);
+      seconds += 60 * parseInt(splits[1]);
+      seconds += parseInt(splits[2]);
+    } else if (splits.length == 2) {
+      seconds += 3600 * parseInt(splits[0]);
+      seconds += 60 * parseInt(splits[1]);
+    }
+    seconds = seconds - new Date().getTimezoneOffset() * 60;
+    let hours = saneModulus(Math.floor(seconds / 3600), 24);
+    let minutes = saneModulus(Math.floor((seconds % 3600) / 60), 60);
+    seconds = saneModulus(seconds, 60);
+    console.log(hours, minutes, seconds);
+    return (
+      hours.toString().padStart(2, "0") +
+      ":" +
+      minutes.toString().padStart(2, "0") +
+      ":" +
+      seconds.toString().padStart(2, "0")
+    );
   }
 
   public addPushSubscription(sub: PushSubscription) {
