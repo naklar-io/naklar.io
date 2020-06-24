@@ -1,30 +1,32 @@
-<div *ngIf="accountType === 'tutor'" class="row justify-content-center">
-  <div class="col-md-4">
-    <a routerLink="/roulette/tutor">
-      <button class="btn btn-primary text-light">Jetzt Schülern helfen</button>
-    </a>
+<div class="container">
+  <div *ngIf="accountType === 'tutor'" class="row justify-content-center">
+    <div class="col-md-4">
+      <a routerLink="/roulette/tutor">
+        <button class="btn btn-primary text-light">Jetzt Schülern helfen</button>
+      </a>
+    </div>
   </div>
-</div>
-<div *ngIf="accountType === 'student'">
-  <roulette-student></roulette-student>
-</div>
-
-<div *ngIf="accountType === 'tutor'" class="row mt-4">
-  <div class="col">
-    <p>
-      Community-Mentalität bei naklar.io:
-      <br />
-      Mit eurem großartigen Engagement können wir gemeinsam Schülern helfen.
-      Wichtigste Maxime hierbei ist das gegenseitige Vertrauen und der Respekt.
-      Wir bitten Dich gewissenhaft mit der Verantwortung, Kinder zu
-      unterrichten, umzugehen. Danke!
-    </p>
+  <div *ngIf="accountType === 'student'">
+    <roulette-student></roulette-student>
   </div>
+  
+  <div *ngIf="accountType === 'tutor'" class="row mt-4">
+    <div class="col">
+      <p>
+        Community-Mentalität bei naklar.io:
+        <br />
+        Mit eurem großartigen Engagement können wir gemeinsam Schülern helfen.
+        Wichtigste Maxime hierbei ist das gegenseitige Vertrauen und der Respekt.
+        Wir bitten Dich gewissenhaft mit der Verantwortung, Kinder zu
+        unterrichten, umzugehen. Danke!
+      </p>
+    </div>
+  </div>
+  
+  <misc-tutor-explanation
+    *ngIf="accountType === 'tutor'"
+  ></misc-tutor-explanation>
+  <misc-student-explanation
+    *ngIf="accountType === 'student'"
+  ></misc-student-explanation>
 </div>
-
-<misc-tutor-explanation
-  *ngIf="accountType === 'tutor'"
-></misc-tutor-explanation>
-<misc-student-explanation
-  *ngIf="accountType === 'student'"
-></misc-student-explanation>

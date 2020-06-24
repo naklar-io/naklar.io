@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, forwardRef } from "@angular/core";
+import { Component, OnInit, Input, forwardRef, Output, EventEmitter } from "@angular/core";
 import { NotificationRange, Day } from "src/app/_models";
 import {
   FormGroup,
@@ -37,6 +37,7 @@ export class NotificationTimeRangeComponent implements ControlValueAccessor {
   private onChange: Function;
   private onTouched: Function;
 
+  @Output() deleted = new EventEmitter<boolean>();
 
   days = DAYS.map((d, i) => {
     return {
@@ -49,6 +50,7 @@ export class NotificationTimeRangeComponent implements ControlValueAccessor {
     startTime: [""],
     endTime: [""],
     days: [""],
+    pk: [""]
   });
 
   constructor(private fb: FormBuilder) {
@@ -56,15 +58,15 @@ export class NotificationTimeRangeComponent implements ControlValueAccessor {
     this.onChange = (_: any) => {};
     this.onTouched = () => {};
     this.disabled = false;
-
   }
 
   writeValue(obj: any): void {
     this.range = obj;
-    this.rangeForm.setValue({
-      startTime: SettingsComponent.convertToLocal(this.range.startTime),
-      endTime: SettingsComponent.convertToLocal(this.range.endTime),
+    this.rangeForm.patchValue({
+      startTime: this.range.startTime,
+      endTime: this.range.endTime,
       days: this.range.days,
+      pk: this.range.pk
     });
   }
 
@@ -81,5 +83,9 @@ export class NotificationTimeRangeComponent implements ControlValueAccessor {
 
   public test(): void {
     console.log(this.rangeForm);
+  }
+
+  public delete() {
+    this.deleted.emit(true);
   }
 }

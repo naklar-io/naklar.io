@@ -80,7 +80,7 @@
       <div class="col" id="ranges">
         <div *ngFor="let range of rangeControls.controls; let i = index" class="row">
           <div class="col">
-            <notify-notification-time-range [formControl]="rangeControls.controls[i]"></notify-notification-time-range>
+            <notify-notification-time-range [formControl]="rangeControls.controls[i]" (deleted)="deleteRange(i)"></notify-notification-time-range>
           </div>
         </div>
       </div>
