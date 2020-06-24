@@ -101,7 +101,7 @@ class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generi
 
     def perform_destroy(self, instance):
         instance.deactivate()
-        #instance.manual_delete()
+        # instance.manual_delete()
 
 
 class MeetingListView(generics.ListAPIView):
@@ -237,3 +237,43 @@ def end_callback(request, meeting):
     meeting = get_object_or_404(Meeting.objects.all(), pk=meeting)
     meeting.end_meeting()
     return Response(MeetingSerializer(instance=meeting).data)
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def answer_request(request, id, type):
+    if type == "tutor" and hasattr(request.user, 'studentdata'):
+        tutor_request = get_object_or_404(TutorRequest.objects.all(), pk=id, is_active=True)
+
+        # returning if corresponding match already exists
+        match = Match.objects.filter(
+            tutor_request=tutor_request, student=request.user)
+        if not match:
+            if Match.objects.filter(tutor_request=tutor_request).exists():
+                raise exceptions.APIException(
+                    detail="Request already has match!")
+            # deleting all possible offenders by "yourself"
+            Match.objects.filter(student=request.user).delete()
+            match = Match.objects.create(
+                tutor_request=tutor_request, tutor=tutor_request.user, student=request.user, student_agree=True)
+        else:
+            match = match.get()
+    elif type == "student" and hasattr(request.user, 'tutordata'):
+        student_request = get_object_or_404(
+            StudentRequest.objects.all(), pk=id, is_active=True)
+        # returning if corresponding match already exists
+        match = Match.objects.filter(
+            student_request=student_request, tutor=request.user)
+        if not match:
+            if Match.objects.filter(student_request=student_request).exists():
+                raise exceptions.APIException(
+                    detail="Request already has match!")
+            # deleting all possible offenders by "yourself"
+            match = Match.objects.create(
+                student_request=student_request, student=student_request.user, tutor=request.user, tutor_agree=True)
+        else:
+            match = match.get()
+    else:
+        raise exceptions.NotFound(detail={"invalid type"})
+
+    return Response(MatchSerializer(instance=match).data)

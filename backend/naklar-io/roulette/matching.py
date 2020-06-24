@@ -41,7 +41,7 @@ def look_for_matches():
             best_tutor = max(tutor_rs, key=lambda tutor_request: calculate_request_matching_score(
                 student_request, tutor_request))
             Match.objects.create(
-                student_request=student_request, tutor_request=best_tutor)
+                student_request=student_request, tutor_request=best_tutor, student=student, tutor=best_tutor.user)
 
 
 def generate_notifications():
@@ -69,7 +69,7 @@ def generate_notifications():
     all_tutors = CustomUser.objects.prefetch_related('tutordata').filter(
         tutordata__isnull=False, email_verified=True, tutordata__verified=True,
         notificationsettings__isnull=False)
-        
+
     all_tutors = all_tutors.exclude(meeting__ended=False)
 
     # find those who have notifications turned on and interval is okay
@@ -95,7 +95,7 @@ def generate_notifications():
         # filter again for those who didn't already get a notification for the same request
         tutors = all_tutors.filter(tutordata__subjects=request.subject).exclude(
             notification__in=request.notifications.all())
-            #.exclude(notification__date__gte=timezone.now() - F('notificationsettings__notify_interval')).distinct()
+        # .exclude(notification__date__gte=timezone.now() - F('notificationsettings__notify_interval')).distinct()
 
         # now to find the 10 best!
         sorted_tutors = sorted(tutors, key=lambda tutor: calculate_user_matching_score(
@@ -118,6 +118,7 @@ def calculate_request_matching_score(student_request: StudentRequest, tutor_requ
 
 
 def calculate_user_matching_score(student_request: StudentRequest, tutor: CustomUser):
+    # TODO: Replace with DB annotations. This might be much quicker.
     score = 1
     student = student_request.user
     if student.state == tutor.state:
