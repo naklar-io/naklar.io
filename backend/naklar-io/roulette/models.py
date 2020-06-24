@@ -132,25 +132,24 @@ class TutorRequest(Request):
     pass
 
 
-@receiver(post_save, sender=TutorRequest)
-@receiver(post_save, sender=StudentRequest)
-def task_look_for_match(sender, instance, **kwargs):
-    pass
-   #  look_for_match_task.delay(sender, instance, **kwargs)
-
-
 class Match(models.Model):
-    """Represents a Match between two requests StudentRequest, TutorRequest
+    """Represents a Match between two requests StudentRequest, TutorRequest, or Student and Tutor
 
     If two matching requests StudentRequest <-> TutorRequest are found, a Match is created. Both sides have to agree to complete the Match
     Only one Match can be assigned to a request at any time. (OneToOneField)
     If the match is not successfull, the corresponding user is added to both failed_matches lists
     We keep track of the created_time and the changed_time to be able to set upper reaction time-limits on matches
     """
+
     student_request = models.OneToOneField(
-        StudentRequest, on_delete=models.CASCADE)
+        StudentRequest, on_delete=models.CASCADE, null=True)
     tutor_request = models.OneToOneField(
-        TutorRequest, on_delete=models.CASCADE)
+        TutorRequest, on_delete=models.CASCADE, null=True)
+
+    student = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="student_match")
+    tutor = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tutor_match")
 
     student_agree = models.BooleanField(default=False)
     tutor_agree = models.BooleanField(default=False)
@@ -164,23 +163,21 @@ class Match(models.Model):
 @receiver(pre_save, sender=Match)
 def on_match_change(sender, instance, **kwargs):
     if instance.student_agree and instance.tutor_agree and not hasattr(instance, 'meeting'):
-        meeting = Meeting(match=instance, name="naklar.io - Meeting")
-        # meeting.users.add(instance.student_request.user
-        # )
-        meeting.save()
-        meeting.users.add(instance.student_request.user,
-                          instance.tutor_request.user)
-        meeting.tutor = instance.tutor_request.user
-        meeting.student = instance.student_request.user
+        meeting = Meeting.objects.create(match=instance, name="naklar.io - Meeting")
+        meeting.users.add(instance.student,
+                          instance.tutor)
+        meeting.tutor = instance.tutor
+        meeting.student = instance.student
+
         # Add meeting to corresponding requests
         instance.tutor_request.meeting = meeting
         instance.student_request.meeting = meeting
         instance.tutor_request.save(update_fields=('meeting', ))
         instance.student_request.save(update_fields=('meeting', ))
+
         meeting.save()
         meeting.create_meeting()
 
-        # send update with meeting to requests
 
 
 @receiver(post_delete, sender=Match)
@@ -190,13 +187,11 @@ def on_match_delete(sender, instance: Match, **kwargs):
         pass
     else:
         # add to both requests failed matches and save --> should re-start matching
-        tutor = instance.tutor_request.user
-        student = instance.student_request.user
-        if not instance.tutor_request.is_manual_deleted:
-            instance.tutor_request.failed_matches.add(student)
+        if instance.tutor_request and not instance.tutor_request.is_manual_deleted:
+            instance.tutor_request.failed_matches.add(instance.student)
             instance.tutor_request.save()
-        if not instance.student_request.is_manual_deleted:
-            instance.student_request.failed_matches.add(tutor)
+        if instance.student_request and not instance.student_request.is_manual_deleted:
+            instance.student_request.failed_matches.add(instance.tutor)
             instance.student_request.save()
 
 

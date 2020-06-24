@@ -42,9 +42,8 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
 class MatchSerializer(DynamicFieldsModelSerializer):
     #tutor_uuid = serializers.ReadOnlyField(source='tutor_request.user.uuid')
-    tutor = CustomUserSerializer(source='tutor_request.user', read_only=True)
-    student = CustomUserSerializer(
-        source='student_request.user', read_only=True)
+    tutor = CustomUserSerializer(read_only=True)
+    student = CustomUserSerializer(read_only=True)
     #student_uuid = serializers.ReadOnlyField(source='student_request.user.uuid')
     subject = serializers.ReadOnlyField(source='student_request.subject.id')
 
