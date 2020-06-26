@@ -1,4 +1,4 @@
-name: Docker-Backend
+name: Docker-Frontend
 
 on:
   push:
@@ -14,7 +14,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: backend
+  IMAGE_NAME: frontend
 
 jobs:
   # Run tests.
@@ -22,7 +22,7 @@ jobs:
   test:
     defaults:
       run:
-        working-directory: backend
+        working-directory: frontend
     runs-on: ubuntu-latest
 
     steps:
@@ -42,7 +42,7 @@ jobs:
   push:
     defaults:
       run:
-        working-directory: backend
+        working-directory: frontend
 
     # Ensure test job passes before pushing image.
     needs: test
