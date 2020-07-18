@@ -184,6 +184,27 @@ export class NotifyService {
         this.convertToUTC(newSettings)
       )
       .pipe(
+        map(
+          (settings) => {
+            settings = this.convertToLocal(settings);
+            this.settings.next(settings);
+            return settings;
+          },
+          (error) => {
+            console.info("Missing settings, trying to create them", error);
+            return this.createSettings(newSettings);
+          }
+        )
+      );
+  }
+
+  public createSettings(newSettings: NotificationSettings) {
+    return this.http
+      .post<NotificationSettings>(
+        `${environment.apiUrl}/notify/settings/`,
+        this.convertToUTC(newSettings)
+      )
+      .pipe(
         map((settings) => {
           settings = this.convertToLocal(settings);
           this.settings.next(settings);
@@ -206,13 +227,13 @@ export class NotifyService {
   }
 
   private convertToLocal(settings: NotificationSettings): NotificationSettings {
-   return Object.assign(settings, {
+    return Object.assign(settings, {
       ranges: settings.ranges.map((range) => {
         return {
           days: range.days,
           startTime: NotifyService.convertToLocal(range.startTime),
           endTime: NotifyService.convertToLocal(range.endTime),
-          pk: range.pk
+          pk: range.pk,
         };
       }),
     });
