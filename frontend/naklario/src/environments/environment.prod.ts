@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  apiUrl: "https://api.achso.io",
+  apiUrl: "https://api.naklar.io",
   features: { roulette: true },
 };
