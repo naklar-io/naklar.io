@@ -53,4 +53,4 @@ WEBPUSH_SETTINGS = {
     "VAPID_ADMIN_EMAIL": "admin@example.org"
 }
 
-DEBUG = True
+DEBUG = False
