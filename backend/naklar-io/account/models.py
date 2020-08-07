@@ -14,8 +14,11 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
+from post_office import mail
+from post_office.models import EmailTemplate
 
 from account.managers import CustomUserManager
+from account.tasks import send_email_task
 
 logger = logging.getLogger(__name__)
 
@@ -136,11 +139,14 @@ class TutorData(models.Model):
             "user": self.user,
             "login_url": settings.HOST,
         }
-        text_content = TUTOR_VERIFICATION_PLAINTEXT.render(d)
-        html_content = TUTOR_VERIFICATION_HTMLY.render(d)
-        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
+        if EmailTemplate.objects.filter(name='tutor_verification').exists():
+            mail.send(to, from_email,
+                      template='tutor_verification', context=d)
+        else:
+            text_content = TUTOR_VERIFICATION_PLAINTEXT.render(d)
+            html_content = TUTOR_VERIFICATION_HTMLY.render(d)
+            mail.send(to, from_email, subject=subject,
+                      message=text_content, html_message=html_content)
 
     def __str__(self):
         return str(self.user)
@@ -233,12 +239,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                 'user': self,
                 'verification_url': settings.HOST + "/account/verify?token=" + str(token.token)
             }
-            text_content = EMAIL_VERIFICATION_PLAINTEXT.render(d)
-            html_content = EMAIL_VERIFICATION_HTMLY.render(d)
-            msg = EmailMultiAlternatives(
-                subject, text_content, from_email, [to])
-            msg.attach_alternative(html_content, "text/html")
-            msg.send()
+            if EmailTemplate.objects.filter(name='verification_mail').exists():
+                mail.send(to, from_email,
+                          template='verification_mail', context=d)
+            else:
+                text_content = EMAIL_VERIFICATION_PLAINTEXT.render(d)
+                html_content = EMAIL_VERIFICATION_HTMLY.render(d)
+                mail.send(to, from_email, subject=subject,
+                          message=text_content, html_message=html_content)
 
     def check_email_verification(self, check_token):
         if str(self.verificationtoken.token) == str(check_token):
@@ -258,12 +266,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             'user': self,
             'reset_url': settings.HOST + "/account/password-reset/{}".format(token.token)
         }
-        text_content = PASSWORD_RESET_PLAINTEXT.render(d)
-        html_content = PASSWORD_RESET_HTMLY.render(d)
-        msg = EmailMultiAlternatives(
-            subject, text_content, from_email, [to])
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
+        if EmailTemplate.objects.filter(name='password_reset').exists():
+            mail.send(to, from_email, template='password_reset', context=d)
+        else:
+            text_content = PASSWORD_RESET_PLAINTEXT.render(d)
+            html_content = PASSWORD_RESET_HTMLY.render(d)
+            mail.send(to, from_email, subject=subject,
+                      message=text_content, html_message=html_content)
 
     def is_tutor(self):
         return hasattr(self, 'tutordata')

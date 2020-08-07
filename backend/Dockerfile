@@ -1,18 +1,20 @@
-FROM python:3.7
+FROM python:3.8
 ENV PYTHONUNBUFFERED 1
 RUN useradd -ms /bin/bash --home-dir /code naklario
 
-COPY requirements.txt /code/
 COPY ./naklar-io /code/naklar-io
+COPY Pipfile Pipfile.lock /code/naklar-io/
 
-WORKDIR /code
+# WORKDIR /code
 
-RUN pip install -r requirements.txt
+RUN pip install pipenv
 RUN chown -R naklario /opt /code
 RUN rm -f /code/naklar-io/naklario/settings_local.py
 
 USER naklario
 WORKDIR /code/naklar-io
 
+RUN pipenv install --deploy --ignore-pipfile
 
-RUN python3 manage.py collectstatic --noinput
+
+RUN pipenv run python manage.py collectstatic --noinput

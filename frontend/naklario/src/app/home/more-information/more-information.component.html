@@ -1,21 +1,23 @@
 <div bodyScrollSpy [spiedTags]="['DIV']" (sectionChange)="onScrollSectionChange($event)">
 
   <!-- PARTNERS -->
-  <div class="px-0 py-5 mt-5 full-width bg-light" id="partners">
-    <!--  <hr>-->
-
-    <!--  <div class="row" style="margin-top: -1.85rem">-->
-    <!--    <div class="col-12 text-center" style="color: rgba(0,0,0,0.4);">-->
-    <!--      <span -->
-    <!--        style="background: white; padding: 7px 15px; border-radius: 1.4rem; border: 1px solid rgba(0,0,0,0.1); border-top: none"-->
-    <!--      >UNTERSTÜTZT VON</span>-->
-    <!--    </div>-->
-    <!--  </div>-->
-    <div class="container">
-      <home-more-information-partners></home-more-information-partners>
+  <div class="row">
+    <div class="col-12 px-0 py-5 mt-5 bg-light" id="partners">
+      <!--  <hr>-->
+  
+      <!--  <div class="row" style="margin-top: -1.85rem">-->
+      <!--    <div class="col-12 text-center" style="color: rgba(0,0,0,0.4);">-->
+      <!--      <span -->
+      <!--        style="background: white; padding: 7px 15px; border-radius: 1.4rem; border: 1px solid rgba(0,0,0,0.1); border-top: none"-->
+      <!--      >UNTERSTÜTZT VON</span>-->
+      <!--    </div>-->
+      <!--  </div>-->
+      <div class="container">
+        <home-more-information-partners></home-more-information-partners>
+      </div>
+  
+      <!--  <hr>-->
     </div>
-
-    <!--  <hr>-->
   </div>
 
 
@@ -26,9 +28,11 @@
 
 
   <!-- VIDEO -->
-  <div class="full-width bg-gradient-primary" id="video">
-    <div class="container">
-      <home-more-information-video></home-more-information-video>
+  <div class="row">
+    <div class="col-12 bg-gradient-primary" id="video">
+      <div class="container">
+        <home-more-information-video></home-more-information-video>
+      </div>
     </div>
   </div>
 

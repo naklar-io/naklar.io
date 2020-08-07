@@ -35,6 +35,12 @@
       >
         <br />
 
+        <div *ngIf="!register" class="form-row">
+          <div class="col-md form-group">
+            <a  routerLink="/notify/settings" class="btn btn-primary">Benachrichtigungseinstellungen</a>
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="col-md">
             <div class="form-group form-label-group">
