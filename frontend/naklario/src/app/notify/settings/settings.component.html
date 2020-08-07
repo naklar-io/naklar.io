@@ -1,0 +1,98 @@
+<div class="container">
+  <h4>Benachrichtigungen</h4>
+  <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-xs-12 col-md-4">
+        <label for="notificationTypes">Art der Benachrichtigung</label>
+        <div id="notifcationTypes">
+          <div class="form-group custom-control custom-checkbox">
+            <input
+              class="custom-control-input"
+              type="checkbox"
+              id="enablePush"
+              name="enablePush"
+              (change)="requestPush($event)"
+              formControlName="enablePush"
+            />
+            <label for="enablePush" class="custom-control-label"
+              >Push-Benachrichtigungen</label
+            >
+          </div>
+          <div class="form-group custom-control custom-checkbox">
+            <input
+              class="custom-control-input"
+              type="checkbox"
+              id="enableMail"
+              name="enableMail"
+              formControlName="enableMail"
+            />
+            <label for="enableMail" class="custom-control-label"
+              >Mail-Benachrichtigungen</label
+            >
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <label for="notifyInterval">Benachrichtungsintervall</label>
+        <div class="form-row">
+          <div class="form-group text-center">
+            <input
+              type="number"
+              min="0"
+              max="24"
+              id="notifyIntervalHours"
+              class="form-control"
+              formControlName="notifyIntervalHours"
+            />
+            <label for="notifyIntervalHours" class="small">Stunden</label>
+          </div>
+
+          <div class="form-group text-center">
+            <input
+              type="number"
+              min="0"
+              max="59"
+              step="1"
+              id="notifyIntervalMinutes"
+              class="form-control"
+              formControlName="notifyIntervalMinutes"
+            />
+            <label for="notifyIntervalMinutes" class="small">Minuten</label>
+          </div>
+          <div class="form-group text-center">
+            <input
+              type="number"
+              min="0"
+              max="59"
+              step="1"
+              id="notifyIntervalSeconds"
+              class="form-control"
+              formControlName="notifyIntervalSeconds"
+            />
+            <label for="notifyIntervalSeconds" class="small">Sekunden</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="ranges">Benachrichtigungszeiträume</label>
+      <div class="col" id="ranges">
+        <div *ngFor="let range of rangeControls.controls; let i = index" class="row">
+          <div class="col">
+            <notify-notification-time-range [formControl]="rangeControls.controls[i]" (deleted)="deleteRange(i)"></notify-notification-time-range>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col">
+          <button type="button" class="btn float-right" (click)="addRange()"><i style='font-size:3rem' class='material-icons'>alarm_add</i></button>
+       </div> 
+      </div>
+    </div>
+    
+   
+    <button type="submit" class="btn btn-primary">Ändern</button>
+  </form>
+</div>

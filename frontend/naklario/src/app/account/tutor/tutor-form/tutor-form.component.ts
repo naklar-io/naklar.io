@@ -29,6 +29,8 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { isPlatformBrowser } from "@angular/common";
 import { ThrowStmt } from "@angular/compiler";
+import { SwPush } from "@angular/service-worker";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "account-tutor-form",
@@ -71,7 +73,8 @@ export class TutorFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private swPush: SwPush
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
@@ -225,6 +228,21 @@ export class TutorFormComponent implements OnInit {
         reader.readAsDataURL(file);
       });
     }
+  }
+
+  subscribeToNotifications(): void {
+    this.swPush
+      .requestSubscription({
+        serverPublicKey: environment.vapidKey,
+      })
+      .then((sub) => {
+        // this.authenticationService.addPushSubscription(sub).subscribe((sub) => {
+        //  console.log(sub);
+        //});
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   onSubmit(): void {

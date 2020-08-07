@@ -42,6 +42,7 @@ import {
   ToastService,
   RouletteService,
   BannerService,
+  NotifyService,
 } from "./_services";
 
 import { MiscComponentsModule } from "./_misc_components/misc-components.module";
@@ -56,6 +57,10 @@ import { MissionComponent } from './home/more-information/mission/mission.compon
 import { NumbersComponent } from './home/more-information/numbers/numbers.component';
 import { TeamComponent } from './home/more-information/team/team.component';
 import { JoinTheCommunityComponent } from './home/more-information/join-the-community/join-the-community.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
+import { NotifyModule } from './notify/notify.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SocialIconsComponent } from './home/misc/social-icons/social-icons.component';
 import { PressComponent } from './home/misc/press/press.component';
 
@@ -95,6 +100,7 @@ import { PressComponent } from './home/misc/press/press.component';
     NgbModule,
     BrowserModule.withServerTransition({ appId: "serverApp" }),
     BrowserTransferStateModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     // Loading bar
     LoadingBarHttpClientModule,
@@ -106,8 +112,11 @@ import { PressComponent } from './home/misc/press/press.component';
     AccountModule,
     RouletteModule,
     MiscComponentsModule,
+    NotifyModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
+    //ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('custom-service-worker.js', { enabled: environment.production }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -117,6 +126,7 @@ import { PressComponent } from './home/misc/press/press.component';
     RouletteService,
     ToastService,
     BannerService,
+    NotifyService,
   ],
   bootstrap: [AppComponent],
 })
