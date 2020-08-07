@@ -3,7 +3,7 @@ version: "3.8"
 services:
   web:
     image: naklario/backend:latest
-    command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
+    command: pipenv run daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
     working_dir: /code/naklar-io
     volumes:
       - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
@@ -21,7 +21,7 @@ services:
     working_dir: /code/naklar-io
     volumes:
       - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
-    command: celery -A naklario worker -l info
+    command: pipenv run celery -A naklario worker -l info
     depends_on:
       - rabbitmq
       - web
@@ -31,7 +31,7 @@ services:
     working_dir: /code/naklar-io
     volumes:
       - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
-    command: celery -A naklario beat -S django -l info
+    command: pipenv run celery -A naklario beat -S django -l info
     depends_on:
       - rabbitmq
       - web

@@ -1,0 +1,32 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+autopep8 = "*"
+
+[packages]
+django = "~=3.0.1"
+channels = "*"
+django-celery-beat = "*"
+celery = "*"
+daphne = "*"
+djangorestframework = "*"
+django-filter = "*"
+django-rest-knox = "*"
+django-multiselectfield = "*"
+django-cors-headers = "*"
+djangorestframework-camel-case = "*"
+drf-base64 = "*"
+drf-writable-nested = "*"
+django-push-notifications = "*"
+django-post-office = "*"
+requests = "*"
+drf-yasg = "*"
+mysqlclient = "*"
+psycopg2 = "*"
+pillow = "*"
+
+[requires]
+python_version = "3.8"
