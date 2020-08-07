@@ -4,7 +4,7 @@ services:
   web:
     build: .
     #command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
-    command: ./manage.py runserver 0.0.0.0:8000
+    command: pipenv run python manage.py runserver 0.0.0.0:8000
     working_dir: /code/naklar-io
     ports:
       - 8000:8000
@@ -18,15 +18,16 @@ services:
       - type: volume
         source: static
         target: /opt/static
+    restart: always
 
-  smtpd:
-    image: python:3.7
-    command: python3 -m smtpd -n -c DebuggingServer 0.0.0.0:1025
+  #smtpd:
+  #  image: python:3.7
+  #  command: python3 -u -m smtpd -n -c DebuggingServer 0.0.0.0:1025
 
   celery_worker:
     build: .
     working_dir: /code/naklar-io
-    command: celery -A naklario worker -l info
+    command: pipenv run celery -A naklario worker -l info
     volumes:
       - type: bind
         source: ./naklar-io
@@ -38,7 +39,7 @@ services:
   celery_beat:
     build: .
     working_dir: /code/naklar-io
-    command: celery -A naklario beat -S django -l info
+    command: pipenv run celery -A naklario beat -S django -l info
     volumes:
       - type: bind
         source: ./naklar-io
@@ -65,5 +66,21 @@ services:
     ports:
       - 8080:80
 
+  # mysql:
+  #   image: mariadb
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: "docker"
+  #     MYSQL_DATABASE: "docker"
+  #     MYSQL_USER: "docker"
+  #     MYSQL_PASSWORD: "docker"
+
+  #   ports:
+  #     - 3306:3306
+  #   volumes:
+  #     - type: volume
+  #       source: database
+  #       target: /var/lib/mysql
+
 volumes:
   static:
+  database:
