@@ -46,6 +46,8 @@ export class TutorFormComponent implements OnInit {
   schoolData: SchoolData[];
   genders: Gender[];
 
+  enableNotifications: boolean = environment.features.notifications;
+
   verificationFile$: Observable<string>;
 
   private constants: Constants;
