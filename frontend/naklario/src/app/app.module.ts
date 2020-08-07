@@ -61,6 +61,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { NotifyModule } from './notify/notify.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SocialIconsComponent } from './home/misc/social-icons/social-icons.component';
+import { PressComponent } from './home/misc/press/press.component';
 
 @NgModule({
   declarations: [
@@ -91,6 +93,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NumbersComponent,
     TeamComponent,
     JoinTheCommunityComponent,
+    SocialIconsComponent,
+    PressComponent,
   ],
   imports: [
     NgbModule,
