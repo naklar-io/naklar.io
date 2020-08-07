@@ -12,7 +12,7 @@ export class NumbersComponent implements OnInit {
   @Input() parentCurrentScrollSectionId: BehaviorSubject<string>;
 
   // to be gotten externally in future
-  readonly USERS_COUNT = 3000;
+  readonly USERS_COUNT = 5000;
   userCounter = this.USERS_COUNT;
   private hasCounted = false
 
@@ -28,28 +28,24 @@ export class NumbersComponent implements OnInit {
     if (id === "numbers" && !this.hasCounted) {
       this.hasCounted = true;
 
-      const max = 3000;
       // animation time in ms
-      const time = 2 * 1e3;
-      const fPrime0 = 7000;
-      // implementing cubic interpolation between (0,0) and (time, max)
-      const cubic = (t) => {
-        if (t <= 0) { return 0; }
-        if (t >= time) { return max; }
-        const a = -2 * max + fPrime0;
-        const b = 3 * max - 2 * fPrime0;
-        const c = fPrime0;
-        const d = 0;
-        t /= time;
-        return a * t ** 3 + b * t ** 2 + c * t + d;
-      };
+      const countDuration = 5000
+      // interval of counting
+      const refreshInterval = 30
 
+      const easeOutQuint = (x) => {
+        return 1 - Math.pow(1 - x, 5);
+      }
 
       // every 10ms send interval until
-      interval(10)
-        .pipe(take(time / 10))
+      interval(refreshInterval)
+        .pipe(take(countDuration / refreshInterval))
         // tick to ms
-        .pipe(map((tick) => Math.ceil(cubic((tick + 1) * 10))))
+        .pipe(map((tick) => {
+          // linear progress from 0...1
+          const progress = tick * refreshInterval / countDuration
+          return Math.ceil(this.USERS_COUNT * easeOutQuint(progress))
+        }))
         .subscribe((x) => (this.userCounter = x));
     }
   }
