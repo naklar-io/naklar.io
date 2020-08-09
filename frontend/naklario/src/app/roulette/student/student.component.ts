@@ -16,6 +16,8 @@ import {
 import { User, Constants, StudentRequest } from "src/app/_models";
 import { Options } from "ng5-slider";
 import { ActivatedRoute, Router } from "@angular/router";
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PauseModalComponent } from '../pause-modal/pause-modal.component';
 
 @Component({
   selector: "roulette-student",
@@ -63,7 +65,8 @@ export class StudentComponent implements OnInit {
     private rouletteService: RouletteService,
     private route: ActivatedRoute,
     private router: Router,
-    private toast: ToastService
+    private toast: ToastService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
@@ -118,6 +121,7 @@ export class StudentComponent implements OnInit {
 
   onFormSubmit(): void {
     this.submitted = true;
+    
     this.studentForm.markAllAsTouched();
     if (!this.user.emailVerified) {
       this.toast.error(
@@ -130,7 +134,17 @@ export class StudentComponent implements OnInit {
       console.log("invalid");
       return;
     }
+    
+    // Open pause modal
+    var modalRef = this.modalService.open(PauseModalComponent);
+    modalRef.result.then(result => {
+      this.startMatch();
+    }, reason => {
+      console.log("dismissed");
+    })
+  }
 
+  startMatch(): void {
     if (this.shouldShowInstructionVideo) {
       this.isInstructionVideoShowing = true;
     } else {

@@ -13,6 +13,7 @@ import { FeedbackComponent } from "./feedback/feedback.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ReportComponent } from './feedback/report/report.component';
 import { InstructionVideoComponent } from './student/instruction-video/instruction-video.component';
+import { PauseModalComponent } from './pause-modal/pause-modal.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { InstructionVideoComponent } from './student/instruction-video/instructi
     FeedbackComponent,
     ReportComponent,
     InstructionVideoComponent,
+    PauseModalComponent,
   ],
   imports: [
     NgbModule,

@@ -1,9 +1,7 @@
 <div class="container">
   <div *ngIf="accountType === 'tutor'" class="row justify-content-center">
     <div class="col-md-4">
-      <a routerLink="/roulette/tutor">
-        <button class="btn btn-primary text-light">Jetzt Schülern helfen</button>
-      </a>
+      <button class="btn btn-primary text-light" (click)="startTutorMatching()">Jetzt Schülern helfen</button>
     </div>
   </div>
   <div *ngIf="accountType === 'student'">
