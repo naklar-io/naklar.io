@@ -1,0 +1,35 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Sommerpause</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Schließen"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p>
+    Hey {{ user.firstName }}!<br />
+    Leider befinden wir uns momentan in der Sommerpause, deswegen ist es
+    unwahrscheinlich Leute anzutreffen. <br />
+    Für Updates, folge uns <a routerLink="/press" (click)="modal.dismiss('Presse ')">hier!</a>
+  </p>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-primary"
+    (click)="modal.dismiss('Cancel')"
+  >
+    Abbrechen
+  </button>
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="modal.close('Continue')"
+  >
+    Trotzdem fortfahren
+  </button>
+</div>
