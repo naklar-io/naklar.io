@@ -4,10 +4,10 @@ services:
   web:
     build: .
     #command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
-    command: pipenv run python manage.py runserver 0.0.0.0:8000
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; pipenv run python manage.py runserver 0.0.0.0:8000'
     working_dir: /code/naklar-io
-    ports:
-      - 8000:8000
+    #ports:
+    #  - 127.0.0.1:8000:8000
     volumes:
       - type: bind
         source: ./naklar-io
@@ -64,22 +64,18 @@ services:
         volume:
           nocopy: true
     ports:
-      - 8080:80
+      - 8000:80
 
-  # mysql:
-  #   image: mariadb
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: "docker"
-  #     MYSQL_DATABASE: "docker"
-  #     MYSQL_USER: "docker"
-  #     MYSQL_PASSWORD: "docker"
+  db:
+     image: postgres
+     environment:
+       POSTGRES_USER: docker
+       POSTGRES_PASSWORD: docker
 
-  #   ports:
-  #     - 3306:3306
-  #   volumes:
-  #     - type: volume
-  #       source: database
-  #       target: /var/lib/mysql
+     volumes:
+       - type: volume
+         source: database
+         target: /var/lib/postgresql/data
 
 volumes:
   static:

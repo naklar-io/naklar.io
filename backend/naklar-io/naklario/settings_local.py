@@ -38,10 +38,10 @@ EMAIL_PORT = "1025"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dev',
-        'USER': 'dev',
-        'PASSWORD': 'dev',
-        'HOST': 'localhost',
+        'NAME': 'docker',
+        'USER': 'docker',
+        'PASSWORD': 'docker',
+        'HOST': 'db',
         'PORT': 5432,
     }
 }
