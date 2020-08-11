@@ -63,6 +63,7 @@ import { NotifyModule } from './notify/notify.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SocialIconsComponent } from './home/misc/social-icons/social-icons.component';
 import { PressComponent } from './home/misc/press/press.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -105,6 +106,8 @@ import { PressComponent } from './home/misc/press/press.component';
     // Loading bar
     LoadingBarHttpClientModule,
     LoadingBarRouterModule,
+    // Material
+    MatSnackBarModule,
     // Stuff for reactive / template driven forms
     ReactiveFormsModule,
     FormsModule,

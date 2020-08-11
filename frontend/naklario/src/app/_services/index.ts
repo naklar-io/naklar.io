@@ -8,3 +8,4 @@ export * from "./notify.service";
 export * from "./user-resolver.service";
 export * from "./toast.service";
 export * from "./banner.service";
+export * from "./prompt-update.service";
