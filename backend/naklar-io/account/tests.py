@@ -222,7 +222,7 @@ class AccountChangeTest(APITestCase):
         response = self.client.patch(
             reverse("account:account_view"), data=data, format='json')
         self.assertEqual(response.status_code, 200)
-        student = CustomUser.objects.get(id='1')
+        student = CustomUser.objects.get(id=self.student.id)
         self.assertEqual(student.first_name, 'Student2')
         self.assertEqual(student.email, 'otherstudent@test.com')
         self.assertEqual(student.state, self.state2)
@@ -248,7 +248,7 @@ class AccountChangeTest(APITestCase):
         response = self.client.patch(
             reverse("account:account_view"), data=data, format='json')
         self.assertEqual(response.status_code, 200)
-        tutor = CustomUser.objects.get(id=2)
+        tutor = CustomUser.objects.get(id=self.tutor.id)
 
         self.assertEqual(tutor.first_name, 'Tutor2')
         self.assertEqual(tutor.email, 'othertutor@test.com')
