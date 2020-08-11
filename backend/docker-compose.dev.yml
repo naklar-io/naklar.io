@@ -19,6 +19,8 @@ services:
         source: static
         target: /opt/static
     restart: always
+    depends_on:
+      - db
 
   #smtpd:
   #  image: python:3.7

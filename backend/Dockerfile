@@ -9,7 +9,8 @@ COPY Pipfile Pipfile.lock /code/naklar-io/
 
 RUN pip install pipenv
 RUN chown -R naklario /opt /code
-RUN rm -f /code/naklar-io/naklario/settings_local.py
+
+# RUN rm -f /code/naklar-io/naklario/settings_local.py
 
 USER naklario
 WORKDIR /code/naklar-io
