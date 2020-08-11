@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { NotifyService } from './_services';
+import { NotifyService, PromptUpdateService } from "./_services";
 
 @Component({
   selector: "app-root",
@@ -7,9 +7,9 @@ import { NotifyService } from './_services';
   styleUrls: ["./app.component.scss"],
 })
 export class AppComponent {
-  title = "naklario";
-  constructor(private notify: NotifyService) {
-
-  }
-
+  title = "naklar.io";
+  constructor(
+    private notify: NotifyService,
+    private promptUpdate: PromptUpdateService
+  ) {}
 }
