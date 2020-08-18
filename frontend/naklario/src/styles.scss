@@ -33,6 +33,9 @@ $naklario-theme: mat-light-theme($naklario-primary, $naklario-accent, $naklario-
 
 @import "material-icons";
 
+.grey {
+  color: #454545;
+}
 /* // font specific classes
 .bold {
   font-weight: 700;
@@ -147,3 +150,32 @@ $light-gray: #f4f4f4;
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/**
+.btn-primary {
+    border-width: 0.25em;
+    border-radius: 17.5px;
+    font-size: 1.1rem;
+    color: #000000;
+    
+}
+
+.btn-primary:hover {
+    color: #000;
+    background-color: #fdb328;
+    border-color: #fdb328;
+}
+*/
+@each $color, $value in $theme-colors {
+  .nabtn-#{$color} {
+    @include button-variant($value, $value);
+    border-width: 0.25em;
+    border-radius: 15px;
+    font-size: 1.0rem;
+    color: black;
+  }
+  .nabtn-#{$color}:hover {
+    background-color: #fdb328;
+    border-color: #fdb328;
+  }
+}
