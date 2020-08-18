@@ -37,6 +37,28 @@ jobs:
             docker build . --file Dockerfile
           fi
 
+  deploy:
+    needs: push
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - name: Setup SSH connection
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$DEV_PRIVATE_KEY" > ../private.key
+          sudo chmod 600 ../private.key
+          echo "$DEV_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env: 
+          DEV_PRIVATE_KEY: ${{secrets.DEV_PRIVATE_KEY}}
+          DEV_KNOWN_HOSTS: ${{secrets.DEV_DB_KNOWN_HOSTS}}
+      - name: Run update.sh
+        run: |
+          ssh -i $SSH_KEY_PATH dev@api.naklar.io ./update.sh
+        shell: bash
+        env:
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
+
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
   push:
