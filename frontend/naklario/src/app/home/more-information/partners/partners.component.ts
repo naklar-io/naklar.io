@@ -48,6 +48,11 @@ const partnerLogos: PartnerLogo[] = [
     href: 'https://www.pi-muenchen.de/',
     src: 'assets/img/partners/08 pi.png',
     alt: 'Pädagogisches Institut München'
+  },
+  {
+    href: 'https://wirfuerschule.de/',
+    src: 'assets/img/partners/09 wfs_logo.png',
+    alt: '#wirfürschule Hackathon'
   }
 ]
 
