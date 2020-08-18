@@ -102,7 +102,12 @@ export class SettingsComponent implements OnInit {
         console.log("success", value);
       },
       (error) => {
-        console.error("error", error);
+        console.error("error, trying to CREATE (POST)", error);
+        this.notifyService.createSettings(newSettings).subscribe(
+          (value) => {
+            console.log("success creating", value);
+          }
+        );
       }
     );
   }
