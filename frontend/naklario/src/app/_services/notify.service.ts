@@ -191,7 +191,7 @@ export class NotifyService {
             return settings;
           },
           (error) => {
-            console.info("Missing settings, trying to create them", error);
+            console.log("Missing settings, trying to create them", error);
             return this.createSettings(newSettings);
           }
         )
