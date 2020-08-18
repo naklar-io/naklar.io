@@ -1,21 +1,10 @@
 <div class="row mt-5 justify-content-center">
   <div class="col-md-6 col-12 p-0 mb-5 text-center align-self-center" *ngFor="let feature of features">
     <div class="d-flex d-md-block flex-row align-items-center justify-content-between">
-      <svg
-        class="bi bi-chat text-primary"
-        style="min-width: 15%"
-        width="3em"
-        height="3em"
-        viewBox="0 0 16 16"
-        fill="currentColor"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          fill-rule="evenodd"
-          [attr.d]="feature.svgPathD"
-          clip-rule="evenodd"
-        />
-      </svg>
+      <img
+        [src]="feature.src"
+        class="feature-pic"
+      />
       <div class="d-none d-md-block">
         <h2 class="text-primary ml-3 ml-md-0">{{feature.displayText}}</h2>
         <p>{{feature.longDescription}}</p>
