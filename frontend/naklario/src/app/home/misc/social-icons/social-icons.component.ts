@@ -19,7 +19,7 @@ export class SocialIconsComponent implements OnInit {
     },
     {
       platform: 'twitter',
-      link: 'https://twitter.com/IoNaklar'
+      link: 'https://twitter.com/naklario'
     },
     {
       platform: 'facebook',
