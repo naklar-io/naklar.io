@@ -278,4 +278,10 @@ export class AuthenticationService {
       }
     );
   }
+
+  public deleteAccount() {
+    this.http.delete(`${environment.apiUrl}/account/current/`).subscribe();
+      this.currentUserSubject.next(null);
+      this.loggedIn.next(false);
+  }
 }

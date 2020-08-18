@@ -36,4 +36,9 @@ export class ProfileComponent implements OnInit {
     this.authenticationService.logoutAll();
     this.router.navigate(['/'])
   }
+
+  deleteAccount(): void {
+    this.authenticationService.deleteAccount();
+    this.router.navigate(['/']);
+  }
 }
