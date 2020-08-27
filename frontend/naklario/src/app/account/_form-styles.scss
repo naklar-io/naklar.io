@@ -3,16 +3,16 @@
 }
 
 ::ng-deep {
-  .custom-slider .ng5-slider {
-      .ng5-slider-selection {
+  .custom-slider .ngx-slider {
+      .ngx-slider-selection {
           background: $primary;
       }
 
-      .ng5-slider-pointer {
+      .ngx-slider-pointer {
           background: $primary !important;
           outline: none;
       }
-      .ng5-slider-tick.ng5-slider-selected {
+      .ngx-slider-tick.ngx-slider-selected {
           background: $primary;
         }
   }

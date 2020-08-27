@@ -14,7 +14,6 @@ import {
   BannerService,
 } from "src/app/_services";
 import { User, Constants, StudentRequest } from "src/app/_models";
-import { Options } from "ng5-slider";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PauseModalComponent } from '../pause-modal/pause-modal.component';
@@ -33,13 +32,6 @@ export class StudentComponent implements OnInit {
   user: User;
 
   constants: Constants;
-
-  slider_options: Options = {
-    animate: false,
-    showTicks: true,
-    floor: 5,
-    ceil: 13,
-  };
 
   studentForm = this.fb.group({
     subject: ["", Validators.required],

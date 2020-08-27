@@ -7,7 +7,6 @@ import { StudentComponent } from "./student/student.component";
 import { TutorFormComponent } from "./tutor/tutor-form/tutor-form.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
-import { Ng5SliderModule } from "ng5-slider";
 import { StudentFormComponent } from "./student/student-form/student-form.component";
 import { LoginComponent } from "./login/login.component";
 import { ProfileComponent } from "./profile/profile.component";
@@ -20,6 +19,7 @@ import { PasswordResetComponent } from "./password-reset/password-reset.componen
 import { ResetRequestComponent } from "./password-reset/reset-request/reset-request.component";
 import { MiscComponentsModule } from "../_misc_components/misc-components.module";
 import { RegisterComponent } from "./register/register.component";
+import { NgxSliderModule } from '@m0t0r/ngx-slider';
 @NgModule({
   declarations: [
     TutorComponent,
@@ -35,7 +35,7 @@ import { RegisterComponent } from "./register/register.component";
   ],
   imports: [
     MiscComponentsModule,
-    Ng5SliderModule,
+    NgxSliderModule,
     NgSelectModule,
     FormsModule,
     ReactiveFormsModule,

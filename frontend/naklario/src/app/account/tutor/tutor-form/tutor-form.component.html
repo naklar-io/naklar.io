@@ -212,17 +212,17 @@
                 {{ schoolTypes[i].name }}
               </label>
             </div>
-            <!-- isBrowser: https://github.com/angular-slider/ng5-slider/issues/66-->
+            <!-- isBrowser: https://github.com/angular-slider/ngx-slider/issues/66-->
             <div
               *ngIf="isBrowser"
               class="col-md-9 custom-slider"
               [hidden]="!schoolType.value"
             >
-              <ng5-slider
+              <ngx-slider
                 [options]="sliderOptions[i]"
                 [formControl]="sliderControl.controls[i]"
                 [manualRefresh]="sliderRefresh[i]"
-              ></ng5-slider>
+              ></ngx-slider>
             </div>
           </div>
           <div class="invalid-feedback">
