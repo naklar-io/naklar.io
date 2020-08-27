@@ -244,6 +244,9 @@ CELERY_BROKER_URL = "amqp://rabbitmq"
 
 CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 
+# For reverse nginx proxy, we forward this. make sure this is being forwarded for all!
+USE_X_FORWARDED_HOST = True
+
 
 # as we're using CELERY
 POST_OFFICE = {
