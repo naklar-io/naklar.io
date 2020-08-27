@@ -28,6 +28,7 @@
     "@angular/platform-server": "~10.0.8",
     "@angular/router": "~10.0.8",
     "@angular/service-worker": "~10.0.8",
+    "@m0t0r/ngx-slider": "^1.0.0",
     "@ng-bootstrap/ng-bootstrap": "^6.0.2",
     "@ng-select/ng-select": "^4.0.0",
     "@nguniversal/express-engine": "^10.0.1",
@@ -39,7 +40,6 @@
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.3",
     "material-design-icons": "^3.0.1",
-    "ng5-slider": "^1.2.4",
     "rxjs": "~6.6.2",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

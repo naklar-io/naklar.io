@@ -17,7 +17,7 @@ import {
   User,
 } from "../../../_models/database";
 import { first } from "rxjs/operators";
-import { Options } from "ng5-slider";
+import { Options } from "@m0t0r/ngx-slider";
 import { AuthenticationService } from "../../../_services";
 import { FormBuilder, Validators, FormGroup } from "@angular/forms";
 import { passwordNotMatchValidator } from "../../../_helpers";

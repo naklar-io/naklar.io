@@ -5,7 +5,6 @@ import { RouletteRoutingModule } from "./roulette-routing.module";
 import { ReactiveFormsModule } from "@angular/forms";
 import { RouletteComponent } from "./roulette.component";
 import { StudentComponent } from "./student/student.component";
-import { Ng5SliderModule } from "ng5-slider";
 import { WaitComponent } from "./wait/wait.component";
 import { MiscComponentsModule } from "../_misc_components/misc-components.module";
 import { SessionComponent } from "./session/session.component";
@@ -14,6 +13,7 @@ import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { ReportComponent } from './feedback/report/report.component';
 import { InstructionVideoComponent } from './student/instruction-video/instruction-video.component';
 import { PauseModalComponent } from './pause-modal/pause-modal.component';
+import { NgxSliderModule } from '@m0t0r/ngx-slider';
 
 @NgModule({
   declarations: [
@@ -28,7 +28,7 @@ import { PauseModalComponent } from './pause-modal/pause-modal.component';
   ],
   imports: [
     NgbModule,
-    Ng5SliderModule,
+    NgxSliderModule,
     CommonModule,
     ReactiveFormsModule,
     RouletteRoutingModule,
