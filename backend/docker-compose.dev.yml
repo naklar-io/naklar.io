@@ -67,6 +67,8 @@ services:
           nocopy: true
     ports:
       - 8000:80
+    depends_on: 
+      - web
 
   db:
      image: postgres
