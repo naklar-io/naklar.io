@@ -10,14 +10,23 @@ import {
   AfterViewInit,
   HostListener,
   Renderer2,
+  Inject,
+  PLATFORM_ID,
 } from "@angular/core";
 import {
   RouletteService,
   RouletteRequestType,
   ToastService,
+  ScrollableService,
 } from "src/app/_services";
 import { Meeting } from "src/app/_models";
 import { map } from "rxjs/operators";
+import { isPlatformBrowser } from "@angular/common";
+import { Router, ActivatedRoute } from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { ExitModalComponent } from "./exit-modal/exit-modal.component";
+import { Observable, BehaviorSubject, from } from "rxjs";
+import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 
 @Component({
   selector: "roulette-session",
@@ -27,41 +36,130 @@ import { map } from "rxjs/operators";
 export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() readonly requestType: RouletteRequestType;
   @Input() joinUrl: string;
+  @Input() meetingId: string;
   @Output() done = new EventEmitter<Meeting>();
   @ViewChild("iframe") iframe: ElementRef;
 
   meeting: Meeting;
 
+  // some information about the session state
+  hasJoinedAudio: boolean = false;
+  isMuted: boolean = true;
+
+  initialLoadStarted: boolean = false;
+  initialLoadComplete: boolean = false;
+
+  allowString: string = "";
+
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private rouletteService: RouletteService,
     private ts: ToastService,
-    private renderer: Renderer2
+    private route: ActivatedRoute,
+    private router: Router,
+    private renderer: Renderer2,
+    private scollableService: ScrollableService,
+    private modalService: NgbModal
   ) {}
 
   ngOnInit(): void {
     window.addEventListener("message", (ev) => {
       console.log("got bbb event", ev);
-      if (ev.data.response === "notInAudio") {
-        console.log("bbb-session-done", ev);
-        this.done.emit(this.meeting);
+      switch (ev.data.response) {
+        case "readyToConnect": {
+          this.getInitialState();
+        }
+        case "joinedAudio": {
+          this.hasJoinedAudio = true;
+        }
+        case "notInAudio": {
+          this.hasJoinedAudio = false;
+        }
+        case "selfMuted": {
+          this.isMuted = true;
+        }
+        case "selfUnmuted": {
+          this.isMuted = false;
+        }
       }
     });
     const url = new URL(this.joinUrl);
-    const meetingID = url.searchParams.get("meetingID");
-
-    this.joinUrl = url.toString();
+    console.log("iframe origin: ", url.origin);
+    this.allowString = `microphone ${url.origin}; camera ${url.origin}; geolocation ${url.origin}; display-capture`;
     console.log("opening iframe: ", this.joinUrl);
-    this.rouletteService
-      .getMeetings()
-      .pipe(map((m) => m.find((x) => x.meetingId === meetingID)))
-      .subscribe(
-        (meeting) => (this.meeting = meeting),
-        (error) => this.ts.error(error)
+    this.rouletteService.getMeeting(this.meetingId).subscribe(
+      (meeting) => {
+        this.meeting = meeting;
+        if (meeting.ended) {
+          this.done.emit(meeting);
+        }
+      },
+      (error) => {
+        if (error.status == 404) {
+          this.ts.error("Das Meeting konnte nicht gefunden werden!");
+        } else {
+          this.ts.error(error);
+        }
+        this.router.navigateByUrl("/");
+      }
+    );
+
+    this.initialLoadStarted = true;
+    this.joinUrl = url.toString();
+  }
+
+  getInitialState() {
+    // get initial state
+    if (isPlatformBrowser(this.platformId)) {
+      this.iframe.nativeElement.contentWindow.postMessage(
+        "c_recording_status",
+        "*"
       );
+      this.iframe.nativeElement.contentWindow.postMessage(
+        "get_audio_joined_status",
+        "*"
+      );
+    }
+  }
+
+  endMeeting() {
+    // TODO: Add confirmation? With confirmation -> end meeting/ask other user to end meeting. give feedback!
+    from(
+      this.modalService.open(ExitModalComponent, { centered: true }).result
+    ).subscribe(
+      (result) => {
+        console.log(result);
+        this.rouletteService.endMeeting(this.meeting).subscribe();
+        this.done.emit(this.meeting);
+      },
+      (reason) => {
+        console.log("dismissed");
+      }
+    );
+  }
+
+  reloadPage() {
+    /*this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigate(['./'], { relativeTo: this.route, queryParamsHandling: 'preserve'});*/
+    window.location.reload();
+  }
+
+  onIFrameLoad() {
+    // TODO: catch any kind of bbb redirect.
+    // TODO: maybe we can webhook bbb in the API and get all events --> redirect to naklar.io client so it know's
+    if (this.initialLoadComplete) {
+      console.log("another iframe load started... ending meeting");
+      this.endMeeting();
+    } else if (this.initialLoadStarted) {
+      this.initialLoadComplete = !this.initialLoadComplete;
+      console.log("initial iframe load!");
+    }
   }
 
   ngAfterViewInit(): void {
     window.scroll(0, 0);
+    this.scollableService.setScrollable(false);
   }
 
   /**
@@ -90,7 +188,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
    * executed after meeting done
    */
   ngOnDestroy(): void {
-    this.rouletteService.deleteMatch(this.requestType);
-    this.rouletteService.endMeeting(this.meeting);
+    // this.rouletteService.deleteMatch(this.requestType);
+    this.scollableService.setScrollable(true);
   }
 }

@@ -20,8 +20,10 @@ typed_patterns = [
 
 
 urlpatterns = [
-    path('meeting/join/<uuid:match_uuid>/', views.join_meeting),
+    path('meeting/join/<uuid:match_uuid>/', views.join_meeting_by_match),
+    path('meeting/joinbyid/<uuid:meeting_id>/', views.join_meeting_by_id),
     path('meetings/', views.MeetingListView.as_view()),
+    path('meetings/<uuid:meeting_id>', views.MeetingDetailView.as_view()),
     path('meeting/feedback/', views.FeedbackListView.as_view()),
     path('meeting/feedback/<uuid:meeting>',
          views.FeedbackDetailView.as_view()),

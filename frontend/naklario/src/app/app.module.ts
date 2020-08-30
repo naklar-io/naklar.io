@@ -43,6 +43,7 @@ import {
   RouletteService,
   BannerService,
   NotifyService,
+  ScrollableService,
 } from "./_services";
 
 import { MiscComponentsModule } from "./_misc_components/misc-components.module";
@@ -130,6 +131,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ToastService,
     BannerService,
     NotifyService,
+    ScrollableService,
   ],
   bootstrap: [AppComponent],
 })

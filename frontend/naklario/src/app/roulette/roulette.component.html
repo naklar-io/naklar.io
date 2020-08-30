@@ -1,3 +1,11 @@
+<div *ngIf="state === 'session'">
+  <roulette-session
+    [requestType]="type"
+    [joinUrl]="join.joinUrl"
+    [meetingId]="join.meetingId"
+    (done)="onSessionDone($event)"
+  ></roulette-session>
+</div>
 <div class="container">
   <div *ngIf="state === 'wait'">
     <roulette-wait
@@ -6,20 +14,23 @@
     ></roulette-wait>
   </div>
 
-  <div *ngIf="state === 'session'">
-    <roulette-session
-      [requestType]="type"
-      [joinUrl]="join.joinUrl"
-      (done)="onSessionDone($event)"
-    ></roulette-session>
-  </div>
-
   <div *ngIf="state === 'feedback'">
     <roulette-feedback
       [requestType]="type"
       [meeting]="meeting"
       (done)="onFeedbackDone($event)"
     ></roulette-feedback>
+  </div>
+
+  <div *ngIf="state === 'waitsession'">
+    <div class="row">
+      <div class="col">
+        <p>
+          Wir versuchen dich mit deiner letzten Sitzung wiederzuverbinden. Bitte
+          habe einen Moment Geduld.
+        </p>
+      </div>
+    </div>
   </div>
 
   <hr />
