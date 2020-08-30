@@ -1,12 +1,16 @@
-<ngx-loading-bar color="#EF8515"></ngx-loading-bar>
+<div #main>
+  <ngx-loading-bar color="#EF8515"></ngx-loading-bar>
 
-<app-navbar></app-navbar>
-<div style="width: 100%; height: 66px; position:relative; display: block"></div>
+  <app-navbar></app-navbar>
+  <div
+    style="width: 100%; height: 66px; position: relative; display: block"
+  ></div>
 
-<app-banner></app-banner>
-<misc-toasts></misc-toasts>
+  <app-banner></app-banner>
+  <misc-toasts></misc-toasts>
 
-<div class="container-fluid py-3">
-  <router-outlet></router-outlet>
+  <div class="container-fluid py-3">
+    <router-outlet></router-outlet>
+  </div>
+  <app-footer></app-footer>
 </div>
-<app-footer></app-footer>

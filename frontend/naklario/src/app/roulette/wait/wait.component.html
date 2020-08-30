@@ -4,9 +4,9 @@
       <div class="col">
         <p>
           Toll, dass Du Dir gerade Zeit für Schüler nimmst! Wir suchen nach
-          einem passenden Schüler für Dich. Sobald jemand gefunden wurde
-          ertönt eine Hinweiston - Du kannst Dich in der Zwischenzeit daher
-          gerne mit anderen Sachen beschäftigen.
+          einem passenden Schüler für Dich. Sobald jemand gefunden wurde ertönt
+          eine Hinweiston - Du kannst Dich in der Zwischenzeit daher gerne mit
+          anderen Sachen beschäftigen.
         </p>
       </div>
 
@@ -71,16 +71,16 @@
 </div>
 
 <div *ngIf="requestType === 'student'">
-
   <div *ngIf="state === 'wait'">
     <div class="row justify-content-center">
       <div class="col-sm-6">
         <div class="alert alert-primary">
           <strong
-            >Bitte rede mit unseren Tutoren! Das macht es uns
-            leichter, deine Fragen zu beantworten.</strong>
-            <br>
-            Erlaube hierfür den <mark>Zugriff auf dein Mikrofon.</mark>
+            >Bitte rede mit unseren Tutoren! Das macht es uns leichter, deine
+            Fragen zu beantworten.</strong
+          >
+          <br />
+          Erlaube hierfür den <mark>Zugriff auf dein Mikrofon.</mark>
 
           <!--  <strong
             >Bitte wähle nach dem Match <mark>Mit Mikrofon</mark> und drücke beim
@@ -165,8 +165,8 @@
 
     <div *ngIf="state === 'accepted'">
       <div *ngIf="match.bothAccepted(); else pending">
-        {{ match.tutor.firstName }} hat die Verbindung akzeptiert. Ihr werdet
-        in Kürze weitergeleitet.
+        {{ match.tutor.firstName }} hat die Verbindung akzeptiert. Ihr werdet in
+        Kürze weitergeleitet.
       </div>
 
       <ng-template #pending>

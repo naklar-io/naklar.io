@@ -171,6 +171,12 @@ export class RouletteService {
       .pipe(tap((m) => console.log("got meetings: ", m)));
   }
 
+  public getMeeting(id: string): Observable<Meeting> {
+    return this.http
+      .get<Meeting>(`${environment.apiUrl}/roulette/meetings/${id}`)
+      .pipe(tap((m) => console.log("got meeting", m)));
+  }
+
   public joinMeeting(match: Match) {
     return this.http
       .post<JoinResponse>(
@@ -178,6 +184,15 @@ export class RouletteService {
         null
       )
       .pipe(tap((r) => console.log("got join response: ", r)));
+  }
+
+  public joinMeetingById(id: string) {
+    return this.http
+      .post<JoinResponse>(
+        `${environment.apiUrl}/roulette/meeting/joinbyid/${id}/`,
+        null
+      )
+      .pipe(tap((r) => console.log("got joinbyid response: ", r)));
   }
 
   public endMeeting(meeting: Meeting) {

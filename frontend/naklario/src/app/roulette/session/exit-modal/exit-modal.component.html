@@ -1,0 +1,38 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Session beenden</h4>
+  <button
+    type="button"
+    class="close"
+    aria-label="Schließen"
+    (click)="modal.dismiss('Cross click')"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <p>
+    Bist du sicher, dass du das Meeting beenden willst? Wenn es technische
+    Probleme gibt, kannst du die Seite auch erneut laden!
+  </p>
+</div>
+<div class="modal-footer">
+  <button
+    type="button"
+    class="btn btn-secondary"
+    (click)="modal.dismiss('Cancel')"
+  >
+    Abbrechen
+  </button>
+  <button
+    type="button"
+    class="btn btn-warning"
+    onclick="window.location.reload()"
+  >
+    Seite neu laden
+  </button>
+  <button
+    type="button"
+    class="btn btn-success"
+    (click)="modal.close('Continue')"
+  >Session beenden</button>
+</div>
