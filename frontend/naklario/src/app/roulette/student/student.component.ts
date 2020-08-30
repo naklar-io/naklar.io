@@ -15,8 +15,8 @@ import {
 } from "src/app/_services";
 import { User, Constants, StudentRequest } from "src/app/_models";
 import { ActivatedRoute, Router } from "@angular/router";
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PauseModalComponent } from '../pause-modal/pause-modal.component';
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PauseModalComponent } from "../pause-modal/pause-modal.component";
 
 @Component({
   selector: "roulette-student",
@@ -76,27 +76,14 @@ export class StudentComponent implements OnInit {
         this.shouldShowInstructionVideo = true;
         return;
       }
-
-
-      let lastMeetingDate = null
-
-      for (const meeting of meetings) {
-        const meetingDate = new Date(meeting.timeEnded)
-
-        if (!lastMeetingDate) {
-          lastMeetingDate = meetingDate
-          continue
-        }
-
-        if (meetingDate.getTime() > lastMeetingDate.getTime()) {
-          lastMeetingDate = meetingDate
-        }
-      }
-
-      if (!lastMeetingDate) {
-        return
-      }
-
+      let lastMeeting = meetings
+        .filter((meeting) => meeting.established)
+        .sort(
+          (a, b) =>
+            new Date(b.timeEstablished).getTime() -
+            new Date(a.timeEstablished).getTime()
+        )[0];
+      let lastMeetingDate = new Date(lastMeeting.timeEstablished);
       const lastMeetingWasBeforeFeatureStart =
         lastMeetingDate.getTime() < this.FEATURE_RELEASE_DATE.getTime();
 
@@ -113,7 +100,7 @@ export class StudentComponent implements OnInit {
 
   onFormSubmit(): void {
     this.submitted = true;
-    
+
     this.studentForm.markAllAsTouched();
     if (!this.user.emailVerified) {
       this.toast.error(
@@ -126,14 +113,17 @@ export class StudentComponent implements OnInit {
       console.log("invalid");
       return;
     }
-    
+
     // Open pause modal
     var modalRef = this.modalService.open(PauseModalComponent);
-    modalRef.result.then(result => {
-      this.startMatch();
-    }, reason => {
-      console.log("dismissed");
-    })
+    modalRef.result.then(
+      (result) => {
+        this.startMatch();
+      },
+      (reason) => {
+        console.log("dismissed");
+      }
+    );
   }
 
   startMatch(): void {

@@ -16,7 +16,7 @@ import { map, tap, take, switchMap } from "rxjs/operators";
 import { Observable } from "rxjs";
 
 // roulette state machine
-type State = "create" | "wait" | "session" | "feedback";
+type State = "create" | "wait" | "waitsession" | "session" | "feedback";
 type UserType = "student" | "tutor";
 
 @Component({
@@ -42,7 +42,38 @@ export class RouletteComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.bannerService.showBanner();
     this.route.queryParams.subscribe((params) => {
-      this.state = params.state && params.state === "wait" ? "wait" : "create";
+      if (params.state === "session") {
+        if (this.join) {
+          this.state = "session";
+        } else if (params.meetingId) {
+          this.state = "waitsession";
+          this.rouletteService
+            .joinMeetingById(params.meetingId)
+            .subscribe((join) => {
+              this.join = join;
+              this.state = "session";
+            });
+        }
+      } else {
+        /* this.state =
+          params.state && params.state === "wait" ? "wait" : "create";*/
+        this.state = params.state ? params.state : "create";
+      }
+      if (this.state == "feedback" && !this.meeting) {
+        if (params.meetingId) {
+          this.rouletteService.getMeeting(params.meetingId).subscribe(
+            (meeting) => {
+              this.meeting = meeting;
+            },
+            (error) => {
+              console.error("Meeting wasn't found!", error);
+              this.router.navigateByUrl("/");
+            }
+          );
+        } else {
+          this.router.navigateByUrl("/");
+        }
+      }
     });
 
     if (this.router.url.endsWith("student")) {
@@ -89,6 +120,9 @@ export class RouletteComponent implements OnInit, OnDestroy {
     if (response) {
       // accepted match
       this.join = response;
+      this.router.navigate([`/roulette/${this.type}`], {
+        queryParams: { state: "session", meetingId: this.join.meetingId },
+      });
       this.state = "session";
     } else {
       // rejected match
@@ -98,8 +132,11 @@ export class RouletteComponent implements OnInit, OnDestroy {
 
   onSessionDone(meeting: Meeting) {
     if (meeting) {
-      this.state = "feedback";
       this.meeting = meeting;
+      this.router.navigate([`/roulette/${this.type}`], {
+        queryParams: { state: "feedback", meetingId: this.meeting.meetingId},
+      });
+      this.state = "feedback";
     } else {
       this.router.navigate(["/dashboard"]);
     }

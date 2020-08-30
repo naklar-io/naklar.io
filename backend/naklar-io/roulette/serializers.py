@@ -75,7 +75,7 @@ class MeetingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meeting
         fields = ['meeting_id', 'ended',
-                  'time_ended', 'student', 'tutor', 'name', 'feedback_set']
+                  'time_ended', 'established', 'time_established', 'student', 'tutor', 'name', 'feedback_set']
 
 
 class ReportSerializer(serializers.ModelSerializer):

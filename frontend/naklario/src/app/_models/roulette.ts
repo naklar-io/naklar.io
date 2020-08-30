@@ -37,6 +37,8 @@ export interface Meeting {
   meetingId?: string;
   ended?: boolean;
   timeEnded?: string;
+  established?: boolean;
+  timeEstablished?: string;
   student?: string;
   tutor?: string;
   name: string;
@@ -45,6 +47,7 @@ export interface Meeting {
 
 export interface JoinResponse {
   joinUrl: string;
+  meetingId: string;
 }
 
 export interface Feedback {

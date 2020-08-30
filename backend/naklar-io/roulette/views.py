@@ -152,7 +152,6 @@ class FeedbackListView(generics.ListCreateAPIView):
 
         serializer.save(provider=provider, receiver=receiver)
 
-
 class FeedbackDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FeedbackSerializer
@@ -162,6 +161,14 @@ class FeedbackDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return self.queryset.filter(Q(provider=self.request.user) | Q(receiver=self.request.user))
 
+class MeetingDetailView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = MeetingSerializer
+    queryset = Meeting.objects.all()
+    lookup_field = 'meeting_id'
+    
+    def get_queryset(self):
+        return self.queryset.filter(users=self.request.user)
 
 match_answer_param = openapi.Parameter(
     'agree', openapi.IN_BODY, 'Agree with Match?', required=True, schema=openapi.Schema(type=openapi.TYPE_BOOLEAN))
@@ -212,7 +219,7 @@ def match_answer(request, uuid, type):
 
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
-def join_meeting(request, match_uuid):
+def join_meeting_by_match(request, match_uuid):
     user = request.user
     match = Match.objects.filter(uuid=match_uuid)
     url = ""
@@ -227,7 +234,24 @@ def join_meeting(request, match_uuid):
                 raise exceptions.NotFound(detail="User not in meeting!")
     print(url)
     if url:
-        return Response(data={'join_url': url})
+        return Response(data={'join_url': url, 'meeting_id': match.meeting.meeting_id})
+    else:
+        raise exceptions.NotFound(detail="No matching meeting found")
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def join_meeting_by_id(request, meeting_id):
+    user = request.user
+    meeting: Meeting = get_object_or_404(Meeting, Q(tutor=user) | Q(
+        student=user), meeting_id=meeting_id)
+    url = ""
+    if user == meeting.tutor:
+        url = meeting.create_join_link(user, moderator=True)
+    elif user == meeting.student:
+        url = meeting.create_join_link(user, moderator=False)
+    if url:
+        return Response(data={'join_url': url, 'meeting_id': meeting.meeting_id})
     else:
         raise exceptions.NotFound(detail="No matching meeting found")
 
@@ -243,7 +267,8 @@ def end_callback(request, meeting):
 @permission_classes([permissions.IsAuthenticated])
 def answer_request(request, id, type):
     if type == "tutor" and hasattr(request.user, 'studentdata'):
-        tutor_request = get_object_or_404(TutorRequest.objects.all(), pk=id, is_active=True)
+        tutor_request = get_object_or_404(
+            TutorRequest.objects.all(), pk=id, is_active=True)
 
         # returning if corresponding match already exists
         match = Match.objects.filter(
