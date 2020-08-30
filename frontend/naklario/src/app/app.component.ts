@@ -21,12 +21,12 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
   ngAfterViewInit(): void {
     this.scrollableService.scrollable$.subscribe((scrollable) => {
-      console.log("scrollable", this.main)
+      console.debug("scrollable", this.main)
       if(scrollable) {
         try {
           this.renderer.removeClass(this.main.nativeElement , "noscroll");
         } catch {
-          console.log("couldnt remov");
+          console.error("couldnt remove scrollable class");
         }
       } else {
         this.renderer.addClass(this.main.nativeElement, "noscroll");

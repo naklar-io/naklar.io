@@ -150,7 +150,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     // TODO: maybe we can webhook bbb in the API and get all events --> redirect to naklar.io client so it know's
     if (this.initialLoadComplete) {
       console.log("another iframe load started... ending meeting");
-      this.endMeeting();
+      this.done.emit(this.meeting);
     } else if (this.initialLoadStarted) {
       this.initialLoadComplete = !this.initialLoadComplete;
       console.log("initial iframe load!");
