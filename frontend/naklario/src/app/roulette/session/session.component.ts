@@ -61,6 +61,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     private modalService: NgbModal
   ) {
 
+    this.layoutService.setScrollable(false);
   }
 
 
@@ -160,7 +161,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    window.scroll(0, 0);
+    //window.scroll(0, document.body.scrollHeight);
     this.layoutService.setFullscreen(true);
   }
 
@@ -191,7 +192,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   ngOnDestroy(): void {
     // this.rouletteService.deleteMatch(this.requestType);
-    //this.layoutService.setScrollable(true);
+    this.layoutService.setScrollable(true);
     this.layoutService.setFullscreen(false);
   }
 }
