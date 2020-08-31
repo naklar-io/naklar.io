@@ -1,18 +1,26 @@
-.bbb-container {
+.upper-container {
   min-height: 100vh;
+//  height: 100%;
   min-width: 100vw;
-  display: flex;
   margin: 0;
-  flex-direction: column;
 }
+
+
 
 // mobile viewport bug fix: THIS IS VERY HACKY. Source: https://allthingssmitty.com/2020/05/11/css-fix-for-100vh-in-mobile-webkit/
 @media not all and (min-resolution: 0.001dpcm) {
   @supports (-webkit-appearance: none) and (stroke-color: transparent) {
-    .bbb-container {
+    .upper-container {
       min-height: -webkit-fill-available;
     }
   }
+}
+
+.bbb-container {
+  height: 100%;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
 }
 
 .bbb-session {
