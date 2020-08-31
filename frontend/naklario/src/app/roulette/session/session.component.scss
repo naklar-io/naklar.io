@@ -1,9 +1,18 @@
 .bbb-container {
   min-height: 100vh;
-  min-height: -webkit-fill-available;
-  min-width: 100vw; 
+  min-width: 100vw;
   display: flex;
-  flex-direction: column; 
+  margin: 0;
+  flex-direction: column;
+}
+
+// mobile viewport bug fix: THIS IS VERY HACKY. Source: https://allthingssmitty.com/2020/05/11/css-fix-for-100vh-in-mobile-webkit/
+@media not all and (min-resolution: 0.001dpcm) {
+  @supports (-webkit-appearance: none) and (stroke-color: transparent) {
+    .bbb-container {
+      min-height: -webkit-fill-available;
+    }
+  }
 }
 
 .bbb-session {
@@ -14,15 +23,14 @@
   //position: absolute;
   //padding-bottom: 40px;
   //padding-top: 40px;
-    // flex: 1;
+  // flex: 1;
   flex-grow: 1;
   //top: 0;
 }
 
- .exit-button {
+.exit-button {
   //height: 5vh;
   border-radius: 0;
   height: 40px;
   width: 100vw;
 }
-

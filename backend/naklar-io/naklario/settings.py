@@ -246,6 +246,7 @@ CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 
 # For reverse nginx proxy, we forward this. make sure this is being forwarded for all!
 USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # as we're using CELERY
