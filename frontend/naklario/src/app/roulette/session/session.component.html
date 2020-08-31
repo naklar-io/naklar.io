@@ -1,5 +1,15 @@
 <!-- need to trust the url using the | safe pipe -->
 <div class="bbb-container">
+  <!--<button class="reload-button btn btn-warning" (click)="reloadPage()">Problem? Sitzung neu laden</button>-->
+  <iframe
+    [src]="joinUrl | safe"
+    frameborder="0"
+    allow="microphone *; camera *; geolocation *; display-capture"
+    class="bbb-session"
+    (load)="onIFrameLoad()"
+    #iframe
+  >
+  </iframe>
   <button class="exit-button btn btn-primary" (click)="endMeeting()">
     Sitzung beenden
     <svg
@@ -16,14 +26,4 @@
       />
     </svg>
   </button>
-  <!--<button class="reload-button btn btn-warning" (click)="reloadPage()">Problem? Sitzung neu laden</button>-->
-  <iframe
-    [src]="joinUrl | safe"
-    frameborder="0"
-    [attr.allow]="allowString"
-    class="bbb-session"
-    (load)="onIFrameLoad()"
-    #iframe
-  >
-  </iframe>
 </div>

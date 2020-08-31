@@ -6,7 +6,7 @@
     (done)="onSessionDone($event)"
   ></roulette-session>
 </div>
-<div class="container">
+<div *ngIf="state !== 'session'" class="container">
   <div *ngIf="state === 'wait'">
     <roulette-wait
       [requestType]="type"

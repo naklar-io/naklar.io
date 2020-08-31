@@ -17,12 +17,12 @@ import {
   RouletteService,
   RouletteRequestType,
   ToastService,
-  ScrollableService,
+  AppLayoutService,
 } from "src/app/_services";
 import { Meeting } from "src/app/_models";
 import { map } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router, ActivatedRoute, UrlHandlingStrategy } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ExitModalComponent } from "./exit-modal/exit-modal.component";
 import { Observable, BehaviorSubject, from } from "rxjs";
@@ -57,12 +57,16 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     private ts: ToastService,
     private route: ActivatedRoute,
     private router: Router,
-    private renderer: Renderer2,
-    private scollableService: ScrollableService,
+    private layoutService: AppLayoutService,
     private modalService: NgbModal
-  ) {}
+  ) {
+
+  }
+
 
   ngOnInit(): void {
+    const url = new URL(this.joinUrl);
+    this.allowString = `microphone ${url.origin}; camera ${url.origin}; geolocation ${url.origin}; display-capture`;
     window.addEventListener("message", (ev) => {
       console.log("got bbb event", ev);
       switch (ev.data.response) {
@@ -83,9 +87,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     });
-    const url = new URL(this.joinUrl);
     console.log("iframe origin: ", url.origin);
-    this.allowString = `microphone ${url.origin}; camera ${url.origin}; geolocation ${url.origin}; display-capture`;
     console.log("opening iframe: ", this.joinUrl);
     this.rouletteService.getMeeting(this.meetingId).subscribe(
       (meeting) => {
@@ -159,7 +161,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     window.scroll(0, 0);
-    this.scollableService.setScrollable(false);
+    this.layoutService.setFullscreen(true);
   }
 
   /**
@@ -189,6 +191,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   ngOnDestroy(): void {
     // this.rouletteService.deleteMatch(this.requestType);
-    this.scollableService.setScrollable(true);
+    //this.layoutService.setScrollable(true);
+    this.layoutService.setFullscreen(false);
   }
 }

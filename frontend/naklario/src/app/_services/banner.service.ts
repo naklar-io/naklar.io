@@ -16,12 +16,12 @@ export class BannerService {
   }
 
   hideBanner() {
-    console.log("showing banner");
+    console.log("hiding banner");
     this.displaySubject.next(false);
     return this.display;
   }
   showBanner() {
-    console.log("hiding banner");
+    console.log("showing banner");
     this.displaySubject.next(true);
     return this.display;
   }

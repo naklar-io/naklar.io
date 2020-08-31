@@ -9,4 +9,4 @@ export * from "./user-resolver.service";
 export * from "./toast.service";
 export * from "./banner.service";
 export * from "./prompt-update.service";
-export * from "./scrollable.service";
+export * from "./app-layout.service";
