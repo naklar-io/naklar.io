@@ -1,29 +1,48 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2, AfterViewInit } from "@angular/core";
-import { NotifyService, PromptUpdateService, ScrollableService } from "./_services";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  Renderer2,
+  AfterViewInit,
+  DoCheck,
+} from "@angular/core";
+import {
+  NotifyService,
+  PromptUpdateService,
+  AppLayoutService,
+} from "./_services";
 
 @Component({
   selector: "app-root",
   templateUrl: "./app.component.html",
   styleUrls: ["./app.component.scss"],
+  providers: [AppLayoutService]
 })
-export class AppComponent implements OnInit, AfterViewInit{
-  
-
+export class AppComponent implements OnInit, AfterViewInit, DoCheck {
   @ViewChild("main") main: ElementRef;
+
+  public fullscreen: boolean = false;
 
   title = "naklar.io";
   constructor(
     private notify: NotifyService,
     private promptUpdate: PromptUpdateService,
-    private scrollableService: ScrollableService,
+    private layoutService: AppLayoutService,
     private renderer: Renderer2
   ) {
+    
+  }
+  ngDoCheck(): void {
+    if (this.fullscreen !== this.layoutService.isFullscreen){
+      this.fullscreen = this.layoutService.isFullscreen;
+    }
   }
   ngAfterViewInit(): void {
-    this.scrollableService.scrollable$.subscribe((scrollable) => {
-      if(scrollable) {
+    this.layoutService.scrollable$.subscribe((scrollable) => {
+      if (scrollable) {
         try {
-          this.renderer.removeClass(this.main.nativeElement , "noscroll");
+          this.renderer.removeClass(this.main.nativeElement, "noscroll");
         } catch {
           console.error("couldnt remove scrollable class");
         }
@@ -31,8 +50,9 @@ export class AppComponent implements OnInit, AfterViewInit{
         this.renderer.addClass(this.main.nativeElement, "noscroll");
       }
     });
-  }
-  ngOnInit(): void {
+    
   }
 
+  ngOnInit(): void {
+  }
 }

@@ -3,22 +3,23 @@ import {
   OnInit,
   AfterViewChecked,
   AfterViewInit,
+  OnDestroy,
 } from "@angular/core";
 import {
   AuthenticationService,
   AccountType,
   BannerService,
 } from "../_services";
-import { Router } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PauseModalComponent } from '../roulette/pause-modal/pause-modal.component';
+import { Router } from "@angular/router";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { PauseModalComponent } from "../roulette/pause-modal/pause-modal.component";
 
 @Component({
   selector: "app-dashboard",
   templateUrl: "./dashboard.component.html",
   styleUrls: ["./dashboard.component.scss"],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   accountType: AccountType;
 
   constructor(
@@ -26,9 +27,7 @@ export class DashboardComponent implements OnInit {
     private bannerService: BannerService,
     private modalService: NgbModal,
     private router: Router
-  ) {}
-
-  ngOnInit(): void {
+  ) {
     this.authenticationService.getAccountType().subscribe((t) => {
       this.accountType = t;
     });
@@ -37,12 +36,20 @@ export class DashboardComponent implements OnInit {
       this.bannerService.showBanner();
     }
   }
+  ngOnDestroy(): void {
+    this.bannerService.hideBanner();
+  }
+
+  ngOnInit(): void {}
 
   startTutorMatching(): void {
-    this.modalService.open(PauseModalComponent).result.then((result) => {
-      this.router.navigateByUrl("/roulette/tutor");
-    }, (reason) => {
-      console.log("dismissed");
-    })
+    this.modalService.open(PauseModalComponent).result.then(
+      (result) => {
+        this.router.navigateByUrl("/roulette/tutor");
+      },
+      (reason) => {
+        console.log("dismissed");
+      }
+    );
   }
 }

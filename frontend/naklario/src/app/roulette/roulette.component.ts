@@ -38,9 +38,10 @@ export class RouletteComponent implements OnInit, OnDestroy {
     private rouletteService: RouletteService,
     private authenticationService: AuthenticationService,
     private bannerService: BannerService
-  ) {}
-  ngOnInit(): void {
+  ) {
     this.bannerService.showBanner();
+  }
+  ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
       if (params.state === "session") {
         if (this.join) {
@@ -113,6 +114,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
     if (done) {
       // advance state
       this.state = "wait";
+      
     }
   }
 
@@ -120,7 +122,8 @@ export class RouletteComponent implements OnInit, OnDestroy {
     if (response) {
       // accepted match
       this.join = response;
-      this.router.navigate([`/roulette/${this.type}`], {
+      this.router.navigate([], {
+        relativeTo: this.route,
         queryParams: { state: "session", meetingId: this.join.meetingId },
       });
       this.state = "session";
@@ -133,7 +136,8 @@ export class RouletteComponent implements OnInit, OnDestroy {
   onSessionDone(meeting: Meeting) {
     if (meeting) {
       this.meeting = meeting;
-      this.router.navigate([`/roulette/${this.type}`], {
+      this.router.navigate([], {
+        relativeTo: this.route,
         queryParams: { state: "feedback", meetingId: this.meeting.meetingId},
       });
       this.state = "feedback";

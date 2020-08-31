@@ -27,7 +27,7 @@ export class StudentGuard implements CanActivate, CanActivateChild {
         return true;
       } else {
         this.toastService.error(
-          "Du must einen Studenten Account haben, um hier hin zu kommen"
+          "Du must einen Schüler-Account haben, um hier hin zu kommen"
         );
         return false;
       }
