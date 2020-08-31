@@ -39,7 +39,6 @@ export class AuthenticationService {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient,
-    private databaseService: DatabaseService
   ) {
     let user: User;
     // Only use localStorage in Browser
