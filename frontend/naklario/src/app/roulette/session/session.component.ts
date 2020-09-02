@@ -73,18 +73,34 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
       switch (ev.data.response) {
         case "readyToConnect": {
           this.getInitialState();
+          break;
         }
         case "joinedAudio": {
           this.hasJoinedAudio = true;
+          break;
         }
         case "notInAudio": {
           this.hasJoinedAudio = false;
+          break;
         }
         case "selfMuted": {
           this.isMuted = true;
+          break;
         }
         case "selfUnmuted": {
           this.isMuted = false;
+          break;
+        }
+        case "naklarioLeave": {
+          this.endMeeting();
+          break;
+        }
+        case "naklarioMeetingEnded": {
+          this.done.emit(this.meeting);
+          break;
+        }
+        default: {
+          //
         }
       }
     });
@@ -127,6 +143,9 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   endMeeting() {
     // TODO: Add confirmation? With confirmation -> end meeting/ask other user to end meeting. give feedback!
+    if (this.modalService.hasOpenModals()) {
+      return;
+    }
     from(
       this.modalService.open(ExitModalComponent, { centered: true }).result
     ).subscribe(
