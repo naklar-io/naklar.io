@@ -307,7 +307,7 @@ class Meeting(models.Model):
                           # TODO: Play around with this one, to maybe make a request in AJAX possible
                           'redirect': 'true',
                           'meetingID': str(self.meeting_id),
-                          'password': self.moderator_pw if moderator else self.attendee_pw
+                          'password': self.moderator_pw
                           }
             return self.build_api_request("join", parameters)
         return None
