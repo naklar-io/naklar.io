@@ -8,8 +8,6 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
-  HostListener,
-  Renderer2,
   Inject,
   PLATFORM_ID,
 } from "@angular/core";
@@ -20,13 +18,11 @@ import {
   AppLayoutService,
 } from "src/app/_services";
 import { Meeting } from "src/app/_models";
-import { map } from "rxjs/operators";
 import { isPlatformBrowser } from "@angular/common";
-import { Router, ActivatedRoute, UrlHandlingStrategy } from "@angular/router";
+import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { ExitModalComponent } from "./exit-modal/exit-modal.component";
-import { Observable, BehaviorSubject, from } from "rxjs";
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
+import { from } from "rxjs";
 
 @Component({
   selector: "roulette-session",
@@ -42,6 +38,8 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   meeting: Meeting;
 
+  private boundMethod: any;
+
   // some information about the session state
   hasJoinedAudio: boolean = false;
   isMuted: boolean = true;
@@ -55,55 +53,19 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private rouletteService: RouletteService,
     private ts: ToastService,
-    private route: ActivatedRoute,
     private router: Router,
     private layoutService: AppLayoutService,
     private modalService: NgbModal
   ) {
-
     this.layoutService.setScrollable(false);
   }
 
-
   ngOnInit(): void {
+    this.boundMethod = this.onBBBEvent.bind(this);
+    window.addEventListener("message", this.boundMethod);
     const url = new URL(this.joinUrl);
-    this.allowString = `microphone ${url.origin}; camera ${url.origin}; geolocation ${url.origin}; display-capture`;
-    window.addEventListener("message", (ev) => {
-      console.log("got bbb event", ev);
-      switch (ev.data.response) {
-        case "readyToConnect": {
-          this.getInitialState();
-          break;
-        }
-        case "joinedAudio": {
-          this.hasJoinedAudio = true;
-          break;
-        }
-        case "notInAudio": {
-          this.hasJoinedAudio = false;
-          break;
-        }
-        case "selfMuted": {
-          this.isMuted = true;
-          break;
-        }
-        case "selfUnmuted": {
-          this.isMuted = false;
-          break;
-        }
-        case "naklarioLeave": {
-          this.endMeeting();
-          break;
-        }
-        case "naklarioMeetingEnded": {
-          this.done.emit(this.meeting);
-          break;
-        }
-        default: {
-          //
-        }
-      }
-    });
+    // this.allowString = `microphone ${url.origin}; camera ${url.origin}; geolocation ${url.origin}; display-capture`;
+
     console.log("iframe origin: ", url.origin);
     console.log("opening iframe: ", this.joinUrl);
     this.rouletteService.getMeeting(this.meetingId).subscribe(
@@ -122,9 +84,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
         this.router.navigateByUrl("/");
       }
     );
-
     this.initialLoadStarted = true;
-    this.joinUrl = url.toString();
   }
 
   getInitialState() {
@@ -154,7 +114,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
         this.rouletteService.endMeeting(this.meeting).subscribe();
         this.done.emit(this.meeting);
       },
-      (reason) => {
+      () => {
         console.log("dismissed");
       }
     );
@@ -176,6 +136,43 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     } else if (this.initialLoadStarted) {
       this.initialLoadComplete = !this.initialLoadComplete;
       console.log("initial iframe load!");
+    }
+  }
+
+  onBBBEvent(ev: MessageEvent): void {
+    console.log("got bbb event", ev);
+    switch (ev.data.response) {
+      case "readyToConnect": {
+        this.getInitialState();
+        break;
+      }
+      case "joinedAudio": {
+        this.hasJoinedAudio = true;
+        break;
+      }
+      case "notInAudio": {
+        this.hasJoinedAudio = false;
+        break;
+      }
+      case "selfMuted": {
+        this.isMuted = true;
+        break;
+      }
+      case "selfUnmuted": {
+        this.isMuted = false;
+        break;
+      }
+      case "naklarioLeave": {
+        this.endMeeting();
+        break;
+      }
+      case "naklarioMeetingEnded": {
+        this.done.emit(this.meeting);
+        break;
+      }
+      default: {
+        //
+      }
     }
   }
 
@@ -213,5 +210,6 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.rouletteService.deleteMatch(this.requestType);
     this.layoutService.setScrollable(true);
     this.layoutService.setFullscreen(false);
+    window.removeEventListener("message", this.boundMethod);
   }
 }
