@@ -241,10 +241,10 @@ class Meeting(models.Model):
     def build_api_request(self, call, parameters):
         to_hash = call + urlencode(parameters) + settings.BBB_SHARED
         h = hashlib.sha1(to_hash.encode('utf-8'))
-        parameters['checksum'] = h.hexdigest()
-        url = "{}/bigbluebutton/api/".format(
-            settings.BBB_URL)
-        request = url + "{}?{}".format(call, urlencode(parameters))
+        new_parameters = parameters.copy()
+        new_parameters['checksum'] = h.hexdigest()
+        url = f"{settings.BBB_URL}/bigbluebutton/api/"
+        request = url + f"{call}?{urlencode(new_parameters)}"
         return request
 
     def create_meeting(self):
