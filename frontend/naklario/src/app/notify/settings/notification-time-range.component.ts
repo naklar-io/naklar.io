@@ -1,12 +1,12 @@
-import { Component, OnInit, Input, forwardRef, Output, EventEmitter } from "@angular/core";
-import { NotificationRange, Day } from "src/app/_models";
+import { Component, OnInit, Input, forwardRef, Output, EventEmitter } from '@angular/core';
+import { NotificationRange, Day } from 'src/app/_models';
 import {
   FormGroup,
   ControlValueAccessor,
   NG_VALUE_ACCESSOR,
   FormBuilder,
-} from "@angular/forms";
-import { formatDate } from "@angular/common";
+} from '@angular/forms';
+import { formatDate } from '@angular/common';
 import { SettingsComponent } from './settings.component';
 
 const TIMERANGE_VALUE_ACCESSOR: any = {
@@ -17,25 +17,25 @@ const TIMERANGE_VALUE_ACCESSOR: any = {
 
 
 const DAYS = [
-  "Montag",
-  "Dienstag",
-  "Mittwoch",
-  "Donnerstag",
-  "Freitag",
-  "Samstag",
-  "Sonntag",
+  'Montag',
+  'Dienstag',
+  'Mittwoch',
+  'Donnerstag',
+  'Freitag',
+  'Samstag',
+  'Sonntag',
 ];
 @Component({
-  selector: "notify-notification-time-range",
+  selector: 'notify-notification-time-range',
   providers: [TIMERANGE_VALUE_ACCESSOR],
-  templateUrl: "./notification-time-range.component.html",
-  styleUrls: ["./notification-time-range.component.scss"],
+  templateUrl: './notification-time-range.component.html',
+  styleUrls: ['./notification-time-range.component.scss'],
 })
 export class NotificationTimeRangeComponent implements ControlValueAccessor {
   range: NotificationRange;
   private disabled: boolean;
-  private onChange: Function;
-  private onTouched: Function;
+  private onChange: (_: any) => void;
+  private onTouched: (_: any) => void;
 
   @Output() deleted = new EventEmitter<boolean>();
 
@@ -47,10 +47,10 @@ export class NotificationTimeRangeComponent implements ControlValueAccessor {
   });
 
   rangeForm = this.fb.group({
-    startTime: [""],
-    endTime: [""],
-    days: [""],
-    pk: [""]
+    startTime: [''],
+    endTime: [''],
+    days: [''],
+    pk: ['']
   });
 
   constructor(private fb: FormBuilder) {

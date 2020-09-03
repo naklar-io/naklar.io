@@ -1,18 +1,18 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-import { AuthenticationService, ToastService } from "../_services";
+import { AuthenticationService, ToastService } from '../_services';
 import {
   CanActivate,
   Router,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   CanActivateChild,
-} from "@angular/router";
+} from '@angular/router';
 
 /**
  * for sites which require a student account
  */
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class StudentGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
@@ -27,13 +27,13 @@ export class StudentGuard implements CanActivate, CanActivateChild {
         return true;
       } else {
         this.toastService.error(
-          "Du must einen Schüler-Account haben, um hier hin zu kommen"
+          'Du must einen Schüler-Account haben, um hier hin zu kommen'
         );
         return false;
       }
     } else {
-      this.toastService.info("Bitte logge dich ein");
-      this.router.navigate(["account/login/"], {
+      this.toastService.info('Bitte logge dich ein');
+      this.router.navigate(['account/login/'], {
         queryParams: { returnUrl: state.url },
       });
       return false;
@@ -48,7 +48,7 @@ export class StudentGuard implements CanActivate, CanActivateChild {
 /**
  * for sites which require a verified tutor account
  */
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class TutorGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
@@ -64,19 +64,19 @@ export class TutorGuard implements CanActivate, CanActivateChild {
           return true;
         } else {
           this.toastService.error(
-            "Dein Account muss verifiziert sein, um hier hin zu kommen"
+            'Dein Account muss verifiziert sein, um hier hin zu kommen'
           );
           return false;
         }
       } else {
         this.toastService.error(
-          "Du must einen Tutor Account haben, um hier hin zu kommen"
+          'Du must einen Tutor Account haben, um hier hin zu kommen'
         );
         return false;
       }
     } else {
-      this.toastService.info("Bitte logge dich ein");
-      this.router.navigate(["account/login/"], {
+      this.toastService.info('Bitte logge dich ein');
+      this.router.navigate(['account/login/'], {
         queryParams: { returnUrl: state.url },
       });
       return false;

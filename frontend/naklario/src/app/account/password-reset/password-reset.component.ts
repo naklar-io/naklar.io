@@ -1,14 +1,14 @@
-import { Component, OnInit } from "@angular/core";
-import { AuthenticationService } from "src/app/_services";
-import { ActivatedRoute, Router } from "@angular/router";
-import { FormBuilder, Validators } from "@angular/forms";
-import { passwordNotMatchValidator } from "src/app/_helpers";
-import { first } from "rxjs/operators";
+import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from 'src/app/_services';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
+import { passwordNotMatchValidator } from 'src/app/_helpers';
+import { first } from 'rxjs/operators';
 
 @Component({
-  selector: "account-password-reset",
-  templateUrl: "./password-reset.component.html",
-  styleUrls: ["./password-reset.component.scss"],
+  selector: 'account-password-reset',
+  templateUrl: './password-reset.component.html',
+  styleUrls: ['./password-reset.component.scss'],
 })
 export class PasswordResetComponent implements OnInit {
   private token: string;
@@ -32,12 +32,12 @@ export class PasswordResetComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
-      this.token = params.get("token");
+      this.token = params.get('token');
     });
     this.form = this.fb.group(
       {
-        password: ["", [Validators.required, Validators.minLength(8)]],
-        passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        passwordRepeat: ['', [Validators.required, Validators.minLength(8)]],
       },
       { validators: passwordNotMatchValidator }
     );
@@ -46,7 +46,7 @@ export class PasswordResetComponent implements OnInit {
   onSubmit(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) {
-      console.log("invalid");
+      console.log('invalid');
       return;
     }
 
@@ -60,7 +60,7 @@ export class PasswordResetComponent implements OnInit {
           this.loading = false;
           this.error = null;
           this.submitSuccess = true;
-          this.router.navigate(["/account/login"])
+          this.router.navigate(['/account/login']);
         },
         (error) => {
           this.error = error;

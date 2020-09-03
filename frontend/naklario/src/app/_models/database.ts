@@ -1,4 +1,4 @@
-import { environment } from "src/environments/environment";
+import { environment } from 'src/environments/environment';
 
 /**
  * sendable interfaces for communication with the api
@@ -15,7 +15,7 @@ export interface SendableStudentData {
   schoolData: number;
 }
 
-type GenderAbbr = "MA" | "FE" | "DI";
+type GenderAbbr = 'MA' | 'FE' | 'DI';
 
 export interface SendableUser {
   email: string;
@@ -136,8 +136,8 @@ export function localToSendableUser(user: User): SendableUser {
     state: user.state.id,
     gender: user.gender.shortcode,
     emailVerified: user.emailVerified,
-    studentdata: studentdata,
-    tutordata: tutordata,
+    studentdata,
+    tutordata,
     termsAccepted: user.termsAccepted,
   };
 }
@@ -175,8 +175,8 @@ export function sendableToLocalUser(
     user.emailVerified,
     constants.genders.find((x) => x.shortcode === user.gender),
     // need to provide token / token_expiry via login
-    "",
-    ""
+    '',
+    ''
   );
 }
 
@@ -200,7 +200,7 @@ export function sendableToLocalSchoolData(
 }
 
 const addAPIUrl = (url: string) => environment.apiUrl + url;
-const removeAPIUrl = (url: string) => url.replace(environment.apiUrl, "");
+const removeAPIUrl = (url: string) => url.replace(environment.apiUrl, '');
 
 export class Constants {
   constructor(

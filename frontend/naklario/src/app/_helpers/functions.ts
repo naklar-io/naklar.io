@@ -1,4 +1,4 @@
-import { FormGroup } from "@angular/forms";
+import { FormGroup } from '@angular/forms';
 
 export const flatFormErrors = (f: FormGroup) => {
   return Object.entries(f.controls)
@@ -7,12 +7,12 @@ export const flatFormErrors = (f: FormGroup) => {
 };
 
 export const scrollToTop = () => {
-  const scrollToTop = window.setInterval(() => {
+  const scroller = window.setInterval(() => {
     const pos = window.pageYOffset;
     if (pos > 0) {
       window.scrollTo(0, pos - 40); // how far to scroll on each step
     } else {
-      window.clearInterval(scrollToTop);
+      window.clearInterval(scroller);
     }
   }, 16);
 };
@@ -22,10 +22,10 @@ export const ggT = (m, n) => {
   if (n === 0) {
     return m;
   } else {
-    return ggT(n, m % n)
+    return ggT(n, m % n);
   }
-}
+};
 
 export const kgV = (m, n) => {
-  return (m * n) / ggT(m, n)
-}
+  return (m * n) / ggT(m, n);
+};

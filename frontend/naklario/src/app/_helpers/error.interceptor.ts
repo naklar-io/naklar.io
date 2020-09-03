@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpInterceptor
-} from "@angular/common/http";
-import { Observable, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
-import { AuthenticationService } from "../_services";
+import { AuthenticationService } from '../_services';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
@@ -23,7 +23,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         if (err.status === 401 && this.authenticationService.isLoggedIn) {
           // auto logout if 401 response returned from api
           this.authenticationService.logout();
-          location.reload(true);
+          window.location.reload();
         }
         // console.log("Error Interceptor, status code", err.status);
         const error = err.error || err.statusText;

@@ -30,7 +30,6 @@
     "@angular/service-worker": "~10.0.14",
     "@m0t0r/ngx-slider": "^1.0.0",
     "@ng-bootstrap/ng-bootstrap": "^7.0.0",
-    "@ng-select/ng-select": "^4.0.4",
     "@nguniversal/express-engine": "^10.0.2",
     "@ngx-loading-bar/core": "^4.2.0",
     "@ngx-loading-bar/http-client": "^4.2.0",

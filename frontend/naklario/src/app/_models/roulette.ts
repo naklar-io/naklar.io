@@ -5,7 +5,7 @@ import {
   sendableToLocalUser,
   Constants,
   Subject,
-} from "./database";
+} from './database';
 
 export interface SendableMatch {
   uuid: string;
@@ -16,7 +16,7 @@ export interface SendableMatch {
   failedMatches: number[];
   created: string;
   user: string;
-  subject: number
+  subject: number;
 }
 
 export interface SendableMatchRequest {

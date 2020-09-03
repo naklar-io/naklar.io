@@ -1,11 +1,11 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { User, Match } from "src/app/_models";
-import { RouletteRequestType } from "src/app/_services";
+import { Component, OnInit, Input } from '@angular/core';
+import { User, Match } from 'src/app/_models';
+import { RouletteRequestType } from 'src/app/_services';
 
 @Component({
-  selector: "misc-user-card",
-  templateUrl: "./user-card.component.html",
-  styleUrls: ["./user-card.component.scss"],
+  selector: 'misc-user-card',
+  templateUrl: './user-card.component.html',
+  styleUrls: ['./user-card.component.scss'],
 })
 export class UserCardComponent implements OnInit {
   @Input() readonly user: User;
@@ -17,10 +17,10 @@ export class UserCardComponent implements OnInit {
   constructor() {}
   ngOnInit(): void {
     this.img =
-      this.type === "tutor" &&
-      !(this.user.tutordata.profilePicture as string).includes("undefined")
+      this.type === 'tutor' &&
+      !(this.user.tutordata.profilePicture as string).includes('undefined')
         ? this.user.tutordata.profilePicture
-        : "assets/img/icons/user_default.png";
+        : 'assets/img/icons/user_default.png';
   }
 
   get tutordata() {

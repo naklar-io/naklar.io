@@ -1,15 +1,15 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-import { AuthenticationService, ToastService } from "../_services";
+import { AuthenticationService, ToastService } from '../_services';
 import {
   CanActivate,
   Router,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   CanActivateChild,
-} from "@angular/router";
+} from '@angular/router';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class LoggedInGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
@@ -21,8 +21,8 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
     if (this.authenticationService.isLoggedIn) {
       return true;
     } else {
-      this.toastService.info("Bitte logge dich ein");
-      this.router.navigate(["account/login"], {
+      this.toastService.info('Bitte logge dich ein');
+      this.router.navigate(['account/login'], {
         queryParams: { returnUrl: state.url },
       });
       return false;
@@ -33,7 +33,7 @@ export class LoggedInGuard implements CanActivate, CanActivateChild {
   }
 }
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class NotLoggedInGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
@@ -45,8 +45,8 @@ export class NotLoggedInGuard implements CanActivate, CanActivateChild {
     if (!this.authenticationService.isLoggedIn) {
       return true;
     } else {
-      this.toastService.info("Bitte logge dich ein");
-      this.router.navigate(["account/login"], {
+      this.toastService.info('Bitte logge dich ein');
+      this.router.navigate(['account/login'], {
         queryParams: { returnUrl: state.url },
       });
       return false;

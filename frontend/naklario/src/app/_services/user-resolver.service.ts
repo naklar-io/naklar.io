@@ -1,12 +1,12 @@
-import { Injectable } from "@angular/core";
-import { Resolve, ActivatedRouteSnapshot } from "@angular/router";
-import { Observable, of } from "rxjs";
-import { User, Constants } from "../_models";
-import { AuthenticationService } from "./authentication.service";
-import { first, map, mergeMap } from "rxjs/operators";
-import { DatabaseService } from "./database.service";
+import { Injectable } from '@angular/core';
+import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { User, Constants } from '../_models';
+import { AuthenticationService } from './authentication.service';
+import { first, map, mergeMap } from 'rxjs/operators';
+import { DatabaseService } from './database.service';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class UserResolver implements Resolve<User> {
   constructor(
     private authenticationService: AuthenticationService,
@@ -18,16 +18,16 @@ export class UserResolver implements Resolve<User> {
   }
 
   constants$: Observable<Constants>;
-  lastRefresh: number = -1;
+  lastRefresh = -1;
   interval = 60 * 1000;
 
   resolve(route: ActivatedRouteSnapshot): Observable<User> | User {
     if (
       (this.authenticationService.isLoggedIn &&
-        this.authenticationService.currentUserValue?.firstName == "") ||
+        this.authenticationService.currentUserValue?.firstName === '') ||
       Date.now() - this.lastRefresh > this.interval
     ) {
-      console.log("refreshing");
+      console.log('refreshing');
       this.lastRefresh = Date.now();
       return this.constants$.pipe(
         first(),

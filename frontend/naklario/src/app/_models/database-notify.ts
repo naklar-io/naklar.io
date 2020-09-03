@@ -5,7 +5,7 @@ export interface WebPushDevice {
   browser?: string;
 }
 
-export type RangeMode = "ALLOW" | "BLOCK";
+export type RangeMode = 'ALLOW' | 'BLOCK';
 export enum Day {
   Montag = 0,
   Dienstag = 1,

@@ -1,19 +1,19 @@
-import { Component, OnInit } from "@angular/core";
-import { AuthenticationService, BannerService } from "src/app/_services";
-import { User } from "src/app/_models";
-import { Router, RoutesRecognized } from "@angular/router";
-import { forkJoin } from "rxjs";
+import { Component, OnInit } from '@angular/core';
+import { AuthenticationService, BannerService } from 'src/app/_services';
+import { User } from 'src/app/_models';
+import { Router, RoutesRecognized } from '@angular/router';
+import { forkJoin } from 'rxjs';
 
-type BannerType = "error" | "warning" | "info";
+type BannerType = 'error' | 'warning' | 'info';
 interface BannerMessage {
   type: BannerType;
   content: string;
 }
 
 @Component({
-  selector: "app-banner",
-  templateUrl: "./banner.component.html",
-  styleUrls: ["./banner.component.scss"],
+  selector: 'app-banner',
+  templateUrl: './banner.component.html',
+  styleUrls: ['./banner.component.scss'],
 })
 export class BannerComponent implements OnInit {
   user: User;
@@ -37,12 +37,12 @@ export class BannerComponent implements OnInit {
 
   getClass(type: BannerType): string {
     switch (type) {
-      case "error":
-        return "banner-error bg-danger text-light";
-      case "warning":
-        return "banner-warning bg-warning ";
-      case "info":
-        return "banner-info bg-primary text-light";
+      case 'error':
+        return 'banner-error bg-danger text-light';
+      case 'warning':
+        return 'banner-warning bg-warning ';
+      case 'info':
+        return 'banner-info bg-primary text-light';
     }
   }
 }

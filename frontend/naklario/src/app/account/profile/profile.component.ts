@@ -1,13 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { AuthenticationService } from "src/app/_services";
-import { Router, ActivatedRoute } from "@angular/router";
-import { FormBuilder } from "@angular/forms";
-import { User } from "src/app/_models";
+import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from 'src/app/_services';
+import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder } from '@angular/forms';
+import { User } from 'src/app/_models';
 
 @Component({
-  selector: "account-profile",
-  templateUrl: "./profile.component.html",
-  styleUrls: ["./profile.component.scss"],
+  selector: 'account-profile',
+  templateUrl: './profile.component.html',
+  styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
   user: User;
@@ -34,7 +34,7 @@ export class ProfileComponent implements OnInit {
 
   logoutAll(): void {
     this.authenticationService.logoutAll();
-    this.router.navigate(['/'])
+    this.router.navigate(['/']);
   }
 
   deleteAccount(): void {

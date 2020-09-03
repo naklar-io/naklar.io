@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 interface Feature {
-  src: string,
-  displayText: string,
-  longDescription: string,
-  shortDescription: string
+  src: string;
+  displayText: string;
+  longDescription: string;
+  shortDescription: string;
 }
 
 const features: Feature[] = [
@@ -26,7 +26,7 @@ const features: Feature[] = [
     longDescription: 'Jeder kann helfen. Und helfen kann so einfach sein! Engagierte können ganz einfach Tutor werden und in ihren verfügbaren Zeiten flexibel Schülern helfen. Der kostenlose Zugang ermöglicht Schülerinnen und Schülern per Knopfdruck auf Tutoren zuzugreifen und bequem ihre Fragen zu stellen.',
     shortDescription: 'Für mehr Bildungsgerechtigkeit: Kostenlos Fragen stellen - flexibel und einfach helfen.'
   }
-]
+];
 
 @Component({
   selector: 'home-more-information-features',
@@ -34,7 +34,7 @@ const features: Feature[] = [
   styleUrls: ['./features.component.scss']
 })
 export class FeaturesComponent implements OnInit {
-  features = features
+  features = features;
 
   constructor() { }
 

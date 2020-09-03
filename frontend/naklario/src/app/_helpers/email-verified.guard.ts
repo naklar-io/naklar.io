@@ -1,18 +1,18 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
-import { AuthenticationService, ToastService } from "../_services";
+import { AuthenticationService, ToastService } from '../_services';
 import {
   CanActivate,
   Router,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
   CanActivateChild,
-} from "@angular/router";
+} from '@angular/router';
 
 /**
  * for sites which require the mail to be verified
  */
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class MailVerifiedGuard implements CanActivate, CanActivateChild {
   constructor(
     private router: Router,
@@ -27,14 +27,14 @@ export class MailVerifiedGuard implements CanActivate, CanActivateChild {
         return true;
       } else {
         this.toastService.error(
-          "Deine E-Mail muss bestätigt sein, um hier hin zu kommen!"
+          'Deine E-Mail muss bestätigt sein, um hier hin zu kommen!'
         );
         this.router.navigate(['/account']);
         return false;
       }
     } else {
-      this.toastService.info("Bitte logge dich ein");
-      this.router.navigate(["/account/login/"], {
+      this.toastService.info('Bitte logge dich ein');
+      this.router.navigate(['/account/login/'], {
         queryParams: { returnUrl: state.url },
       });
       return false;

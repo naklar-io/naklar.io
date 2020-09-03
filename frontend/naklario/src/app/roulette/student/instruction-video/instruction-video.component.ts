@@ -4,15 +4,15 @@ import {
   OnDestroy,
   OnInit,
   Output,
-} from "@angular/core";
-import { Subscription, timer } from "rxjs";
-import { filter, take } from "rxjs/operators";
-import { BannerService } from "src/app/_services";
+} from '@angular/core';
+import { Subscription, timer } from 'rxjs';
+import { filter, take } from 'rxjs/operators';
+import { BannerService } from 'src/app/_services';
 
 @Component({
-  selector: "roulette-strudent-instruction-video",
-  templateUrl: "./instruction-video.component.html",
-  styleUrls: ["./instruction-video.component.scss"],
+  selector: 'roulette-strudent-instruction-video',
+  templateUrl: './instruction-video.component.html',
+  styleUrls: ['./instruction-video.component.scss'],
 })
 export class InstructionVideoComponent implements OnInit, OnDestroy {
   @Output() prevClick: EventEmitter<any> = new EventEmitter<any>();

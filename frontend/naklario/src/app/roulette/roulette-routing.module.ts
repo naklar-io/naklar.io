@@ -1,23 +1,23 @@
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
-import { RouletteComponent } from "./roulette.component";
-import { LoggedInGuard, StudentGuard, TutorGuard } from "../_helpers";
-import { DatabaseResolverService, UserResolver } from "../_services";
+import { RouletteComponent } from './roulette.component';
+import { LoggedInGuard, StudentGuard, TutorGuard } from '../_helpers';
+import { DatabaseResolverService, UserResolver } from '../_services';
 import { MailVerifiedGuard } from '../_helpers/email-verified.guard';
 
 const routes: Routes = [
   {
-    path: "roulette",
+    path: 'roulette',
     children: [
       {
-        path: "student",
+        path: 'student',
         component: RouletteComponent,
         canActivate: [StudentGuard],
         children: [],
       },
       {
-        path: "tutor",
+        path: 'tutor',
         component: RouletteComponent,
         canActivate: [TutorGuard],
         children: [],

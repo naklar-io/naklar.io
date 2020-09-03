@@ -1,24 +1,23 @@
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
-import { AccountRoutingModule } from "./account-routing.module";
-import { TutorComponent } from "./tutor/tutor.component";
-import { StudentComponent } from "./student/student.component";
-import { TutorFormComponent } from "./tutor/tutor-form/tutor-form.component";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { AccountRoutingModule } from './account-routing.module';
+import { TutorComponent } from './tutor/tutor.component';
+import { StudentComponent } from './student/student.component';
+import { TutorFormComponent } from './tutor/tutor-form/tutor-form.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { StudentFormComponent } from "./student/student-form/student-form.component";
-import { LoginComponent } from "./login/login.component";
-import { ProfileComponent } from "./profile/profile.component";
-import { DatabaseService, AuthenticationService } from "../_services";
+import { StudentFormComponent } from './student/student-form/student-form.component';
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
+import { DatabaseService, AuthenticationService } from '../_services';
 
-import { VerifyComponent } from "./verify/verify.component";
+import { VerifyComponent } from './verify/verify.component';
 
-import { NgSelectModule } from "@ng-select/ng-select";
-import { PasswordResetComponent } from "./password-reset/password-reset.component";
-import { ResetRequestComponent } from "./password-reset/reset-request/reset-request.component";
-import { MiscComponentsModule } from "../_misc_components/misc-components.module";
-import { RegisterComponent } from "./register/register.component";
+import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { ResetRequestComponent } from './password-reset/reset-request/reset-request.component';
+import { MiscComponentsModule } from '../_misc_components/misc-components.module';
+import { RegisterComponent } from './register/register.component';
 import { NgxSliderModule } from '@m0t0r/ngx-slider';
 @NgModule({
   declarations: [
@@ -36,7 +35,6 @@ import { NgxSliderModule } from '@m0t0r/ngx-slider';
   imports: [
     MiscComponentsModule,
     NgxSliderModule,
-    NgSelectModule,
     FormsModule,
     ReactiveFormsModule,
     CommonModule,

@@ -5,7 +5,7 @@ import {
   Inject,
   PLATFORM_ID,
   Input,
-} from "@angular/core";
+} from '@angular/core';
 
 import {
   State,
@@ -15,20 +15,20 @@ import {
   Constants,
   SendableUser,
   User,
-} from "../../../_models/database";
-import { first } from "rxjs/operators";
-import { Options } from "@m0t0r/ngx-slider";
-import { AuthenticationService } from "../../../_services";
-import { FormBuilder, Validators, FormGroup } from "@angular/forms";
-import { passwordNotMatchValidator } from "../../../_helpers";
-import { Router, ActivatedRoute } from "@angular/router";
-import { switchMap } from "rxjs/operators";
-import { isPlatformBrowser } from "@angular/common";
+} from '../../../_models/database';
+import { first } from 'rxjs/operators';
+import { Options } from '@m0t0r/ngx-slider';
+import { AuthenticationService } from '../../../_services';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { passwordNotMatchValidator } from '../../../_helpers';
+import { Router, ActivatedRoute } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
-  selector: "account-student-form",
-  templateUrl: "./student-form.component.html",
-  styleUrls: ["./student-form.component.scss"],
+  selector: 'account-student-form',
+  templateUrl: './student-form.component.html',
+  styleUrls: ['./student-form.component.scss'],
 })
 export class StudentFormComponent implements OnInit {
   @Input() register: boolean;
@@ -37,8 +37,8 @@ export class StudentFormComponent implements OnInit {
   schoolTypes: SchoolType[];
   schoolData: SchoolData[];
   genders: Gender[];
-  schoolType: number = -1;
-  grade: number = -1;
+  schoolType = -1;
+  grade = -1;
 
   private user: User;
 
@@ -88,11 +88,11 @@ export class StudentFormComponent implements OnInit {
 
     this.registerForm = this.fb.group(
       {
-        firstName: ["", Validators.required],
-        email: ["", [Validators.required, Validators.email]],
-        gender: ["", Validators.required],
-        password: ["", [Validators.required, Validators.minLength(8)]],
-        passwordRepeat: ["", [Validators.required, Validators.minLength(8)]],
+        firstName: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        gender: ['', Validators.required],
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        passwordRepeat: ['', [Validators.required, Validators.minLength(8)]],
         state: [this.states[0].id, Validators.required],
         schoolType: [this.schoolTypes[0].id, Validators.required],
         slider: [10, Validators.required],
@@ -112,8 +112,8 @@ export class StudentFormComponent implements OnInit {
       this.f.terms.clearValidators();
       this.f.password.setValidators(Validators.minLength(8));
       this.f.passwordRepeat.setValidators(Validators.minLength(8));
-      //this.f.password.clearValidators()
-      //this.f.passwordRepeat.clearValidators();
+      // this.f.password.clearValidators()
+      // this.f.passwordRepeat.clearValidators();
       this.refreshSliderOptions();
     }
     this.sliderRefresh.emit();
@@ -121,8 +121,8 @@ export class StudentFormComponent implements OnInit {
   }
 
   refreshSliderOptions() {
-    let grades = this.schoolData
-      .filter((x) => x.schoolType.id == this.f.schoolType.value)
+    const grades = this.schoolData
+      .filter((x) => x.schoolType.id === this.f.schoolType.value)
       .map((x) => x.grade);
     const newOptions = Object.assign({}, this.options) as Options;
     newOptions.floor = Math.min(...grades);
@@ -142,7 +142,7 @@ export class StudentFormComponent implements OnInit {
       email: this.f.email.value,
       password: this.f.password.value,
       firstName: this.f.firstName.value,
-      lastName: "",
+      lastName: '',
       state: this.f.state.value,
       termsAccepted: this.f.terms.value,
       gender: this.f.gender.value,
@@ -155,7 +155,7 @@ export class StudentFormComponent implements OnInit {
       },
       tutordata: null,
     };
-    console.log("About to send student Data: ", user);
+    console.log('About to send student Data: ', user);
     if (this.register) {
       this.loading = true;
       this.authenticationService
@@ -177,7 +177,7 @@ export class StudentFormComponent implements OnInit {
             this.loading = false;
             this.submitSuccess = true;
             this.error = null;
-            this.router.navigate(["/account"]);
+            this.router.navigate(['/account']);
           },
           (error) => {
             this.error = error;
@@ -185,10 +185,10 @@ export class StudentFormComponent implements OnInit {
           }
         );
     } else {
-      console.log("Updating user");
+      console.log('Updating user');
       this.loading = true;
-      let toSend = user;
-      if (toSend.password.length == 0) {
+      const toSend = user;
+      if (toSend.password.length === 0) {
         delete toSend.password;
       }
       this.authenticationService.updateUser(toSend, this.constants).subscribe(
@@ -202,8 +202,8 @@ export class StudentFormComponent implements OnInit {
           this.submitSuccess = false;
           this.error = error;
         }
-      )
+      );
     }
-    
+
   }
 }

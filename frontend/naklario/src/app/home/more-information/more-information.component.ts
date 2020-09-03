@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core'
-import { BehaviorSubject } from 'rxjs'
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'home-more-information',
@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs'
   styleUrls: ['./more-information.component.scss']
 })
 export class MoreInformationComponent implements OnInit {
-  currentScrollSection$$ = new BehaviorSubject('')
+  currentScrollSection$$ = new BehaviorSubject('');
 
   constructor() {
   }
@@ -16,6 +16,6 @@ export class MoreInformationComponent implements OnInit {
   }
 
   onScrollSectionChange(id: string) {
-    this.currentScrollSection$$.next(id)
+    this.currentScrollSection$$.next(id);
   }
 }

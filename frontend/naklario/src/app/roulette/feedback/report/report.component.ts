@@ -1,12 +1,12 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Meeting, Report } from "src/app/_models";
-import { RouletteService, ToastService } from "src/app/_services";
+import { Component, OnInit, Input } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Meeting, Report } from 'src/app/_models';
+import { RouletteService, ToastService } from 'src/app/_services';
 
 @Component({
-  selector: "roulette-report",
-  templateUrl: "./report.component.html",
-  styleUrls: ["./report.component.scss"],
+  selector: 'roulette-report',
+  templateUrl: './report.component.html',
+  styleUrls: ['./report.component.scss'],
 })
 export class ReportComponent implements OnInit {
   @Input() readonly meeting: Meeting;
@@ -27,7 +27,7 @@ export class ReportComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      message: ["", Validators.required],
+      message: ['', Validators.required],
     });
   }
 

@@ -1,6 +1,6 @@
-import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import {
   User,
   SendableUser,
@@ -10,20 +10,20 @@ import {
   State,
   TutorData,
   WebPushDevice,
-} from "../_models";
-import { environment } from "../../environments/environment";
-import { map, flatMap, tap, take, mergeMap, first } from "rxjs/operators";
-import { DatabaseService } from "./database.service";
-import { isPlatformBrowser } from "@angular/common";
+} from '../_models';
+import { environment } from '../../environments/environment';
+import { map, flatMap, tap, take, mergeMap, first } from 'rxjs/operators';
+import { DatabaseService } from './database.service';
+import { isPlatformBrowser } from '@angular/common';
 
 interface LoginResponse {
   token: string;
   expiry: string;
 }
 
-export type AccountType = "student" | "tutor" | "both";
+export type AccountType = 'student' | 'tutor' | 'both';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class AuthenticationService {
   public currentUser: Observable<User>;
 
@@ -37,13 +37,13 @@ export class AuthenticationService {
   private constants$: Observable<Constants>;
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId,
     private http: HttpClient,
   ) {
     let user: User;
     // Only use localStorage in Browser
     if (isPlatformBrowser(platformId)) {
-      user = JSON.parse(localStorage.getItem("currentUser")) as User;
+      user = JSON.parse(localStorage.getItem('currentUser')) as User;
     }
     let loggedIn = false;
     // is the login still valid ?
@@ -52,25 +52,25 @@ export class AuthenticationService {
       user.token &&
       (!user.tokenExpiry || Date.parse(user.tokenExpiry) > Date.now())
     ) {
-      console.log("loaded logged in user from local storage");
+      console.log('loaded logged in user from local storage');
       loggedIn = true;
     } else {
       user = new User(
-        "",
-        "",
-        "",
-        "",
+        '',
+        '',
+        '',
+        '',
         null,
         null,
         null,
         false,
         false,
         null,
-        "",
-        ""
+        '',
+        ''
       );
       loggedIn = false;
-      console.log("no user found in localstorage");
+      console.log('no user found in localstorage');
     }
 
     this.loggedIn = new BehaviorSubject<boolean>(loggedIn);
@@ -81,8 +81,8 @@ export class AuthenticationService {
     // automatically update User in localStorage on change
     // only if in browser
     if (isPlatformBrowser(platformId)) {
-      this.currentUser.subscribe((user) =>
-        localStorage.setItem("currentUser", JSON.stringify(user))
+      this.currentUser.subscribe((sendableUser) =>
+        localStorage.setItem('currentUser', JSON.stringify(sendableUser))
       );
     }
   }
@@ -101,11 +101,11 @@ export class AuthenticationService {
     return this.currentUserSubject.pipe(
       map((s) => {
         if (s.tutordata && s.studentdata) {
-          return "both";
+          return 'both';
         } else if (s.tutordata) {
-          return "tutor";
+          return 'tutor';
         } else {
-          return "student";
+          return 'student';
         }
       })
     );
@@ -115,15 +115,15 @@ export class AuthenticationService {
     return this.http
       .patch<SendableUser>(`${environment.apiUrl}/account/current/`, user)
       .pipe(
-        map((user) => {
-          const u = sendableToLocalUser(user, constants);
+        map((sendableUser) => {
+          const u = sendableToLocalUser(sendableUser, constants);
           // replace tokens
           const newUser = Object.assign(u, {
             token: this.currentUserValue.token,
             tokenExpiry: this.currentUserValue.tokenExpiry,
           });
           this.currentUserSubject.next(newUser);
-          return user;
+          return sendableUser;
         })
       );
   }
@@ -132,10 +132,10 @@ export class AuthenticationService {
     return this.http
       .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
       .pipe(
-        map((user) => {
-          const u = sendableToLocalUser(user, constants);
+        map((sendableUser) => {
+          const u = sendableToLocalUser(sendableUser, constants);
           // this.currentUserSubject.next(u);
-          return user;
+          return sendableUser;
         })
       );
   }
@@ -147,26 +147,26 @@ export class AuthenticationService {
         {},
         {
           headers: new HttpHeaders({
-            Authorization: "Basic " + btoa(`${login.email}:${login.password}`),
+            Authorization: 'Basic ' + btoa(`${login.email}:${login.password}`),
           }),
         }
       )
       .pipe(
         map((response) => {
-          console.log("Got Login response:", response);
-          let user = new User(
-            "",
-            "",
-            "",
-            "",
+          console.log('Got Login response:', response);
+          const user = new User(
+            '',
+            '',
+            '',
+            '',
             null,
             null,
             null,
             false,
             false,
             null,
-            "",
-            ""
+            '',
+            ''
           );
           user.token = response.token;
           user.tokenExpiry = response.expiry;
@@ -176,10 +176,10 @@ export class AuthenticationService {
         })
       )
       .pipe(
-        flatMap(() => {
+        mergeMap(() => {
           const user$ = this.fetchUserData(constants);
           user$.subscribe();
-          console.log("Logged in user:", this.currentUserValue);
+          console.log('Logged in user:', this.currentUserValue);
           return user$;
         })
       );
@@ -265,7 +265,7 @@ export class AuthenticationService {
   public requestPasswordReset(email: string) {
     return this.http.post(
       `${environment.apiUrl}/account/request-password-reset/`,
-      { email: email }
+      { email }
     );
   }
 
@@ -280,7 +280,7 @@ export class AuthenticationService {
 
   public deleteAccount() {
     this.http.delete(`${environment.apiUrl}/account/current/`).subscribe();
-      this.currentUserSubject.next(null);
-      this.loggedIn.next(false);
+    this.currentUserSubject.next(null);
+    this.loggedIn.next(false);
   }
 }

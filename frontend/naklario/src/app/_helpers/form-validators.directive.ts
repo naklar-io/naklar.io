@@ -3,13 +3,13 @@ import {
   FormGroup,
   ValidationErrors,
   AbstractControl,
-} from "@angular/forms";
+} from '@angular/forms';
 
 export const passwordNotMatchValidator: ValidatorFn = (
   control: FormGroup
 ): ValidationErrors | null => {
-  const pw = control.get("password");
-  const pwRepeat = control.get("passwordRepeat");
+  const pw = control.get('password');
+  const pwRepeat = control.get('passwordRepeat');
   const notOk = pw.value && pwRepeat.value && pw.value !== pwRepeat.value;
   //  console.log(notOk, pw, pwRepeat);
   return notOk
@@ -30,16 +30,14 @@ export const fileSizeValidator = (maxSizeMb: number): ValidatorFn | null => {
 };
 
 /**
- * min <= x < max 
+ * min <= x < max
  * error: { outOfRange: { value: x, min: min, max: max } }
- * @param min 
- * @param max 
  */
 export const rangeValidator = (min: number, max: number): ValidatorFn | null => {
   return (control: AbstractControl): { [key: string]: any } | null => {
-    const x = control.value
+    const x = control.value;
     return min <= x && x < max
       ? null
-      : { outOfRange: { value: x, min: min, max: max } }
+      : { outOfRange: { value: x, min, max } };
   };
 };
