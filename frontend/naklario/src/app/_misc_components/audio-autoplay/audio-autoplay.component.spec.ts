@@ -1,12 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { AudioAutoplayComponent } from './audio-autoplay.component';
+
 
 describe('AudioAutoplayComponent', () => {
   let component: AudioAutoplayComponent;
   let fixture: ComponentFixture<AudioAutoplayComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AudioAutoplayComponent ]
     })
