@@ -10,6 +10,7 @@ import {
   AfterViewInit,
   Inject,
   PLATFORM_ID,
+  HostListener,
 } from "@angular/core";
 import {
   RouletteService,
@@ -33,12 +34,13 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() readonly requestType: RouletteRequestType;
   @Input() joinUrl: string;
   @Input() meetingId: string;
+
   @Output() done = new EventEmitter<Meeting>();
+
   @ViewChild("iframe") iframe: ElementRef;
 
   meeting: Meeting;
 
-  private boundMethod: any;
 
   // some information about the session state
   hasJoinedAudio: boolean = false;
@@ -61,8 +63,6 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.boundMethod = this.onBBBEvent.bind(this);
-    window.addEventListener("message", this.boundMethod);
     const url = new URL(this.joinUrl);
     // this.allowString = `microphone ${url.origin}; camera ${url.origin}; geolocation ${url.origin}; display-capture`;
 
@@ -139,6 +139,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  @HostListener("window:message", ['$event'])
   onBBBEvent(ev: MessageEvent): void {
     console.log("got bbb event", ev);
     switch (ev.data.response) {
@@ -210,6 +211,5 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     // this.rouletteService.deleteMatch(this.requestType);
     this.layoutService.setScrollable(true);
     this.layoutService.setFullscreen(false);
-    window.removeEventListener("message", this.boundMethod);
   }
 }
