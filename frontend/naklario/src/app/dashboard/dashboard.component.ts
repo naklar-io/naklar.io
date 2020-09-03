@@ -4,20 +4,20 @@ import {
   AfterViewChecked,
   AfterViewInit,
   OnDestroy,
-} from "@angular/core";
+} from '@angular/core';
 import {
   AuthenticationService,
   AccountType,
   BannerService,
-} from "../_services";
-import { Router } from "@angular/router";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { PauseModalComponent } from "../roulette/pause-modal/pause-modal.component";
+} from '../_services';
+import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PauseModalComponent } from '../roulette/pause-modal/pause-modal.component';
 
 @Component({
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.scss"],
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   accountType: AccountType;
@@ -31,7 +31,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.authenticationService.getAccountType().subscribe((t) => {
       this.accountType = t;
     });
-    var hours = new Date().getUTCHours();
+    const hours = new Date().getUTCHours();
     if (hours < 8 || (hours > 10 && hours < 13) || hours >= 15) {
       this.bannerService.showBanner();
     }
@@ -45,10 +45,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
   startTutorMatching(): void {
     this.modalService.open(PauseModalComponent).result.then(
       (result) => {
-        this.router.navigateByUrl("/roulette/tutor");
+        this.router.navigateByUrl('/roulette/tutor');
       },
       (reason) => {
-        console.log("dismissed");
+        console.log('dismissed');
       }
     );
   }

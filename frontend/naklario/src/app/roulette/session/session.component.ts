@@ -11,24 +11,24 @@ import {
   Inject,
   PLATFORM_ID,
   HostListener,
-} from "@angular/core";
+} from '@angular/core';
 import {
   RouletteService,
   RouletteRequestType,
   ToastService,
   AppLayoutService,
-} from "src/app/_services";
-import { Meeting } from "src/app/_models";
-import { isPlatformBrowser } from "@angular/common";
-import { Router } from "@angular/router";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ExitModalComponent } from "./exit-modal/exit-modal.component";
-import { from } from "rxjs";
+} from 'src/app/_services';
+import { Meeting } from 'src/app/_models';
+import { isPlatformBrowser } from '@angular/common';
+import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ExitModalComponent } from './exit-modal/exit-modal.component';
+import { from } from 'rxjs';
 
 @Component({
-  selector: "roulette-session",
-  templateUrl: "./session.component.html",
-  styleUrls: ["./session.component.scss"],
+  selector: 'roulette-session',
+  templateUrl: './session.component.html',
+  styleUrls: ['./session.component.scss'],
 })
 export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() readonly requestType: RouletteRequestType;
@@ -37,22 +37,21 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @Output() done = new EventEmitter<Meeting>();
 
-  @ViewChild("iframe") iframe: ElementRef;
+  @ViewChild('iframe') iframe: ElementRef;
 
   meeting: Meeting;
 
-
   // some information about the session state
-  hasJoinedAudio: boolean = false;
-  isMuted: boolean = true;
+  hasJoinedAudio = false;
+  isMuted = true;
 
-  initialLoadStarted: boolean = false;
-  initialLoadComplete: boolean = false;
+  initialLoadStarted = false;
+  initialLoadComplete = false;
 
-  allowString: string = "";
+  allowString = '';
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId,
     private rouletteService: RouletteService,
     private ts: ToastService,
     private router: Router,
@@ -66,8 +65,8 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     const url = new URL(this.joinUrl);
     // this.allowString = `microphone ${url.origin}; camera ${url.origin}; geolocation ${url.origin}; display-capture`;
 
-    console.log("iframe origin: ", url.origin);
-    console.log("opening iframe: ", this.joinUrl);
+    console.log('iframe origin: ', url.origin);
+    console.log('opening iframe: ', this.joinUrl);
     this.rouletteService.getMeeting(this.meetingId).subscribe(
       (meeting) => {
         this.meeting = meeting;
@@ -76,12 +75,12 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       },
       (error) => {
-        if (error.status == 404) {
-          this.ts.error("Das Meeting konnte nicht gefunden werden!");
+        if (error.status === 404) {
+          this.ts.error('Das Meeting konnte nicht gefunden werden!');
         } else {
           this.ts.error(error);
         }
-        this.router.navigateByUrl("/");
+        this.router.navigateByUrl('/');
       }
     );
     this.initialLoadStarted = true;
@@ -91,12 +90,12 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     // get initial state
     if (isPlatformBrowser(this.platformId)) {
       this.iframe.nativeElement.contentWindow.postMessage(
-        "c_recording_status",
-        "*"
+        'c_recording_status',
+        '*'
       );
       this.iframe.nativeElement.contentWindow.postMessage(
-        "get_audio_joined_status",
-        "*"
+        'get_audio_joined_status',
+        '*'
       );
     }
   }
@@ -115,7 +114,7 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
         this.done.emit(this.meeting);
       },
       () => {
-        console.log("dismissed");
+        console.log('dismissed');
       }
     );
   }
@@ -131,43 +130,43 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
     // TODO: catch any kind of bbb redirect.
     // TODO: maybe we can webhook bbb in the API and get all events --> redirect to naklar.io client so it know's
     if (this.initialLoadComplete) {
-      console.log("another iframe load started... ending meeting");
+      console.log('another iframe load started... ending meeting');
       this.done.emit(this.meeting);
     } else if (this.initialLoadStarted) {
       this.initialLoadComplete = !this.initialLoadComplete;
-      console.log("initial iframe load!");
+      console.log('initial iframe load!');
     }
   }
 
-  @HostListener("window:message", ['$event'])
+  @HostListener('window:message', ['$event'])
   onBBBEvent(ev: MessageEvent): void {
-    console.log("got bbb event", ev);
+    console.log('got bbb event', ev);
     switch (ev.data.response) {
-      case "readyToConnect": {
+      case 'readyToConnect': {
         this.getInitialState();
         break;
       }
-      case "joinedAudio": {
+      case 'joinedAudio': {
         this.hasJoinedAudio = true;
         break;
       }
-      case "notInAudio": {
+      case 'notInAudio': {
         this.hasJoinedAudio = false;
         break;
       }
-      case "selfMuted": {
+      case 'selfMuted': {
         this.isMuted = true;
         break;
       }
-      case "selfUnmuted": {
+      case 'selfUnmuted': {
         this.isMuted = false;
         break;
       }
-      case "naklarioLeave": {
+      case 'naklarioLeave': {
         this.endMeeting();
         break;
       }
-      case "naklarioMeetingEnded": {
+      case 'naklarioMeetingEnded': {
         this.done.emit(this.meeting);
         break;
       }
@@ -178,11 +177,11 @@ export class SessionComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    //window.scroll(0, document.body.scrollHeight);
+    // window.scroll(0, document.body.scrollHeight);
     this.layoutService.setFullscreen(true);
   }
 
-  /**
+  /*
   // This is kind of hacky and not very performant but works:
   // The idea is to set the iframe height to the remaining viewport height
   // after subtracting its top left position.

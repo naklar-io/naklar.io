@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { kgV } from '../../../_helpers'
+import { kgV } from '../../../_helpers';
 
 interface PartnerLogo {
-  href: string,
-  src: string,
-  alt: string
+  href: string;
+  src: string;
+  alt: string;
 }
 
 
@@ -54,7 +54,7 @@ const partnerLogos: PartnerLogo[] = [
     src: 'assets/img/partners/09 wfs_logo.png',
     alt: '#wirfürschule Hackathon'
   }
-]
+];
 
 @Component({
   selector: 'home-more-information-partners',
@@ -62,41 +62,41 @@ const partnerLogos: PartnerLogo[] = [
   styleUrls: ['./partners.component.scss']
 })
 export class PartnersComponent implements OnInit {
-  partnerGroupsMobile: PartnerLogo[][] = []
-  partnerGroupsDesktop: PartnerLogo[][] = []
-  mobilePageSize = 2
-  desktopPageSize = 4
+  partnerGroupsMobile: PartnerLogo[][] = [];
+  partnerGroupsDesktop: PartnerLogo[][] = [];
+  mobilePageSize = 2;
+  desktopPageSize = 4;
 
-  carouselChangeInterval = 4000
+  carouselChangeInterval = 4000;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.partnerGroupsDesktop = this.calculateItems(partnerLogos, this.desktopPageSize)
-    this.partnerGroupsMobile = this.calculateItems(partnerLogos, this.mobilePageSize)
+    this.partnerGroupsDesktop = this.calculateItems(partnerLogos, this.desktopPageSize);
+    this.partnerGroupsMobile = this.calculateItems(partnerLogos, this.mobilePageSize);
   }
 
   calculateItems<T>(array: T[], pageSize): T[][] {
-    const mustItemCount = kgV(array.length, pageSize)
+    const mustItemCount = kgV(array.length, pageSize);
     // console.log(mustItemCount)
-    const pagesCount = mustItemCount / pageSize
+    const pagesCount = mustItemCount / pageSize;
     // console.log(pagesCount)
 
-    const returnArray: T[][] = []
+    const returnArray: T[][] = [];
 
     for (let page = 0; page < pagesCount; page++) {
-      const itemId = page * pageSize
-      const startIndex = itemId % array.length
-      const pageArray: T[] = []
+      const itemId = page * pageSize;
+      const startIndex = itemId % array.length;
+      const pageArray: T[] = [];
 
       for (let i = 0; i < pageSize; i++) {
-        const index = (startIndex + i) % array.length
-        pageArray.push(array[index])
+        const index = (startIndex + i) % array.length;
+        pageArray.push(array[index]);
       }
-      returnArray.push(pageArray)
+      returnArray.push(pageArray);
     }
 
-    return returnArray
+    return returnArray;
   }
 
 }

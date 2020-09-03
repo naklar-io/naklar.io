@@ -5,10 +5,10 @@ import { SettingsComponent } from './settings/settings.component';
 
 const routes: Routes = [
   {
-    path: "notify",
+    path: 'notify',
     children: [
       {
-        path: "settings",
+        path: 'settings',
         component: SettingsComponent
       }
     ]

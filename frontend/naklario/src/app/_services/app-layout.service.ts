@@ -11,8 +11,8 @@ export class AppLayoutService {
   scrollable$: Observable<boolean> = this.scrollable.asObservable();
 
   constructor() {
-    //this.scrollable$ = this.scrollable.asObservable();
-    //this.fullscreen$ = this.fullscreen.asObservable();
+    // this.scrollable$ = this.scrollable.asObservable();
+    // this.fullscreen$ = this.fullscreen.asObservable();
   }
 
   public setScrollable(scrollable: boolean) {

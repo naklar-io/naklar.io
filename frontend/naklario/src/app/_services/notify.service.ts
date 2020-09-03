@@ -1,19 +1,19 @@
-import { Injectable, PLATFORM_ID, Inject } from "@angular/core";
-import { SwPush } from "@angular/service-worker";
-import { HttpClient } from "@angular/common/http";
-import { WebPushDevice, NotificationSettings } from "../_models";
-import { isPlatformBrowser } from "@angular/common";
-import { environment } from "src/environments/environment";
-import { AuthenticationService } from "./authentication.service";
-import { BehaviorSubject, Observable, combineLatest, from } from "rxjs";
-import { mergeMap, flatMap, switchMap, map } from "rxjs/operators";
+import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { SwPush } from '@angular/service-worker';
+import { HttpClient } from '@angular/common/http';
+import { WebPushDevice, NotificationSettings } from '../_models';
+import { isPlatformBrowser } from '@angular/common';
+import { environment } from 'src/environments/environment';
+import { AuthenticationService } from './authentication.service';
+import { BehaviorSubject, Observable, combineLatest, from } from 'rxjs';
+import { mergeMap, flatMap, switchMap, map } from 'rxjs/operators';
 
 enum Browser {
-  Chrome = "Chrome",
-  Opera = "Opera",
-  Firefox = "Firefox",
-  Safari = "Safari",
-  Unknown = "",
+  Chrome = 'Chrome',
+  Opera = 'Opera',
+  Firefox = 'Firefox',
+  Safari = 'Safari',
+  Unknown = '',
 }
 
 const saneModulus = (a, b) => ((a % b) + b) % b;
@@ -22,33 +22,23 @@ const supportedBrowsers = [Browser.Chrome, Browser.Opera, Browser.Firefox];
 const defaultSettings = {
   enableMail: false,
   enablePush: false,
-  notifyInterval: "00:05:00", // 5 minutes
+  notifyInterval: '00:05:00', // 5 minutes
   ranges: [],
-  rangesMode: "ALLOW",
+  rangesMode: 'ALLOW',
 } as NotificationSettings;
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class NotifyService {
-  private settings: BehaviorSubject<NotificationSettings> = new BehaviorSubject(
-    defaultSettings
-  );
-  private settings$: Observable<
-    NotificationSettings
-  > = this.settings.asObservable();
-
-  private pushSubscription: BehaviorSubject<
-    PushSubscription
-  > = new BehaviorSubject(null);
 
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
+    @Inject(PLATFORM_ID) private platformId,
     private swPush: SwPush,
     private http: HttpClient,
     private authService: AuthenticationService
   ) {
-    console.debug("Notifyservice is live");
+    // console.debug('Notifyservice is live');
     authService.isLoggedIn$.subscribe((loggedIn) => {
       if (loggedIn) {
         this.fetchSettings();
@@ -67,12 +57,12 @@ export class NotifyService {
     });
     this.swPush.notificationClicks.subscribe((not) => {
       if (not.notification.data) {
-        let url = not.notification.data.url;
-        window.open(url, "naklario_notification");
+        const url = not.notification.data.url;
+        window.open(url, 'naklario_notification');
       }
     });
     this.swPush.messages.subscribe((message) => {
-      console.log("[notify-service]", message);
+      console.log('[notify-service]', message);
     });
 
     this.settings.subscribe((set) => {
@@ -88,8 +78,8 @@ export class NotifyService {
 
   private get browser(): Browser {
     if (isPlatformBrowser(this.platformId)) {
-      for (let b in Browser) {
-        if (navigator.userAgent.indexOf(b) != -1) {
+      for (const b in Browser) {
+        if (navigator.userAgent.indexOf(b) !== -1) {
           return Browser[b];
         }
       }
@@ -106,6 +96,78 @@ export class NotifyService {
     return this.settings$;
   }
 
+  public get hasPushSubscription(): boolean {
+    return this.pushSubscription.value != null;
+  }
+
+  public get canPushSubscribe(): boolean {
+    return this.swPush.isEnabled && supportedBrowsers.includes(this.browser);
+  }
+  private settings: BehaviorSubject<NotificationSettings> = new BehaviorSubject(
+    defaultSettings
+  );
+  private settings$: Observable<
+    NotificationSettings
+  > = this.settings.asObservable();
+
+  private pushSubscription: BehaviorSubject<
+    PushSubscription
+  > = new BehaviorSubject(null);
+
+  /* Converts time to UTC */
+  public static convertToUTC(time: string): string {
+    const splits = time.split(':');
+    // assume max 00:00:00
+    let seconds = 0;
+    if (splits.length === 3) {
+      seconds += 3600 * parseInt(splits[0], 10);
+      seconds += 60 * parseInt(splits[1], 10);
+      seconds += parseInt(splits[2], 10);
+    } else if (splits.length === 2) {
+      seconds += 3600 * parseInt(splits[0], 10);
+      seconds += 60 * parseInt(splits[1], 10);
+    }
+    seconds = seconds + new Date().getTimezoneOffset() * 60;
+    const hours = saneModulus(Math.floor(seconds / 3600), 24);
+    const minutes = saneModulus(Math.floor((seconds % 3600) / 60), 60);
+    seconds = saneModulus(seconds, 60);
+    console.log(hours, minutes, seconds);
+    return (
+      hours.toString().padStart(2, '0') +
+      ':' +
+      minutes.toString().padStart(2, '0') +
+      ':' +
+      seconds.toString().padStart(2, '0')
+    );
+  }
+  /* Converts time to local time */
+  public static convertToLocal(time: string): string {
+    const splits = time.split(':');
+    // assume max 00:00:00
+    // min 00 seconds
+    let seconds = 0;
+    if (splits.length === 3) {
+      seconds += 3600 * parseInt(splits[0], 10);
+      seconds += 60 * parseInt(splits[1], 10);
+      seconds += parseInt(splits[2], 10);
+    } else if (splits.length === 2) {
+      seconds += 3600 * parseInt(splits[0], 10);
+      seconds += 60 * parseInt(splits[1], 10);
+    }
+    seconds = seconds - new Date().getTimezoneOffset() * 60;
+    const hours = saneModulus(Math.floor(seconds / 3600), 24);
+    const minutes = saneModulus(Math.floor((seconds % 3600) / 60), 60);
+    seconds = saneModulus(seconds, 60);
+    console.log(hours, minutes, seconds);
+    return (
+      hours.toString().padStart(2, '0') +
+      ':' +
+      minutes.toString().padStart(2, '0') +
+      ':' +
+      seconds.toString().padStart(2, '0')
+    );
+  }
+
   // attempts to fetch settings from server
   private fetchSettings(): void {
     this.http
@@ -116,7 +178,7 @@ export class NotifyService {
           this.settings.next(settings);
         },
         (error) => {
-          console.log("Error fetching notification-settings", error);
+          console.log('Error fetching notification-settings', error);
         }
       );
   }
@@ -129,12 +191,12 @@ export class NotifyService {
 
   // check if push subscription exists and if its on the server. If not --> try to send it
   public ensurePushSubscription(): void {
-    console.debug("ensuring");
+    // console.debug('ensuring');
     if (this.canPushSubscribe) {
-      combineLatest(this.pushSubscription, this.getPushDevices()).subscribe(
+      combineLatest([this.pushSubscription, this.getPushDevices()]).subscribe(
         (values) => {
-          let myPushDevice = this.pushSubToWebPushDev(values[0]).registrationId;
-          let pushDevices = values[1].map((item) => {
+          const myPushDevice = this.pushSubToWebPushDev(values[0]).registrationId;
+          const pushDevices = values[1].map((item) => {
             return item.registrationId;
           });
           if (!pushDevices.includes(myPushDevice)) {
@@ -145,16 +207,8 @@ export class NotifyService {
     }
   }
 
-  public get hasPushSubscription(): boolean {
-    return this.pushSubscription.value != null;
-  }
-
-  public get canPushSubscribe(): boolean {
-    return this.swPush.isEnabled && supportedBrowsers.includes(this.browser);
-  }
-
   public requestPushSubscription(): void {
-    console.debug("requesting");
+    // console.debug('requesting');
 
     this.swPush
       .requestSubscription({
@@ -163,15 +217,15 @@ export class NotifyService {
       .then((x) => {
         this.addPushSubscription(x).subscribe(
           (result) => {
-            console.debug("Successfully subscribed", result);
+            console.log('Successfully subscribed', result);
           },
           (error) => {
-            console.error("Error while subscribing", error);
+            console.error('Error while subscribing', error);
           }
         );
       })
       .catch((error) => {
-        console.error("Subbing error", error);
+        console.error('Subbing error', error);
       });
   }
 
@@ -191,7 +245,7 @@ export class NotifyService {
             return settings;
           },
           (error) => {
-            console.log("Missing settings, trying to create them", error);
+            console.log('Missing settings, trying to create them', error);
             return this.createSettings(newSettings);
           }
         )
@@ -239,65 +293,11 @@ export class NotifyService {
     });
   }
 
-  /* Converts time to UTC */
-  public static convertToUTC(time: string): string {
-    let splits = time.split(":");
-    // assume max 00:00:00
-    let seconds = 0;
-    if (splits.length == 3) {
-      seconds += 3600 * parseInt(splits[0]);
-      seconds += 60 * parseInt(splits[1]);
-      seconds += parseInt(splits[2]);
-    } else if (splits.length == 2) {
-      seconds += 3600 * parseInt(splits[0]);
-      seconds += 60 * parseInt(splits[1]);
-    }
-    seconds = seconds + new Date().getTimezoneOffset() * 60;
-    let hours = saneModulus(Math.floor(seconds / 3600), 24);
-    let minutes = saneModulus(Math.floor((seconds % 3600) / 60), 60);
-    seconds = saneModulus(seconds, 60);
-    console.log(hours, minutes, seconds);
-    return (
-      hours.toString().padStart(2, "0") +
-      ":" +
-      minutes.toString().padStart(2, "0") +
-      ":" +
-      seconds.toString().padStart(2, "0")
-    );
-  }
-  /* Converts time to local time */
-  public static convertToLocal(time: string): string {
-    let splits = time.split(":");
-    // assume max 00:00:00
-    // min 00 seconds
-    let seconds = 0;
-    if (splits.length == 3) {
-      seconds += 3600 * parseInt(splits[0]);
-      seconds += 60 * parseInt(splits[1]);
-      seconds += parseInt(splits[2]);
-    } else if (splits.length == 2) {
-      seconds += 3600 * parseInt(splits[0]);
-      seconds += 60 * parseInt(splits[1]);
-    }
-    seconds = seconds - new Date().getTimezoneOffset() * 60;
-    let hours = saneModulus(Math.floor(seconds / 3600), 24);
-    let minutes = saneModulus(Math.floor((seconds % 3600) / 60), 60);
-    seconds = saneModulus(seconds, 60);
-    console.log(hours, minutes, seconds);
-    return (
-      hours.toString().padStart(2, "0") +
-      ":" +
-      minutes.toString().padStart(2, "0") +
-      ":" +
-      seconds.toString().padStart(2, "0")
-    );
-  }
-
   public addPushSubscription(sub: PushSubscription) {
-    let pushJSON = sub.toJSON();
+    const pushJSON = sub.toJSON();
     let wpDevice: WebPushDevice;
     wpDevice = {
-      registrationId: pushJSON.endpoint.split("/").slice(-1).pop(),
+      registrationId: pushJSON.endpoint.split('/').slice(-1).pop(),
       p256dh: pushJSON.keys.p256dh,
       auth: pushJSON.keys.auth,
       browser: this.browser.toUpperCase(),
@@ -309,9 +309,9 @@ export class NotifyService {
   }
 
   private pushSubToWebPushDev(sub: PushSubscription) {
-    let pushJSON = sub.toJSON();
+    const pushJSON = sub.toJSON();
     return {
-      registrationId: pushJSON.endpoint.split("/").slice(-1).pop(),
+      registrationId: pushJSON.endpoint.split('/').slice(-1).pop(),
       p256dh: pushJSON.keys.p256dh,
       auth: pushJSON.keys.auth,
       browser: this.browser.toUpperCase(),

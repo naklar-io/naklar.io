@@ -11,7 +11,7 @@ export class ExitModalComponent implements OnInit {
   constructor(
     public modal: NgbActiveModal
   ) {
-    
+
   }
 
   ngOnInit(): void {

@@ -1,17 +1,17 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import {
   RouletteRequestType,
   RouletteService,
   ToastService,
-} from "src/app/_services";
-import { Meeting, Feedback } from "src/app/_models";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { rangeValidator } from "src/app/_helpers";
+} from 'src/app/_services';
+import { Meeting, Feedback } from 'src/app/_models';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { rangeValidator } from 'src/app/_helpers';
 
 @Component({
-  selector: "roulette-feedback",
-  templateUrl: "./feedback.component.html",
-  styleUrls: ["./feedback.component.scss"],
+  selector: 'roulette-feedback',
+  templateUrl: './feedback.component.html',
+  styleUrls: ['./feedback.component.scss'],
 })
 export class FeedbackComponent implements OnInit {
   @Input() readonly requestType: RouletteRequestType;
@@ -31,7 +31,7 @@ export class FeedbackComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       rating: [-1, [Validators.required, rangeValidator(1, 6)]],
-      message: [""],
+      message: [''],
     });
   }
 
@@ -47,11 +47,11 @@ export class FeedbackComponent implements OnInit {
 
     const f: Feedback = {
       receiver:
-        this.requestType === "tutor"
+        this.requestType === 'tutor'
           ? this.meeting.student
           : this.meeting.tutor,
       provider:
-        this.requestType === "tutor"
+        this.requestType === 'tutor'
           ? this.meeting.tutor
           : this.meeting.student,
       rating: this.f.rating.value,
@@ -60,7 +60,7 @@ export class FeedbackComponent implements OnInit {
       created: new Date().toISOString(),
     };
 
-    console.log("sending feedback: ", f);
+    console.log('sending feedback: ', f);
     this.rouletteService.postFeedback(f).subscribe(
       (data) => {
         this.done.emit(true);

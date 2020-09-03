@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class CompressorService {
-  constructor() {}
+  constructor() { }
 
   private cropImage(img: HTMLImageElement, size: number) {
     const aspectRatio = 1;
@@ -30,13 +30,13 @@ export class CompressorService {
     const outputY = (outputHeight - inputHeight) * 0.5;
 
     // create a canvas that will present the output image
-    const tmpImage = document.createElement("canvas");
+    const tmpImage = document.createElement('canvas');
     // set it to the same size as the image
     tmpImage.width = outputWidth;
     tmpImage.height = outputHeight;
 
     // draw our image at position 0, 0 on the canvas
-    const tmpCtx = tmpImage.getContext("2d");
+    const tmpCtx = tmpImage.getContext('2d');
     tmpCtx.drawImage(img, outputX, outputY);
     // resize
 
@@ -44,7 +44,7 @@ export class CompressorService {
     outputImage.width = size;
     outputImage.height = size;
     const ctx = outputImage.getContext('2d');
-    ctx.drawImage(tmpImage, 0, 0, size, size)
+    ctx.drawImage(tmpImage, 0, 0, size, size);
     return ctx;
   }
 
@@ -52,14 +52,14 @@ export class CompressorService {
     const size = 256; // For scaling relative to width
 
     const reader = new FileReader();
-    const obs$ = Observable.create((observer) => {
+    const obs$: Observable<string> = new Observable((observer) => {
       reader.onload = (ev) => {
         const img = new Image();
         img.src = (ev.target as any).result;
 
         (img.onload = () => {
           const ctx = this.cropImage(img, size);
-          observer.next(ctx.canvas.toDataURL("image/jpeg", 0.92));
+          observer.next(ctx.canvas.toDataURL('image/jpeg', 0.92));
         }),
           (reader.onerror = (error) => observer.error(error));
       };

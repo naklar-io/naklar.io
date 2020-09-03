@@ -1,7 +1,6 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -19,7 +18,11 @@ $naklario-accent: mat-palette($mat-blue, A200, A100, A400);
 $naklario-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$naklario-theme: mat-light-theme($naklario-primary, $naklario-accent, $naklario-warn);
+$naklario-theme: mat-light-theme(
+  $naklario-primary,
+  $naklario-accent,
+  $naklario-warn
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -29,9 +32,11 @@ $naklario-theme: mat-light-theme($naklario-primary, $naklario-accent, $naklario-
 @import "variables";
 @import "forms";
 
-@import "~bootstrap/scss/bootstrap";
 
 @import "material-icons";
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
 
 .grey {
   color: #454545;
@@ -61,95 +66,88 @@ $light-gray: #f4f4f4;
   background-color: $light-gray;
 } */
 
-
-
 .form-label-group {
-    position: relative;
-    margin-bottom: 1rem;
-  }
+  position: relative;
+  margin-bottom: 1rem;
+}
 
-  .form-label-group > input,
+.form-label-group > input,
+.form-label-group > label {
+  height: 3.125rem;
+  padding: 0.75rem;
+}
+
+.form-label-group > label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  margin-bottom: 0; /* Override default `<label>` margin */
+  line-height: 1.5;
+  color: #495057;
+  pointer-events: none;
+  cursor: text; /* Match the input under the label */
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-label-group input::-webkit-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input:-ms-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::-ms-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::-moz-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::placeholder {
+  color: transparent;
+}
+
+.form-label-group input:not(:placeholder-shown) {
+  padding-top: 1.25rem;
+  padding-bottom: 0.25rem;
+}
+
+.form-label-group input:not(:placeholder-shown) ~ label {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 12px;
+  color: #777;
+}
+
+/* Fallback for Edge
+  -------------------------------------------------- */
+@supports (-ms-ime-align: auto) {
   .form-label-group > label {
-    height: 3.125rem;
-    padding: .75rem;
+    display: none;
   }
-
-  .form-label-group > label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: block;
-    width: 100%;
-    margin-bottom: 0; /* Override default `<label>` margin */
-    line-height: 1.5;
-    color: #495057;
-    pointer-events: none;
-    cursor: text; /* Match the input under the label */
-    border: 1px solid transparent;
-    border-radius: .25rem;
-    transition: all .2s ease-in-out;
-  }
-
-  .form-label-group input::-webkit-input-placeholder {
-    color: transparent;
-  }
-
-  .form-label-group input:-ms-input-placeholder {
-    color: transparent;
-  }
-
   .form-label-group input::-ms-input-placeholder {
-    color: transparent;
-  }
-
-  .form-label-group input::-moz-placeholder {
-    color: transparent;
-  }
-
-  .form-label-group input::placeholder {
-    color: transparent;
-  }
-
-  .form-label-group input:not(:placeholder-shown) {
-    padding-top: 1.25rem;
-    padding-bottom: .25rem;
-  }
-
-  .form-label-group input:not(:placeholder-shown) ~ label {
-    padding-top: .25rem;
-    padding-bottom: .25rem;
-    font-size: 12px;
     color: #777;
   }
+}
 
-  /* Fallback for Edge
+/* Fallback for IE
   -------------------------------------------------- */
-  @supports (-ms-ime-align: auto) {
-    .form-label-group > label {
-      display: none;
-    }
-    .form-label-group input::-ms-input-placeholder {
-      color: #777;
-    }
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .form-label-group > label {
+    display: none;
   }
-
-  /* Fallback for IE
-  -------------------------------------------------- */
-  @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-    .form-label-group > label {
-      display: none;
-    }
-    .form-label-group input:-ms-input-placeholder {
-      color: #777;
-    }
+  .form-label-group input:-ms-input-placeholder {
+    color: #777;
   }
+}
 
 
-  @import "~@ng-select/ng-select/themes/default.theme.css";
-
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 /**
 .btn-primary {
@@ -166,16 +164,33 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     border-color: #fdb328;
 }
 */
+
+
+
 @each $color, $value in $theme-colors {
   .nabtn-#{$color} {
-    @include button-variant($value, $value);
-    border-width: 0.25em;
+    @include button-variant(
+      $value,
+      $value,
+      lighten($value, 20%),
+      lighten($value, 20%)
+    );
+    //background: linear-gradient(to right, $start-color $start-percent, $end-color $end-percent);
+    //@include gradient-x(lighten($value, 20%), $value);
+    //border-width: 0px;
+    border-width: .25em;
     border-radius: 15px;
-    font-size: 1.0rem;
-    color: black;
+    //margin-top: 0.5rem;
+    //margin-bottom: 0.5rem;
   }
   .nabtn-#{$color}:hover {
-    background-color: #fdb328;
-    border-color: #fdb328;
+    @if $color== "primary" {
+      color: #fff;
+    }
+    //color: lighten(color-yiq(lighten($value, 20%)), 20%);
+    //@include button-variant($value, $value, lighten($value, 20%), lighten($value, 20%));
+    //background: linear-gradient(to right, $start-color $start-percent, $end-color $end-percent);
+    //@include gradient-x(lighten($value, 20%), $value);
+    //background: lighten($value, 30%);
   }
 }

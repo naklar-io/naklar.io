@@ -3,17 +3,17 @@ import {
   Router,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-} from "@angular/router";
-import { Constants } from "../_models";
-import { Injectable, Inject, PLATFORM_ID } from "@angular/core";
-import { DatabaseService } from "./database.service";
-import { Observable, of, EMPTY } from "rxjs";
-import { take, mergeMap, tap } from "rxjs/operators";
-import { makeStateKey, TransferState } from "@angular/platform-browser";
-import { isPlatformServer } from "@angular/common";
+} from '@angular/router';
+import { Constants } from '../_models';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
+import { DatabaseService } from './database.service';
+import { Observable, of, EMPTY } from 'rxjs';
+import { take, mergeMap, tap } from 'rxjs/operators';
+import { makeStateKey, TransferState } from '@angular/platform-browser';
+import { isPlatformServer } from '@angular/common';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class DatabaseResolverService implements Resolve<Constants> {
   constructor(
@@ -27,7 +27,7 @@ export class DatabaseResolverService implements Resolve<Constants> {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<Constants> | Observable<never> {
-    const CONST_KEY = makeStateKey<Constants>("constants");
+    const CONST_KEY = makeStateKey<Constants>('constants');
 
     // return constants if in transfer storage
     if (this.transferState.hasKey(CONST_KEY)) {
@@ -43,7 +43,7 @@ export class DatabaseResolverService implements Resolve<Constants> {
           if (constants) {
             return of(constants);
           } else {
-            console.log("Error pre-fetching database Constants");
+            console.log('Error pre-fetching database Constants');
             return EMPTY;
           }
         })

@@ -1,40 +1,40 @@
 import {
   BrowserModule,
   BrowserTransferStateModule,
-} from "@angular/platform-browser";
-import { NgModule } from "@angular/core";
-import { AppRoutingModule } from "./app-routing.module";
-import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+} from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { AppRoutingModule } from './app-routing.module';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Third party modules
-import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { LoadingBarRouterModule } from "@ngx-loading-bar/router";
-import { LoadingBarHttpClientModule } from "@ngx-loading-bar/http-client";
+import { LoadingBarRouterModule } from '@ngx-loading-bar/router';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 
-import { JwtInterceptor, ErrorInterceptor } from "./_helpers";
+import { JwtInterceptor, ErrorInterceptor } from './_helpers';
 
 // Components
-import { AppComponent } from "./app.component";
-import { AccountModule } from "./account/account.module";
-import { RouletteModule } from "./roulette/roulette.module";
+import { AppComponent } from './app.component';
+import { AccountModule } from './account/account.module';
+import { RouletteModule } from './roulette/roulette.module';
 
-import { HomeComponent } from "./home/home.component";
-import { AboutComponent } from "./home/misc/about/about.component";
-import { DatenschutzComponent } from "./home/misc/datenschutz/datenschutz.component";
-import { HelpSupportComponent } from "./home/misc/help-support/help-support.component";
-import { FeedbackComponent } from "./home/misc/feedback/feedback.component";
-import { ImpressumComponent } from "./home/misc/impressum/impressum.component";
-import { ParentsComponent } from "./home/misc/parents/parents.component";
-import { PrivacyComponent } from "./home/misc/privacy/privacy.component";
-import { SchoolsComponent } from "./home/misc/schools/schools.component";
-import { StudentsComponent } from "./home/misc/students/students.component";
-import { TutorsComponent } from "./home/misc/tutors/tutors.component";
-import { TermsConditionsComponent } from "./home/misc/terms-conditions/terms-conditions.component";
-import { FooterComponent } from "./home/misc/footer/footer.component";
-import { NavbarComponent } from "./home/misc/navbar/navbar.component";
-import { PageNotFoundComponent } from "./home/misc/page-not-found/page-not-found.component";
+import { HomeComponent } from './home/home.component';
+import { AboutComponent } from './home/misc/about/about.component';
+import { DatenschutzComponent } from './home/misc/datenschutz/datenschutz.component';
+import { HelpSupportComponent } from './home/misc/help-support/help-support.component';
+import { FeedbackComponent } from './home/misc/feedback/feedback.component';
+import { ImpressumComponent } from './home/misc/impressum/impressum.component';
+import { ParentsComponent } from './home/misc/parents/parents.component';
+import { PrivacyComponent } from './home/misc/privacy/privacy.component';
+import { SchoolsComponent } from './home/misc/schools/schools.component';
+import { StudentsComponent } from './home/misc/students/students.component';
+import { TutorsComponent } from './home/misc/tutors/tutors.component';
+import { TermsConditionsComponent } from './home/misc/terms-conditions/terms-conditions.component';
+import { FooterComponent } from './home/misc/footer/footer.component';
+import { NavbarComponent } from './home/misc/navbar/navbar.component';
+import { PageNotFoundComponent } from './home/misc/page-not-found/page-not-found.component';
 
 import {
   DatabaseService,
@@ -44,12 +44,12 @@ import {
   BannerService,
   NotifyService,
   AppLayoutService,
-} from "./_services";
+} from './_services';
 
-import { MiscComponentsModule } from "./_misc_components/misc-components.module";
-import { MoreInformationComponent } from "./home/more-information/more-information.component";
-import { BannerComponent } from "./home/misc/banner/banner.component";
-import { DashboardComponent } from "./dashboard/dashboard.component";
+import { MiscComponentsModule } from './_misc_components/misc-components.module';
+import { MoreInformationComponent } from './home/more-information/more-information.component';
+import { BannerComponent } from './home/misc/banner/banner.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { ScrollSpyDirective } from './_helpers/scroll-spy.directive';
 import { PartnersComponent } from './home/more-information/partners/partners.component';
 import { FeaturesComponent } from './home/more-information/features/features.component';
@@ -100,7 +100,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
   ],
   imports: [
     NgbModule,
-    BrowserModule.withServerTransition({ appId: "serverApp" }),
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserTransferStateModule,
     BrowserAnimationsModule,
     HttpClientModule,
@@ -119,7 +119,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     NotifyModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
-    //ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     ServiceWorkerModule.register('custom-service-worker.js', { enabled: environment.production }),
   ],
   providers: [

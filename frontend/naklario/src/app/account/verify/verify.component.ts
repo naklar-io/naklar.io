@@ -4,20 +4,20 @@ import {
   OnDestroy,
   Inject,
   PLATFORM_ID,
-} from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
-import { AuthenticationService } from "src/app/_services";
-import { Subscription } from "rxjs";
-import { isPlatformBrowser } from "@angular/common";
+} from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
+import { AuthenticationService } from 'src/app/_services';
+import { Subscription } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 interface QueryParams {
   token?: string;
 }
 
 @Component({
-  selector: "app-verify",
-  templateUrl: "./verify.component.html",
-  styleUrls: ["./verify.component.scss"],
+  selector: 'app-verify',
+  templateUrl: './verify.component.html',
+  styleUrls: ['./verify.component.scss'],
 })
 export class VerifyComponent implements OnInit, OnDestroy {
   token: string;
@@ -33,7 +33,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private authenticationService: AuthenticationService,
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId
   ) {}
   ngOnInit(): void {
     this.queryParams$ = this.route.queryParams.subscribe(
@@ -47,7 +47,7 @@ export class VerifyComponent implements OnInit, OnDestroy {
       (loggedIn) => {
         this.loggedIn = loggedIn;
       }
-    )
+    );
   }
   ngOnDestroy(): void {
     this.queryParams$.unsubscribe();

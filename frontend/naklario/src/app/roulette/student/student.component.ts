@@ -4,37 +4,37 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
-} from "@angular/core";
-import { FormBuilder, Validators } from "@angular/forms";
+} from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   DatabaseService,
   AuthenticationService,
   RouletteService,
   ToastService,
   BannerService,
-} from "src/app/_services";
-import { User, Constants, StudentRequest } from "src/app/_models";
-import { ActivatedRoute, Router } from "@angular/router";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { PauseModalComponent } from "../pause-modal/pause-modal.component";
+} from 'src/app/_services';
+import { User, Constants, StudentRequest } from 'src/app/_models';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PauseModalComponent } from '../pause-modal/pause-modal.component';
 
 @Component({
-  selector: "roulette-student",
-  templateUrl: "./student.component.html",
-  styleUrls: ["./student.component.scss"],
+  selector: 'roulette-student',
+  templateUrl: './student.component.html',
+  styleUrls: ['./student.component.scss'],
   providers: [DatabaseService],
 })
 export class StudentComponent implements OnInit {
   @Output() done = new EventEmitter<boolean>();
 
-  readonly FEATURE_RELEASE_DATE = new Date("2020-05-14T00:00:00+02:00");
+  readonly FEATURE_RELEASE_DATE = new Date('2020-05-14T00:00:00+02:00');
 
   user: User;
 
   constants: Constants;
 
   studentForm = this.fb.group({
-    subject: ["", Validators.required],
+    subject: ['', Validators.required],
     state: [-1, Validators.required],
     slider: [-1, Validators.required],
   });
@@ -76,14 +76,14 @@ export class StudentComponent implements OnInit {
         this.shouldShowInstructionVideo = true;
         return;
       }
-      let lastMeeting = meetings
+      const lastMeeting = meetings
         .filter((meeting) => meeting.established)
         .sort(
           (a, b) =>
             new Date(b.timeEstablished).getTime() -
             new Date(a.timeEstablished).getTime()
         )[0];
-      let lastMeetingDate = new Date(lastMeeting.timeEstablished);
+      const lastMeetingDate = new Date(lastMeeting.timeEstablished);
       const lastMeetingWasBeforeFeatureStart =
         lastMeetingDate.getTime() < this.FEATURE_RELEASE_DATE.getTime();
 
@@ -92,8 +92,8 @@ export class StudentComponent implements OnInit {
   }
 
   getSchoolTypeMinMax(schoolTypeID: number): any {
-    let grades = this.constants.schoolData
-      .filter((x) => x.schoolType.id == schoolTypeID)
+    const grades = this.constants.schoolData
+      .filter((x) => x.schoolType.id === schoolTypeID)
       .map((x) => x.grade);
     return [Math.min(...grades), Math.max(...grades)];
   }
@@ -104,24 +104,24 @@ export class StudentComponent implements OnInit {
     this.studentForm.markAllAsTouched();
     if (!this.user.emailVerified) {
       this.toast.error(
-        "Deine E-Mail muss bestätigt sein um hierhin zu kommen!"
+        'Deine E-Mail muss bestätigt sein um hierhin zu kommen!'
       );
-      this.router.navigate(["/account"]);
+      this.router.navigate(['/account']);
       return;
     }
     if (this.studentForm.invalid) {
-      console.log("invalid");
+      console.log('invalid');
       return;
     }
 
     // Open pause modal
-    var modalRef = this.modalService.open(PauseModalComponent);
+    const modalRef = this.modalService.open(PauseModalComponent);
     modalRef.result.then(
       (result) => {
         this.startMatch();
       },
       (reason) => {
-        console.log("dismissed");
+        console.log('dismissed');
       }
     );
   }
@@ -144,10 +144,10 @@ export class StudentComponent implements OnInit {
 
   createMatchRequest() {
     this.loading = true;
-    console.log("creating Request");
+    console.log('creating Request');
     this.rouletteService
       .createMatch(
-        "student",
+        'student',
         new StudentRequest(this.f.subject.value),
         this.constants
       )
@@ -156,8 +156,8 @@ export class StudentComponent implements OnInit {
           this.loading = false;
           this.submitSuccess = true;
           this.error = null;
-          this.router.navigate(["/roulette/student"], {
-            queryParams: { state: "wait" },
+          this.router.navigate(['/roulette/student'], {
+            queryParams: { state: 'wait' },
           });
         },
         (error) => {
