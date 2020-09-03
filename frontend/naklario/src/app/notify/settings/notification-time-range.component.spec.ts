@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NotificationTimeRangeComponent } from './notification-time-range.component';
 
@@ -6,7 +6,7 @@ describe('NotificationTimeRangeComponent', () => {
   let component: NotificationTimeRangeComponent;
   let fixture: ComponentFixture<NotificationTimeRangeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ NotificationTimeRangeComponent ]
     })

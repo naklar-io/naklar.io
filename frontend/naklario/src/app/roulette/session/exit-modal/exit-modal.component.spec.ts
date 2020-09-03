@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ExitModalComponent } from './exit-modal.component';
 
@@ -6,7 +6,7 @@ describe('ExitModalComponent', () => {
   let component: ExitModalComponent;
   let fixture: ComponentFixture<ExitModalComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ExitModalComponent ]
     })
