@@ -24,6 +24,8 @@ BBB_URL = "https://bbb.naklar.io"
 EMAIL_HOST = "smtpd"
 EMAIL_PORT = "1025"
 
+EMAIL_BACKEND = 'post_office.EmailBackend'
+
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb
 
 
