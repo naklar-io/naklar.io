@@ -253,7 +253,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # as we're using CELERY
 POST_OFFICE = {
-    'DEFAULT_PRIORITY': 'now'
+    'DEFAULT_PRIORITY': 'medium'
 }
 
 try:
