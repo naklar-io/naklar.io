@@ -184,6 +184,13 @@ def on_match_change(sender, instance: Match, **kwargs):
 
         meeting.save()
         meeting.create_meeting()
+        group_send = async_to_sync(channel_layer.group_send)
+        msg = {
+            "type": "roulette.meeting_ready",
+            "meetingID": str(meeting.meeting_id)
+        }
+        group_send(f"request_tutor_{instance.tutor_request.id}", msg)
+        group_send(f"request_student_{instance.student_request.id}", msg)
 
 
 @receiver(post_save, sender=Match)

@@ -12,12 +12,12 @@ import {
   ToastService,
   AuthenticationService,
 } from 'src/app/_services';
-import { Match, Constants, Meeting, JoinResponse } from 'src/app/_models';
+import { Match, Constants, Meeting, JoinResponse, Request } from 'src/app/_models';
 import { ActivatedRoute } from '@angular/router';
 import { tap, switchMap, map } from 'rxjs/operators';
 import { Subscription, combineLatest, of } from 'rxjs';
 
-type State = 'wait' | 'maybe' | 'accepted';
+type State = 'wait' | 'maybe' | 'accepted' | 'meetingready';
 
 @Component({
   selector: 'roulette-wait',
@@ -26,6 +26,7 @@ type State = 'wait' | 'maybe' | 'accepted';
 })
 export class WaitComponent implements OnInit, OnDestroy {
   @Input() readonly requestType: RouletteRequestType;
+  @Input() request: Request;
   @Output() done = new EventEmitter<JoinResponse>();
 
   match: Match;
@@ -64,7 +65,8 @@ export class WaitComponent implements OnInit, OnDestroy {
       )
       .pipe(
         switchMap((_) =>
-          this.rouletteService.updatingMatch(this.requestType, this.constants)
+          // this.rouletteService.updatingMatch(this.requestType, this.constants)
+          this.rouletteService.socketMatch(this.requestType, this.request.id, this.constants)
         )
       )
       .subscribe(
@@ -91,7 +93,7 @@ export class WaitComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('destroying wait');
     if (!this.match?.bothAccepted()) {
-      this.rouletteService.deleteMatch(this.requestType);
+      this.rouletteService.deleteRequest(this.requestType);
     }
     this.rouletteService.stopUpdatingMatch();
     this.subUpdatingMatch?.unsubscribe();

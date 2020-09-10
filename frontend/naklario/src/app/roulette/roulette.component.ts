@@ -11,6 +11,7 @@ import {
   Meeting,
   StudentRequest,
   Constants,
+  Request,
 } from '../_models';
 import { map, tap, take, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -31,6 +32,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
   state: State;
   join: JoinResponse;
   meeting: Meeting;
+  request: Request;
 
   constructor(
     private route: ActivatedRoute,
@@ -42,6 +44,14 @@ export class RouletteComponent implements OnInit, OnDestroy {
     this.bannerService.showBanner();
   }
   ngOnInit(): void {
+    if (this.router.url.endsWith('student')) {
+      this.type = 'student';
+    } else if (this.router.url.endsWith('tutor')) {
+      this.type = 'tutor';
+    } else {
+      this.type = 'student';
+    }
+
     this.route.queryParams.subscribe((params) => {
       if (params.state === 'session') {
         if (this.join) {
@@ -55,6 +65,17 @@ export class RouletteComponent implements OnInit, OnDestroy {
               this.state = 'session';
             });
         }
+      } else if
+        (params.state === 'wait' && !this.request) {
+        this.rouletteService.getRequest(this.type).subscribe(
+          (request) => {
+            this.request = request;
+            this.state = 'wait';
+          },
+          (error) => {
+            this.router.navigateByUrl('/');
+          }
+        );
       } else {
         /* this.state =
           params.state && params.state === "wait" ? "wait" : "create";*/
@@ -77,13 +98,6 @@ export class RouletteComponent implements OnInit, OnDestroy {
       }
     });
 
-    if (this.router.url.endsWith('student')) {
-      this.type = 'student';
-    } else if (this.router.url.endsWith('tutor')) {
-      this.type = 'tutor';
-    } else {
-      this.type = 'student';
-    }
 
     let constants$: Observable<any> = this.route.data;
     if (this.state === 'create' && this.type === 'tutor') {
@@ -100,19 +114,27 @@ export class RouletteComponent implements OnInit, OnDestroy {
           // TODO: is this valid?
           const subj = this.authenticationService.currentUserValue.tutordata
             .subjects[0].id;
-          return this.rouletteService.createMatch(
+          return this.rouletteService.createRequest(
             'tutor',
             new StudentRequest(subj),
             data.constants
           );
         })
       )
-      .pipe(tap((_) => (this.state = 'wait')));
+      .pipe(tap((request) => {
+        this.request = request;
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { state: 'wait' }
+        });
+        this.state = 'wait';
+      }));
   }
 
-  onCreateDone(done: boolean) {
-    if (done) {
+  onCreateDone(request: Request) {
+    if (request) {
       // advance state
+      this.request = request;
       this.state = 'wait';
 
     }
@@ -138,7 +160,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
       this.meeting = meeting;
       this.router.navigate([], {
         relativeTo: this.route,
-        queryParams: { state: 'feedback', meetingId: this.meeting.meetingId},
+        queryParams: { state: 'feedback', meetingId: this.meeting.meetingId },
       });
       this.state = 'feedback';
     } else {
@@ -154,7 +176,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
 
   // cleanup
   ngOnDestroy(): void {
-    this.rouletteService.deleteMatch(this.type);
+    this.rouletteService.deleteRequest(this.type);
     this.bannerService.hideBanner();
   }
 }
