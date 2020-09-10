@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.db.models.query import QuerySet
 
+from djangorestframework_camel_case.util import camelize
 #    def receive(self, text_data):
 #        self.send(text_data=text_data)
 from roulette.models import Match, Request, StudentRequest, TutorRequest
@@ -45,7 +46,7 @@ class RouletteConsumer(WebsocketConsumer):
             self.request.save()
 
     def serialize_match(self, match_id):
-        return MatchSerializer(Match.objects.get(id=match_id)).data
+        return camelize(MatchSerializer(Match.objects.get(id=match_id)).data)
 
     def roulette_new_match(self, event):
         self.send(json.dumps({
@@ -63,4 +64,10 @@ class RouletteConsumer(WebsocketConsumer):
         self.send(json.dumps({
             "event": "matchDelete",
             "match": self.serialize_match(event["match"])
+        }))
+
+    def roulette_meeting_ready(self, event):
+        self.send(json.dumps({
+            "event": "meetingReady",
+            "meetingID": event["meetingID"]
         }))
