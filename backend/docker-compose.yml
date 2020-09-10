@@ -39,6 +39,9 @@ services:
   rabbitmq:
     image: rabbitmq
 
+  redis:
+    image: redis:6
+
   nginx:
     image: nginx:stable
     volumes:

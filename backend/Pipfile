@@ -27,6 +27,7 @@ drf-yasg = "*"
 mysqlclient = "*"
 psycopg2 = "*"
 pillow = "*"
+channels-redis = "*"
 
 [requires]
 python_version = "3.8"
