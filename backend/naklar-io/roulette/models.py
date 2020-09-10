@@ -83,9 +83,8 @@ class Request(models.Model):
     deactivated = models.DateTimeField(null=True)
 
     last_poll = models.DateTimeField(default=timezone.now)
-    # Is a socket connected? alternative to last poll
-    # Last poll will be set to the time point the socket was disconnected
-    is_connected = models.BooleanField(default=False)
+    # How many are connected?
+    connected_count = models.PositiveIntegerField(default=0)
 
     notifications = GenericRelation('notify.Notification')
 
