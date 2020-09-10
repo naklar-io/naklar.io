@@ -58,7 +58,7 @@ class TutorRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TutorRequest
-        fields = ['match', 'failed_matches', 'created', ]
+        fields = ['id', 'match', 'failed_matches', 'created', ]
         read_only_fields = ['match', 'failed_matches', 'created']
 
 
@@ -67,7 +67,7 @@ class StudentRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentRequest
-        fields = ['subject', 'match', 'failed_matches', 'created']
+        fields = ['id', 'subject', 'match', 'failed_matches', 'created']
         read_only_fields = ['match', 'failed_matches', 'created']
 
 
