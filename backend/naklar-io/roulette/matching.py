@@ -1,13 +1,17 @@
 from datetime import timedelta
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from django.db.models import F, Q
 from django.utils import timezone
 from push_notifications.models import WebPushDevice
 
 from account.models import CustomUser
-from roulette.models import Match, StudentRequest, TutorRequest
-from django.db.models import F, Q
 from notify.models import Notification, NotificationSettings
+from roulette.models import Match, StudentRequest, TutorRequest
+from roulette.serializers import MatchSerializer
 
+channel_layer = get_channel_layer()
 
 def look_for_matches():
     """looks through all student requests and tries to find a matching tutor request
@@ -40,8 +44,15 @@ def look_for_matches():
             # we will now calculate a score for all of them and choose the best.
             best_tutor = max(tutor_rs, key=lambda tutor_request: calculate_request_matching_score(
                 student_request, tutor_request))
-            Match.objects.create(
+            match = Match.objects.create(
                 student_request=student_request, tutor_request=best_tutor, student=student, tutor=best_tutor.user)
+            # send notification over websocket?
+            msg = {
+                "type": "roulette.new_match",
+                "match": MatchSerializer(match).data
+            }
+            async_to_sync(channel_layer.group_send)(f"request_{best_tutor.id}", msg)
+            async_to_sync(channel_layer.group_send)(f"request_{student_request.id}", msg)
 
 
 def generate_notifications():
