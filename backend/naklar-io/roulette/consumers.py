@@ -41,4 +41,13 @@ class RouletteConsumer(WebsocketConsumer):
             self.request.save()
 
     def roulette_new_match(self, event):
+        print(event)
+        self.send(json.dumps(event))
+
+    def roulette_match_update(self, event):
+        print(event)
+        self.send(json.dumps(event))
+
+    def roulette_match_delete(self, event):
+        print(event)
         self.send(json.dumps(event))
