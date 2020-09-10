@@ -23,6 +23,7 @@ logger = logging.getLogger(__name__)
 def authenticate_user(token_auth: TokenAuthentication, token: bytes):
     return token_auth.authenticate_credentials(token)
 
+# some reference: https://gist.github.com/rluts/22e05ed8f53f97bdd02eafdf38f3d60a#gistcomment-3440304
 
 class TokenAuthMiddleware:
     """

@@ -49,10 +49,10 @@ def look_for_matches():
             # send notification over websocket?
             msg = {
                 "type": "roulette.new_match",
-                "match": MatchSerializer(match).data
+                "match": match.id
             }
-            async_to_sync(channel_layer.group_send)(f"request_{best_tutor.id}", msg)
-            async_to_sync(channel_layer.group_send)(f"request_{student_request.id}", msg)
+            async_to_sync(channel_layer.group_send)(f"request_tutor_{best_tutor.id}", msg)
+            async_to_sync(channel_layer.group_send)(f"request_student_{student_request.id}", msg)
 
 
 def generate_notifications():
