@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light">
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
   <ng-container [ngSwitch]="loggedIn">
     <ng-container *ngSwitchCase="true">
       <a class="navbar-brand" routerLink="/dashboard">
@@ -6,7 +6,7 @@
       </a>
 
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item" ngbDropdown placement="auto" display="dynamic">
+        <li class="nav-item" ngbDropdown placement="bottom-right" display="dynamic">
           <button
             class="btn btn-sm btn-outline-secondary d-flex justify-content-between align-items-center"
             style="border-radius: 17px"

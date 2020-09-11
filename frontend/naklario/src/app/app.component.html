@@ -1,18 +1,22 @@
-<div #main>
+<div id="app" #main>
   <ngx-loading-bar color="#EF8515"></ngx-loading-bar>
 
-  <div *ngIf="!fullscreen">
+  <header *ngIf="!fullscreen">
     <app-navbar *ngIf="!fullscreen"></app-navbar>
-    <div
+    <!-- <div
       style="width: 100%; height: 66px; position: relative; display: block"
-    ></div>
-  
+    ></div >-->
+
     <app-banner></app-banner>
     <misc-toasts></misc-toasts>
-  </div>
+  </header>
 
-  <div [class.container-fluid]="!fullscreen" [class.py-3]="!fullscreen">
-    <router-outlet></router-outlet>
-  </div>
-  <app-footer *ngIf="!fullscreen"></app-footer>
+  <main [class.py-3]="!fullscreen">
+    <section>
+      <router-outlet></router-outlet>
+    </section>
+    <footer *ngIf="!fullscreen">
+      <app-footer ></app-footer>
+    </footer>
+  </main>
 </div>
