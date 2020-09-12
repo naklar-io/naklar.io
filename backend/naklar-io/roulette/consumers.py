@@ -62,8 +62,7 @@ class RouletteConsumer(WebsocketConsumer):
 
     def roulette_match_delete(self, event):
         self.send(json.dumps({
-            "event": "matchDelete",
-            "match": self.serialize_match(event["match"])
+            "event": "matchDelete"
         }))
 
     def roulette_meeting_ready(self, event):

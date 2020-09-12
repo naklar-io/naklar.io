@@ -20,10 +20,12 @@ export interface SendableMatch {
 }
 
 export interface RouletteEvent {
-  type: string;
+  type: RouletteEventType;
   match?: SendableMatch;
   meetingID?: string;
 }
+
+export type RouletteEventType = 'newMatch' | 'matchUpdate' | 'matchDelete' | 'meetingReady';
 
 export interface SendableMatchRequest {
   id: number;

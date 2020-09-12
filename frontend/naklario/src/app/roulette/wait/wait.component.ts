@@ -74,7 +74,8 @@ export class WaitComponent implements OnInit, OnDestroy {
           // Listen for rejected matches
           if (!data && (this.state === 'maybe' || this.state === 'accepted')) {
             this.state = 'wait';
-            this.match = null;
+            this.ts.info('Die Verbindung wurde abgelehnt.');
+            // this.match = null;
             return;
           }
           if (data) {

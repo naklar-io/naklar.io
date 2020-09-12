@@ -2,6 +2,10 @@
   <div *ngIf="state === 'wait'">
     <div class="row">
       <div class="col">
+        <div *ngIf="match" class="alert alert-danger">Leider hat {{ match.student.firstName }} die Verbindung
+          abgelehnt.<span class="font-weight-bold">
+            Wir suchen weiterhin nach einem Schüler für dich!
+          </span></div>
         <p>
           Toll, dass Du Dir gerade Zeit für Schüler nimmst! Wir suchen nach
           einem passenden Schüler für Dich. Sobald jemand gefunden wurde ertönt
@@ -12,9 +16,7 @@
 
       <div class="row justify-content-center">
         <div class="col">
-          <span
-            class="spinner-border spinner-border-sm mr-1 text-primary text-xl"
-          ></span>
+          <span class="spinner-border spinner-border-sm mr-1 text-primary text-xl"></span>
         </div>
       </div>
     </div>
@@ -24,11 +26,7 @@
     <misc-audio-autoplay></misc-audio-autoplay>
 
     <p>Wir haben dir einen Schüler gefunden:</p>
-    <misc-user-card
-      [user]="student"
-      [match]="match"
-      type="student"
-    ></misc-user-card>
+    <misc-user-card [user]="student" [match]="match" type="student"></misc-user-card>
 
     <div *ngIf="state === 'maybe'">
       <hr />
@@ -37,18 +35,12 @@
       </div>
       <div class="row">
         <div class="col-6">
-          <button
-            class="btn btn-primary btn-block"
-            (click)="onMatchAccepted(true)"
-          >
+          <button class="btn btn-primary btn-block" (click)="onMatchAccepted(true)">
             Ja
           </button>
         </div>
         <div class="col-6">
-          <button
-            class="btn btn-danger btn-block"
-            (click)="onMatchAccepted(false)"
-          >
+          <button class="btn btn-danger btn-block" (click)="onMatchAccepted(false)">
             Nein
           </button>
         </div>
@@ -58,11 +50,11 @@
     <div *ngIf="state === 'accepted'">
       <div *ngIf="match.bothAccepted(); else pending">
         {{ match.student.firstName }} hat die Verbindung akzeptiert. Ihr werdet
-        in kürze weitergeleitet.
+        in Kürze weitergeleitet.
       </div>
 
       <ng-template #pending>
-        Warte bis, {{ match.student.firstName }} die Verbindung ebenfalls
+        Warte, bis {{ match.student.firstName }} die Verbindung ebenfalls
         akzeptiert hat.
         <span class="spinner-border spinner-border-sm mr-1"></span>
       </ng-template>
@@ -75,10 +67,8 @@
     <div class="row justify-content-center">
       <div class="col-sm-6">
         <div class="alert alert-primary">
-          <strong
-            >Bitte rede mit unseren Tutoren! Das macht es uns leichter, deine
-            Fragen zu beantworten.</strong
-          >
+          <strong>Bitte rede mit unseren Tutoren! Das macht es uns leichter, deine
+            Fragen zu beantworten.</strong>
           <br />
           Erlaube hierfür den <mark>Zugriff auf dein Mikrofon.</mark>
 
@@ -117,29 +107,19 @@
       </div>
       <div class="row">
         <div class="col-6">
-          <button
-            class="btn btn-primary btn-block"
-            (click)="onMatchAccepted(true)"
-          >
+          <button class="btn btn-primary btn-block" (click)="onMatchAccepted(true)">
             Ja
           </button>
         </div>
         <div class="col-6">
-          <button
-            class="btn btn-danger btn-block"
-            (click)="onMatchAccepted(false)"
-          >
+          <button class="btn btn-danger btn-block" (click)="onMatchAccepted(false)">
             Nein
           </button>
         </div>
       </div>
     </div>
     <hr />
-    <misc-user-card
-      [user]="tutor"
-      [match]="match"
-      type="tutor"
-    ></misc-user-card>
+    <misc-user-card [user]="tutor" [match]="match" type="tutor"></misc-user-card>
 
     <!--     <div *ngIf="state === 'maybe'">
       <hr />
