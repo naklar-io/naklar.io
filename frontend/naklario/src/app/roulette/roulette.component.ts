@@ -44,9 +44,9 @@ export class RouletteComponent implements OnInit, OnDestroy {
     this.bannerService.showBanner();
   }
   ngOnInit(): void {
-    if (this.router.url.endsWith('student')) {
+    if (this.router.url.includes('student')) {
       this.type = 'student';
-    } else if (this.router.url.endsWith('tutor')) {
+    } else if (this.router.url.includes('tutor')) {
       this.type = 'tutor';
     } else {
       this.type = 'student';

@@ -1,13 +1,11 @@
 <div class="container">
   <div *ngIf="accountType === 'tutor'" class="row justify-content-center">
-    <div class="col-md-4">
-      <button class="btn nabtn-primary text-light" (click)="startTutorMatching()">Jetzt Schülern helfen</button>
-    </div>
+    <button class="btn nabtn-primary text-light" (click)="startTutorMatching()">Jetzt Schülern helfen</button>
   </div>
   <div *ngIf="accountType === 'student'">
     <roulette-student></roulette-student>
   </div>
-  
+
   <div *ngIf="accountType === 'tutor'" class="row mt-4">
     <div class="col">
       <p>
@@ -20,11 +18,7 @@
       </p>
     </div>
   </div>
-  
-  <misc-tutor-explanation
-    *ngIf="accountType === 'tutor'"
-  ></misc-tutor-explanation>
-  <misc-student-explanation
-    *ngIf="accountType === 'student'"
-  ></misc-student-explanation>
+
+  <misc-tutor-explanation *ngIf="accountType === 'tutor'"></misc-tutor-explanation>
+  <misc-student-explanation *ngIf="accountType === 'student'"></misc-student-explanation>
 </div>
