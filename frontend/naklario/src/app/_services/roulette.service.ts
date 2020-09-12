@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {
-  SendableMatchRequest,
   SendableMatchAnswer,
   Constants,
   Request,
-  sendableToLocalMatchRequest,
   StudentRequest,
   Match,
   MatchAnswer,
@@ -24,17 +22,13 @@ import {
 import { environment } from '../../environments/environment';
 import {
   map,
-  switchMap,
   filter,
-  take,
   tap,
-  takeWhile,
   publishReplay,
 } from 'rxjs/operators';
 import {
   BehaviorSubject,
   Observable,
-  timer,
   ConnectableObservable,
 } from 'rxjs';
 import {
@@ -51,6 +45,8 @@ export class RouletteService {
 
   public matchRequest$: Observable<Request>;
   private socketSubject: WebSocketSubject<RouletteEvent>;
+  private lastMatch = null;
+  private lastMeetingID = null;
 
   constructor(
     private http: HttpClient,
@@ -90,62 +86,37 @@ export class RouletteService {
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsURL = `${protocol}//${apiURL.host}/roulette/request/${requestType}/${requestID}?token=${this.auth.currentUserValue.token}`;
     this.socketSubject = webSocket<RouletteEvent>(wsURL);
-    return this.socketSubject.asObservable().pipe(map((event) => {
-      if (event.type === 'matchDelete') {
+    return this.socketSubject.asObservable().pipe(filter((event) => {
+      if (event.event === 'meetingReady' && !this.lastMatch){
+        this.lastMeetingID = event.meetingID;
+        return false;
+      }
+      return true;
+    })).pipe(map((event) => {
+      if (event.event === 'matchDelete') {
         return null;
+      } else if (event.event === 'meetingReady') {
+        const match = this.lastMatch;
+        this.lastMeetingID = event.meetingID;
+        match.meetingID = event.meetingID;
+        return match;
       } else if (event.match) {
         const match = sendableToLocalMatch(event.match, constants);
+        if (this.lastMeetingID) {
+          match.meetingID = this.lastMeetingID;
+        }
         // Hack: Have to add apiUrl
         match.tutor.tutordata.profilePicture = environment.apiUrl + match.tutor.tutordata.profilePicture;
+        this.lastMatch = match;
         return match;
       }
     }));
   }
 
   public updatingMatch(
-    requestType: RouletteRequestType,
-    constants: Constants,
-    interval: number = 1000
-  ): Observable<Match> {
+      ): Observable<Match> {
     if (!this.isUpdating) {
       this.isUpdating = true;
-      const obs = timer(0, interval)
-        // can stop the polling from outside this function
-        .pipe(takeWhile((_) => this.isUpdating))
-        .pipe(
-          switchMap((_) => {
-            const url = `${environment.apiUrl}/roulette/${requestType}/request/`;
-            console.log('polling ', url);
-            return this.http.get<SendableMatchRequest>(url, {
-              headers: { ignoreLoadingBar: '' },
-            });
-          })
-        ) // do we have a match
-        // .pipe(filter((x) => Boolean(x.match)))
-        .pipe(map((r) => sendableToLocalMatchRequest(r, constants)))
-        // does the MatchRequest have new data?
-        .pipe(
-          filter((r) => {
-            if (!this.matchRequestValue) {
-              return true;
-            }
-            const res = !this.matchRequestValue.equals(r);
-            return res;
-          })
-        )
-        .pipe(
-          tap((r) => {
-            console.log('Found Match: ', r);
-            this.matchRequestSubject.next(r);
-          })
-        )
-        // observable is only evaluated on subscription
-        // .pipe(publishReplay());
-        // TODO: this is a resource leak
-        .subscribe(
-          (d) => d,
-          (error) => console.log(error)
-        );
       // (obs as ConnectableObservable<MatchRequest>).connect();
     }
     return (

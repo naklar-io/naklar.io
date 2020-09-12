@@ -12,6 +12,10 @@
           eine Hinweiston - Du kannst Dich in der Zwischenzeit daher gerne mit
           anderen Sachen beschäftigen.
         </p>
+        <div *ngIf="notificationPermission === 'default'">
+          Um zusätzlich zum Ton eine visuelle Benachrichtigung zu erhalten, erlaube uns, dich zu benachrichtigen!
+          <button type="button" class="btn nabtn-primary" (click)="requestNotificationPermission()">Benachrichtigungen erlauben</button>
+        </div> 
       </div>
 
       <div class="row justify-content-center">
