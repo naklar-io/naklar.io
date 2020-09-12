@@ -55,7 +55,7 @@ export class RouletteService {
   constructor(
     private http: HttpClient,
     private auth: AuthenticationService
-    ) {
+  ) {
     this.matchRequestSubject = new BehaviorSubject<Request>(null);
     this.matchRequest$ = this.matchRequestSubject
       .asObservable()
@@ -90,15 +90,15 @@ export class RouletteService {
     const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
     const wsURL = `${protocol}//${apiURL.host}/roulette/request/${requestType}/${requestID}?token=${this.auth.currentUserValue.token}`;
     this.socketSubject = webSocket<RouletteEvent>(wsURL);
-    return this.socketSubject.asObservable().pipe(filter((event) => {
-      if (event.match) {
-        return true;
+    return this.socketSubject.asObservable().pipe(map((event) => {
+      if (event.type === 'matchDelete') {
+        return null;
+      } else if (event.match) {
+        const match = sendableToLocalMatch(event.match, constants);
+        // Hack: Have to add apiUrl
+        match.tutor.tutordata.profilePicture = environment.apiUrl + match.tutor.tutordata.profilePicture;
+        return match;
       }
-    })).pipe(map((event) => {
-      const match = sendableToLocalMatch(event.match, constants);
-      // Hack: Have to add apiUrl
-      match.tutor.tutordata.profilePicture = environment.apiUrl + match.tutor.tutordata.profilePicture;
-      return match;
     }));
   }
 
@@ -157,6 +157,7 @@ export class RouletteService {
 
   public stopUpdatingMatch() {
     this.isUpdating = false;
+    this.socketSubject?.complete();
   }
 
   public deleteRequest(requestType: RouletteRequestType): Observable<void> {
