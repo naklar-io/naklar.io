@@ -19,7 +19,14 @@ export interface SendableMatch {
   subject: number;
 }
 
+export interface RouletteEvent {
+  type: string;
+  match?: SendableMatch;
+  meetingID?: string;
+}
+
 export interface SendableMatchRequest {
+  id: number;
   match?: SendableMatch;
   failedMatches?: number[];
   created?: string;
@@ -91,15 +98,16 @@ export class Match {
   }
 }
 
-export class MatchRequest {
+export class Request {
   constructor(
+    public id?: number,
     public match?: Match,
     public failedMatches?: number[],
     public created?: string
   ) {}
 
   // TODO: this is untested
-  equals(mr: MatchRequest): boolean {
+  equals(mr: Request): boolean {
     if (
       this.match === null &&
       mr.match === null &&
@@ -114,14 +122,15 @@ export class MatchRequest {
   }
 }
 
-export class StudentRequest extends MatchRequest {
+export class StudentRequest extends Request {
   constructor(
     public subject: number,
+    public id?: number,
     public match?: Match,
     public failedMatches?: number[],
     public created?: string
   ) {
-    super(match, failedMatches, created);
+    super(id, match, failedMatches, created);
   }
 }
 
@@ -165,9 +174,10 @@ export function sendableToLocalMatch(
 }
 
 export function localToSendableMatchRequest(
-  m: MatchRequest
+  m: Request
 ): SendableMatchRequest {
   return {
+    id: m.id,
     match: m.match ? localToSendableMatch(m.match) : undefined,
     failedMatches: m.failedMatches,
     created: m.created,
@@ -177,8 +187,9 @@ export function localToSendableMatchRequest(
 export function sendableToLocalMatchRequest(
   m: SendableMatchRequest,
   constants: Constants
-): MatchRequest {
-  return new MatchRequest(
+): Request {
+  return new Request(
+    m.id,
     m.match ? sendableToLocalMatch(m.match, constants) : null,
     m.failedMatches,
     m.created
@@ -189,6 +200,7 @@ export function localToSendableStudentRequest(
   m: StudentRequest
 ): SendableStudentRequest {
   return {
+    id: m.id,
     subject: m.subject,
     match: m.match ? localToSendableMatch(m.match) : undefined,
     failedMatches: m.failedMatches,
@@ -202,6 +214,7 @@ export function sendableToLocalStudentRequest(
 ): StudentRequest {
   return new StudentRequest(
     m.subject,
+    m.id,
     m.match ? sendableToLocalMatch(m.match, constants) : null,
     m.failedMatches,
     m.created

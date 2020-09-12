@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+from channels.routing import get_default_application
+from django.core.asgi import get_asgi_application
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -250,6 +253,16 @@ CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+CHANNEL_REDIS_HOST = ('redis', 6379)
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [CHANNEL_REDIS_HOST],
+            # "symmetric_encryption_keys": [SECRET_KEY],
+        },
+    },
+}
 
 # as we're using CELERY
 POST_OFFICE = {

@@ -10,6 +10,7 @@
   <div *ngIf="state === 'wait'">
     <roulette-wait
       [requestType]="type"
+      [request]="request"
       (done)="onWaitDone($event)"
     ></roulette-wait>
   </div>

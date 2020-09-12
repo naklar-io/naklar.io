@@ -1,10 +1,10 @@
 from channels.auth import AuthMiddlewareStack
 from channels.http import AsgiHandler
 from channels.routing import URLRouter
-from django.conf.urls import include, url
+from django.urls import path
 
-#import django_eventstream
+from roulette import consumers
 
 urlpatterns = [
-    url(r'', AsgiHandler),
+    path("request/<str:type>/<int:request_id>", consumers.RouletteConsumer),
 ]
