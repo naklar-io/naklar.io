@@ -13,7 +13,7 @@ import {
   ToastService,
   BannerService,
 } from 'src/app/_services';
-import { User, Constants, StudentRequest } from 'src/app/_models';
+import { User, Constants, StudentRequest, Request } from 'src/app/_models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PauseModalComponent } from '../pause-modal/pause-modal.component';
@@ -25,7 +25,7 @@ import { PauseModalComponent } from '../pause-modal/pause-modal.component';
   providers: [DatabaseService],
 })
 export class StudentComponent implements OnInit {
-  @Output() done = new EventEmitter<boolean>();
+  @Output() done = new EventEmitter<Request>();
 
   readonly FEATURE_RELEASE_DATE = new Date('2020-05-14T00:00:00+02:00');
 
@@ -146,7 +146,7 @@ export class StudentComponent implements OnInit {
     this.loading = true;
     console.log('creating Request');
     this.rouletteService
-      .createMatch(
+      .createRequest(
         'student',
         new StudentRequest(this.f.subject.value),
         this.constants
@@ -157,7 +157,7 @@ export class StudentComponent implements OnInit {
           this.submitSuccess = true;
           this.error = null;
           this.router.navigate(['/roulette/student'], {
-            queryParams: { state: 'wait' },
+            queryParams: { state: 'wait', requestID: data.id },
           });
         },
         (error) => {

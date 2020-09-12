@@ -9,7 +9,10 @@ from datetime import timedelta
 from urllib.parse import urlencode
 
 import requests
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
@@ -20,7 +23,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from account.models import CustomUser, StudentData, Subject, TutorData
-from django.contrib.contenttypes.fields import GenericRelation
+
+channel_layer = get_channel_layer()
 
 
 class Report(models.Model):
@@ -83,6 +87,8 @@ class Request(models.Model):
     deactivated = models.DateTimeField(null=True)
 
     last_poll = models.DateTimeField(default=timezone.now)
+    # How many are connected?
+    connected_count = models.PositiveIntegerField(default=0)
 
     notifications = GenericRelation('notify.Notification')
 
@@ -161,9 +167,10 @@ class Match(models.Model):
 
 
 @receiver(pre_save, sender=Match)
-def on_match_change(sender, instance, **kwargs):
+def on_match_change(sender, instance: Match, **kwargs):
     if instance.student_agree and instance.tutor_agree and not hasattr(instance, 'meeting'):
-        meeting = Meeting.objects.create(match=instance, name="naklar.io - Meeting")
+        meeting = Meeting.objects.create(
+            match=instance, name="naklar.io - Meeting")
         meeting.users.add(instance.student,
                           instance.tutor)
         meeting.tutor = instance.tutor
@@ -177,7 +184,24 @@ def on_match_change(sender, instance, **kwargs):
 
         meeting.save()
         meeting.create_meeting()
+        group_send = async_to_sync(channel_layer.group_send)
+        msg = {
+            "type": "roulette.meeting_ready",
+            "meetingID": str(meeting.meeting_id)
+        }
+        group_send(f"request_tutor_{instance.tutor_request.id}", msg)
+        group_send(f"request_student_{instance.student_request.id}", msg)
 
+
+@receiver(post_save, sender=Match)
+def on_match_saved(sender, instance, **kwargs):
+    group_send = async_to_sync(channel_layer.group_send)
+    msg = {
+        "type": "roulette.match_update",
+        "match": instance.id
+    }
+    group_send(f"request_tutor_{instance.tutor_request.id}", msg)
+    group_send(f"request_student_{instance.student_request.id}", msg)
 
 
 @receiver(post_delete, sender=Match)
@@ -193,6 +217,14 @@ def on_match_delete(sender, instance: Match, **kwargs):
         if instance.student_request and not instance.student_request.is_manual_deleted:
             instance.student_request.failed_matches.add(instance.tutor)
             instance.student_request.save()
+    print("match delete!", channel_layer)
+    group_send = async_to_sync(channel_layer.group_send)
+    msg = {
+        "type": "roulette.match_delete",
+        "match": instance.id
+    }
+    group_send(f"request_tutor_{instance.tutor_request.id}", msg)
+    group_send(f"request_student_{instance.student_request.id}", msg)
 
 
 class Meeting(models.Model):

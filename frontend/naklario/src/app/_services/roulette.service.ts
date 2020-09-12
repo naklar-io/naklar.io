@@ -4,7 +4,7 @@ import {
   SendableMatchRequest,
   SendableMatchAnswer,
   Constants,
-  MatchRequest,
+  Request,
   sendableToLocalMatchRequest,
   StudentRequest,
   Match,
@@ -18,6 +18,8 @@ import {
   Feedback,
   JoinResponse,
   Report,
+  RouletteEvent,
+  sendableToLocalMatch,
 } from '../_models';
 import { environment } from '../../environments/environment';
 import {
@@ -35,18 +37,26 @@ import {
   timer,
   ConnectableObservable,
 } from 'rxjs';
+import {
+  WebSocketSubject, webSocket
+} from 'rxjs/webSocket';
+import { AuthenticationService } from './authentication.service';
 
 export type RouletteRequestType = 'student' | 'tutor';
 
 @Injectable({ providedIn: 'root' })
 export class RouletteService {
-  private matchRequestSubject: BehaviorSubject<MatchRequest>;
+  private matchRequestSubject: BehaviorSubject<Request>;
   private isUpdating = false;
 
-  public matchRequest$: Observable<MatchRequest>;
+  public matchRequest$: Observable<Request>;
+  private socketSubject: WebSocketSubject<RouletteEvent>;
 
-  constructor(private http: HttpClient) {
-    this.matchRequestSubject = new BehaviorSubject<MatchRequest>(null);
+  constructor(
+    private http: HttpClient,
+    private auth: AuthenticationService
+    ) {
+    this.matchRequestSubject = new BehaviorSubject<Request>(null);
     this.matchRequest$ = this.matchRequestSubject
       .asObservable()
       // filter the first null value
@@ -56,7 +66,7 @@ export class RouletteService {
     return this.matchRequestSubject.value;
   }
 
-  public createMatch(
+  public createRequest(
     requestType: RouletteRequestType,
     request: StudentRequest,
     constants: Constants
@@ -73,6 +83,23 @@ export class RouletteService {
           this.matchRequestSubject.next(matchRequest);
         })
       );
+  }
+
+  public socketMatch(requestType: RouletteRequestType, requestID: number, constants: Constants): Observable<Match> {
+    const apiURL = new URL(environment.apiUrl);
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsURL = `${protocol}//${apiURL.host}/roulette/request/${requestType}/${requestID}?token=${this.auth.currentUserValue.token}`;
+    this.socketSubject = webSocket<RouletteEvent>(wsURL);
+    return this.socketSubject.asObservable().pipe(filter((event) => {
+      if (event.match) {
+        return true;
+      }
+    })).pipe(map((event) => {
+      const match = sendableToLocalMatch(event.match, constants);
+      // Hack: Have to add apiUrl
+      match.tutor.tutordata.profilePicture = environment.apiUrl + match.tutor.tutordata.profilePicture;
+      return match;
+    }));
   }
 
   public updatingMatch(
@@ -132,7 +159,7 @@ export class RouletteService {
     this.isUpdating = false;
   }
 
-  public deleteMatch(requestType: RouletteRequestType): Observable<void> {
+  public deleteRequest(requestType: RouletteRequestType): Observable<void> {
     const obs = this.http
       .delete<void>(`${environment.apiUrl}/roulette/${requestType}/request/`)
       .pipe(
@@ -146,6 +173,10 @@ export class RouletteService {
     // force the call even if no one is subscribed
     (obs as ConnectableObservable<void>).connect();
     return obs;
+  }
+
+  public getRequest(requestType: RouletteRequestType): Observable<Request> {
+    return this.http.get<Request>(`${environment.apiUrl}/roulette/${requestType}/request/`);
   }
 
   public answerMatch(
