@@ -33,6 +33,14 @@ class RouletteConsumer(WebsocketConsumer):
             async_to_sync(self.channel_layer.group_add)(
                 self.request_group_name, self.channel_name)
             self.accept()
+            if hasattr(self.request, 'match'):
+                self.roulette_new_match({
+                    "match": self.request.match.id
+                })
+            if self.request.meeting:
+                self.roulette_meeting_ready({
+                    "meetingID": str(self.request.meeting.meeting_id)
+                })
         else:
             self.close()
 

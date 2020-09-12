@@ -12,12 +12,14 @@ import {
   ToastService,
   AuthenticationService,
 } from 'src/app/_services';
-import { Match, Constants, Meeting, JoinResponse, Request } from 'src/app/_models';
+import { Match, Constants, JoinResponse, Request } from 'src/app/_models';
 import { ActivatedRoute } from '@angular/router';
-import { tap, switchMap, map } from 'rxjs/operators';
-import { Subscription, combineLatest, of } from 'rxjs';
+import { tap, switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 type State = 'wait' | 'maybe' | 'accepted' | 'meetingready';
+
+
 
 @Component({
   selector: 'roulette-wait',
@@ -37,12 +39,15 @@ export class WaitComponent implements OnInit, OnDestroy {
   subUpdatingMatch: Subscription;
   subJoinMeeting: Subscription;
 
+  notificationSupported: boolean;
+  notificationPermission: NotificationPermission;
+
   constructor(
     private route: ActivatedRoute,
     private rouletteService: RouletteService,
     private ts: ToastService,
     private authenticationService: AuthenticationService
-  ) {}
+  ) { }
 
   get student() {
     return this.match.student;
@@ -51,11 +56,13 @@ export class WaitComponent implements OnInit, OnDestroy {
     return this.match.tutor;
   }
 
-  get user(){
+  get user() {
     return this.authenticationService.currentUserValue;
   }
 
   ngOnInit(): void {
+    this.notificationSupported = 'Notification' in window;
+    this.notificationPermission = this.notificationSupported ? Notification.permission : 'denied';
     this.state = 'wait';
     this.subUpdatingMatch = this.route.data
       .pipe(
@@ -71,18 +78,41 @@ export class WaitComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         (data) => {
-          // Listen for rejected matches
-          if (!data && (this.state === 'maybe' || this.state === 'accepted')) {
-            this.state = 'wait';
-            this.ts.info('Die Verbindung wurde abgelehnt.');
-            // this.match = null;
-            return;
-          }
-          if (data) {
+          if (data?.bothAccepted() || this.match?.bothAccepted()) {
             this.match = data;
-            this.state = this.state === 'wait' ? 'maybe' : this.state;
-            if (this.match.bothAccepted()) {
-              this.onBothAccepted();
+            if (this.match.meetingID && !this.subJoinMeeting) {
+              this.subJoinMeeting = this.rouletteService.joinMeetingById(this.match.meetingID).subscribe((join) => {
+                this.join = join;
+                // return to parent
+                this.done.emit(this.join);
+              },
+                (error) => this.ts.error(error)
+              );
+            }
+          } else {
+            // Listen for rejected matches
+            if (!data && (this.state === 'maybe' || this.state === 'accepted')) {
+              this.state = 'wait';
+              this.ts.info('Die Verbindung wurde abgelehnt.');
+              // this.match = null;
+              return;
+            }
+            if (data) {
+              this.match = data;
+              if (this.state === 'wait') {
+                this.state = 'maybe';
+                const n = new Notification('Wir haben einen Match für dich gefunden!', {
+                  icon: `${window.location.origin}/assets/icons/icon-128x128.png`
+                });
+                n.addEventListener('click', () => {
+                  parent.focus();
+                  window.focus();
+                  n.close();
+                });
+              }
+              if (this.state === 'maybe' && this.match.bothAccepted()) {
+                this.state = 'accepted';
+              }
             }
           }
         },
@@ -91,6 +121,7 @@ export class WaitComponent implements OnInit, OnDestroy {
         }
       );
   }
+
   ngOnDestroy(): void {
     console.log('destroying wait');
     if (!this.match?.bothAccepted()) {
@@ -99,6 +130,10 @@ export class WaitComponent implements OnInit, OnDestroy {
     this.rouletteService.stopUpdatingMatch();
     this.subUpdatingMatch?.unsubscribe();
     this.subJoinMeeting?.unsubscribe();
+  }
+
+  requestNotificationPermission() {
+    Notification.requestPermission().then((value) => this.notificationPermission = value);
   }
 
   onMatchAccepted(agree: boolean) {

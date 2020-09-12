@@ -20,7 +20,7 @@ export interface SendableMatch {
 }
 
 export interface RouletteEvent {
-  type: RouletteEventType;
+  event: RouletteEventType;
   match?: SendableMatch;
   meetingID?: string;
 }
@@ -83,7 +83,8 @@ export class Match {
     public failedMatches: number[],
     public created: string,
     public user: string,
-    public subject: Subject
+    public subject: Subject,
+    public meetingID?: string
   ) {}
 
   bothAccepted() {
