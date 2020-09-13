@@ -4,7 +4,7 @@ import {
   OnDestroy,
   Output,
   EventEmitter,
-  Input,
+  Input, ChangeDetectorRef
 } from '@angular/core';
 import {
   RouletteService,
@@ -40,13 +40,15 @@ export class WaitComponent implements OnInit, OnDestroy {
   subJoinMeeting: Subscription;
 
   notificationSupported: boolean;
-  notificationPermission: NotificationPermission;
+  notificationPermission: NotificationPermission = 'default';
+  // notificationPermissionRequested = false;
 
   constructor(
     private route: ActivatedRoute,
     private rouletteService: RouletteService,
     private ts: ToastService,
-    private authenticationService: AuthenticationService
+    private authenticationService: AuthenticationService,
+    private cd: ChangeDetectorRef
   ) { }
 
   get student() {
@@ -101,17 +103,16 @@ export class WaitComponent implements OnInit, OnDestroy {
               this.match = data;
               if (this.state === 'wait') {
                 this.state = 'maybe';
-                const n = new Notification('Wir haben einen Match für dich gefunden!', {
-                  icon: `${window.location.origin}/assets/icons/icon-128x128.png`
-                });
-                n.addEventListener('click', () => {
-                  parent.focus();
-                  window.focus();
-                  n.close();
-                });
+                this.showMatchNotification();
               }
-              if (this.state === 'maybe' && this.match.bothAccepted()) {
-                this.state = 'accepted';
+              if (this.state === 'maybe') {
+                if (this.requestType === 'tutor' && this.match?.tutorAgree) {
+                  this.state = 'accepted';
+                } else if (this.requestType === 'student' && this.match?.studentAgree) {
+                  this.state = 'accepted';
+                } else if (this.match.bothAccepted()) {
+                  this.state = 'accepted';
+                }
               }
             }
           }
@@ -121,6 +122,66 @@ export class WaitComponent implements OnInit, OnDestroy {
         }
       );
   }
+
+  /**
+   * Shows match notification if permission was granted and notifications are supported
+   */
+  showMatchNotification(): void {
+    if (this.notificationSupported && Notification.permission === 'granted') {
+      const n = new Notification('Wir haben einen Match für dich gefunden!', {
+        icon: `${window.location.origin}/assets/icons/icon-128x128.png`
+      });
+      n.addEventListener('click', () => {
+        parent.focus();
+        window.focus();
+        n.close();
+      });
+    }
+  }
+
+  askNotificationPermission() {
+    const handlePermission = (permission: NotificationPermission) => {
+      console.log('response', permission);
+      this.notificationPermission = permission;
+      this.cd.detectChanges();
+    };
+    if (this.notificationSupported) {
+      if (window.navigator.userAgent.toLowerCase().includes('safari')) {
+        // Avoid double requests in safari
+        console.log('doing it safari style');
+        Notification.requestPermission((permission) => handlePermission(permission));
+      } else {
+        try {
+          Notification.requestPermission().then((permission) => handlePermission(permission));
+        } catch (error) {
+          if (error instanceof TypeError) {
+            Notification.requestPermission((permission) => handlePermission(permission));
+          } else {
+            throw error;
+          }
+        }
+      }
+      /*       if (this.checkNotificationPromise()) {
+              Notification.requestPermission().then((permission) => {
+                handlePermission(permission);
+              });
+            } else {
+              Notification.requestPermission((permission) => {
+                handlePermission(permission);
+              });
+            } */
+    }
+  }
+
+  private checkNotificationPromise(): boolean {
+    try {
+      Notification.requestPermission().then();
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
 
   ngOnDestroy(): void {
     console.log('destroying wait');
@@ -132,9 +193,7 @@ export class WaitComponent implements OnInit, OnDestroy {
     this.subJoinMeeting?.unsubscribe();
   }
 
-  requestNotificationPermission() {
-    Notification.requestPermission().then((value) => this.notificationPermission = value);
-  }
+
 
   onMatchAccepted(agree: boolean) {
     this.rouletteService.answerMatch(this.requestType, this.match, {
