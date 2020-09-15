@@ -2,6 +2,7 @@
     "/api": {
         "target": "https://dev.api.naklar.io",
         "secure": false,
+        "ws": true,
         "pathRewrite": {
             "^/api": ""
         },

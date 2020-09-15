@@ -83,8 +83,10 @@ export class RouletteService {
 
   public socketMatch(requestType: RouletteRequestType, requestID: number, constants: Constants): Observable<Match> {
     const apiURL = new URL(environment.apiUrl);
-    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsURL = `${protocol}//${apiURL.host}/roulette/request/${requestType}/${requestID}?token=${this.auth.currentUserValue.token}`;
+    const protocol = apiURL.protocol === 'https:' ? 'wss:' : 'ws:';
+    // setting apiURL to be the right protocol
+    apiURL.protocol = protocol;
+    const wsURL = `${apiURL.toString()}/roulette/request/${requestType}/${requestID}?token=${this.auth.currentUserValue.token}`;
     this.socketSubject = webSocket<RouletteEvent>(wsURL);
     return this.socketSubject.asObservable().pipe(filter((event) => {
       if (event.event === 'meetingReady' && !this.lastMatch){
