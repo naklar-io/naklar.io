@@ -1,4 +1,4 @@
-<div id="app" #main>
+<div id="app" #app>
   <ngx-loading-bar color="#EF8515"></ngx-loading-bar>
 
   <header *ngIf="!fullscreen">
@@ -11,7 +11,7 @@
     <misc-toasts></misc-toasts>
   </header>
 
-  <main [class.py-3]="!fullscreen">
+  <main [class.py-3]="!fullscreen" #main>
     <section>
       <router-outlet></router-outlet>
     </section>
