@@ -5,21 +5,23 @@ import {
   ElementRef,
   Renderer2,
   AfterViewInit,
-  DoCheck,
+  DoCheck, HostListener
 } from '@angular/core';
 import {
   NotifyService,
   PromptUpdateService,
   AppLayoutService,
 } from './_services';
+import { ScrollPositionService } from './_services/scroll-position.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [AppLayoutService]
+  providers: [AppLayoutService, ScrollPositionService]
 })
 export class AppComponent implements OnInit, AfterViewInit, DoCheck {
+  @ViewChild('app') app: ElementRef;
   @ViewChild('main') main: ElementRef;
 
   public fullscreen = false;
@@ -29,7 +31,8 @@ export class AppComponent implements OnInit, AfterViewInit, DoCheck {
     private notify: NotifyService,
     private promptUpdate: PromptUpdateService,
     private layoutService: AppLayoutService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private scrollPosition: ScrollPositionService
   ) {
 
   }
@@ -42,13 +45,16 @@ export class AppComponent implements OnInit, AfterViewInit, DoCheck {
     this.layoutService.scrollable$.subscribe((scrollable) => {
       if (scrollable) {
         try {
-          this.renderer.removeClass(this.main.nativeElement, 'noscroll');
+          this.renderer.removeClass(this.app.nativeElement, 'noscroll');
         } catch {
           console.error('couldnt remove scrollable class');
         }
       } else {
-        this.renderer.addClass(this.main.nativeElement, 'noscroll');
+        this.renderer.addClass(this.app.nativeElement, 'noscroll');
       }
+    });
+    this.main.nativeElement.addEventListener('scroll', (event) => {
+      this.scrollPosition.updateScroll(event);
     });
 
   }
