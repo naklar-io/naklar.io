@@ -1,4 +1,23 @@
 <div class="container">
+  <div *ngIf="accountType === 'tutor'" class="row mb-2 justify-content-center">
+    <div class="col-sm-12 col-md-8">
+      <h2 class="text-primary">
+        <span class="material-icons">
+          forum
+        </span>
+        Community-Mentalität bei naklar.io
+      </h2>
+      <p>
+        Hallo {{ (user$ | async).firstName}},
+        <br>
+        mit deinem großartigen Engagement können wir gemeinsam Schülern helfen.
+        <br>
+        <strong>Die wichtigste Maxime hierbei ist das gegenseitige Vertrauen und der Respekt.</strong>
+        Wir bitten Dich gewissenhaft mit der Verantwortung, Kinder zu
+        unterrichten, umzugehen. Danke!
+      </p>
+    </div>
+  </div>
   <div *ngIf="accountType === 'tutor'" class="row justify-content-center">
     <button class="btn nabtn-primary text-light" (click)="startTutorMatching()">Jetzt Schülern helfen</button>
   </div>
@@ -6,18 +25,7 @@
     <roulette-student></roulette-student>
   </div>
 
-  <div *ngIf="accountType === 'tutor'" class="row mt-4">
-    <div class="col">
-      <p>
-        Community-Mentalität bei naklar.io:
-        <br />
-        Mit eurem großartigen Engagement können wir gemeinsam Schülern helfen.
-        Wichtigste Maxime hierbei ist das gegenseitige Vertrauen und der Respekt.
-        Wir bitten Dich gewissenhaft mit der Verantwortung, Kinder zu
-        unterrichten, umzugehen. Danke!
-      </p>
-    </div>
-  </div>
+  
 
   <misc-tutor-explanation *ngIf="accountType === 'tutor'"></misc-tutor-explanation>
   <misc-student-explanation *ngIf="accountType === 'student'"></misc-student-explanation>

@@ -16,6 +16,7 @@ import { Match, Constants, JoinResponse, Request } from 'src/app/_models';
 import { ActivatedRoute } from '@angular/router';
 import { tap, switchMap } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { LoaderType } from 'src/app/_misc_components/spinner-loader/spinner-loader.component';
 
 type State = 'wait' | 'maybe' | 'accepted' | 'meetingready';
 
@@ -41,6 +42,8 @@ export class WaitComponent implements OnInit, OnDestroy {
 
   notificationSupported: boolean;
   notificationPermission: NotificationPermission = 'default';
+
+  loader: LoaderType = this.randomLoader();
   // notificationPermissionRequested = false;
 
   constructor(
@@ -224,5 +227,10 @@ export class WaitComponent implements OnInit, OnDestroy {
         },
         (error) => this.ts.error(error)
       );
+  }
+
+  private randomLoader(): LoaderType {
+    const types: LoaderType[] = ['glowing-circle', 'rainbow-circle'];
+    return types[Math.floor(Math.random() * types.length)];
   }
 }

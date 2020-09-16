@@ -62,9 +62,9 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { NotifyModule } from './notify/notify.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SocialIconsComponent } from './home/misc/social-icons/social-icons.component';
 import { PressComponent } from './home/misc/press/press.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SpinnerLoaderComponent } from './_misc_components/spinner-loader/spinner-loader.component';
 
 @NgModule({
   declarations: [
@@ -95,7 +95,6 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     NumbersComponent,
     TeamComponent,
     JoinTheCommunityComponent,
-    SocialIconsComponent,
     PressComponent,
   ],
   imports: [
@@ -120,7 +119,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    ServiceWorkerModule.register('custom-service-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('custom-service-worker.js', {
+      enabled: environment.production,
+    }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -130,7 +131,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     RouletteService,
     ToastService,
     BannerService,
-    NotifyService
+    NotifyService,
   ],
   bootstrap: [AppComponent],
 })

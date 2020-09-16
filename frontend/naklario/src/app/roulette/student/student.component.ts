@@ -115,7 +115,7 @@ export class StudentComponent implements OnInit {
     }
 
     // Open pause modal
-    const modalRef = this.modalService.open(PauseModalComponent);
+    const modalRef = this.modalService.open(PauseModalComponent, {size: 'xl'});
     modalRef.result.then(
       (result) => {
         this.startMatch();

@@ -12,6 +12,8 @@ import { TutorExplanationComponent } from './tutor-explanation/tutor-explanation
 import { SafePipe } from './safe.pipe';
 import { CloseModalDirective } from './closeModal.directive';
 import { AudioAutoplayComponent } from './audio-autoplay/audio-autoplay.component';
+import { SpinnerLoaderComponent } from './spinner-loader/spinner-loader.component';
+import { SocialIconsComponent } from './social-icons/social-icons.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { AudioAutoplayComponent } from './audio-autoplay/audio-autoplay.componen
     TutorExplanationComponent,
     AudioAutoplayComponent,
     CloseModalDirective,
+    SpinnerLoaderComponent,
+    SocialIconsComponent
   ],
   imports: [CommonModule, NgbModule],
   exports: [
@@ -34,6 +38,8 @@ import { AudioAutoplayComponent } from './audio-autoplay/audio-autoplay.componen
     TutorExplanationComponent,
     AudioAutoplayComponent,
     CloseModalDirective,
+    SpinnerLoaderComponent,
+    SocialIconsComponent
   ],
 })
 export class MiscComponentsModule {}

@@ -9,9 +9,16 @@
         <p>
           Toll, dass Du Dir gerade Zeit für Schüler nimmst! Wir suchen nach
           einem passenden Schüler für Dich. Sobald jemand gefunden wurde ertönt
-          eine Hinweiston - Du kannst Dich in der Zwischenzeit daher gerne mit
+          ein Hinweiston - Du kannst Dich in der Zwischenzeit daher gerne mit
           anderen Sachen beschäftigen.
         </p>
+        <div class="d-flex justify-content-center mb-1">
+          <app-spinner-loader [loaderType]="loader">
+          </app-spinner-loader>
+          <!-- <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Schüler wird gesucht</span>
+          </div> -->
+        </div>
         <div *ngIf="notificationSupported && notificationPermission === 'default'" class="alert alert-info"
           role="alert">
           <span class="material-icons">
@@ -31,7 +38,8 @@
           Leider hast du die Benachrichtigungen nicht aktiviert, bitte erlaube diese, um auch im Hintergrund
           benachrichtigt zu werden!
         </div>
-        <div *ngIf="notificationSupported && notificationPermission === 'granted'" class="alert alert-success" role="alert">
+        <div *ngIf="notificationSupported && notificationPermission === 'granted'" class="alert alert-success"
+          role="alert">
           <span class="material-icons">
             notifications_active
           </span>
@@ -39,11 +47,7 @@
         </div>
       </div>
 
-      <div class="row justify-content-center">
-        <div class="col">
-          <span class="spinner-border spinner-border-sm mr-1 text-primary text-xl"></span>
-        </div>
-      </div>
+
     </div>
   </div>
 
@@ -114,9 +118,8 @@
         </div>
       </div>
       <div class="row justify-content-center">
-        <div class="spinner-border text-primary" role="status">
-          <span class="sr-only">Sucht...</span>
-        </div>
+        <app-spinner-loader [loaderType]="loader">
+        </app-spinner-loader>
       </div>
     </div>
   </div>
