@@ -44,7 +44,7 @@
       Absenden
     </button>
     <roulette-report
-      *ngIf="requestType == 'tutor'"
+      [type]="requestType"
       [meeting]="meeting"
     ></roulette-report>
   </div>

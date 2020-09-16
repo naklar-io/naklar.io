@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Meeting, Report } from 'src/app/_models';
-import { RouletteService, ToastService } from 'src/app/_services';
+import { RouletteRequestType, RouletteService, ToastService } from 'src/app/_services';
 
 @Component({
   selector: 'roulette-report',
@@ -10,6 +10,7 @@ import { RouletteService, ToastService } from 'src/app/_services';
 })
 export class ReportComponent implements OnInit {
   @Input() readonly meeting: Meeting;
+  @Input() readonly type: RouletteRequestType;
 
   isOpen = false;
   // workaround for first click event
@@ -39,6 +40,7 @@ export class ReportComponent implements OnInit {
     this.isOpen = true;
     this.first = true;
   }
+
   close() {
     if (!this.first) {
       this.isOpen = false;

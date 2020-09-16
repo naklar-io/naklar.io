@@ -1,6 +1,6 @@
 <div id="report-component">
-  <button type="button" class="btn nabtn-danger" (click)="open()">
-    Schüler melden
+  <button type="button" class="btn nabtn-danger" [disabled]="submitSuccess" (click)="open()">
+    {{ type === 'tutor' ? "Schüler" : "Tutor" }} melden
   </button>
 
   <!-- Floating modal -->
@@ -10,25 +10,27 @@
         <div class="col">
           <!-- Can click outside or press esc to close modal. See (closeModal) Directive for details -->
           <div class="float-modal container px-3 py-3" (appCloseModal)="close()">
-            <div class="row col">
-              <h3>Diesen Schüler melden</h3>
+            <div class="row">
+              <div class="col-9">
+                <h3>Diesen {{ type === 'tutor' ? "Schüler" : "Tutor" }} melden</h3>
+              </div>
+              <div class="col-3 d-flex justify-content-end">
+                <button type="button" class="close" aria-label="Close" (click)="close()">
+                  <span aria-hidden="true" class="material-icons">close</span>
+                </button>
+              </div>
             </div>
             <div class="row col">
               <p>
-                Gab es ein Problem mit dem Schüler? Erzähl uns was los war und
+                Gab es ein Problem mit dem {{ type === 'tutor' ? "Schüler" : "Tutor" }}? Erzähl uns was los war und
                 wir kümmern uns sofort darum.
               </p>
             </div>
 
             <form [formGroup]="form" (ngSubmit)="onSubmit()">
               <div class="row col form-group">
-                <textarea
-                  name="report-input"
-                  rows="2"
-                  placeholder="Worin bestand das Problem?"
-                  formControlName="message"
-                  class="form-control"
-                ></textarea>
+                <textarea name="report-input" rows="2" placeholder="Bitte beschreibe das Problem hier ausführlich. Nur so können wir helfen, dieses direkt zu lösen."
+                  formControlName="message" class="form-control"></textarea>
                 <div class="invalid-feedback">
                   <div *ngIf="f.message.errors?.required">
                     Du musst ein Feedback angeben.
@@ -37,15 +39,8 @@
               </div>
 
               <div class="row col form-group">
-                <button
-                  type="submit"
-                  class="btn nabtn-primary"
-                  [disabled]="submitSuccess || loading"
-                >
-                  <span
-                    *ngIf="loading"
-                    class="spinner-border spinner-border-sm mr-1"
-                  ></span>
+                <button type="submit" class="btn nabtn-primary" [disabled]="submitSuccess || loading">
+                  <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
                   Absenden
                 </button>
               </div>

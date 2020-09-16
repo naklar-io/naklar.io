@@ -12,7 +12,7 @@ import {
 export class CloseModalDirective {
   constructor(private elementRef: ElementRef) {}
 
-  @Output() public closeModal = new EventEmitter<void>();
+  @Output() public appCloseModal = new EventEmitter<void>();
 
   @HostListener('document:click', ['$event.target'])
   public onClick(targetElement) {
@@ -20,11 +20,11 @@ export class CloseModalDirective {
       targetElement
     );
     if (!clickedInside) {
-      this.closeModal.emit();
+      this.appCloseModal.emit();
     }
   }
   @HostListener('document:keyup.escape', ['$event'])
   public onKeyHandle(event: KeyboardEvent) {
-    this.closeModal.emit();
+    this.appCloseModal.emit();
   }
 }
