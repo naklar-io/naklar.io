@@ -86,7 +86,9 @@ export class RouletteService {
     const protocol = apiURL.protocol === 'https:' ? 'wss:' : 'ws:';
     // setting apiURL to be the right protocol
     apiURL.protocol = protocol;
-    const wsURL = `${apiURL.toString()}/roulette/request/${requestType}/${requestID}?token=${this.auth.currentUserValue.token}`;
+    const baseURL = apiURL.origin + apiURL.pathname;
+    const wsURL = `${baseURL}roulette/request/${requestType}/${requestID}?token=${this.auth.currentUserValue.token}`;
+    console.log('ws-base-url', apiURL);
     this.socketSubject = webSocket<RouletteEvent>(wsURL);
     return this.socketSubject.asObservable().pipe(filter((event) => {
       if (event.event === 'meetingReady' && !this.lastMatch){
