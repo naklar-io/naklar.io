@@ -2,7 +2,10 @@
   <ng-container [ngSwitch]="loggedIn">
     <ng-container *ngSwitchCase="true">
       <a class="navbar-brand" routerLink="/dashboard">
-        <img src="assets/img/Logo_navbar.png" height="40px"/>
+        <picture>
+          <source srcset="assets/img/Logo_navbar.webp" type="image/webp">
+          <img src="assets/img/Logo_navbar.png" height="40px"/>
+        </picture>
       </a>
 
       <ul class="navbar-nav ml-auto">
@@ -34,7 +37,10 @@
 
     <ng-container *ngSwitchCase="false">
       <a class="navbar-brand" routerLink="">
-        <img src="assets/img/Logo_navbar.png" height="40px"/>
+        <picture>
+          <source srcset="assets/img/Logo_navbar.webp" type="image/webp">
+          <img src="assets/img/Logo_navbar.png" height="40px"/>
+        </picture>
       </a>
 
       <ul class="navbar-nav mr-auto d-none d-sm-flex" >
