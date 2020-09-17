@@ -122,7 +122,7 @@ export class StudentFormComponent implements OnInit {
 
   refreshSliderOptions() {
     const grades = this.schoolData
-      .filter((x) => x.schoolType.id === this.f.schoolType.value)
+      .filter((x) => x.schoolType.id === parseInt(this.f.schoolType.value, 10))
       .map((x) => x.grade);
     const newOptions = Object.assign({}, this.options) as Options;
     newOptions.floor = Math.min(...grades);
