@@ -1,0 +1,2562 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /account/states/:
+    get:
+      operationId: listStates
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id001
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 50
+                    shortcode:
+                      type: string
+                      maxLength: 2
+                  required:
+                  - name
+                  - shortcode
+            text/html:
+              schema: *id001
+          description: ''
+  /account/subjects/:
+    get:
+      operationId: listSubjects
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id002
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 50
+                  required:
+                  - name
+            text/html:
+              schema: *id002
+          description: ''
+  /account/schooltypes/:
+    get:
+      operationId: listSchoolTypes
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id003
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    name:
+                      type: string
+                      maxLength: 50
+                  required:
+                  - name
+            text/html:
+              schema: *id003
+          description: ''
+  /account/schooldata/:
+    get:
+      operationId: listSchoolDatas
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id004
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    grade:
+                      type: integer
+                    school_type:
+                      type: integer
+                  required:
+                  - grade
+                  - school_type
+            text/html:
+              schema: *id004
+          description: ''
+  /account/schooldata/{school_type}/:
+    get:
+      operationId: RetrieveSchoolData
+      description: ''
+      parameters:
+      - name: school_type
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id005
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  grade:
+                    type: integer
+                  school_type:
+                    type: integer
+                required:
+                - grade
+                - school_type
+            text/html:
+              schema: *id005
+          description: ''
+  /account/users/{uuid}/:
+    get:
+      operationId: RetrieveCustomUser
+      description: ''
+      parameters:
+      - name: uuid
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id006
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+                    readOnly: true
+                  first_name:
+                    type: string
+                    maxLength: 50
+                  state:
+                    type: integer
+                  studentdata:
+                    properties:
+                      school_data:
+                        type: integer
+                    required:
+                    - school_data
+                    type: object
+                  tutordata:
+                    properties:
+                      schooldata:
+                        type: array
+                        items:
+                          type: integer
+                      subjects:
+                        type: array
+                        items:
+                          type: integer
+                      profile_picture:
+                        type: string
+                        format: binary
+                        nullable: true
+                    required:
+                    - schooldata
+                    - subjects
+                    type: object
+                  gender:
+                    enum:
+                    - MA
+                    - FE
+                    - DI
+                required:
+                - first_name
+                - state
+                - studentdata
+                - tutordata
+                - gender
+            text/html:
+              schema: *id006
+          description: ''
+  /account/current/:
+    get:
+      operationId: retrieveCustomUser
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id007
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+                    readOnly: true
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  email_verified:
+                    type: boolean
+                    readOnly: true
+                  first_name:
+                    type: string
+                    maxLength: 50
+                  last_name:
+                    type: string
+                    maxLength: 50
+                  gender:
+                    enum:
+                    - MA
+                    - FE
+                    - DI
+                  state:
+                    type: integer
+                  studentdata:
+                    properties:
+                      school_data:
+                        type: integer
+                    required:
+                    - school_data
+                    type: object
+                    nullable: true
+                  tutordata:
+                    properties:
+                      schooldata:
+                        type: array
+                        items:
+                          type: integer
+                      subjects:
+                        type: array
+                        items:
+                          type: integer
+                      verification_file:
+                        type: string
+                        format: binary
+                        nullable: true
+                      verified:
+                        type: boolean
+                        readOnly: true
+                      profile_picture:
+                        type: string
+                        format: binary
+                        nullable: true
+                    required:
+                    - schooldata
+                    - subjects
+                    type: object
+                    nullable: true
+                required:
+                - email
+                - first_name
+                - gender
+                - state
+            text/html:
+              schema: *id007
+          description: ''
+    put:
+      operationId: updateCustomUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id008
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                first_name:
+                  type: string
+                  maxLength: 50
+                last_name:
+                  type: string
+                  maxLength: 50
+                gender:
+                  enum:
+                  - MA
+                  - FE
+                  - DI
+                state:
+                  type: integer
+                password:
+                  type: string
+                  writeOnly: true
+                  maxLength: 128
+                studentdata:
+                  properties:
+                    school_data:
+                      type: integer
+                  required:
+                  - school_data
+                  type: object
+                  nullable: true
+                tutordata:
+                  properties:
+                    schooldata:
+                      type: array
+                      items:
+                        type: integer
+                    subjects:
+                      type: array
+                      items:
+                        type: integer
+                    verification_file:
+                      type: string
+                      format: binary
+                      nullable: true
+                    verified:
+                      type: boolean
+                      readOnly: true
+                    profile_picture:
+                      type: string
+                      format: binary
+                      nullable: true
+                  required:
+                  - schooldata
+                  - subjects
+                  type: object
+                  nullable: true
+              required:
+              - email
+              - first_name
+              - gender
+              - state
+              - password
+          multipart/form-data:
+            schema: *id008
+          application/json:
+            schema: *id008
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id009
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+                    readOnly: true
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  email_verified:
+                    type: boolean
+                    readOnly: true
+                  first_name:
+                    type: string
+                    maxLength: 50
+                  last_name:
+                    type: string
+                    maxLength: 50
+                  gender:
+                    enum:
+                    - MA
+                    - FE
+                    - DI
+                  state:
+                    type: integer
+                  studentdata:
+                    properties:
+                      school_data:
+                        type: integer
+                    required:
+                    - school_data
+                    type: object
+                    nullable: true
+                  tutordata:
+                    properties:
+                      schooldata:
+                        type: array
+                        items:
+                          type: integer
+                      subjects:
+                        type: array
+                        items:
+                          type: integer
+                      verification_file:
+                        type: string
+                        format: binary
+                        nullable: true
+                      verified:
+                        type: boolean
+                        readOnly: true
+                      profile_picture:
+                        type: string
+                        format: binary
+                        nullable: true
+                    required:
+                    - schooldata
+                    - subjects
+                    type: object
+                    nullable: true
+                required:
+                - email
+                - first_name
+                - gender
+                - state
+            text/html:
+              schema: *id009
+          description: ''
+    patch:
+      operationId: partial_updateCustomUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id010
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                first_name:
+                  type: string
+                  maxLength: 50
+                last_name:
+                  type: string
+                  maxLength: 50
+                gender:
+                  enum:
+                  - MA
+                  - FE
+                  - DI
+                state:
+                  type: integer
+                password:
+                  type: string
+                  writeOnly: true
+                  maxLength: 128
+                studentdata:
+                  properties:
+                    school_data:
+                      type: integer
+                  required:
+                  - school_data
+                  type: object
+                  nullable: true
+                tutordata:
+                  properties:
+                    schooldata:
+                      type: array
+                      items:
+                        type: integer
+                    subjects:
+                      type: array
+                      items:
+                        type: integer
+                    verification_file:
+                      type: string
+                      format: binary
+                      nullable: true
+                    verified:
+                      type: boolean
+                      readOnly: true
+                    profile_picture:
+                      type: string
+                      format: binary
+                      nullable: true
+                  required:
+                  - schooldata
+                  - subjects
+                  type: object
+                  nullable: true
+          multipart/form-data:
+            schema: *id010
+          application/json:
+            schema: *id010
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id011
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+                    readOnly: true
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  email_verified:
+                    type: boolean
+                    readOnly: true
+                  first_name:
+                    type: string
+                    maxLength: 50
+                  last_name:
+                    type: string
+                    maxLength: 50
+                  gender:
+                    enum:
+                    - MA
+                    - FE
+                    - DI
+                  state:
+                    type: integer
+                  studentdata:
+                    properties:
+                      school_data:
+                        type: integer
+                    required:
+                    - school_data
+                    type: object
+                    nullable: true
+                  tutordata:
+                    properties:
+                      schooldata:
+                        type: array
+                        items:
+                          type: integer
+                      subjects:
+                        type: array
+                        items:
+                          type: integer
+                      verification_file:
+                        type: string
+                        format: binary
+                        nullable: true
+                      verified:
+                        type: boolean
+                        readOnly: true
+                      profile_picture:
+                        type: string
+                        format: binary
+                        nullable: true
+                    required:
+                    - schooldata
+                    - subjects
+                    type: object
+                    nullable: true
+                required:
+                - email
+                - first_name
+                - gender
+                - state
+            text/html:
+              schema: *id011
+          description: ''
+    delete:
+      operationId: destroyCustomUser
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+  /roulette/meetings/:
+    get:
+      operationId: listMeetings
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id012
+                type: array
+                items:
+                  properties:
+                    meeting_id:
+                      type: string
+                      format: uuid
+                      readOnly: true
+                    ended:
+                      type: boolean
+                    time_ended:
+                      type: string
+                      format: date-time
+                      nullable: true
+                    student:
+                      type: string
+                      nullable: true
+                    tutor:
+                      type: string
+                      nullable: true
+                    name:
+                      type: string
+                      maxLength: 254
+                    feedback_set:
+                      type: array
+                      items:
+                        type: integer
+                  required:
+                  - name
+                  - feedback_set
+            text/html:
+              schema: *id012
+          description: ''
+  /roulette/meeting/feedback/:
+    get:
+      operationId: listFeedbacks
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id013
+                type: array
+                items:
+                  properties:
+                    receiver:
+                      type: string
+                      readOnly: true
+                    provider:
+                      type: string
+                      readOnly: true
+                    rating:
+                      type: integer
+                      maximum: 5
+                      minimum: 0
+                    message:
+                      type: string
+                    meeting:
+                      type: string
+                      nullable: true
+                    created:
+                      type: string
+                      format: date-time
+                      readOnly: true
+                  required:
+                  - rating
+                  - meeting
+            text/html:
+              schema: *id013
+          description: ''
+    post:
+      operationId: CreateFeedback
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id014
+              properties:
+                rating:
+                  type: integer
+                  maximum: 5
+                  minimum: 0
+                message:
+                  type: string
+                meeting:
+                  type: string
+                  nullable: true
+              required:
+              - rating
+              - meeting
+          multipart/form-data:
+            schema: *id014
+          application/json:
+            schema: *id014
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id015
+                properties:
+                  receiver:
+                    type: string
+                    readOnly: true
+                  provider:
+                    type: string
+                    readOnly: true
+                  rating:
+                    type: integer
+                    maximum: 5
+                    minimum: 0
+                  message:
+                    type: string
+                  meeting:
+                    type: string
+                    nullable: true
+                  created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                required:
+                - rating
+                - meeting
+            text/html:
+              schema: *id015
+          description: ''
+  /roulette/meeting/feedback/{meeting}:
+    get:
+      operationId: RetrieveFeedback
+      description: ''
+      parameters:
+      - name: meeting
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id016
+                properties:
+                  receiver:
+                    type: string
+                    readOnly: true
+                  provider:
+                    type: string
+                    readOnly: true
+                  rating:
+                    type: integer
+                    maximum: 5
+                    minimum: 0
+                  message:
+                    type: string
+                  meeting:
+                    type: string
+                    nullable: true
+                  created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                required:
+                - rating
+                - meeting
+            text/html:
+              schema: *id016
+          description: ''
+  /roulette/meeting/end/{meeting}/:
+    get:
+      operationId: Retrieveend_callback
+      description: ''
+      parameters:
+      - name: meeting
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id017 {}
+            text/html:
+              schema: *id017
+          description: ''
+    post:
+      operationId: Createend_callback
+      description: ''
+      parameters:
+      - name: meeting
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id018 {}
+            text/html:
+              schema: *id018
+          description: ''
+  /roulette/meeting/report/:
+    get:
+      operationId: listReports
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id019
+                type: array
+                items:
+                  properties:
+                    provider:
+                      type: string
+                      readOnly: true
+                    receiver:
+                      type: string
+                      readOnly: true
+                    message:
+                      type: string
+                    meeting:
+                      type: string
+                      nullable: true
+                    created:
+                      type: string
+                      format: date-time
+                      readOnly: true
+                  required:
+                  - message
+                  - meeting
+            text/html:
+              schema: *id019
+          description: ''
+    post:
+      operationId: CreateReport
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id020
+              properties:
+                message:
+                  type: string
+                meeting:
+                  type: string
+                  nullable: true
+              required:
+              - message
+              - meeting
+          multipart/form-data:
+            schema: *id020
+          application/json:
+            schema: *id020
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id021
+                properties:
+                  provider:
+                    type: string
+                    readOnly: true
+                  receiver:
+                    type: string
+                    readOnly: true
+                  message:
+                    type: string
+                  meeting:
+                    type: string
+                    nullable: true
+                  created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                required:
+                - message
+                - meeting
+            text/html:
+              schema: *id021
+          description: ''
+  /roulette/{type}/request/:
+    get:
+      operationId: RetrieveStudentRequest
+      description: ''
+      parameters:
+      - name: type
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id022
+                properties:
+                  subject:
+                    type: integer
+                  match:
+                    properties:
+                      uuid:
+                        type: string
+                        format: uuid
+                        readOnly: true
+                      student_agree:
+                        type: boolean
+                      tutor_agree:
+                        type: boolean
+                      tutor:
+                        properties:
+                          uuid:
+                            type: string
+                            format: uuid
+                            readOnly: true
+                          first_name:
+                            type: string
+                            maxLength: 50
+                          state:
+                            type: integer
+                          studentdata:
+                            properties:
+                              school_data:
+                                type: integer
+                            required:
+                            - school_data
+                            type: object
+                          tutordata:
+                            properties:
+                              schooldata:
+                                type: array
+                                items:
+                                  type: integer
+                              subjects:
+                                type: array
+                                items:
+                                  type: integer
+                              profile_picture:
+                                type: string
+                                format: binary
+                                nullable: true
+                            required:
+                            - schooldata
+                            - subjects
+                            type: object
+                          gender:
+                            enum:
+                            - MA
+                            - FE
+                            - DI
+                        required:
+                        - first_name
+                        - state
+                        - studentdata
+                        - tutordata
+                        - gender
+                        type: object
+                        readOnly: true
+                      student:
+                        properties:
+                          uuid:
+                            type: string
+                            format: uuid
+                            readOnly: true
+                          first_name:
+                            type: string
+                            maxLength: 50
+                          state:
+                            type: integer
+                          studentdata:
+                            properties:
+                              school_data:
+                                type: integer
+                            required:
+                            - school_data
+                            type: object
+                          tutordata:
+                            properties:
+                              schooldata:
+                                type: array
+                                items:
+                                  type: integer
+                              subjects:
+                                type: array
+                                items:
+                                  type: integer
+                              profile_picture:
+                                type: string
+                                format: binary
+                                nullable: true
+                            required:
+                            - schooldata
+                            - subjects
+                            type: object
+                          gender:
+                            enum:
+                            - MA
+                            - FE
+                            - DI
+                        required:
+                        - first_name
+                        - state
+                        - studentdata
+                        - tutordata
+                        - gender
+                        type: object
+                        readOnly: true
+                      subject:
+                        type: string
+                        readOnly: true
+                    type: object
+                  failed_matches:
+                    type: array
+                    items:
+                      type: string
+                    readOnly: true
+                  created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                required:
+                - subject
+            text/html:
+              schema: *id022
+          description: ''
+    post:
+      operationId: CreateStudentRequest
+      description: ''
+      parameters:
+      - name: type
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id023
+              properties:
+                subject:
+                  type: integer
+                match:
+                  properties:
+                    uuid:
+                      type: string
+                      format: uuid
+                      readOnly: true
+                    student_agree:
+                      type: boolean
+                    tutor_agree:
+                      type: boolean
+                    tutor:
+                      properties:
+                        uuid:
+                          type: string
+                          format: uuid
+                          readOnly: true
+                        first_name:
+                          type: string
+                          maxLength: 50
+                        state:
+                          type: integer
+                        studentdata:
+                          properties:
+                            school_data:
+                              type: integer
+                          required:
+                          - school_data
+                          type: object
+                        tutordata:
+                          properties:
+                            schooldata:
+                              type: array
+                              items:
+                                type: integer
+                            subjects:
+                              type: array
+                              items:
+                                type: integer
+                            profile_picture:
+                              type: string
+                              format: binary
+                              nullable: true
+                          required:
+                          - schooldata
+                          - subjects
+                          type: object
+                        gender:
+                          enum:
+                          - MA
+                          - FE
+                          - DI
+                      required:
+                      - first_name
+                      - state
+                      - studentdata
+                      - tutordata
+                      - gender
+                      type: object
+                      readOnly: true
+                    student:
+                      properties:
+                        uuid:
+                          type: string
+                          format: uuid
+                          readOnly: true
+                        first_name:
+                          type: string
+                          maxLength: 50
+                        state:
+                          type: integer
+                        studentdata:
+                          properties:
+                            school_data:
+                              type: integer
+                          required:
+                          - school_data
+                          type: object
+                        tutordata:
+                          properties:
+                            schooldata:
+                              type: array
+                              items:
+                                type: integer
+                            subjects:
+                              type: array
+                              items:
+                                type: integer
+                            profile_picture:
+                              type: string
+                              format: binary
+                              nullable: true
+                          required:
+                          - schooldata
+                          - subjects
+                          type: object
+                        gender:
+                          enum:
+                          - MA
+                          - FE
+                          - DI
+                      required:
+                      - first_name
+                      - state
+                      - studentdata
+                      - tutordata
+                      - gender
+                      type: object
+                      readOnly: true
+                    subject:
+                      type: string
+                      readOnly: true
+                  type: object
+              required:
+              - subject
+          multipart/form-data:
+            schema: *id023
+          application/json:
+            schema: *id023
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id024
+                properties:
+                  subject:
+                    type: integer
+                  match:
+                    properties:
+                      uuid:
+                        type: string
+                        format: uuid
+                        readOnly: true
+                      student_agree:
+                        type: boolean
+                      tutor_agree:
+                        type: boolean
+                      tutor:
+                        properties:
+                          uuid:
+                            type: string
+                            format: uuid
+                            readOnly: true
+                          first_name:
+                            type: string
+                            maxLength: 50
+                          state:
+                            type: integer
+                          studentdata:
+                            properties:
+                              school_data:
+                                type: integer
+                            required:
+                            - school_data
+                            type: object
+                          tutordata:
+                            properties:
+                              schooldata:
+                                type: array
+                                items:
+                                  type: integer
+                              subjects:
+                                type: array
+                                items:
+                                  type: integer
+                              profile_picture:
+                                type: string
+                                format: binary
+                                nullable: true
+                            required:
+                            - schooldata
+                            - subjects
+                            type: object
+                          gender:
+                            enum:
+                            - MA
+                            - FE
+                            - DI
+                        required:
+                        - first_name
+                        - state
+                        - studentdata
+                        - tutordata
+                        - gender
+                        type: object
+                        readOnly: true
+                      student:
+                        properties:
+                          uuid:
+                            type: string
+                            format: uuid
+                            readOnly: true
+                          first_name:
+                            type: string
+                            maxLength: 50
+                          state:
+                            type: integer
+                          studentdata:
+                            properties:
+                              school_data:
+                                type: integer
+                            required:
+                            - school_data
+                            type: object
+                          tutordata:
+                            properties:
+                              schooldata:
+                                type: array
+                                items:
+                                  type: integer
+                              subjects:
+                                type: array
+                                items:
+                                  type: integer
+                              profile_picture:
+                                type: string
+                                format: binary
+                                nullable: true
+                            required:
+                            - schooldata
+                            - subjects
+                            type: object
+                          gender:
+                            enum:
+                            - MA
+                            - FE
+                            - DI
+                        required:
+                        - first_name
+                        - state
+                        - studentdata
+                        - tutordata
+                        - gender
+                        type: object
+                        readOnly: true
+                      subject:
+                        type: string
+                        readOnly: true
+                    type: object
+                  failed_matches:
+                    type: array
+                    items:
+                      type: string
+                    readOnly: true
+                  created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                required:
+                - subject
+            text/html:
+              schema: *id024
+          description: ''
+    delete:
+      operationId: DestroyStudentRequest
+      description: ''
+      parameters:
+      - name: type
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /notify/push/device/wp/:
+    get:
+      operationId: listWebPushDevices
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id025
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      readOnly: true
+                    name:
+                      type: string
+                      nullable: true
+                      maxLength: 255
+                    registration_id:
+                      type: string
+                    active:
+                      type: boolean
+                      default: true
+                      description: Inactive devices will not be sent notifications
+                    date_created:
+                      type: string
+                      format: date-time
+                      readOnly: true
+                    p256dh:
+                      type: string
+                      maxLength: 88
+                    auth:
+                      type: string
+                      maxLength: 24
+                    browser:
+                      enum:
+                      - CHROME
+                      - FIREFOX
+                      - OPERA
+                      description: Currently only support to Chrome, Firefox and Opera
+                        browsers
+                    application_id:
+                      type: string
+                      nullable: true
+                      description: Opaque application identity, should be filled in
+                        for multiple key/certificate access
+                      maxLength: 64
+                  required:
+                  - registration_id
+                  - p256dh
+                  - auth
+            text/html:
+              schema: *id025
+          description: ''
+    post:
+      operationId: createWebPushDevice
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id026
+              properties:
+                name:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+                registration_id:
+                  type: string
+                active:
+                  type: boolean
+                  default: true
+                  description: Inactive devices will not be sent notifications
+                p256dh:
+                  type: string
+                  maxLength: 88
+                auth:
+                  type: string
+                  maxLength: 24
+                browser:
+                  enum:
+                  - CHROME
+                  - FIREFOX
+                  - OPERA
+                  description: Currently only support to Chrome, Firefox and Opera
+                    browsers
+                application_id:
+                  type: string
+                  nullable: true
+                  description: Opaque application identity, should be filled in for
+                    multiple key/certificate access
+                  maxLength: 64
+              required:
+              - registration_id
+              - p256dh
+              - auth
+          multipart/form-data:
+            schema: *id026
+          application/json:
+            schema: *id026
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id027
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    nullable: true
+                    maxLength: 255
+                  registration_id:
+                    type: string
+                  active:
+                    type: boolean
+                    default: true
+                    description: Inactive devices will not be sent notifications
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  p256dh:
+                    type: string
+                    maxLength: 88
+                  auth:
+                    type: string
+                    maxLength: 24
+                  browser:
+                    enum:
+                    - CHROME
+                    - FIREFOX
+                    - OPERA
+                    description: Currently only support to Chrome, Firefox and Opera
+                      browsers
+                  application_id:
+                    type: string
+                    nullable: true
+                    description: Opaque application identity, should be filled in
+                      for multiple key/certificate access
+                    maxLength: 64
+                required:
+                - registration_id
+                - p256dh
+                - auth
+            text/html:
+              schema: *id027
+          description: ''
+  /notify/push/device/wp/{registration_id}/:
+    get:
+      operationId: retrieveWebPushDevice
+      description: ''
+      parameters:
+      - name: registration_id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id028
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    nullable: true
+                    maxLength: 255
+                  registration_id:
+                    type: string
+                  active:
+                    type: boolean
+                    default: true
+                    description: Inactive devices will not be sent notifications
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  p256dh:
+                    type: string
+                    maxLength: 88
+                  auth:
+                    type: string
+                    maxLength: 24
+                  browser:
+                    enum:
+                    - CHROME
+                    - FIREFOX
+                    - OPERA
+                    description: Currently only support to Chrome, Firefox and Opera
+                      browsers
+                  application_id:
+                    type: string
+                    nullable: true
+                    description: Opaque application identity, should be filled in
+                      for multiple key/certificate access
+                    maxLength: 64
+                required:
+                - registration_id
+                - p256dh
+                - auth
+            text/html:
+              schema: *id028
+          description: ''
+    put:
+      operationId: updateWebPushDevice
+      description: ''
+      parameters:
+      - name: registration_id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id029
+              properties:
+                name:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+                registration_id:
+                  type: string
+                active:
+                  type: boolean
+                  default: true
+                  description: Inactive devices will not be sent notifications
+                p256dh:
+                  type: string
+                  maxLength: 88
+                auth:
+                  type: string
+                  maxLength: 24
+                browser:
+                  enum:
+                  - CHROME
+                  - FIREFOX
+                  - OPERA
+                  description: Currently only support to Chrome, Firefox and Opera
+                    browsers
+                application_id:
+                  type: string
+                  nullable: true
+                  description: Opaque application identity, should be filled in for
+                    multiple key/certificate access
+                  maxLength: 64
+              required:
+              - registration_id
+              - p256dh
+              - auth
+          multipart/form-data:
+            schema: *id029
+          application/json:
+            schema: *id029
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id030
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    nullable: true
+                    maxLength: 255
+                  registration_id:
+                    type: string
+                  active:
+                    type: boolean
+                    default: true
+                    description: Inactive devices will not be sent notifications
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  p256dh:
+                    type: string
+                    maxLength: 88
+                  auth:
+                    type: string
+                    maxLength: 24
+                  browser:
+                    enum:
+                    - CHROME
+                    - FIREFOX
+                    - OPERA
+                    description: Currently only support to Chrome, Firefox and Opera
+                      browsers
+                  application_id:
+                    type: string
+                    nullable: true
+                    description: Opaque application identity, should be filled in
+                      for multiple key/certificate access
+                    maxLength: 64
+                required:
+                - registration_id
+                - p256dh
+                - auth
+            text/html:
+              schema: *id030
+          description: ''
+    patch:
+      operationId: partial_updateWebPushDevice
+      description: ''
+      parameters:
+      - name: registration_id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id031
+              properties:
+                name:
+                  type: string
+                  nullable: true
+                  maxLength: 255
+                registration_id:
+                  type: string
+                active:
+                  type: boolean
+                  default: true
+                  description: Inactive devices will not be sent notifications
+                p256dh:
+                  type: string
+                  maxLength: 88
+                auth:
+                  type: string
+                  maxLength: 24
+                browser:
+                  enum:
+                  - CHROME
+                  - FIREFOX
+                  - OPERA
+                  description: Currently only support to Chrome, Firefox and Opera
+                    browsers
+                application_id:
+                  type: string
+                  nullable: true
+                  description: Opaque application identity, should be filled in for
+                    multiple key/certificate access
+                  maxLength: 64
+          multipart/form-data:
+            schema: *id031
+          application/json:
+            schema: *id031
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id032
+                properties:
+                  id:
+                    type: integer
+                    readOnly: true
+                  name:
+                    type: string
+                    nullable: true
+                    maxLength: 255
+                  registration_id:
+                    type: string
+                  active:
+                    type: boolean
+                    default: true
+                    description: Inactive devices will not be sent notifications
+                  date_created:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  p256dh:
+                    type: string
+                    maxLength: 88
+                  auth:
+                    type: string
+                    maxLength: 24
+                  browser:
+                    enum:
+                    - CHROME
+                    - FIREFOX
+                    - OPERA
+                    description: Currently only support to Chrome, Firefox and Opera
+                      browsers
+                  application_id:
+                    type: string
+                    nullable: true
+                    description: Opaque application identity, should be filled in
+                      for multiple key/certificate access
+                    maxLength: 64
+                required:
+                - registration_id
+                - p256dh
+                - auth
+            text/html:
+              schema: *id032
+          description: ''
+    delete:
+      operationId: destroyWebPushDevice
+      description: ''
+      parameters:
+      - name: registration_id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /notify/notification/:
+    get:
+      operationId: listNotifications
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id033
+                type: array
+                items:
+                  properties:
+                    pk:
+                      type: integer
+                      readOnly: true
+                    notification_type:
+                      enum:
+                      - SR
+                      - OT
+                    title:
+                      type: string
+                    body:
+                      type: string
+                    sent:
+                      type: boolean
+                    date:
+                      type: string
+                      format: date-time
+                      readOnly: true
+                    content_object:
+                      type: string
+                      readOnly: true
+                  required:
+                  - notification_type
+                  - title
+                  - body
+            text/html:
+              schema: *id033
+          description: ''
+  /notify/notification/{id}/:
+    get:
+      operationId: retrieveNotification
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this notification.
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id034
+                properties:
+                  pk:
+                    type: integer
+                    readOnly: true
+                  notification_type:
+                    enum:
+                    - SR
+                    - OT
+                  title:
+                    type: string
+                  body:
+                    type: string
+                  sent:
+                    type: boolean
+                  date:
+                    type: string
+                    format: date-time
+                    readOnly: true
+                  content_object:
+                    type: string
+                    readOnly: true
+                required:
+                - notification_type
+                - title
+                - body
+            text/html:
+              schema: *id034
+          description: ''
+    delete:
+      operationId: destroyNotification
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A unique integer value identifying this notification.
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+  /notify/settings/:
+    get:
+      operationId: RetrieveNotificationSettings
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id035
+                properties:
+                  pk:
+                    type: integer
+                    readOnly: true
+                  user:
+                    type: string
+                    readOnly: true
+                  enable_push:
+                    type: boolean
+                  enable_mail:
+                    type: boolean
+                  notify_interval:
+                    type: string
+                  ranges:
+                    type: array
+                    items:
+                      properties:
+                        pk:
+                          type: integer
+                          readOnly: true
+                        days:
+                          type: array
+                          items:
+                            enum:
+                            - 0
+                            - 1
+                            - 2
+                            - 3
+                            - 4
+                            - 5
+                            - 6
+                        start_time:
+                          type: string
+                        end_time:
+                          type: string
+                      required:
+                      - days
+                      - start_time
+                      - end_time
+                  ranges_mode:
+                    enum:
+                    - ALLOW
+                    - BLOCK
+                required:
+                - ranges
+                - ranges_mode
+            text/html:
+              schema: *id035
+          description: ''
+    post:
+      operationId: CreateNotificationSettings
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id036
+              properties:
+                enable_push:
+                  type: boolean
+                enable_mail:
+                  type: boolean
+                notify_interval:
+                  type: string
+                ranges:
+                  type: array
+                  items:
+                    properties:
+                      pk:
+                        type: integer
+                        readOnly: true
+                      days:
+                        type: array
+                        items:
+                          enum:
+                          - 0
+                          - 1
+                          - 2
+                          - 3
+                          - 4
+                          - 5
+                          - 6
+                      start_time:
+                        type: string
+                      end_time:
+                        type: string
+                    required:
+                    - days
+                    - start_time
+                    - end_time
+                ranges_mode:
+                  enum:
+                  - ALLOW
+                  - BLOCK
+              required:
+              - ranges
+              - ranges_mode
+          multipart/form-data:
+            schema: *id036
+          application/json:
+            schema: *id036
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id037
+                properties:
+                  pk:
+                    type: integer
+                    readOnly: true
+                  user:
+                    type: string
+                    readOnly: true
+                  enable_push:
+                    type: boolean
+                  enable_mail:
+                    type: boolean
+                  notify_interval:
+                    type: string
+                  ranges:
+                    type: array
+                    items:
+                      properties:
+                        pk:
+                          type: integer
+                          readOnly: true
+                        days:
+                          type: array
+                          items:
+                            enum:
+                            - 0
+                            - 1
+                            - 2
+                            - 3
+                            - 4
+                            - 5
+                            - 6
+                        start_time:
+                          type: string
+                        end_time:
+                          type: string
+                      required:
+                      - days
+                      - start_time
+                      - end_time
+                  ranges_mode:
+                    enum:
+                    - ALLOW
+                    - BLOCK
+                required:
+                - ranges
+                - ranges_mode
+            text/html:
+              schema: *id037
+          description: ''
+    put:
+      operationId: UpdateNotificationSettings
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id038
+              properties:
+                enable_push:
+                  type: boolean
+                enable_mail:
+                  type: boolean
+                notify_interval:
+                  type: string
+                ranges:
+                  type: array
+                  items:
+                    properties:
+                      pk:
+                        type: integer
+                        readOnly: true
+                      days:
+                        type: array
+                        items:
+                          enum:
+                          - 0
+                          - 1
+                          - 2
+                          - 3
+                          - 4
+                          - 5
+                          - 6
+                      start_time:
+                        type: string
+                      end_time:
+                        type: string
+                    required:
+                    - days
+                    - start_time
+                    - end_time
+                ranges_mode:
+                  enum:
+                  - ALLOW
+                  - BLOCK
+              required:
+              - ranges
+              - ranges_mode
+          multipart/form-data:
+            schema: *id038
+          application/json:
+            schema: *id038
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id039
+                properties:
+                  pk:
+                    type: integer
+                    readOnly: true
+                  user:
+                    type: string
+                    readOnly: true
+                  enable_push:
+                    type: boolean
+                  enable_mail:
+                    type: boolean
+                  notify_interval:
+                    type: string
+                  ranges:
+                    type: array
+                    items:
+                      properties:
+                        pk:
+                          type: integer
+                          readOnly: true
+                        days:
+                          type: array
+                          items:
+                            enum:
+                            - 0
+                            - 1
+                            - 2
+                            - 3
+                            - 4
+                            - 5
+                            - 6
+                        start_time:
+                          type: string
+                        end_time:
+                          type: string
+                      required:
+                      - days
+                      - start_time
+                      - end_time
+                  ranges_mode:
+                    enum:
+                    - ALLOW
+                    - BLOCK
+                required:
+                - ranges
+                - ranges_mode
+            text/html:
+              schema: *id039
+          description: ''
+    patch:
+      operationId: PartialUpdateNotificationSettings
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id040
+              properties:
+                enable_push:
+                  type: boolean
+                enable_mail:
+                  type: boolean
+                notify_interval:
+                  type: string
+                ranges:
+                  type: array
+                  items:
+                    properties:
+                      pk:
+                        type: integer
+                        readOnly: true
+                      days:
+                        type: array
+                        items:
+                          enum:
+                          - 0
+                          - 1
+                          - 2
+                          - 3
+                          - 4
+                          - 5
+                          - 6
+                      start_time:
+                        type: string
+                      end_time:
+                        type: string
+                    required:
+                    - days
+                    - start_time
+                    - end_time
+                ranges_mode:
+                  enum:
+                  - ALLOW
+                  - BLOCK
+          multipart/form-data:
+            schema: *id040
+          application/json:
+            schema: *id040
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id041
+                properties:
+                  pk:
+                    type: integer
+                    readOnly: true
+                  user:
+                    type: string
+                    readOnly: true
+                  enable_push:
+                    type: boolean
+                  enable_mail:
+                    type: boolean
+                  notify_interval:
+                    type: string
+                  ranges:
+                    type: array
+                    items:
+                      properties:
+                        pk:
+                          type: integer
+                          readOnly: true
+                        days:
+                          type: array
+                          items:
+                            enum:
+                            - 0
+                            - 1
+                            - 2
+                            - 3
+                            - 4
+                            - 5
+                            - 6
+                        start_time:
+                          type: string
+                        end_time:
+                          type: string
+                      required:
+                      - days
+                      - start_time
+                      - end_time
+                  ranges_mode:
+                    enum:
+                    - ALLOW
+                    - BLOCK
+                required:
+                - ranges
+                - ranges_mode
+            text/html:
+              schema: *id041
+          description: ''
+    delete:
+      operationId: DestroyNotificationSettings
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+  /landing/add_individual/:
+    post:
+      operationId: CreateInterestedIndividual
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id042
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                ind_type:
+                  enum:
+                  - TU
+                  - PA
+                  - ST
+                updates:
+                  type: boolean
+              required:
+              - email
+              - ind_type
+          multipart/form-data:
+            schema: *id042
+          application/json:
+            schema: *id042
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id043
+                properties:
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  ind_type:
+                    enum:
+                    - TU
+                    - PA
+                    - ST
+                  updates:
+                    type: boolean
+                required:
+                - email
+                - ind_type
+            text/html:
+              schema: *id043
+          description: ''
+  /account/create/:
+    post:
+      operationId: CreateCustomUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema: &id044
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 254
+                first_name:
+                  type: string
+                  maxLength: 50
+                last_name:
+                  type: string
+                  maxLength: 50
+                gender:
+                  enum:
+                  - MA
+                  - FE
+                  - DI
+                state:
+                  type: integer
+                password:
+                  type: string
+                  writeOnly: true
+                  maxLength: 128
+                studentdata:
+                  properties:
+                    school_data:
+                      type: integer
+                  required:
+                  - school_data
+                  type: object
+                  nullable: true
+                tutordata:
+                  properties:
+                    schooldata:
+                      type: array
+                      items:
+                        type: integer
+                    subjects:
+                      type: array
+                      items:
+                        type: integer
+                    verification_file:
+                      type: string
+                      format: binary
+                      nullable: true
+                    verified:
+                      type: boolean
+                      readOnly: true
+                    profile_picture:
+                      type: string
+                      format: binary
+                      nullable: true
+                  required:
+                  - schooldata
+                  - subjects
+                  type: object
+                  nullable: true
+              required:
+              - email
+              - first_name
+              - gender
+              - state
+              - password
+          multipart/form-data:
+            schema: *id044
+          application/json:
+            schema: *id044
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id045
+                properties:
+                  uuid:
+                    type: string
+                    format: uuid
+                    readOnly: true
+                  email:
+                    type: string
+                    format: email
+                    maxLength: 254
+                  email_verified:
+                    type: boolean
+                    readOnly: true
+                  first_name:
+                    type: string
+                    maxLength: 50
+                  last_name:
+                    type: string
+                    maxLength: 50
+                  gender:
+                    enum:
+                    - MA
+                    - FE
+                    - DI
+                  state:
+                    type: integer
+                  studentdata:
+                    properties:
+                      school_data:
+                        type: integer
+                    required:
+                    - school_data
+                    type: object
+                    nullable: true
+                  tutordata:
+                    properties:
+                      schooldata:
+                        type: array
+                        items:
+                          type: integer
+                      subjects:
+                        type: array
+                        items:
+                          type: integer
+                      verification_file:
+                        type: string
+                        format: binary
+                        nullable: true
+                      verified:
+                        type: boolean
+                        readOnly: true
+                      profile_picture:
+                        type: string
+                        format: binary
+                        nullable: true
+                    required:
+                    - schooldata
+                    - subjects
+                    type: object
+                    nullable: true
+                required:
+                - email
+                - first_name
+                - gender
+                - state
+            text/html:
+              schema: *id045
+          description: ''
+  /account/email/verify/{token}/:
+    post:
+      operationId: Createverify_email
+      description: ''
+      parameters:
+      - name: token
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id046 {}
+            text/html:
+              schema: *id046
+          description: ''
+  /account/email/resend_verification/:
+    post:
+      operationId: Createresend_verification
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id047 {}
+            text/html:
+              schema: *id047
+          description: ''
+  /account/request-password-reset/:
+    post:
+      operationId: Createpassword_reset_request
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id048 {}
+            text/html:
+              schema: *id048
+          description: ''
+  /account/reset-password/{token}/:
+    post:
+      operationId: Createpassword_reset_verify
+      description: ''
+      parameters:
+      - name: token
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id049 {}
+            text/html:
+              schema: *id049
+          description: ''
+  /account/login/:
+    post:
+      operationId: CreateLogin
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id050 {}
+            text/html:
+              schema: *id050
+          description: ''
+  /account/logout/:
+    post:
+      operationId: CreateLogout
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id051 {}
+            text/html:
+              schema: *id051
+          description: ''
+  /account/logoutall/:
+    post:
+      operationId: CreateLogoutAll
+      description: 'Log the user out of all sessions
+
+        I.E. deletes all auth tokens for the user'
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id052 {}
+            text/html:
+              schema: *id052
+          description: ''
+  /roulette/meeting/join/{match_uuid}/:
+    post:
+      operationId: Createjoin_meeting
+      description: ''
+      parameters:
+      - name: match_uuid
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id053 {}
+            text/html:
+              schema: *id053
+          description: ''
+  /roulette/{type}/match/answer/{uuid}/:
+    post:
+      operationId: Creatematch_answer
+      description: ''
+      parameters:
+      - name: type
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      - name: uuid
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id054 {}
+            text/html:
+              schema: *id054
+          description: ''
+  /notify/react/{id}/:
+    post:
+      operationId: Createon_react
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id055 {}
+            text/html:
+              schema: *id055
+          description: ''
