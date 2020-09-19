@@ -131,14 +131,32 @@ export class WaitComponent implements OnInit, OnDestroy {
    */
   showMatchNotification(): void {
     if (this.notificationSupported && Notification.permission === 'granted') {
-      const n = new Notification('Wir haben einen Match für dich gefunden!', {
-        icon: `${window.location.origin}/assets/icons/icon-128x128.png`
-      });
-      n.addEventListener('click', () => {
-        parent.focus();
-        window.focus();
-        n.close();
-      });
+      try {
+        const n = new Notification('Wir haben einen Match für dich gefunden!', {
+          icon: `${window.location.origin}/assets/icons/icon-128x128.png`
+        });
+        n.addEventListener('click', () => {
+          parent.focus();
+          window.focus();
+          n.close();
+        });
+      } catch (error) {
+        if (error instanceof TypeError) {
+          // Most likely, we're going to need to use ServiceWorkerRegistration in this case.
+          try {
+
+            navigator.serviceWorker.ready.then((registration) => {
+              const n = registration.showNotification('Wir haben einen Match für dich gefunden!', {
+                icon: `${window.location.origin}/assets/icons/icon-128x128.png`
+              });
+            });
+          } catch (error) {
+            console.error(error);
+          }
+        } else {
+          throw error;
+        }
+      }
     }
   }
 
