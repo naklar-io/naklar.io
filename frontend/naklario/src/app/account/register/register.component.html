@@ -38,8 +38,8 @@
   </div>
   <div *ngIf="type === 'tutor'">
     <div class="row justify-content-center">
-      <div class="col-md-10">
-        <h1 class="primary-color">Die Schüler freuen sich auf Dich!</h1>
+      <div class="col">
+        <h2 class="text-primary">Die Schüler freuen sich auf Dich!</h2>
         <p class="lead">
           Mit deiner Unterstützung können Schüler den Schulstoff meistern und
           bleiben motiviert. Helfe ihnen bequem von zu Hause und wann immer du
@@ -54,7 +54,4 @@
   *ngIf="type === 'student'"
   [register]="true"
 ></account-student-form>
-<account-tutor-form
-  *ngIf="type === 'tutor'"
-  [register]="true"
-></account-tutor-form>
+<account-tutor-register></account-tutor-register>

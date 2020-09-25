@@ -1,0 +1,239 @@
+<div class="container">
+    <mat-vertical-stepper [class.first-step]="!firstStepDone" [class.last-step]="alreadySubmitted" linear
+        #stepper='matVerticalStepper'>
+        <mat-step [stepControl]="subjectsGroup" errorMessage="Du musst ein Fach auswählen!" #subjectStepper='matStep'
+            [editable]="!alreadySubmitted">
+            <form [formGroup]="subjectsGroup" #subjectsForm='ngForm'>
+                <ng-template matStepLabel>Fächer</ng-template>
+                <div class="form-group">
+                    <label for="subjects">Gib hier die Fächer an, für die du Fragen beantworten willst.</label>
+                    <div class="alert alert-danger"
+                        *ngIf="subjectsControl.invalid && (subjectsControl.dirty || subjectsControl.touched || subjectStepper.interacted)">
+                        Du musst mindestens ein Fach angeben.
+                    </div>
+                    <div class="subjects">
+                        <div *ngFor="let subject of (constants$ | async).subjects; let i = index"
+                            class="form-check colored-select">
+                            <input type="checkbox" [formControl]="subjectsControl.at(i)" id="subject-{{ subject.id }}"
+                                class="form-check-input" [value]="subject" />
+                            <label class="form-check-label" for="subject-{{ subject.id }}">{{ subject.name }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <!--<button type="button" (click)="test()">account-tutor-register</button>-->
+                    <button class="btn nabtn-primary" matStepperNext>Weiter</button>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="schoolTypesGroup" style="display: none;" #schoolTypeStepper='matStep'
+            [editable]="!alreadySubmitted">
+            <form [formGroup]="schoolTypesGroup">
+                <ng-template matStepLabel>Schultyp</ng-template>
+                <div class="alert alert-danger"
+                    *ngIf="schoolTypesControl.errors && (schoolTypesControl.dirty || schoolTypesControl.touched || schoolTypeStepper.interacted)">
+                    Du musst einen Schultyp angeben.
+                </div>
+                <div class="form-group">
+                    <label for="state">Wo kommst du her?</label>
+                    <select formControlName="state" class="custom-select" id="state">
+                        <option *ngFor="let state of (constants$ | async).states;" [value]="state.id">
+                            {{ state.name }}
+                        </option>
+                    </select>
+                </div>
+                <div *ngIf="true" class="form-group">
+                    <label for="schoolType">In welchen Schultypen / Klassen möchtest du helfen?</label>
+                    <div *ngFor="
+                          let schoolType of (constants$ | async).schoolTypes;
+                          let i = index
+                        " class="row">
+                        <div class="col-md-3 form-check colored-select custom-control align-self-center py-1">
+                            <input type="checkbox" [formControl]="schoolTypesControl.at(i)"
+                                id="school-type-{{ schoolType.id }}" name="schoolType"
+                                class="form-check-input custom-control-input" (change)="onSchoolTypeSelect(i)" />
+                            <label class="form-check-label" for="school-type-{{ schoolType.id }}">
+                                {{ schoolType.name }}
+                            </label>
+                        </div>
+                        <!-- isBrowser: https://github.com/angular-slider/ngx-slider/issues/66-->
+                        <div *ngIf="isBrowser" class="custom-slider col-md-9" [hidden]="!schoolTypesControl.value[i]">
+                            <ngx-slider [options]="sliderOptions[i]" [formControl]="sliderControl.at(i)"
+                                [manualRefresh]="sliderRefresh[i]"></ngx-slider>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" class="btn nabtn-primary" matStepperNext>Weiter</button>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="formGroup1" #stepper1='matStep' [editable]="!alreadySubmitted">
+            <form [formGroup]="formGroup1">
+                <ng-template matStepLabel>Über mich</ng-template>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="email">E-Mail</label>
+                        <input class="form-control"
+                            [class.is-invalid]="email.errors && (email.dirty || email.touched || stepper1.interacted)"
+                            [class.is-valid]="email.valid" type="email" id="email" formControlName="email"
+                            placeholder="Deine E-Mail" required>
+                        <div class="invalid-feedback">
+                            <div *ngIf="email.errors?.required">
+                                Bitte gib eine E-Mail an!
+                            </div>
+                            <div *ngIf="email.errors?.email">
+                                Bitte gib eine gültige E-Mail an!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="password">Dein Passwort</label>
+                        <input type="password"
+                            [class.is-invalid]="password.errors && (password.dirty || password.touched || stepper1.interacted)"
+                            [class.is-valid]="password.valid" formControlName="password" id="password"
+                            placeholder="Ein sicheres Passwort über 8 Zeichen" class="form-control">
+                        <div class="invalid-feedback">
+                            <div *ngIf="password.errors?.required">
+                                Bitte gib ein Passwort ein!
+                            </div>
+                            <div *ngIf="password.errors?.minlength">
+                                Dein Passwort muss mindestens {{ password.errors?.minlength.requiredLength }} Zeichen
+                                ({{ password.errors?.minlength.requiredLength - password.errors?.minlength.actualLength }}
+                                mehr) beinhalten!
+                            </div>
+                        </div>
+                        <div class="valid-feedback">Das sieht sicher aus!</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="firstName">Vorname</label>
+                        <input class="form-control"
+                            [class.is-invalid]="firstName.errors && (firstName.dirty || firstName.touched || stepper1.interacted)"
+                            [class.is-valid]="firstName.valid" id="firstName" formControlName="firstName" type="text"
+                            placeholder="Dein Vorname">
+                        <div class="invalid-feedback">
+                            <div *ngIf="firstName.errors?.required">
+                                Bitte gib deinen Vornamen an!
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label for="lastName">Nachname</label>
+                        <input class="form-control"
+                            [class.is-invalid]="lastName.errors && (lastName.dirty || lastName.touched || stepper1.interacted)"
+                            [class.is-valid]="lastName.valid" id="lastName" formControlName="lastName" type="text"
+                            placeholder="Dein Nachname" aria-describedby="lastNameHelp">
+                        <div class="invalid-feedback">
+                            <div *ngIf="lastName.errors?.required">
+                                Bitte gib deinen Nachnamen an!
+                            </div>
+                        </div>
+                        <small id="lastNameHelp" class="form-text text-muted">Dein Nachname ist nicht für andere Nutzer
+                            der Plattform sichtbar.</small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <p>Geschlecht</p>
+                    <div class="d-flex flex-wrap">
+                        <div *ngFor="let gender of (constants$ | async).genders; let i = index; let last = last;"
+                            class="form-check colored-select">
+                            <input class="form-check-input" type="radio" [value]="gender.shortcode"
+                                [class.is-invalid]="genderControl.errors && (genderControl.dirty || genderControl.touched || stepper1.interacted)"
+                                [class.is-valid]="genderControl.valid" id="gender-{{ gender.shortcode }}"
+                                formControlName="gender" required />
+                            <label class="form-check-label" for="gender-{{ gender.shortcode }}">
+                                {{ gender.gender }}
+                            </label>
+                            <div *ngIf="last" class="invalid-feedback">
+                                Bitte gib ein Geschlecht an!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="btn nabtn-primary" matStepperNext>Weiter</button>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step [stepControl]="formGroup2" #formStepper2='matStep' [editable]="!alreadySubmitted">
+            <form [formGroup]="formGroup2">
+                <ng-template matStepLabel>Verifizierung</ng-template>
+                <div class="col-md-9 col-sm-12">
+                    <div class="form-group">
+                        <div class="align-items-center align-middle text-center" style="max-width: max-content;">
+                            <label for="imgUpload">Bitte lade hier ein Profilbild hoch</label>
+                            <misc-img-upload (img)="onImageChange($event)" id="imgUpload">
+                            </misc-img-upload>
+                            <!-- bootstrap will only display .invalid-feedback next to .is-invalid object -->
+                            <!-- HACK: -->
+                            <span *ngIf="formStepper2.interacted && formGroup2.controls.img.errors?.required"
+                                class="is-invalid"></span>
+                            <div class="invalid-feedback">
+                                <div *ngIf="formGroup2.controls.img.errors?.required">
+                                    Du musst ein Bild angeben
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="file">Dokument zur Verifizierung</label>
+                        <p>
+                            <small>Zum Schutz der Schüler: bitte lade ein offizielles Dokument (z.B. Zeugnis)
+                                <strong>mit deinem Namen</strong> hoch. Wir löschen das Dokument nach der Verifizierung.
+                                Bitte verwende kein Ausweisdokument (Pass/Perso).
+                            </small>
+                        </p>
+                        <input type="file" class="form-control" (change)="onFileChange($event)" />
+                        <!-- bootstrap will only display .invalid-feedback next to .is-invalid object -->
+                        <!-- HACK: -->
+                        <span *ngIf="formStepper2.interacted && file.errors" class="is-invalid"></span>
+                        <div class="invalid-feedback">
+                            <div *ngIf="file.errors?.required">
+                                Wir brauchen hier eine Datei
+                            </div>
+                            <div *ngIf="file.errors?.fileTooLarge">
+                                Deine Datei ist zu groß, maximal
+                                {{ file.errors.fileTooLarge.maxSize }}MB
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group form-row">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" name="terms" id="terms" formControlName="terms"
+                            class="custom-control-input" /><label for="terms" class="custom-control-label">Ja, ich habe
+                            die
+                            <a routerLink="/terms" target="_blank">AGB</a> und
+                            <a routerLink="/privacy" target="_blank">Datenschutzerklärung</a>
+                            gelesen</label>
+                        <div class="invalid-feedback">
+                            <div *ngIf="terms.errors?.required">
+                                Du musst die AGB akzeptieren.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" (click)="onSubmit()" [disabled]="this.isLoading || this.alreadySubmitted"
+                        class="btn nabtn-success">Abschließen!</button>
+                </div>
+            </form>
+        </mat-step>
+        <mat-step #doneStep='matStep'>
+            <ng-template matStepLabel>Fertig!</ng-template>
+            <div *ngIf="this.alreadySubmitted">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            </div>
+            <p>Danke für deine Registrierung!</p>
+            <p>Nach einer kurzen Verifizierung erhältst du von uns eine Mail und du
+                kannst direkt loslegen, Schülern zu helfen!</p>
+        </mat-step>
+    </mat-vertical-stepper>
+</div>

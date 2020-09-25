@@ -1,0 +1,121 @@
+@import "../../../variables";
+@import "../form-styles";
+
+.colored-select {
+    padding-left: 0;
+  label {
+    background-color: lightgrey;
+    border-radius: 1em;
+    margin: 0.2em;
+    padding: 0.5em;
+    text-align: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    transition: all ease-in-out 200ms;
+  }
+
+  input {
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  input:checked ~ label {
+    background-color: $primary;
+    color: #fff;
+  }
+  :hover ~ label {
+    background-color: #ccc;
+  }
+}
+
+.subjects {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.custom-switch .custom-control-label {
+    cursor: pointer;
+    padding-top: .2em;
+
+    ::before, ::after {
+        cursor: pointer;
+    }
+}
+
+.custom-switch .custom-control-label::before {
+    height: 1.5rem;
+    width: 1.5rem;
+}
+
+.custom-switch .custom-control-label::after {
+    width: calc(1rem - 4px);
+    height: calc(1.5rem - 4px)
+}
+
+.custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+    transform: translateX(.55rem);
+}
+
+.first-step ::ng-deep .mat-step:not(:first-child) {
+    opacity: 0;
+    transform: translateY(100vh);
+}
+
+.first-step ::ng-deep .mat-stepper-vertical-line::before {
+    opacity: 0;
+    transform: translateY(100vh);
+}
+
+::ng-deep .mat-step, ::ng-deep .mat-stepper-vertical-line::before {
+  transition: opacity 600ms ease-in-out, transform 600ms ease-in-out;
+}
+
+.checkmark {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: #fff;
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px #7ac142;
+  animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+}
+
+.checkmark__check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes scale {
+  0%, 100% {
+    transform: none;
+  }
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 30px #7ac142;
+  }
+}
+
+.colored-select {
+  .was-validated .form-check-input:valid ~ .form-check-label, .form-check-input.is-valid ~ .form-check-label {
+    color: #000;
+  }
+}
