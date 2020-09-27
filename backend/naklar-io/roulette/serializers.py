@@ -1,5 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
+from rest_framework import fields
 
 from account.serializers import CustomUserSerializer
 from roulette.models import (Feedback, Match, Meeting, Report, Request,
@@ -87,3 +88,13 @@ class ReportSerializer(serializers.ModelSerializer):
             'message': {'required': True},
             'meeting': {'required': True}
         }
+
+class RouletteStatisticsSerializer(serializers.Serializer):
+    meeting_count = fields.IntegerField()
+    meeting_minutes = fields.IntegerField()
+    average_rating = fields.FloatField()
+    
+class RouletteStatisticsOverviewSerializer(serializers.Serializer):
+    tutor_statistics = RouletteStatisticsSerializer()
+    student_statistics = RouletteStatisticsSerializer()
+

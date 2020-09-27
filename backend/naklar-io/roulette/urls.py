@@ -2,7 +2,7 @@ from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
-from . import views
+from roulette import views
 
 app_name = 'roulette'
 
@@ -27,4 +27,5 @@ urlpatterns = [
     path('meeting/end/<uuid:meeting>/', views.end_callback),
     path('meeting/report/', views.ReportListView.as_view()),
     re_path(r'^(?P<type>(student|tutor))/', include(typed_patterns)),
+    path('statistics/', views.statistics_view)
 ]

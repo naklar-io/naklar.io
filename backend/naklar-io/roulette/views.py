@@ -13,7 +13,8 @@ from rest_framework.response import Response
 from roulette.mixins import (AccessPermissionMixin, MatchTypeMixin,
                              MatchUserMixin)
 from roulette.models import Feedback, Report
-from roulette.serializers import FeedbackSerializer, ReportSerializer
+from roulette.serializers import FeedbackSerializer, ReportSerializer, RouletteStatisticsOverviewSerializer, RouletteStatisticsSerializer
+from roulette.classes import RouletteStatistics, RouletteStatisticsOverview
 
 from .models import Match, Meeting, StudentRequest, TutorRequest
 from .serializers import (MatchSerializer, MeetingSerializer)
@@ -235,3 +236,16 @@ def answer_request(request, id, type):
         raise exceptions.NotFound(detail={"invalid type"})
 
     return Response(MatchSerializer(instance=match).data)
+
+@swagger_auto_schema(method='GET', responses={
+   200: RouletteStatisticsOverviewSerializer 
+})
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def statistics_view(request):
+    # TODO: Fill in actual data
+    RouletteStatisticsOverview.load_from_model(request.user.id)
+    tutor_stats = RouletteStatistics(meeting_count=3, meeting_minutes=30, average_rating=3.5)
+    student_stats = RouletteStatistics(meeting_count=2, meeting_minutes=20, average_rating=4.5)
+    overview = RouletteStatisticsOverview(tutor_statistics=tutor_stats, student_statistics=student_stats)
+    return Response(RouletteStatisticsOverviewSerializer(instance=overview).data)
