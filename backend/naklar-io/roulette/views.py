@@ -1,96 +1,38 @@
 import logging
-from datetime import datetime
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from django.utils import timezone
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import exceptions, generics, mixins, permissions
+from rest_framework import exceptions, generics, permissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListCreateAPIView, get_object_or_404
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
+from roulette.mixins import (AccessPermissionMixin, MatchTypeMixin,
+                             MatchUserMixin)
 from roulette.models import Feedback, Report
 from roulette.serializers import FeedbackSerializer, ReportSerializer
 
-from .models import Match, Meeting, Request, StudentRequest, TutorRequest
-from .serializers import (MatchSerializer, MeetingSerializer,
-                          StudentRequestSerializer, TutorRequestSerializer)
+from .models import Match, Meeting, StudentRequest, TutorRequest
+from .serializers import (MatchSerializer, MeetingSerializer)
 
 logger = logging.getLogger(__name__)
 
+# custom schema generation flags
+match_answer_param = openapi.Parameter(
+    'agree', openapi.IN_BODY, 'Agree with Match?', required=True, schema=openapi.Schema(type=openapi.TYPE_BOOLEAN))
 
-class MatchUserMixin(object):
-    """
-    Matches user argument to be user
-    """
+schema = openapi.Schema(type=openapi.TYPE_OBJECT, properties={
+                        'agree': openapi.Schema(type=openapi.TYPE_BOOLEAN)})
 
-    def get_object(self):
-        obj = self.get_queryset().filter(user=self.request.user).filter(is_active=True)
-        if obj:
-            obj = obj.get()
-            if hasattr(obj, 'last_poll'):
-                obj.last_poll = timezone.now()
-                logger.info("Updating last_poll")
-                obj.save(update_fields=['last_poll'])
-            return obj
-        else:
-            raise exceptions.NotFound(detail="Kein Request gefunden!")
-
-
-class MatchTypeMixin(object):
-    """
-    Matches type argument to be either student/tutor
-    """
-
-    def get_serializer_class(self):
-        type = self.kwargs.get('type', None)
-        if type == 'student':
-            return StudentRequestSerializer
-        elif type == 'tutor':
-            return TutorRequestSerializer
-        return StudentRequestSerializer
-
-    def get_queryset(self):
-        type = self.kwargs.get('type', None)
-        if type == 'student':
-            return StudentRequest.objects.all()
-        elif type == 'tutor':
-            return TutorRequest.objects.all()
-        else:
-            StudentRequest.objects.all()
-
-
-class UserBelongsToMatch(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        type = self.kwargs.get('type', None)
-        if type == 'student':
-            return obj.student_request.user == request.user
-        elif type == 'tutor':
-            return obj.tutor_request.user == request.user
-        else:
-            return False
-
-
-class AccessPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if not request.user.email_verified:
-            return False
-        type = view.kwargs.get('type', None)
-        if type == 'student':
-            if hasattr(request.user, 'studentdata'):
-                return True
-        elif type == 'tutor':
-            if hasattr(request.user, 'tutordata') and request.user.tutordata.verified:
-                return True
-        return type is None
+type_parameter = openapi.Parameter('type', openapi.IN_PATH, description='User type',
+                                   required=True, type=openapi.TYPE_STRING, enum=['student', 'tutor'], )
 
 
 class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generics.RetrieveAPIView, generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated, AccessPermission]
+    permission_classes = [permissions.IsAuthenticated, AccessPermissionMixin]
 
     def perform_create(self, serializer):
         #        self.get_queryset().filter(user=self.request.user).delete()
@@ -170,14 +112,6 @@ class MeetingDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return self.queryset.filter(users=self.request.user)
 
-match_answer_param = openapi.Parameter(
-    'agree', openapi.IN_BODY, 'Agree with Match?', required=True, schema=openapi.Schema(type=openapi.TYPE_BOOLEAN))
-
-schema = openapi.Schema(type=openapi.TYPE_OBJECT, properties={
-                        'agree': openapi.Schema(type=openapi.TYPE_BOOLEAN)})
-
-type_parameter = openapi.Parameter('type', openapi.IN_PATH, description='User type',
-                                   required=True, type=openapi.TYPE_STRING, enum=['student', 'tutor'], )
 
 
 @swagger_auto_schema(method='POST', manual_parameters=[type_parameter], request_body=schema)
@@ -293,7 +227,6 @@ def answer_request(request, id, type):
             if Match.objects.filter(student_request=student_request).exists():
                 raise exceptions.APIException(
                     detail="Request already has match!")
-            # deleting all possible offenders by "yourself"
             match = Match.objects.create(
                 student_request=student_request, student=student_request.user, tutor=request.user, tutor_agree=True)
         else:
