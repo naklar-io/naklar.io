@@ -11,9 +11,9 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="naklario-API",
+        title="naklar.io-API",
         default_version='v1',
-        description="T",
+        description="This is the API of naklar.io. It should primarily be used by the frontend-application(s), to communicate with the server",
         terms_of_service="",
         contact=openapi.Contact(email="info@naklar.io"),
         license=openapi.License(name="BSD License"),
@@ -23,7 +23,7 @@ schema_view = get_schema_view(
     authentication_classes=(auth.TokenAuthentication,)
 )
 urlpatterns = [
-    re_path(r'swagger?P<format>(\.json|\.yaml)^', schema_view.without_ui(
+    re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(
         cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger',
                                          cache_timeout=0), name='schema-swagger-ui'),
