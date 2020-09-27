@@ -2,7 +2,9 @@ version: "3.8"
 
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     #command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; pipenv run python manage.py runserver 0.0.0.0:8000'
     working_dir: /code/naklar-io
@@ -27,7 +29,9 @@ services:
   #  command: python3 -u -m smtpd -n -c DebuggingServer 0.0.0.0:1025
 
   celery_worker:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     working_dir: /code/naklar-io
     command: pipenv run celery -A naklario worker -l info
     volumes:
@@ -39,7 +43,9 @@ services:
       - web
 
   celery_beat:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     working_dir: /code/naklar-io
     command: pipenv run celery -A naklario beat -S django -l info
     volumes:
