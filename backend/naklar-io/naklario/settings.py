@@ -58,7 +58,7 @@ SWAGGER_SETTINGS = {
         {'Token': []},
     ],
     'REFETCH_SCHEMA_WITH_AUTH': True,
-    'PERSIST_AUTH': True
+    'USE_SESSION_AUTH': False
 }
 
 # Rest framework
