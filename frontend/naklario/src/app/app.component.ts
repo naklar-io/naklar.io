@@ -34,6 +34,7 @@ export class AppComponent implements OnInit, AfterViewInit, DoCheck {
     private renderer: Renderer2,
     private scrollPosition: ScrollPositionService
   ) {
+    this.promptUpdate.checkForUpdates();
 
   }
   ngDoCheck(): void {
