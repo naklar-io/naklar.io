@@ -1,15 +1,14 @@
 import { isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, ElementRef, EventEmitter, PLATFORM_ID, ViewChild } from '@angular/core';
-import { Component, Inject, OnDestroy, OnInit, Type } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatStep, MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute } from '@angular/router';
 import { Options } from '@m0t0r/ngx-slider';
-import { constants } from 'buffer';
-import { BehaviorSubject, combineLatest, concat, merge, Observable, Subscription } from 'rxjs';
-import { combineAll, concatAll, first, flatMap, map, mergeMap, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { first, map, switchMap } from 'rxjs/operators';
 import { fileSizeValidator } from 'src/app/_helpers';
-import { Constants, SchoolData, SendableLogin, SendableTutorData, SendableUser, Subject, User } from 'src/app/_models';
+import { Constants, SchoolData, SendableLogin, SendableTutorData, SendableUser } from 'src/app/_models';
 import { AuthenticationService } from 'src/app/_services';
 
 @Component({
@@ -26,7 +25,7 @@ export class TutorRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
   constants$: Observable<Constants>;
   isBrowser: boolean;
   isLoading = false;
-  error: string = null;
+  errors: any = null;
   alreadySubmitted = false;
 
 
@@ -109,7 +108,7 @@ export class TutorRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
           };
         });
         this.subjectsGroup = this.formBuilder.group({
-          subjects: this.formBuilder.array(c.subjects.map(subject => this.formBuilder.control(false)), subjectsValidator()),
+          subjects: this.formBuilder.array(c.subjects.map(() => this.formBuilder.control(false)), subjectsValidator()),
         });
         this.schoolTypesGroup = this.formBuilder.group({
           schoolTypes: this.formBuilder.array(
@@ -122,7 +121,7 @@ export class TutorRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
           ),
           state: [0, Validators.required],
         });
-        this.sliderRefresh = grades.map((x) => new EventEmitter<void>());
+        this.sliderRefresh = grades.map(() => new EventEmitter<void>());
         this.state.setValue(c.states[0].id);
       }
     );
@@ -177,6 +176,10 @@ export class TutorRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
   }
 
   onSubmit(): void {
+    this.formGroup2.markAllAsTouched();
+    if (!this.formGroup2.valid) {
+      return;
+    }
     // Here we now have to merge all the information from all of the forms.
     combineLatest([this.constants$, this.verificationFile$]).subscribe(
       ([c, file]) => {
@@ -214,9 +217,9 @@ export class TutorRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
         const login: SendableLogin = { email: user.email, password: user.password };
         console.log('Constructed login', login);
         this.isLoading = true;
-        this.auth.register(user, c).pipe(first(), switchMap((result) => this.auth.login(login, c)
+        this.auth.register(user, c).pipe(first(), switchMap(() => this.auth.login(login, c)
         )).subscribe(
-          (result) => {
+          () => {
             this.isLoading = false;
             this.stepper.next();
             this.stepper.animationDone.pipe(first()).subscribe((_) => {
@@ -225,7 +228,8 @@ export class TutorRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
           },
           (error) => {
             this.isLoading = false;
-            this.error = error;
+            this.errors = error;
+            console.log('got error', error);
           }
         );
         /*
@@ -238,7 +242,7 @@ export class TutorRegisterComponent implements OnInit, OnDestroy, AfterViewInit 
           }
         );*/
       },
-      (error) => {
+      () => {
 
       });
   }

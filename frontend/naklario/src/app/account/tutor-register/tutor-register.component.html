@@ -162,15 +162,23 @@
         <mat-step [stepControl]="formGroup2" #formStepper2='matStep' [editable]="!alreadySubmitted">
             <form [formGroup]="formGroup2">
                 <ng-template matStepLabel>Verifizierung</ng-template>
+                <div *ngIf='errors !== null' class="alert alert-danger">
+                    Es gab Fehler bei der Registrierung:
+                    <ul>
+                        <li *ngFor='let e of errors | keyvalue'>
+                            {{ e.key | capitalize }}: {{ e.value }}
+                        </li>
+                    </ul>
+                </div>
                 <div class="col-md-9 col-sm-12">
                     <div class="form-group">
-                        <div class="align-items-center align-middle text-center" style="max-width: max-content;">
+                        <div style="max-width: max-content;">
                             <label for="imgUpload">Bitte lade hier ein Profilbild hoch</label>
                             <misc-img-upload (img)="onImageChange($event)" id="imgUpload">
                             </misc-img-upload>
                             <!-- bootstrap will only display .invalid-feedback next to .is-invalid object -->
                             <!-- HACK: -->
-                            <span *ngIf="formStepper2.interacted && formGroup2.controls.img.errors?.required"
+                            <span *ngIf="formGroup2.touched && formGroup2.controls.img.errors?.required"
                                 class="is-invalid"></span>
                             <div class="invalid-feedback">
                                 <div *ngIf="formGroup2.controls.img.errors?.required">
@@ -190,7 +198,7 @@
                         <input type="file" class="form-control" (change)="onFileChange($event)" />
                         <!-- bootstrap will only display .invalid-feedback next to .is-invalid object -->
                         <!-- HACK: -->
-                        <span *ngIf="formStepper2.interacted && file.errors" class="is-invalid"></span>
+                        <span *ngIf="formGroup2.touched && file.errors" class="is-invalid"></span>
                         <div class="invalid-feedback">
                             <div *ngIf="file.errors?.required">
                                 Wir brauchen hier eine Datei
@@ -231,9 +239,14 @@
                     <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
                 </svg>
             </div>
-            <p>Danke für deine Registrierung!</p>
-            <p>Nach einer kurzen Verifizierung erhältst du von uns eine Mail und du
-                kannst direkt loslegen, Schülern zu helfen!</p>
+            <div style="max-width: 80ch;">
+                <p>Danke für deine Registrierung!</p>
+                <p>Nach einer kurzen Verifizierung erhältst du von uns eine Mail und du
+                    kannst direkt loslegen, Schülern zu helfen!</p>
+            </div>
+            <div>
+                <a class="btn nabtn-primary" routerLink='/account'>Zu meinem Profil</a>
+            </div>
         </mat-step>
     </mat-vertical-stepper>
 </div>
