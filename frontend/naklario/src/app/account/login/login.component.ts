@@ -41,7 +41,7 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService
   ) {}
   ngOnInit(): void {
-    this.route.data.subscribe((data: { constants: Constants }) => {
+    this.route.data.pipe(first()).subscribe((data: { constants: Constants }) => {
       this.constants = data.constants;
     });
 

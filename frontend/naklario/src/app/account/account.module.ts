@@ -19,6 +19,9 @@ import { ResetRequestComponent } from './password-reset/reset-request/reset-requ
 import { MiscComponentsModule } from '../_misc_components/misc-components.module';
 import { RegisterComponent } from './register/register.component';
 import { NgxSliderModule } from '@m0t0r/ngx-slider';
+import { TutorRegisterComponent } from './tutor-register/tutor-register.component';
+
+import { MatStepperModule } from '@angular/material/stepper';
 @NgModule({
   declarations: [
     TutorComponent,
@@ -31,15 +34,17 @@ import { NgxSliderModule } from '@m0t0r/ngx-slider';
     VerifyComponent,
     PasswordResetComponent,
     ResetRequestComponent,
+    TutorRegisterComponent,
   ],
   imports: [
     MiscComponentsModule,
     NgxSliderModule,
     FormsModule,
+    MatStepperModule,
     ReactiveFormsModule,
     CommonModule,
     AccountRoutingModule,
   ],
   providers: [DatabaseService, AuthenticationService],
 })
-export class AccountModule {}
+export class AccountModule { }

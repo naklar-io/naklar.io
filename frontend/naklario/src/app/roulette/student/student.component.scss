@@ -1,0 +1,17 @@
+:host {
+    display: grid;
+    place-items: center;
+}
+
+.content {
+    max-width: 80ch;
+}
+
+form {
+    display: grid;
+}
+
+.submit-button {
+    place-self: center;
+    margin: 1rem;
+}

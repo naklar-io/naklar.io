@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../_services';
 import { Router } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -27,7 +28,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.authenticationService.isLoggedIn$.subscribe((isLoggedIn) => {
+    this.authenticationService.isLoggedIn$.pipe(first()).subscribe((isLoggedIn) => {
       if (isLoggedIn) {
         this.router.navigate(['/dashboard']);
       }

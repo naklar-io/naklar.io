@@ -177,31 +177,6 @@
               </div>
             </div>
           </div>
-          <div class="col-md">
-            <div class="form-group form-label-group">
-              <input
-                type="password"
-                formControlName="passwordRepeat"
-                class="form-control"
-                placeholder="Passwort wiederholen"
-                [required]="register"
-              />
-              <label for="passwordRepeat">Passwort wiederholen</label>
-              <div class="invalid-feedback">
-                <div *ngIf="registerForm.errors?.passwordNotMatch">
-                  Die beiden Passwörter müssen überein stimmen.
-                </div>
-                <div *ngIf="f.passwordRepeat.errors?.required">
-                  Du musst ein Passwort angeben
-                </div>
-                <div *ngIf="f.passwordRepeat.errors?.minlength">
-                  Dein Passwort muss mindestens
-                  {{ f.passwordRepeat.errors.minlength.requiredLength }} Zeichen
-                  lang sein
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <div *ngIf="register" class="form-group form-row my-3">
           <div class="custom-control custom-checkbox">

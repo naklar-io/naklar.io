@@ -14,6 +14,7 @@ import { CloseModalDirective } from './closeModal.directive';
 import { AudioAutoplayComponent } from './audio-autoplay/audio-autoplay.component';
 import { SpinnerLoaderComponent } from './spinner-loader/spinner-loader.component';
 import { SocialIconsComponent } from './social-icons/social-icons.component';
+import { CapitalizePipe } from './capitalize.pipe';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { SocialIconsComponent } from './social-icons/social-icons.component';
     AudioAutoplayComponent,
     CloseModalDirective,
     SpinnerLoaderComponent,
-    SocialIconsComponent
+    SocialIconsComponent,
+    CapitalizePipe
   ],
   imports: [CommonModule, NgbModule],
   exports: [
@@ -34,6 +36,7 @@ import { SocialIconsComponent } from './social-icons/social-icons.component';
     ToastsComponent,
     UserCardComponent,
     SafePipe,
+    CapitalizePipe,
     StudentExplanationComponent,
     TutorExplanationComponent,
     AudioAutoplayComponent,
