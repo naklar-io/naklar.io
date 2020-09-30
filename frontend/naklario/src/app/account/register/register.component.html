@@ -8,25 +8,17 @@
     </div>
     <div class="row">
       <div class="col-6">
-        <a
-          routerLink="/account/student/register"
-          class="btn nabtn-primary btn-block"
-          >Schüler</a
-        >
+        <a routerLink="/account/student/register" class="btn nabtn-primary btn-block">Schüler</a>
       </div>
       <div class="col-6">
-        <a
-          routerLink="/account/tutor/register"
-          class="btn nabtn-primary btn-block"
-          >Tutor</a
-        >
+        <a routerLink="/account/tutor/register" class="btn nabtn-primary btn-block">Tutor</a>
       </div>
     </div>
   </div>
   <div *ngIf="type === 'student'">
     <div class="row justify-content-center">
       <div class="col-md-10">
-        <h1 class="primary-color">
+        <h1 class="text-primary">
           Unsere Tutoren sind bereit für deine Fragen! Eine kleine Sache noch...
         </h1>
         <p class="lead">
@@ -50,8 +42,5 @@
   </div>
 </div>
 
-<account-student-form
-  *ngIf="type === 'student'"
-  [register]="true"
-></account-student-form>
-<account-tutor-register></account-tutor-register>
+<account-student-form *ngIf="type === 'student'" [register]="true"></account-student-form>
+<account-tutor-register *ngIf="type === 'tutor'"></account-tutor-register>
