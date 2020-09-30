@@ -1,19 +1,46 @@
 .img-preview {
   background-position: center center;
-  background-color: #fff;
+  background-color: #999;
   background-size: cover;
   background-repeat: no-repeat;
 //  display: inline-block;
-  border-radius: 50%;
   max-height: 100px;
   // box-shadow: 0px -3px 6px 2px rgba(0, 0, 0, 0.2);
+  position: relative;
+  cursor: pointer;
 }
+
+.img-preview:hover {
+  filter: brightness(125%);
+}
+
+label.img {
+  background-color: white;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: darkgrey 3px solid;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+/*
+label.img span {
+  position: absolute; 
+  top: 100px;
+  right: 0;
+  bottom: 0;
+  left: 110px;
+  width: 100%;
+  height: 100%;
+  // cursor: pointer;
+}*/
+
 .file-input {
   width: 0px;
   height: 0px;
   overflow: hidden;
 }
 
-label.btn {
-  width: -webkit-fill-available;
-}

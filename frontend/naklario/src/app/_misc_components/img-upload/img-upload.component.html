@@ -1,23 +1,9 @@
-<div class="image-upload-container text-center align-items-center">
-  <div class="row justify-content-center">
-    <img
-      [src]="imgFile"
-      alt="user profile picture"
-      class="img-fluid img-preview"
-    />
-  </div>
-  <div class="row justify-content-center">
-    <label class="btn nabtn-primary align-bottom">
-      Bild auswählen
-      <input
-        #imageInput
-        class="file-input"
-        value="Bild Hochladen"
-        type="file"
-        accept="image/*"
-        (change)="processImg($event)"
-        required
-      />
-    </label>
-  </div>
+<div class="img-upload">
+  <label class="img">
+    <img [src]="imgFile" alt="user profile picture" class="img-preview" />
+    <input #imageInput class="file-input" value="Bild Hochladen" type="file" accept="image/*"
+      (change)="processImg($event)" required />
+  </label>
+
+
 </div>

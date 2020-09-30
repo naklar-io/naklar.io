@@ -19,7 +19,7 @@ export class ImgUploadComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.imgFile = 'assets/img/icons/user_default.png';
+    this.imgFile = 'assets/img/icons/baseline_person_add_alt_1_white_48dp.png';
     if (this.existingURL) {
       this.imgFile = this.existingURL;
     }
