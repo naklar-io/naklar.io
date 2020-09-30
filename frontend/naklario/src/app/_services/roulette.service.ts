@@ -86,7 +86,11 @@ export class RouletteService {
     const protocol = apiURL.protocol === 'https:' ? 'wss:' : 'ws:';
     // setting apiURL to be the right protocol
     apiURL.protocol = protocol;
-    const baseURL = apiURL.origin + apiURL.pathname;
+    let baseURL = apiURL.origin + apiURL.pathname;
+    // make sure that the baseURL ends with a /
+    if (!baseURL.endsWith('/')) {
+      baseURL += '/';
+    }
     const wsURL = `${baseURL}roulette/request/${requestType}/${requestID}?token=${this.auth.currentUserValue.token}`;
     console.log('ws-base-url', apiURL);
     this.socketSubject = webSocket<RouletteEvent>(wsURL);
