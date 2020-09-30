@@ -8,10 +8,11 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import exceptions, generics, mixins, permissions
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListCreateAPIView, get_object_or_404
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 
 from roulette.models import Feedback, Report
 from roulette.serializers import FeedbackSerializer, ReportSerializer
@@ -19,6 +20,8 @@ from roulette.serializers import FeedbackSerializer, ReportSerializer
 from .models import Match, Meeting, Request, StudentRequest, TutorRequest
 from .serializers import (MatchSerializer, MeetingSerializer,
                           StudentRequestSerializer, TutorRequestSerializer)
+from account.models import Subject
+from account.serializers import SubjectSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -302,3 +305,18 @@ def answer_request(request, id, type):
         raise exceptions.NotFound(detail={"invalid type"})
 
     return Response(MatchSerializer(instance=match).data)
+
+class OnlineThrottle(UserRateThrottle):
+    rate = '20/minute'
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+@throttle_classes([OnlineThrottle])
+def get_online_subjects(request):
+    if hasattr(request.user, 'studentdata'):
+        # Get all matching tutor requests, and their subjects.
+        # this is very simple right now, as we're only 'hard-matching' on the subjects
+        queryset = Subject.objects.filter(tutordata__user__tutorrequest__is_active=True).distinct()
+        return Response(SubjectSerializer(queryset, many=True).data)
+    else:
+        raise exceptions.NotAcceptable(detail={"studentdata": "User needs studentdata!"})
