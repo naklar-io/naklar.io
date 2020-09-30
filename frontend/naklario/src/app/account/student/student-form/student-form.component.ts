@@ -92,13 +92,11 @@ export class StudentFormComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         gender: ['', Validators.required],
         password: ['', [Validators.required, Validators.minLength(8)]],
-        passwordRepeat: ['', [Validators.required, Validators.minLength(8)]],
         state: [this.states[0].id, Validators.required],
         schoolType: [this.schoolTypes[0].id, Validators.required],
         slider: [10, Validators.required],
         terms: [false, Validators.requiredTrue],
       },
-      { validators: passwordNotMatchValidator }
     );
 
     console.log(this.register);
@@ -111,7 +109,6 @@ export class StudentFormComponent implements OnInit {
       this.f.slider.setValue(this.user.studentdata.schoolData.grade);
       this.f.terms.clearValidators();
       this.f.password.setValidators(Validators.minLength(8));
-      this.f.passwordRepeat.setValidators(Validators.minLength(8));
       // this.f.password.clearValidators()
       // this.f.passwordRepeat.clearValidators();
       this.refreshSliderOptions();
