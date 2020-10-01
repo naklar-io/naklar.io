@@ -32,6 +32,9 @@ $naklario-theme: mat-light-theme(
 @import "variables";
 @import "forms";
 
+:root {
+  --primary: $primary;
+}
 
 @import "material-icons";
 

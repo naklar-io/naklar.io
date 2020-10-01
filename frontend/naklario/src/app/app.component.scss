@@ -13,6 +13,7 @@
 
 #app > header {
   grid-area: header;
+  border-bottom: 4px solid var(--orange);
 }
 
 #app > main {
