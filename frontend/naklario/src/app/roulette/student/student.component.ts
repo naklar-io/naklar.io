@@ -13,10 +13,12 @@ import {
   ToastService,
   BannerService,
 } from 'src/app/_services';
-import { User, Constants, StudentRequest, Request } from 'src/app/_models';
+import { User, Constants, StudentRequest, Request, Subject } from 'src/app/_models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PauseModalComponent } from '../pause-modal/pause-modal.component';
+import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'roulette-student',
@@ -47,6 +49,13 @@ export class StudentComponent implements OnInit {
   shouldShowInstructionVideo = true;
   isInstructionVideoShowing = false;
 
+  onlineSubjects$: Observable<Subject[]>;
+
+  loadDate: Date;
+
+  selectedSubjectID: number = null;
+  offlineAlertClosed = false;
+
   get f() {
     return this.studentForm.controls;
   }
@@ -58,10 +67,12 @@ export class StudentComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private toast: ToastService,
-    private modalService: NgbModal
-  ) {}
+    private modalService: NgbModal,
+  ) { }
 
   ngOnInit(): void {
+    this.loadDate = new Date();
+    this.onlineSubjects$ = this.rouletteService.getOnlineSubjects();
     this.route.data.subscribe((data: { constants: Constants; user: User }) => {
       this.constants = data.constants;
       this.f.subject.setValue(this.constants.subjects[0].id);
@@ -102,6 +113,19 @@ export class StudentComponent implements OnInit {
     this.submitted = true;
 
     this.studentForm.markAllAsTouched();
+
+    if (this.studentForm.invalid) {
+      console.log('invalid');
+      return;
+    }
+  }
+
+  closeOfflineAlert(): void {
+    this.offlineAlertClosed = true;
+  }
+
+  startMatch(): void {
+    this.submitted = true;
     if (!this.user.emailVerified) {
       this.toast.error(
         'Deine E-Mail muss bestätigt sein um hierhin zu kommen!'
@@ -109,24 +133,18 @@ export class StudentComponent implements OnInit {
       this.router.navigate(['/account']);
       return;
     }
-    if (this.studentForm.invalid) {
-      console.log('invalid');
-      return;
-    }
+
 
     // Open pause modal
-    const modalRef = this.modalService.open(PauseModalComponent, {size: 'xl'});
+
+/*     const modalRef = this.modalService.open(PauseModalComponent, { size: 'xl' });
     modalRef.result.then(
       (result) => {
-        this.startMatch();
       },
       (reason) => {
         console.log('dismissed');
       }
-    );
-  }
-
-  startMatch(): void {
+    ); */
     if (this.shouldShowInstructionVideo) {
       this.isInstructionVideoShowing = true;
     } else {
@@ -142,13 +160,18 @@ export class StudentComponent implements OnInit {
     this.createMatchRequest();
   }
 
+  startWithSubject(subjectID: number): void {
+    this.selectedSubjectID = subjectID;
+    this.startMatch();
+  }
+
   createMatchRequest() {
     this.loading = true;
     console.log('creating Request');
     this.rouletteService
       .createRequest(
         'student',
-        new StudentRequest(this.f.subject.value),
+        new StudentRequest(this.selectedSubjectID),
         this.constants
       )
       .subscribe(
@@ -165,5 +188,14 @@ export class StudentComponent implements OnInit {
           this.error = error;
         }
       );
+  }
+
+  mapSubjectToName(subject: Subject): string {
+    return subject.name;
+  }
+
+  refreshOnline(): void {
+    this.onlineSubjects$ = this.rouletteService.getOnlineSubjects();
+    this.loadDate = new Date();
   }
 }

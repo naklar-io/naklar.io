@@ -17,7 +17,7 @@ import {
   JoinResponse,
   Report,
   RouletteEvent,
-  sendableToLocalMatch,
+  sendableToLocalMatch, Subject
 } from '../_models';
 import { environment } from '../../environments/environment';
 import {
@@ -95,7 +95,7 @@ export class RouletteService {
     console.log('ws-base-url', apiURL);
     this.socketSubject = webSocket<RouletteEvent>(wsURL);
     return this.socketSubject.asObservable().pipe(filter((event) => {
-      if (event.event === 'meetingReady' && !this.lastMatch){
+      if (event.event === 'meetingReady' && !this.lastMatch) {
         this.lastMeetingID = event.meetingID;
         return false;
       }
@@ -122,7 +122,7 @@ export class RouletteService {
   }
 
   public updatingMatch(
-      ): Observable<Match> {
+  ): Observable<Match> {
     if (!this.isUpdating) {
       this.isUpdating = true;
       // (obs as ConnectableObservable<MatchRequest>).connect();
@@ -237,5 +237,11 @@ export class RouletteService {
     return this.http
       .post<Report>(`${environment.apiUrl}/roulette/meeting/report/`, report)
       .pipe(tap((r) => console.log('posted report', r)));
+  }
+
+  public getOnlineSubjects(): Observable<Subject[]> {
+    return this.http.get<Subject[]>(`${environment.apiUrl}/roulette/online-subjects/`).pipe(tap((s) => {
+      console.log('got subjects', s);
+    }));
   }
 }

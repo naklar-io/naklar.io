@@ -7,11 +7,38 @@
     max-width: 80ch;
 }
 
-form {
-    display: grid;
-}
 
 .submit-button {
     place-self: center;
     margin: 1rem;
+}
+
+.subjects-overview {
+    display: grid;
+    place-items: center;
+}
+
+.online-subjects {
+ 
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-around;
+    justify-content: center;
+    max-width: 40ch;
+        // justify-items: ;
+    
+    button {
+        list-style: none;
+        margin: .25rem;
+        padding: .55rem;
+        border-radius: 1rem;
+        background-color: lightgrey;
+        display: block;
+        outline: none;
+        border: none;
+    }
+    
+    button.is-online {
+        background-color: var(--primary);
+    }
 }

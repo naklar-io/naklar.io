@@ -1,14 +1,31 @@
 <div class="content">
-  <h1 class="text-primary">Finde deinen Tutor</h1>
-  
+  <h2 class="text-primary">Finde deinen Tutor</h2>
+
   <ng-container [ngSwitch]="isInstructionVideoShowing">
     <ng-container *ngSwitchCase="false">
       <p>
-        Hey {{ user.firstName }}, gib uns noch ein paar Informationen von dir, damit
-        wir den perfekten Tutor für dich finden können:
+        Hey {{ user.firstName }},
+        wähle ein Fach. In grauen Fächern ist aktuell kein Tutor frei. Du kannst die Suche aber
+        starten und im Hintergrund warten.
       </p>
-  
-      <form [formGroup]="studentForm" (ngSubmit)="onFormSubmit()">
+      <div *ngIf='(onlineSubjects$ | async).map(mapSubjectToName) as onlineSubjects' class="subjects-overview">
+        <ngb-alert *ngIf='onlineSubjects.length === 0 && !offlineAlertClosed' [dismissible]='false' type='info' (close)='closeOfflineAlert()'>
+          
+            <div class="text-center">
+              Leider keine Tutoren verfügbar.
+              Nutze naklar.io am besten zwischen 15-17 Uhr.
+            </div>
+          
+        </ngb-alert>
+        <div class="online-subjects">
+          <button *ngFor='let subject of constants.subjects' (click)='startWithSubject(subject.id)'
+            [class.is-online]='onlineSubjects.includes(subject.name)'>
+            {{ subject.name }}</button>
+        </div>
+        <p class="text-muted pt-2">Stand: {{ loadDate | date:'HH:mm'}} Uhr</p>
+        <!-- <button class="btn nabtn-secondary my-2" (click)='refreshOnline()'>Stand: {{ loadDate | date:'HH:mm'}} Uhr<span class="material-icons">refresh</span></button> -->
+      </div>
+      <!--       <form [formGroup]="studentForm" (ngSubmit)="onFormSubmit()">
         <div class="form-group">
           <label for="subjects">Für welches Fach hast du eine Frage?</label>
           <select name="subjects" class="form-control custom-select" [formControl]="f.subject">
@@ -22,23 +39,17 @@
             </div>
           </div>
         </div>
-  
-        <button
-          type="submit"
-          class="btn nabtn-primary submit-button"
-          [disabled]="submitSuccess || loading"
-        >
+
+        <button type="submit" class="btn nabtn-primary submit-button" [disabled]="submitSuccess || loading">
           <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
           Suche starten
         </button>
-      </form>
+      </form> -->
     </ng-container>
-  
+
     <ng-container *ngSwitchCase="true">
-      <roulette-strudent-instruction-video
-        (prevClick)="onVideoPrev()"
-        (nextClick)="onVideoNext()"
-      ></roulette-strudent-instruction-video>
+      <roulette-strudent-instruction-video (prevClick)="onVideoPrev()" (nextClick)="onVideoNext()">
+      </roulette-strudent-instruction-video>
     </ng-container>
   </ng-container>
 </div>

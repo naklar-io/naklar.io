@@ -41,7 +41,7 @@ export class RouletteComponent implements OnInit, OnDestroy {
     private authenticationService: AuthenticationService,
     private bannerService: BannerService
   ) {
-    this.bannerService.showBanner();
+    // this.bannerService.showBanner();
   }
   ngOnInit(): void {
     if (this.router.url.includes('student')) {
@@ -177,6 +177,6 @@ export class RouletteComponent implements OnInit, OnDestroy {
   // cleanup
   ngOnDestroy(): void {
     this.rouletteService.deleteRequest(this.type);
-    this.bannerService.hideBanner();
+    // this.bannerService.hideBanner();
   }
 }

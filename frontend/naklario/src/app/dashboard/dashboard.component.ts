@@ -37,16 +37,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.user$ = authenticationService.currentUser;
     const hours = new Date().getUTCHours();
     if (hours < 8 || (hours > 10 && hours < 13) || hours >= 15) {
-      this.bannerService.showBanner();
+      // this.bannerService.showBanner();
     }
   }
   ngOnDestroy(): void {
-    this.bannerService.hideBanner();
+    // this.bannerService.hideBanner();
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   startTutorMatching(): void {
+    /*
     this.modalService.open(PauseModalComponent, {size: 'xl'}).result.then(
       (result) => {
         this.router.navigateByUrl('/roulette/tutor');
@@ -54,6 +55,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       (reason) => {
         console.log('dismissed');
       }
-    );
+    );*/
+    this.router.navigateByUrl('/roulette/tutor');
   }
 }
