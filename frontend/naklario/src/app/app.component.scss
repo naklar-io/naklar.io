@@ -4,20 +4,15 @@
 }
 
 #app {
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto 1fr;
-  grid-template-areas: 'header' 'main';
-  height: 100vh;
 }
 
 #app > header {
-  grid-area: header;
+  position: sticky;
+  -webkit-position: sticky;
+  top: 0;
   border-bottom: 4px solid var(--orange);
+  z-index: 999;
 }
 
 #app > main {
-  grid-area: main;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch
 }
