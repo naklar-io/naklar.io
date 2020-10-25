@@ -31,17 +31,17 @@ export class AppComponent implements OnInit, AfterViewInit, DoCheck {
     private notify: NotifyService,
     private promptUpdate: PromptUpdateService,
     private layoutService: AppLayoutService,
-    private renderer: Renderer2,
-    private scrollPosition: ScrollPositionService
+    private renderer: Renderer2
   ) {
     this.promptUpdate.checkForUpdates();
-
   }
+
   ngDoCheck(): void {
     if (this.fullscreen !== this.layoutService.isFullscreen){
       this.fullscreen = this.layoutService.isFullscreen;
     }
   }
+
   ngAfterViewInit(): void {
     this.layoutService.scrollable$.subscribe((scrollable) => {
       if (scrollable) {
@@ -54,10 +54,6 @@ export class AppComponent implements OnInit, AfterViewInit, DoCheck {
         this.renderer.addClass(this.app.nativeElement, 'noscroll');
       }
     });
-    this.main.nativeElement.addEventListener('scroll', (event) => {
-      this.scrollPosition.updateScroll(event);
-    });
-
   }
 
   ngOnInit(): void {
