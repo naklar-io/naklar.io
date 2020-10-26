@@ -4,12 +4,11 @@ WORKDIR /usr/src/app
 
 COPY ./naklario/package*.json ./
 
-RUN npm i
+RUN npm i && npm run ngcc-cache
 
 COPY ./naklario ./
 
 RUN npm run build:ssr
-
 
 
 FROM node:14.2.0-alpine
