@@ -39,9 +39,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-backend-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-backend-
         
       - name: Build image
         uses: docker/build-push-action@v2
@@ -51,12 +51,11 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
           context: backend/
           file: backend/Dockerfile 
-          load: true
       
       - name: Run tests
         run: |
-          docker buildx bake
           if [ -f docker-compose.test.yml ]; then
+            docker buildx bake -f docker-compose.test.yml
             docker-compose --file docker-compose.test.yml run sut
           fi
 
@@ -108,9 +107,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-backend-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-backend-
 
       - name: Build image
         uses: docker/build-push-action@v2
