@@ -2,13 +2,14 @@ name: Docker-Frontend
 
 on:
   push:
-    # Publish `develop` as Docker `latest` image.
+    # Publish `develop` as Docker `latest` image, and `master` as Docker `release` image.
     branches:
       - develop
+      - master
 
     # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
+    # tags:
+    #  - v*
 
   # Run tests for any PRs.
   pull_request:
@@ -59,7 +60,7 @@ jobs:
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
     steps:
       - name: Setup SSH connection
         run: |
@@ -138,6 +139,7 @@ jobs:
 
           # Use Docker `latest` tag convention
           [ "$VERSION" == "develop" ] && VERSION=latest
+          [ "$VERSION" == "master" ] && VERSION=release
 
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
