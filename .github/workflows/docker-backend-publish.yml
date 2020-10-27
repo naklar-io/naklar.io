@@ -55,11 +55,9 @@ jobs:
       
       - name: Run tests
         run: |
+          docker buildx bake
           if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
             docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
           fi
 
   deploy:
