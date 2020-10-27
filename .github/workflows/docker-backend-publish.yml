@@ -49,13 +49,14 @@ jobs:
           push: false
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+          load: true
+          tags: backend_sut
           context: backend/
           file: backend/Dockerfile 
       
       - name: Run tests
         run: |
           if [ -f docker-compose.test.yml ]; then
-            docker buildx bake --load --cache-from type=local,src=/tmp/.buildx-cache --cache-to type=local,src=/tmp/.buildx-cache -f docker-compose.test.yml
             docker-compose --file docker-compose.test.yml run sut
           fi
 
