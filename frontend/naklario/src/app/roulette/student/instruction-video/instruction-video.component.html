@@ -16,24 +16,24 @@
           (play)="onVideoPlaying()"
           (error)="onVideoError()"
         >
-          <source src="assets/video/Wartefilmchen_2.mp4" type="video/mp4" />
-          <source src="assets/video/Wartefilmchen_2.webm" type="video/webm" />
+          <source src="assets/video/Wartefilmchen_3.mp4?ngsw-bypass" type="video/mp4" />
+          <source src="assets/video/Wartefilmchen_3.webm?ngsw-bypass" type="video/webm" />
           Video-Tag nicht unterstützt. Klicke
           <a href="" (click)="onNext()">hier</a>, damit es weiter geht. Lade das
           Video
-          <a href="assets/video/Wartefilmchen_2.mp4" download="true">hier</a>
+          <a href="assets/video/Wartefilmchen_3.mp4?ngsw-bypass" download="true">hier</a>
           herunter, falls du es dir noch anschauen möchtest.
         </video>
       </div>
     </div>
     <div class="row my-2">
       <div class="col-12 d-flex justify-content-around">
-        <button type="button" class="btn btn-danger" (click)="onBack()">
+        <button type="button" class="btn nabtn-danger" (click)="onBack()">
           Zurück
         </button>
         <button
           type="button"
-          class="btn btn-primary text-center"
+          class="btn nabtn-primary text-center"
           [disabled]="skipDisabledTimer > 0"
           (click)="onNext()"
         >
