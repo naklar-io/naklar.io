@@ -13,18 +13,22 @@ from roulette.serializers import MatchSerializer
 
 channel_layer = get_channel_layer()
 
+
 def look_for_matches():
     """looks through all student requests and tries to find a matching tutor request
 
     Might need significant performance improvements in the future (look at caching)
     """
 
-    student_rs = StudentRequest.objects.prefetch_related('failed_matches', 'user__studentdata').filter(is_active=True).filter(
-        meeting__isnull=True).filter(match__isnull=True)
+    student_rs = StudentRequest.objects.prefetch_related('failed_matches', 'user__studentdata')
+
+    student_rs = student_rs.filter(is_active=True, meeting__isnull=True).filter(
+        Q(match__isnull=True) | (Q(match__isnull=False) & Q(match__failed=True)))
+    # either there needs to be no match, or, all matches need be failed
     for student_request in student_rs:
         student = student_request.user
-        tutor_rs = TutorRequest.objects.filter(is_active=True).filter(
-            meeting__isnull=True).filter(match__isnull=True)
+        tutor_rs = TutorRequest.objects.filter(is_active=True, meeting__isnull=True).filter(
+            Q(match__isnull=True) | Q(match__failed=True) & Q(match__successful=False))
 
         # filter subjects
         tutor_rs = tutor_rs.filter(
@@ -64,13 +68,14 @@ def generate_notifications():
         is_active=True,
         meeting__isnull=True,
         match__isnull=True,
-        created__lte=timezone.now()-timedelta(seconds=5)
+        created__lte=timezone.now() - timedelta(seconds=5)
     )
 
     # TODO: first step is to filter student requests that have no notifications sent yet?
     # next would be, filter only the ones that havent sent notifications in X seconds
     student_rs = student_rs.filter(Q(notifications__isnull=True) |
-                                   Q(notifications__date__lte=timezone.now() - timedelta(seconds=10))).prefetch_related('user', 'subject', 'notifications').distinct()
+                                   Q(notifications__date__lte=timezone.now() - timedelta(seconds=10))).prefetch_related(
+        'user', 'subject', 'notifications').distinct()
     # TODO: prioritize those with longer waiting times
     # student_rs = student_rs.order_by(
     # fetch possible tutors beforehand, reducing the query complexity each step
@@ -94,8 +99,9 @@ def generate_notifications():
                          notificationsettings__ranges__end_time__gte=timezone.now().time())
 
     # now to find those whose time is in range
-    all_tutors = all_tutors.filter((Q(notificationsettings__ranges_mode=NotificationSettings.RANGE_ALLOW) & time_range_query) | Q(
-        Q(notificationsettings__ranges_mode=NotificationSettings.RANGE_BLOCK) & ~time_range_query)).distinct()
+    all_tutors = all_tutors.filter(
+        (Q(notificationsettings__ranges_mode=NotificationSettings.RANGE_ALLOW) & time_range_query) | Q(
+            Q(notificationsettings__ranges_mode=NotificationSettings.RANGE_BLOCK) & ~time_range_query)).distinct()
 
     # don't do anything if there arent any student requests
     if not student_rs:

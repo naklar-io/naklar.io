@@ -6,7 +6,12 @@ from roulette.models import Feedback, Report
 
 from .models import Match, Meeting, StudentRequest, TutorRequest
 
-admin.site.register(Match)
+
+@admin.register(Match)
+class MatchAdmin(admin.ModelAdmin):
+    model = Match
+    list_display = ('id', 'created_time', 'successful', 'fail_reason')
+    list_filter = ('failed', 'successful', 'fail_reason')
 
 
 @admin.register(Feedback)
@@ -101,3 +106,4 @@ class ReportAdmin(admin.ModelAdmin):
     raw_id_fields = ['provider', 'receiver', 'meeting']
     date_hierarchy = ('created')
     ordering = ['-created']
+

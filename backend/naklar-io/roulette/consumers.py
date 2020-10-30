@@ -1,4 +1,5 @@
 import json
+from typing import Optional
 
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
@@ -18,7 +19,7 @@ class RouletteConsumer(WebsocketConsumer):
         user = self.scope["user"]
         request_id: str = self.scope["url_route"]["kwargs"]["request_id"]
         request_type: str = self.scope["url_route"]["kwargs"]["type"]
-        request_query: QuerySet = None
+        request_query: Optional[QuerySet] = None
         if request_type == "tutor":
             request_query = TutorRequest.objects.filter(
                 id=request_id, user=user, is_active=True)
@@ -70,7 +71,8 @@ class RouletteConsumer(WebsocketConsumer):
 
     def roulette_match_delete(self, event):
         self.send(json.dumps({
-            "event": "matchDelete"
+            "event": "matchDelete",
+            "reason": event["reason"]
         }))
 
     def roulette_meeting_ready(self, event):

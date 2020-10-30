@@ -14,7 +14,7 @@ from rest_framework.generics import ListCreateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 
-from roulette.models import Feedback, Report
+from roulette.models import Feedback, Report, MatchRejectReasons
 from roulette.serializers import FeedbackSerializer, ReportSerializer
 
 from .models import Match, Meeting, Request, StudentRequest, TutorRequest
@@ -203,8 +203,7 @@ def match_answer(request, uuid, type):
         # user is student
         match.student_agree = agree
         if not agree:
-            match.delete()
-
+            match.deactivate(MatchRejectReasons.STUDENT_REJECT)
         else:
             match.save()
         return Response({'success': True})
@@ -212,7 +211,7 @@ def match_answer(request, uuid, type):
         # user is tutor
         match.tutor_agree = agree
         if not agree:
-            match.delete()
+            match.deactivate(MatchRejectReasons.TUTOR_REJECT)
         else:
             match.save()
         return Response({'success': True})
