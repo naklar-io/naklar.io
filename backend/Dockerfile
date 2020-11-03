@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.9
 ENV PYTHONUNBUFFERED 1
 RUN useradd -ms /bin/bash --home-dir /code naklario
 
@@ -15,10 +15,10 @@ RUN chown -R naklario /opt /code
 
 USER naklario
 
-RUN pipenv install --deploy --ignore-pipfile
+RUN pipenv install --deploy --ignore-pipfile --system
 
 WORKDIR /code/naklar-io
 
 
 
-RUN pipenv run python manage.py collectstatic --noinput
+RUN ./manage.py collectstatic --noinput

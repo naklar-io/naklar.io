@@ -3,11 +3,14 @@ version: "3.8"
 services:
   sut:
     build: .
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; pipenv run python manage.py test'
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./manage.py test'
     depends_on:
       - db
+      - redis
   db:
      image: postgres
      environment:
        POSTGRES_USER: docker
        POSTGRES_PASSWORD: docker
+  redis:
+    image: redis:6
