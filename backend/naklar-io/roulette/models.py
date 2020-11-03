@@ -259,7 +259,6 @@ def on_match_change(sender, instance: Match, **kwargs):
 @receiver(post_save, sender=Match)
 def on_match_saved(sender, instance, **kwargs):
     group_send = async_to_sync(channel_layer.group_send)
-    print("got updated match", instance.__dict__)
     if not instance.failed:
         msg = {
             "type": "roulette.match_update",
@@ -290,7 +289,6 @@ def on_match_delete(sender, instance: Match, **kwargs):
         if instance.student_request and not instance.student_request.is_manual_deleted:
             instance.student_request.failed_matches.add(instance.tutor)
             instance.student_request.save()
-    print("match delete!", channel_layer)
     group_send = async_to_sync(channel_layer.group_send)
     msg = {
         "type": "roulette.match_delete",
