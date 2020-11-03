@@ -1,7 +1,4 @@
-import datetime
 import hashlib
-import json
-import random
 import time
 import uuid
 import xml.etree.ElementTree as ET
@@ -15,9 +12,8 @@ from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q
-from django.db.models.signals import (post_delete, post_save, pre_delete,
-                                      pre_save)
+from django.db.models import UniqueConstraint, Q
+from django.db.models.signals import (post_delete, post_save, pre_save)
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -25,6 +21,28 @@ from django.utils.translation import gettext_lazy as _
 from account.models import CustomUser, StudentData, Subject, TutorData
 
 channel_layer = get_channel_layer()
+
+
+class MatchRejectReasons:
+    # keep track of why matches fail
+    TUTOR_REJECT = 'TR'
+    TUTOR_TIMEOUT = 'TT'
+    TUTOR_DISCONNECT = 'TD'
+    STUDENT_REJECT = 'SR'
+    STUDENT_TIMEOUT = 'ST'
+    STUDENT_DISCONNECT = 'SD'
+    BOTH_TIMEOUT = 'BT'
+    OTHER_REASON = 'OR'
+    FAIL_REASONS = [
+        (TUTOR_REJECT, 'Tutor reject'),
+        (TUTOR_TIMEOUT, 'Tutor timeout'),
+        (TUTOR_DISCONNECT, 'Tutor disconnect'),
+        (STUDENT_REJECT, 'Student reject'),
+        (STUDENT_TIMEOUT, 'Student timeout'),
+        (STUDENT_DISCONNECT, 'Student disconnect'),
+        (BOTH_TIMEOUT, 'Both timed out'),
+        (OTHER_REASON, 'Other reason')
+    ]
 
 
 class Report(models.Model):
@@ -99,6 +117,7 @@ class Request(models.Model):
         if self.meeting:
             return self.meeting.duration >= timedelta(minutes=5)
         return False
+
     _successful.boolean = True
     successful = property(_successful)
 
@@ -114,15 +133,26 @@ class Request(models.Model):
         self.save()
         self.delete()
 
-    def deactivate(self):
+    def deactivate(self, connection_lost=False):
         if self.is_active:
             self.is_active = False
             self.deactivated = timezone.now()
             if isinstance(self, TutorRequest):
-                Match.objects.filter(tutor_request__id=self.id).delete()
+                Match.objects.filter(tutor_request__id=self.id).deactivate(
+                    MatchRejectReasons.TUTOR_DISCONNECT if connection_lost else MatchRejectReasons.TUTOR_REJECT
+                )
             if isinstance(self, StudentRequest):
-                Match.objects.filter(student_request__id=self.id).delete()
+                Match.objects.filter(student_request__id=self.id).deactivate(
+                    MatchRejectReasons.STUDENT_DISCONNECT if connection_lost else MatchRejectReasons.STUDENT_REJECT
+                )
             self.save()
+
+    def get_match(self):
+        match = self.match_set.filter(failed=False, successful=False)
+        if match:
+            return match.get()
+        else:
+            return None
 
     class Meta:
         abstract = True
@@ -138,6 +168,22 @@ class TutorRequest(Request):
     pass
 
 
+class MatchQuerySet(models.QuerySet):
+    def deactivate(self, reason: str):
+        self.active().update(failed=True, fail_reason=reason)
+
+    def active(self):
+        return self.filter(failed=False, successful=False)
+
+
+class MatchManager(models.Manager):
+    def get_queryset(self):
+        return MatchQuerySet(self.model, using=self._db)
+
+    def active(self):
+        return self.get_queryset().active()
+
+
 class Match(models.Model):
     """Represents a Match between two requests StudentRequest, TutorRequest, or Student and Tutor
 
@@ -146,15 +192,14 @@ class Match(models.Model):
     If the match is not successfull, the corresponding user is added to both failed_matches lists
     We keep track of the created_time and the changed_time to be able to set upper reaction time-limits on matches
     """
-
-    student_request = models.OneToOneField(
+    student_request = models.ForeignKey(
         StudentRequest, on_delete=models.CASCADE, null=True)
-    tutor_request = models.OneToOneField(
+    tutor_request = models.ForeignKey(
         TutorRequest, on_delete=models.CASCADE, null=True)
 
-    student = models.OneToOneField(
+    student = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="student_match")
-    tutor = models.OneToOneField(
+    tutor = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="tutor_match")
 
     student_agree = models.BooleanField(default=False)
@@ -165,10 +210,29 @@ class Match(models.Model):
 
     uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
+    successful = models.BooleanField(default=False)
+    failed = models.BooleanField(default=False)
+    fail_reason = models.CharField(choices=MatchRejectReasons.FAIL_REASONS, max_length=2,
+                                   default=MatchRejectReasons.OTHER_REASON)
+
+    def deactivate(self, reason):
+        self.failed = True
+        self.fail_reason = reason
+        self.save()
+
+    objects = MatchManager()
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(fields=['student_request', 'tutor_request'], condition=Q(failed=False, successful=False),
+                             name='unique_active_match_per_request')]
+
 
 @receiver(pre_save, sender=Match)
 def on_match_change(sender, instance: Match, **kwargs):
     if instance.student_agree and instance.tutor_agree and not hasattr(instance, 'meeting'):
+        # set successful to true
+        instance.successful = True
         meeting = Meeting.objects.create(
             match=instance, name="naklar.io - Meeting")
         meeting.users.add(instance.student,
@@ -179,9 +243,8 @@ def on_match_change(sender, instance: Match, **kwargs):
         # Add meeting to corresponding requests
         instance.tutor_request.meeting = meeting
         instance.student_request.meeting = meeting
-        instance.tutor_request.save(update_fields=('meeting', ))
-        instance.student_request.save(update_fields=('meeting', ))
-
+        instance.tutor_request.save(update_fields=('meeting',))
+        instance.student_request.save(update_fields=('meeting',))
         meeting.save()
         meeting.create_meeting()
         group_send = async_to_sync(channel_layer.group_send)
@@ -196,15 +259,24 @@ def on_match_change(sender, instance: Match, **kwargs):
 @receiver(post_save, sender=Match)
 def on_match_saved(sender, instance, **kwargs):
     group_send = async_to_sync(channel_layer.group_send)
-    msg = {
-        "type": "roulette.match_update",
-        "match": instance.id
-    }
-    group_send(f"request_tutor_{instance.tutor_request.id}", msg)
-    group_send(f"request_student_{instance.student_request.id}", msg)
+    if not instance.failed:
+        msg = {
+            "type": "roulette.match_update",
+            "match": instance.id
+        }
+        group_send(f"request_tutor_{instance.tutor_request.id}", msg)
+        group_send(f"request_student_{instance.student_request.id}", msg)
+    elif not instance.successful:
+        msg = {
+            "type": "roulette.match_delete",
+            "match": instance.id,
+            "reason": instance.fail_reason
+        }
+        group_send(f"request_tutor_{instance.tutor_request.id}", msg)
+        group_send(f"request_student_{instance.student_request.id}", msg)
 
 
-@receiver(post_delete, sender=Match)
+# @receiver(post_delete, sender=Match)
 def on_match_delete(sender, instance: Match, **kwargs):
     if instance.student_agree and instance.tutor_agree:
         # TODO: do nothing? request feedback?
@@ -217,7 +289,6 @@ def on_match_delete(sender, instance: Match, **kwargs):
         if instance.student_request and not instance.student_request.is_manual_deleted:
             instance.student_request.failed_matches.add(instance.tutor)
             instance.student_request.save()
-    print("match delete!", channel_layer)
     group_send = async_to_sync(channel_layer.group_send)
     msg = {
         "type": "roulette.match_delete",
@@ -240,7 +311,8 @@ class Meeting(models.Model):
     tutor = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='tutor_meetings', to_field='uuid')
     student = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='student_meetings', to_field='uuid')
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='student_meetings',
+        to_field='uuid')
 
     name = models.CharField(_("Meeting-Name"), max_length=254)
 
@@ -285,7 +357,8 @@ class Meeting(models.Model):
             self.save()
             parameters = {'name': 'naklar.io',
                           'meetingID': str(self.meeting_id),
-                          'meta_endCallbackUrl': settings.API_HOST + "/roulette/meeting/end/"+str(self.meeting_id)+"/",
+                          'meta_endCallbackUrl': settings.API_HOST + "/roulette/meeting/end/" + str(
+                              self.meeting_id) + "/",
                           'logoutURL': settings.HOST,
                           'welcome': 'Herzlich willkommen bei naklar.io!'}
             r = requests.get(self.build_api_request("create", parameters))
@@ -296,26 +369,12 @@ class Meeting(models.Model):
                 self.established = True
                 self.is_establishing = False
                 self.time_established = timezone.now()
-    #        self._add_webhook()
+            #        self._add_webhook()
             self.save()
         else:
             while self.is_establishing:
                 time.sleep(0.05)
                 self.refresh_from_db(fields=['is_establishing'])
-
-    def _add_webhook(self):
-        # TODO: Add ability to receive data from this webhook
-        call = 'hooks/create'
-        parameters = {
-            'callbackURL': settings.HOST + '/roulette/webhook_callback',
-            'meetingID': str(self.meeting_id),
-        }
-        add_checksum(call, parameters)
-        full_link = settings.BBB_URL + '/bigbluebutton/api/' + \
-            call + '?' + urlencode(parameters)
-        print(full_link)
-        r = requests.get(full_link)
-        print(r.content)
 
     def end_meeting(self, close_session=True):
         if self.ended:
@@ -329,8 +388,8 @@ class Meeting(models.Model):
             try:
                 match = self.match
                 tutor_request = match.tutor_request
-                match.student_request.manual_delete()
-                tutor_request.manual_delete()
+                match.student_request.deactivate()
+                tutor_request.deactivate()
             except:
                 # couldn't delete student_request. Most likely callback from bbb was already received.
                 print('ignoring request deletion failure.')
@@ -349,11 +408,3 @@ class Meeting(models.Model):
                           }
             return self.build_api_request("join", parameters)
         return None
-
-    def get_meeting_info(self):
-        # TODO: Make this API call return an object that makes sense
-        call = "getMeetingInfo"
-        parameters = {
-            'meetingID': str(self.meeting_id)
-        }
-        return requests.get(build_api_request("join", parameters)).content

@@ -4,7 +4,7 @@ services:
   web:
     build: .
     #command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; pipenv run python manage.py runserver 0.0.0.0:8000'
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./manage.py runserver 0.0.0.0:8000'
     working_dir: /code/naklar-io
     #ports:
     #  - 127.0.0.1:8000:8000
@@ -21,6 +21,7 @@ services:
     restart: always
     depends_on:
       - db
+      - redis
 
   #smtpd:
   #  image: python:3.7
@@ -29,7 +30,7 @@ services:
   celery_worker:
     build: .
     working_dir: /code/naklar-io
-    command: pipenv run celery -A naklario worker -l info
+    command: python -m celery -A naklario worker -l info
     volumes:
       - type: bind
         source: ./naklar-io
@@ -41,7 +42,7 @@ services:
   celery_beat:
     build: .
     working_dir: /code/naklar-io
-    command: pipenv run celery -A naklario beat -S django -l info
+    command: python -m celery -A naklario beat -l info -S django
     volumes:
       - type: bind
         source: ./naklar-io

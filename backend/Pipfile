@@ -7,10 +7,10 @@ verify_ssl = true
 autopep8 = "*"
 
 [packages]
-django = "~=3.0.1"
+django = "~=3.1.0"
 channels = "*"
-django-celery-beat = "*"
-celery = "*"
+django-celery-beat = "~=2.1.0"
+celery = "~=5.0"
 daphne = "*"
 djangorestframework = "*"
 django-filter = "*"
@@ -24,10 +24,9 @@ django-push-notifications = "*"
 django-post-office = "*"
 requests = "*"
 drf-yasg = "*"
-mysqlclient = "*"
 psycopg2 = "*"
 pillow = "*"
 channels-redis = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
