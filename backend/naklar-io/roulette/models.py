@@ -27,15 +27,19 @@ class MatchRejectReasons:
     # keep track of why matches fail
     TUTOR_REJECT = 'TR'
     TUTOR_TIMEOUT = 'TT'
+    TUTOR_DISCONNECT = 'TD'
     STUDENT_REJECT = 'SR'
     STUDENT_TIMEOUT = 'ST'
+    STUDENT_DISCONNECT = 'SD'
     BOTH_TIMEOUT = 'BT'
     OTHER_REASON = 'OR'
     FAIL_REASONS = [
         (TUTOR_REJECT, 'Tutor reject'),
         (TUTOR_TIMEOUT, 'Tutor timeout'),
+        (TUTOR_DISCONNECT, 'Tutor disconnect'),
         (STUDENT_REJECT, 'Student reject'),
         (STUDENT_TIMEOUT, 'Student timeout'),
+        (STUDENT_DISCONNECT, 'Student disconnect'),
         (BOTH_TIMEOUT, 'Both timed out'),
         (OTHER_REASON, 'Other reason')
     ]
@@ -129,14 +133,18 @@ class Request(models.Model):
         self.save()
         self.delete()
 
-    def deactivate(self):
+    def deactivate(self, connection_lost=False):
         if self.is_active:
             self.is_active = False
             self.deactivated = timezone.now()
             if isinstance(self, TutorRequest):
-                Match.objects.filter(tutor_request__id=self.id).deactivate(MatchRejectReasons.TUTOR_REJECT)
+                Match.objects.filter(tutor_request__id=self.id).deactivate(
+                    MatchRejectReasons.TUTOR_DISCONNECT if connection_lost else MatchRejectReasons.TUTOR_REJECT
+                )
             if isinstance(self, StudentRequest):
-                Match.objects.filter(student_request__id=self.id).deactivate(MatchRejectReasons.STUDENT_REJECT)
+                Match.objects.filter(student_request__id=self.id).deactivate(
+                    MatchRejectReasons.STUDENT_DISCONNECT if connection_lost else MatchRejectReasons.STUDENT_REJECT
+                )
             self.save()
 
     def get_match(self):
@@ -204,7 +212,8 @@ class Match(models.Model):
 
     successful = models.BooleanField(default=False)
     failed = models.BooleanField(default=False)
-    fail_reason = models.CharField(choices=MatchRejectReasons.FAIL_REASONS, max_length=2, default=MatchRejectReasons.OTHER_REASON)
+    fail_reason = models.CharField(choices=MatchRejectReasons.FAIL_REASONS, max_length=2,
+                                   default=MatchRejectReasons.OTHER_REASON)
 
     def deactivate(self, reason):
         self.failed = True
@@ -214,8 +223,9 @@ class Match(models.Model):
     objects = MatchManager()
 
     class Meta:
-        constraints = [UniqueConstraint(fields=['student_request', 'tutor_request'], condition=Q(failed=False, successful=False),
-                                        name='unique_active_match_per_request')]
+        constraints = [
+            UniqueConstraint(fields=['student_request', 'tutor_request'], condition=Q(failed=False, successful=False),
+                             name='unique_active_match_per_request')]
 
 
 @receiver(pre_save, sender=Match)

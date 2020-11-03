@@ -14,9 +14,9 @@ class Command(BaseCommand):
             connected_count=0,
             last_poll__lte=timezone.now()-timedelta(seconds=20)).filter(is_active=True)
         for i in r:
-            i.deactivate()
+            i.deactivate(connection_lost=True)
         r = TutorRequest.objects.filter(
             connected_count=0,
             last_poll__lte=timezone.now()-timedelta(seconds=60)).filter(is_active=True)
         for i in r:
-            i.deactivate()
+            i.deactivate(connection_lost=True)
