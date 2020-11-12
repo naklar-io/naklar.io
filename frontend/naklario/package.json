@@ -35,6 +35,7 @@
     "@ngx-loading-bar/core": "^4.2.0",
     "@ngx-loading-bar/http-client": "^4.2.0",
     "@ngx-loading-bar/router": "^4.2.0",
+    "angulartics2": "^10.0.0",
     "bootstrap": "^4.5.2",
     "bootswatch": "^4.5.2",
     "express": "^4.17.1",

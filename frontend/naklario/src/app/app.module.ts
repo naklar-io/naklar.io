@@ -65,6 +65,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PressComponent } from './home/misc/press/press.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SpinnerLoaderComponent } from './_misc_components/spinner-loader/spinner-loader.component';
+import { Angulartics2Module } from 'angulartics2';
 
 @NgModule({
   declarations: [
@@ -103,6 +104,7 @@ import { SpinnerLoaderComponent } from './_misc_components/spinner-loader/spinne
     BrowserTransferStateModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    Angulartics2Module.forRoot(),
     // Loading bar
     LoadingBarHttpClientModule,
     LoadingBarRouterModule,

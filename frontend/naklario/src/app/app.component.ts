@@ -7,12 +7,14 @@ import {
   AfterViewInit,
   DoCheck, HostListener
 } from '@angular/core';
+import { Angulartics2GoogleTagManager } from 'angulartics2/gtm';
 import {
   NotifyService,
   PromptUpdateService,
   AppLayoutService,
 } from './_services';
 import { ScrollPositionService } from './_services/scroll-position.service';
+import { TrackingConsentService } from './_services/tracking-consent.service';
 
 @Component({
   selector: 'app-root',
@@ -31,9 +33,16 @@ export class AppComponent implements OnInit, AfterViewInit, DoCheck {
     private notify: NotifyService,
     private promptUpdate: PromptUpdateService,
     private layoutService: AppLayoutService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private angulartics2GoogleTagManager: Angulartics2GoogleTagManager,
+    public trackingConsent: TrackingConsentService,
   ) {
     this.promptUpdate.checkForUpdates();
+    trackingConsent.allowTracking$.subscribe((allow) => {
+      if (allow) {
+        this.angulartics2GoogleTagManager.startTracking();
+      }
+    });
   }
 
   ngDoCheck(): void {
