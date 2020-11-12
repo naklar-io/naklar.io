@@ -44,7 +44,8 @@ import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
     AudioAutoplayComponent,
     CloseModalDirective,
     SpinnerLoaderComponent,
-    SocialIconsComponent
+    SocialIconsComponent,
+    CookieBannerComponent
   ],
 })
 export class MiscComponentsModule {}
