@@ -38,8 +38,8 @@ export class AppComponent implements OnInit, AfterViewInit, DoCheck {
     public trackingConsent: TrackingConsentService,
   ) {
     this.promptUpdate.checkForUpdates();
-    trackingConsent.allowTracking$.subscribe((allow) => {
-      if (allow) {
+    trackingConsent.trackingSettings$.subscribe((settings) => {
+      if (settings.googleAnalytics) {
         this.angulartics2GoogleTagManager.startTracking();
       }
     });
