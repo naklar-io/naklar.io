@@ -21,8 +21,13 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoggedInGuard } from './_helpers';
 import { PrivacyComponent } from './home/misc/privacy/privacy.component';
 import { PressComponent } from './home/misc/press/press.component';
+import { CookieBannerComponent } from './_misc_components/cookie-banner/cookie-banner.component';
 
 const routes: Routes = [
+  {
+    path: 'test',
+    component: CookieBannerComponent
+  },
   {
     path: '',
     children: [
