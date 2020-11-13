@@ -53,6 +53,11 @@ const partnerLogos: PartnerLogo[] = [
     href: 'https://wirfuerschule.de/',
     src: 'assets/img/partners/09 wfs_logo.png',
     alt: '#wirfürschule Hackathon'
+  },
+  {
+    href: 'https://www.accenture.com/de-de',
+    src: 'assets/img/partners/10 accenture.png',
+    alt: 'Accenture'
   }
 ];
 
