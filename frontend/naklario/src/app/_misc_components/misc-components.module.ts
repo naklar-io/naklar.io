@@ -15,6 +15,7 @@ import { AudioAutoplayComponent } from './audio-autoplay/audio-autoplay.componen
 import { SpinnerLoaderComponent } from './spinner-loader/spinner-loader.component';
 import { SocialIconsComponent } from './social-icons/social-icons.component';
 import { CapitalizePipe } from './capitalize.pipe';
+import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { CapitalizePipe } from './capitalize.pipe';
     CloseModalDirective,
     SpinnerLoaderComponent,
     SocialIconsComponent,
-    CapitalizePipe
+    CapitalizePipe,
+    CookieBannerComponent
   ],
   imports: [CommonModule, NgbModule],
   exports: [
@@ -42,7 +44,8 @@ import { CapitalizePipe } from './capitalize.pipe';
     AudioAutoplayComponent,
     CloseModalDirective,
     SpinnerLoaderComponent,
-    SocialIconsComponent
+    SocialIconsComponent,
+    CookieBannerComponent
   ],
 })
 export class MiscComponentsModule {}
