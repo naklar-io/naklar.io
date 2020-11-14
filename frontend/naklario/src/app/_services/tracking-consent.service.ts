@@ -1,4 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -21,11 +22,14 @@ export class TrackingConsentService {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId,
+    private http: HttpClient
   ) {
     if (environment.features.analytics) {
       if (isPlatformBrowser(platformId)) {
         const settingsValue = JSON.parse(localStorage.getItem(this.TRACKING_KEY));
-        this.trackingSettings.next(settingsValue);
+        if (settingsValue != null) {
+          this.trackingSettings.next(settingsValue);
+        }
         this.trackingSettings$.subscribe((allowValue) => {
           localStorage.setItem(this.TRACKING_KEY, JSON.stringify(allowValue));
         });
@@ -50,6 +54,7 @@ export class TrackingConsentService {
   }
 
   public disableTracking(): void {
+    this.http.post(`${environment.apiUrl}/account/count-tracking-deny/`, {}).subscribe();
     this.trackingAsked.next(true);
     const shouldReload = this.trackingSettings.value.googleAnalytics;
     this.trackingSettings.next({ googleAnalytics: false });
