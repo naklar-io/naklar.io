@@ -1,4 +1,4 @@
-<div *ngIf="isVisible | async" class="card">
+<div *ngIf="featureEnabled && isVisible | async" class="card">
   <div>
     <h4>Schutz deiner Daten <fa-icon icon="lock" class="text-primary"></fa-icon></h4>
     <p>

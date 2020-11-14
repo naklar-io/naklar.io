@@ -8,6 +8,7 @@ import {
   DoCheck, HostListener
 } from '@angular/core';
 import { Angulartics2GoogleTagManager } from 'angulartics2/gtm';
+import { environment } from 'src/environments/environment';
 import {
   NotifyService,
   PromptUpdateService,
@@ -38,15 +39,17 @@ export class AppComponent implements OnInit, AfterViewInit, DoCheck {
     public trackingConsent: TrackingConsentService,
   ) {
     this.promptUpdate.checkForUpdates();
-    trackingConsent.trackingSettings$.subscribe((settings) => {
-      if (settings.googleAnalytics) {
-        this.angulartics2GoogleTagManager.startTracking();
-      }
-    });
+    if (environment.features.analytics) {
+      trackingConsent.trackingSettings$.subscribe((settings) => {
+        if (settings.googleAnalytics) {
+          this.angulartics2GoogleTagManager.startTracking();
+        }
+      });
+    }
   }
 
   ngDoCheck(): void {
-    if (this.fullscreen !== this.layoutService.isFullscreen){
+    if (this.fullscreen !== this.layoutService.isFullscreen) {
       this.fullscreen = this.layoutService.isFullscreen;
     }
   }

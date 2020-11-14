@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { TrackingConsentSettings } from '../_models';
 
 @Injectable({
@@ -21,17 +22,25 @@ export class TrackingConsentService {
   constructor(
     @Inject(PLATFORM_ID) private platformId,
   ) {
-    if (isPlatformBrowser(platformId)) {
-      const settingsValue = JSON.parse(localStorage.getItem(this.TRACKING_KEY));
-      this.trackingSettings.next(settingsValue);
-      this.trackingSettings$.subscribe((allowValue) => {
-        localStorage.setItem(this.TRACKING_KEY, JSON.stringify(allowValue));
-      });
-      const wasAsked = JSON.parse(localStorage.getItem(this.TRACKING_ASKED_KEY));
-      this.trackingAsked.next(wasAsked);
-      this.trackingAsked$.subscribe((wasAskedValue) => {
-        localStorage.setItem(this.TRACKING_ASKED_KEY, JSON.stringify(wasAskedValue));
-      });
+    if (environment.features.analytics) {
+      if (isPlatformBrowser(platformId)) {
+        const settingsValue = JSON.parse(localStorage.getItem(this.TRACKING_KEY));
+        this.trackingSettings.next(settingsValue);
+        this.trackingSettings$.subscribe((allowValue) => {
+          localStorage.setItem(this.TRACKING_KEY, JSON.stringify(allowValue));
+        });
+        const wasAsked = JSON.parse(localStorage.getItem(this.TRACKING_ASKED_KEY));
+        this.trackingAsked.next(wasAsked);
+        this.trackingAsked$.subscribe((wasAskedValue) => {
+          localStorage.setItem(this.TRACKING_ASKED_KEY, JSON.stringify(wasAskedValue));
+        });
+      }
+    } else {
+      // make sure analytics aren't being sent, by setting localstorage
+      localStorage.setItem(this.TRACKING_KEY, JSON.stringify({
+        googleAnalytics: false
+      }));
+      localStorage.setItem(this.TRACKING_ASKED_KEY, 'false');
     }
   }
 
@@ -43,7 +52,7 @@ export class TrackingConsentService {
   public disableTracking(): void {
     this.trackingAsked.next(true);
     const shouldReload = this.trackingSettings.value.googleAnalytics;
-    this.trackingSettings.next({googleAnalytics: false});
+    this.trackingSettings.next({ googleAnalytics: false });
     if (shouldReload) {
       try {
         window.location.reload();
