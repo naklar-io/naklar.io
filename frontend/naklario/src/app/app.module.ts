@@ -66,6 +66,8 @@ import { PressComponent } from './home/misc/press/press.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SpinnerLoaderComponent } from './_misc_components/spinner-loader/spinner-loader.component';
 import { Angulartics2Module } from 'angulartics2';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 
 @NgModule({
   declarations: [
@@ -124,6 +126,7 @@ import { Angulartics2Module } from 'angulartics2';
     ServiceWorkerModule.register('custom-service-worker.js', {
       enabled: environment.production,
     }),
+    FontAwesomeModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
@@ -137,4 +140,8 @@ import { Angulartics2Module } from 'angulartics2';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(library: FaIconLibrary) {
+    library.addIcons(faLock);
+  }
+}
