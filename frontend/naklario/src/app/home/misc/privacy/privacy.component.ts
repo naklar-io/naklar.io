@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TrackingConsentService } from 'src/app/_services/tracking-consent.service';
 
 @Component({
   selector: 'app-privacy',
@@ -7,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PrivacyComponent implements OnInit {
 
-  constructor() { }
+
+  constructor(public trackingConsent: TrackingConsentService) {
+
+  }
 
   ngOnInit(): void {
   }

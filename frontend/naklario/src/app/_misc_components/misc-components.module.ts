@@ -16,6 +16,7 @@ import { SpinnerLoaderComponent } from './spinner-loader/spinner-loader.componen
 import { SocialIconsComponent } from './social-icons/social-icons.component';
 import { CapitalizePipe } from './capitalize.pipe';
 import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
     CapitalizePipe,
     CookieBannerComponent
   ],
-  imports: [CommonModule, NgbModule],
+  imports: [CommonModule, NgbModule, FontAwesomeModule],
   exports: [
     ImgUploadComponent,
     ToastsComponent,

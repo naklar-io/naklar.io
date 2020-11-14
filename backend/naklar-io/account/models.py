@@ -20,6 +20,8 @@ from post_office.models import EmailTemplate
 from account.managers import CustomUserManager
 from account.tasks import send_email_task
 
+from _shared.models import SingletonModel
+
 logger = logging.getLogger(__name__)
 
 
@@ -300,3 +302,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 def send_verify_on_creation(sender, instance, created, **kwargs):
     if created:
         instance.send_verification_email()
+
+
+class TrackingDenyCounter(SingletonModel):
+    count = models.IntegerField(default=0)

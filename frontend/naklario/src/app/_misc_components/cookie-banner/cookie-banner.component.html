@@ -1,6 +1,6 @@
-<div class="card w-75">
+<div *ngIf="featureEnabled && isVisible | async" class="card">
   <div>
-    <h2>Schutz deiner Daten 🔒</h2>
+    <h4>Schutz deiner Daten <fa-icon icon="lock" class="text-primary"></fa-icon></h4>
     <p>
       Wir verwenden Cookies, um Inhalte zu personalisieren, unsere Plattform zu
       verbessern und die Sicherheit unserer Nutzer zu gewährleisten. Indem du
@@ -10,20 +10,16 @@
       durch, um mehr zu erfahren.
     </p>
   </div>
-  <div>
-    <a
-      class="btn btn-lg btn-outline-primary"
-      style="border-radius: 17px; min-width: 150pt"
-      [href]=""
-      target="_self"
-      >Nicht akzeptieren</a
-    >
-    <a
-      class="btn btn-lg btn-primary"
-      style="border-radius: 17px; min-width: 150pt"
-      [href]=""
-      target="_self"
-      >OK</a
-    >
+  <div class="btns">
+    <button
+      class="btn btn-lg btn-outline-primary negative-btn"
+      style="border-radius: 17px;"
+      (click)="disallowAnalytics()"
+      >Nicht akzeptieren</button>
+    <button
+      class="btn btn-lg btn-primary positive-btn"
+      style="border-radius: 17px;"
+      (click)="allowAnalytics()"
+      >OK</button>
   </div>
 </div>

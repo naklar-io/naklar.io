@@ -7,7 +7,8 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from account.models import CustomUser, SchoolData, SchoolType, State, StudentData, Subject, TutorData, VerificationToken
+from account.models import CustomUser, SchoolData, SchoolType, State, StudentData, Subject, TutorData, \
+    VerificationToken, TrackingDenyCounter
 
 
 @override_settings(CELERY_TASK_EAGER_PROPAGATES=True,
@@ -17,6 +18,7 @@ class AccountCreateTest(APITestCase):
     """
     Account creation test cases
     """
+
     @classmethod
     def setUpTestData(cls):
         cls.state = State.objects.create(name="Teststate")
@@ -135,12 +137,12 @@ class AccountLoginTest(APITestCase):
         credential_string = f"{self.student.email}:{self.student_pw}".encode(
             'utf-8')
         self.client.credentials(HTTP_AUTHORIZATION='Basic ' +
-                                base64.b64encode(credential_string).decode('utf-8'))
+                                                   base64.b64encode(credential_string).decode('utf-8'))
         response = self.client.post(reverse('account:knox_login'))
         self.assertEqual(response.status_code, 200)
         token = response.data['token']
 
-        self.client.credentials(HTTP_AUTHORIZATION='Token '+token)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = self.client.get(reverse('account:account_view'))
         self.assertEqual(response.data['first_name'], self.student.first_name)
         self.assertEqual(response.data['email'], self.student.email)
@@ -154,12 +156,12 @@ class AccountLoginTest(APITestCase):
         credential_string = f"{self.tutor.email}:{self.tutor_pw}".encode(
             'utf-8')
         self.client.credentials(HTTP_AUTHORIZATION='Basic ' +
-                                base64.b64encode(credential_string).decode('utf-8'))
+                                                   base64.b64encode(credential_string).decode('utf-8'))
         response = self.client.post(reverse('account:knox_login'))
         self.assertEqual(response.status_code, 200)
         token = response.data['token']
 
-        self.client.credentials(HTTP_AUTHORIZATION='Token '+token)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + token)
         response = self.client.get(reverse('account:account_view'))
         self.assertEqual(response.data['first_name'], self.tutor.first_name)
         self.assertEqual(response.data['last_name'], self.tutor.last_name)
@@ -182,6 +184,7 @@ class AccountChangeTest(APITestCase):
     """
     Account change test-cases
     """
+
     @classmethod
     def setUpTestData(cls):
         cls.school_type1 = SchoolType.objects.create(name="Testschooltype1")
@@ -273,6 +276,7 @@ class EmailVerifyTest(APITestCase):
     """
     Test if email verification API works
     """
+
     @classmethod
     def setUpTestData(cls):
         cls.school_type = SchoolType.objects.create(name="TestSchoolType")
@@ -302,3 +306,12 @@ class EmailVerifyTest(APITestCase):
         self.assertEqual(response.status_code, 404)
         self.assertFalse(user.email_verified)
         self.assertTrue(VerificationToken.objects.all().exists())
+
+
+class TrackingDenyCounterTest(APITestCase):
+    def test_tracking_deny(self):
+        self.assertEqual(0, TrackingDenyCounter.load().count)
+        url = reverse("account:count_tracking_deny")
+        response = self.client.post(url)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, TrackingDenyCounter.load().count)
