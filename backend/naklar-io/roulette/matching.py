@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-from django.db.models import F, Q
+from django.db.models import F, Q, QuerySet
 from django.utils import timezone
 from push_notifications.models import WebPushDevice
 
@@ -22,13 +22,13 @@ def look_for_matches():
 
     student_rs = StudentRequest.objects.prefetch_related('failed_matches', 'user__studentdata')
 
-    student_rs = student_rs.filter(is_active=True, meeting__isnull=True).filter(
-        Q(match__isnull=True) | (Q(match__isnull=False) & Q(match__failed=True)))
+    student_rs = student_rs.filter(is_active=True, meeting__isnull=True).exclude(match__failed=False,
+                                                                                 match__successful=False)
     # either there needs to be no match, or, all matches need be failed
     for student_request in student_rs:
         student = student_request.user
-        tutor_rs = TutorRequest.objects.filter(is_active=True, meeting__isnull=True).filter(
-            Q(match__isnull=True) | Q(match__failed=True) & Q(match__successful=False))
+        tutor_rs = TutorRequest.objects.filter(is_active=True, meeting__isnull=True).exclude(match__failed=False,
+                                                                                             match__successful=False)
 
         # filter subjects
         tutor_rs = tutor_rs.filter(

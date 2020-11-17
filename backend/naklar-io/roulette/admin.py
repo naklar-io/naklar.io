@@ -12,13 +12,17 @@ class MatchAdmin(admin.ModelAdmin):
     model = Match
     list_display = ('id', 'created_time', 'successful', 'fail_reason')
     list_filter = ('failed', 'successful', 'fail_reason')
+    raw_id_fields = ('tutor', 'student', 'tutor_request', 'student_request')
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(Feedback)
 class FeedbackAdmin(admin.ModelAdmin):
     model = Feedback
     list_display = ('provider', 'rating', 'created')
-    date_hierarchy = ('created')
+    date_hierarchy = 'created'
     ordering = ['-created']
     raw_id_fields = ['provider', 'receiver', 'meeting']
 
@@ -37,7 +41,7 @@ class MeetingAdmin(admin.ModelAdmin):
                     'student', 'time_established', 'duration')
     actions = ['end_meeting']
     search_fields = ('tutor__email', 'student__email')
-    date_hierarchy = ('time_established')
+    date_hierarchy = 'time_established'
     ordering = ['-time_established']
     raw_id_fields = ('tutor', 'student', 'users')
 
@@ -65,12 +69,11 @@ class RequestHadMeetingFilter(admin.SimpleListFilter):
             return queryset
 
 
-@admin.register(StudentRequest)
-class StudentRequestAdmin(admin.ModelAdmin):
-    model = StudentRequest
-    list_display = ('user', 'created', 'duration', 'is_active', 'subject',
+class RequestAdmin(admin.ModelAdmin):
+    list_display = ('user', 'created', 'duration', 'is_active',
                     'number_failed_matches', '_successful')
     raw_id_fields = ('user', 'meeting')
+    autocomplete_fields = ('failed_matches', )
     list_filter = ('is_active', RequestHadMeetingFilter)
 
     def number_failed_matches(self, obj):
@@ -82,21 +85,16 @@ class StudentRequestAdmin(admin.ModelAdmin):
     has_match.boolean = True
 
 
+@admin.register(StudentRequest)
+class StudentRequestAdmin(RequestAdmin):
+    model = StudentRequest
+    list_display = ('user', 'created', 'duration', 'is_active', 'subject',
+                    'number_failed_matches', '_successful')
+
+
 @admin.register(TutorRequest)
-class TutorRequestAdmin(admin.ModelAdmin):
+class TutorRequestAdmin(RequestAdmin):
     model = TutorRequest
-    list_display = ('user', 'created', 'duration', 'is_active',
-                    'number_failed_matches', 'successful')
-    raw_id_fields = ('user', 'meeting')
-    list_filter = ('is_active', )
-
-    def number_failed_matches(self, obj):
-        return obj.failed_matches.count()
-    number_failed_matches.short_description = "#Fehlgeschl. Matches"
-
-    def has_match(self, obj):
-        return hasattr(obj, 'match')
-    has_match.boolean = True
 
 
 @admin.register(Report)

@@ -1,3 +1,4 @@
+import abc
 import hashlib
 import time
 import uuid
@@ -137,15 +138,12 @@ class Request(models.Model):
         if self.is_active:
             self.is_active = False
             self.deactivated = timezone.now()
-            if isinstance(self, TutorRequest):
-                Match.objects.filter(tutor_request__id=self.id).deactivate(
-                    MatchRejectReasons.TUTOR_DISCONNECT if connection_lost else MatchRejectReasons.TUTOR_REJECT
-                )
-            if isinstance(self, StudentRequest):
-                Match.objects.filter(student_request__id=self.id).deactivate(
-                    MatchRejectReasons.STUDENT_DISCONNECT if connection_lost else MatchRejectReasons.STUDENT_REJECT
-                )
+            self._deactivate_match(connection_lost)
             self.save()
+
+    @abc.abstractmethod
+    def _deactivate_match(self, connection_lost):
+        return NotImplemented
 
     def get_match(self):
         match = self.match_set.filter(failed=False, successful=False)
@@ -162,10 +160,22 @@ class StudentRequest(Request):
     """student request always additionally includes a Subject representing the subject he/she needs help with"""
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
 
+    def _deactivate_match(self, connection_lost):
+        match = self.get_match()
+        if match:
+            self.failed_matches.add(match.tutor)
+            match.deactivate(MatchRejectReasons.STUDENT_DISCONNECT if connection_lost else MatchRejectReasons.STUDENT_REJECT)
+
 
 class TutorRequest(Request):
     """tutorrequest can store additional data"""
-    pass
+
+    def _deactivate_match(self, connection_lost):
+        match = self.get_match()
+        if match:
+            self.failed_matches.add(match.student)
+            match.deactivate(
+                MatchRejectReasons.TUTOR_DISCONNECT if connection_lost else MatchRejectReasons.TUTOR_REJECT)
 
 
 class MatchQuerySet(models.QuerySet):
@@ -224,8 +234,11 @@ class Match(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=['student_request', 'tutor_request'], condition=Q(failed=False, successful=False),
-                             name='unique_active_match_per_request')]
+            UniqueConstraint(fields=['student_request'], condition=Q(failed=False, successful=False),
+                             name='unique_active_match_per_student'),
+            UniqueConstraint(fields=['tutor_request'], condition=Q(failed=False, successful=False),
+                             name='unique_active_match_per_tutor')
+        ]
 
 
 @receiver(pre_save, sender=Match)
