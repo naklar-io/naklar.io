@@ -3,61 +3,51 @@ version: "3.8"
 services:
   web:
     image: naklario/backend:latest
-    command: daphne -b 0.0.0.0 -p 8000 naklario.asgi:application
-    working_dir: /code/naklar-io
     volumes:
-      - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
       # Private VAPID key https://github.com/jazzband/django-push-notifications/#settings-list
       - ./naklar-io/private_key.pem:/code/naklar-io/private_key.pem
       - type: bind
         source: ./media
         target: /opt/media
-      - type: volume
-        source: static
-        target: /opt/static
+    env_file:
+      - .env
+    ports:
+      - 8001:8000
+    environment:
+      - REDIS_HOST=redis
+      - DATABASE_URL=psql://docker:docker@db/docker
+      - DEBUG=false
 
   celery_worker:
     image: naklario/backend:latest
-    working_dir: /code/naklar-io
-    volumes:
-      - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
-    command: python -m celery -A naklario worker -l info
+    command: python -m celery -A naklario worker
     depends_on:
-      - rabbitmq
+      - redis
       - web
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - DATABASE_URL=psql://docker:docker@db/docker
+      - DEBUG=false
 
   celery_beat:
     image: naklario/backend:latest
-    working_dir: /code/naklar-io
-    volumes:
-      - ./naklar-io/naklario/settings_local.py:/code/naklar-io/naklario/settings_local.py:ro
-    command: python -m celery -A naklario beat -l info -S django
+    command: python -m celery -A naklario beat -S django
     depends_on:
-      - rabbitmq
+      - redis
       - web
-
-  rabbitmq:
-    image: rabbitmq
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - DATABASE_URL=psql://docker:docker@db/docker
+      - DEBUG=false
 
   redis:
     image: redis:6
 
-  nginx:
-    image: nginx:stable
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - type: bind
-        source: ./media
-        target: /opt/media
-      - type: volume
-        source: static
-        target: /opt/static
-        volume:
-          nocopy: true
-    ports:
-      - 8000:80
-    depends_on: 
-      - web
 
 volumes:
-  static:
+  database:
+

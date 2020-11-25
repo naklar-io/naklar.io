@@ -114,7 +114,9 @@ export class RouletteService {
           match.meetingID = this.lastMeetingID;
         }
         // Hack: Have to add apiUrl
-        match.tutor.tutordata.profilePicture = environment.apiUrl + match.tutor.tutordata.profilePicture;
+        if (!match.tutor.tutordata.profilePicture.startsWith('http')) {
+          match.tutor.tutordata.profilePicture = environment.apiUrl + match.tutor.tutordata.profilePicture;
+        }
         this.lastMatch = match;
         return match;
       }

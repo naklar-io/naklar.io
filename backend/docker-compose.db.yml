@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:12
+    environment:
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+    volumes:
+      - type: volume
+        source: database
+        target: /var/lib/postgresql/data
+    networks:
+      - dbnet
+      - default
+  web:
+    depends_on:
+      - db
+
+networks:
+  dbnet:
+    driver: overlay
+    attachable: true

@@ -5,12 +5,13 @@ verify_ssl = true
 
 [dev-packages]
 autopep8 = "*"
+pylint = "*"
 
 [packages]
 django = "~=3.1.0"
 channels = "*"
 django-celery-beat = "~=2.1.0"
-celery = "~=5.0"
+celery = {version = "~=5.0", extras = ["redis"]}
 daphne = "*"
 djangorestframework = "*"
 django-filter = "*"
@@ -24,11 +25,13 @@ django-push-notifications = "*"
 django-post-office = "*"
 requests = "*"
 drf-yasg = "*"
-psycopg2 = "*"
 pillow = "*"
 channels-redis = "*"
-django-simple-history = "*"
-django-debug-toolbar = "*"
+psycopg2-binary = "*"
+django-environ = "*"
+whitenoise = "*"
+django-storages = "*"
+boto3 = "*"
 
 [requires]
 python_version = "3.9"

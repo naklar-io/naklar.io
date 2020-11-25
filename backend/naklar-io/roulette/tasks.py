@@ -14,10 +14,13 @@ def deactivate_old_requests():
 def delete_old_matches():
     call_command('delete_old_matches')
 
+
 @shared_task(ignore_result=True)
 def look_for_matches():
     return matching.look_for_matches()
 
+
 @shared_task(ignore_result=True)
 def send_request_notifications():
     return generate_notifications()
+

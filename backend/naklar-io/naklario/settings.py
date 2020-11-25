@@ -11,38 +11,47 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from email.utils import getaddresses
+from pathlib import Path
+from typing import List
+
+import environ
 
 from channels.routing import get_default_application
 from django.core.asgi import get_asgi_application
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "12345678"
+env = environ.Env(
+    # set casting, default value
+    DEBUG=(bool, False),
+    ALLOWED_HOSTS=(list, []),
+    CORS_ORIGIN_WHITELIST=(list, []),
+)
 
-BBB_SHARED = "12345678"
-BBB_URL = "https://bbb.naklar.io"
+# reading .env file
+environ.Env.read_env(env_file=os.path.join(BASE_DIR.parent, '.env'))
+SECRET_KEY = env('SECRET_KEY')
 
-# configure for production, see https://docs.djangoproject.com/en/3.0/ref/settings/#email-backend
-EMAIL_HOST = "smtpd"
-EMAIL_PORT = "1025"
+BBB_SHARED = env('BBB_SHARED')
+BBB_URL = env('BBB_URL')
+
 
 EMAIL_BACKEND = 'post_office.EmailBackend'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb
-INTERNAL_IPS = ['127.0.0.1', '172.20.0.8', '172.16.0.0/12']
 
-API_HOST = "http://localhost:8000"
-HOST = "http://localhost:4000"
+API_HOST = env('API_URL')
+HOST = env('FRONTEND_URL')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', ]
+ALLOWED_HOSTS: List[str] = env('ALLOWED_HOSTS')
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:4000",
-]
+CORS_ORIGIN_WHITELIST = env('CORS_ORIGIN_WHITELIST')
+CORS_ORIGIN_WHITELIST.append(BBB_URL)
 
 # Set custom user model
 AUTH_USER_MODEL = 'account.CustomUser'
@@ -75,8 +84,6 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
         # 'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-
-        #        'rest_framework_xml.renderers.XMLRenderer',
     ],
     'JSON_UNDERSCOREIZE': {
         'no_underscore_before_number': True,
@@ -123,11 +130,13 @@ INSTALLED_APPS = [
     'simple_history',
     'post_office',
     'push_notifications',
-    'multiselectfield',
+    'multiselectfield'
+,
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -193,14 +202,12 @@ WSGI_APPLICATION = 'naklario.wsgi.application'
 
 ASGI_APPLICATION = 'naklario.routing.application'
 
+
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    'default': env.db(),
 }
 
 # Password validation
@@ -221,6 +228,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -237,15 +245,25 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = '/opt/static/'
+STATIC_URL = env('STATIC_URL', default='/static/')
+STATIC_ROOT = env('STATIC_ROOT', default=BASE_DIR / 'static')
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = '/opt/media/'
+# STORAGES CONFIG
+if env.bool('USE_S3'):
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    AWS_S3_ENDPOINT_URL = env('AWS_S3_ENDPOINT')
+    AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL', default='public')
+    AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+    MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/"
+else:
+    MEDIA_URL = env('MEDIA_URL', default='/media/')
+    MEDIA_ROOT = env('MEDIA_ROOT', default=BASE_DIR / 'media')
 
 # Celery:
 CELERY_APP = "naklario.celery"
-CELERY_BROKER_URL = "amqp://rabbitmq"
+CELERY_BROKER_URL = "redis://" + env('REDIS_HOST') + ":" + env('REDIS_PORT')
 
 CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 
@@ -253,22 +271,38 @@ CELERY_ACCEPT_CONTENT = ['json', 'pickle']
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-CHANNEL_REDIS_HOST = ('redis', 6379)
+CHANNEL_REDIS_HOST = (env('REDIS_HOST'), env('REDIS_PORT'))
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [CHANNEL_REDIS_HOST],
-            # "symmetric_encryption_keys": [SECRET_KEY],
         },
     },
 }
-
-# as we're using CELERY
+#######################
+# Email configuration #
+#######################
+POST_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.locmem.EmailBackend')
 POST_OFFICE = {
-    'DEFAULT_PRIORITY': 'medium',
-    'CELERY_ENABLED': True
+    'DEFAULT_PRIORITY': env('EMAIL_DEFAULT_PRIORITY', default='now'),
+    'BACKENDS': {
+        'default': POST_BACKEND
+    },
+    'CELERY_ENABLED': False,
 }
+
+if POST_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
+    EMAIL_HOST = env('EMAIL_HOST')
+    EMAIL_PORT = env.int('EMAIL_PORT')
+    EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+
+ADMINS = getaddresses([env('DJANGO_ADMINS')])
+SERVER_EMAIL = env('SERVER_EMAIL')
+
 
 # does this instance use access codes for students?
 NAKLAR_USE_ACCESS_CODES = False
