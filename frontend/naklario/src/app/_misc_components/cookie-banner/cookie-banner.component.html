@@ -1,97 +1,98 @@
 <div *ngIf="featureEnabled && isVisible | async">
- <div *ngIf="!isSettings" class="card">
-  <div>
-    <h4>
-      Schutz deiner Daten <fa-icon icon="lock" class="text-primary"></fa-icon>
-    </h4>
-    <p>
-      Wir verwenden Cookies, um Inhalte zu personalisieren, unsere Plattform zu
-      verbessern und die Sicherheit unserer Nutzer zu gewährleisten. Indem du
-      diese Website nutzt, stimmst du dem Einsatz von Cookies zur Erfassung von
-      Informationen auf naklar.io und anderen Websites zu. Lies dir unsere
-      <a target="_self" href="">Cookie-Richtlinie</a>
-      durch, um mehr zu erfahren.
-    </p>
-  </div>
-  <div class="btns">
-    <button
-      class="btn btn-lg btn-outline-primary negative-btn"
-      style="border-radius: 17px"
-      (click)="displaySettings(true)"
-    >
-      Einstellungen
-    </button>
-    <button
-      class="btn btn-lg btn-primary positive-btn"
-      style="border-radius: 17px"
-      (click)="allowAnalytics()"
-    >
-      OK
-    </button>
-  </div>
-</div>
-<div *ngIf="isSettings" class="card">
-  
-  <div class="container">
+  <div *ngIf="!isSettings" class="card">
     <div>
       <h4>
         Schutz deiner Daten <fa-icon icon="lock" class="text-primary"></fa-icon>
       </h4>
-    </div>
-    <div class="row">
-      <div class="col">
-        <p>
-          <input type="checkbox" />
-          Notwendig <br />
-          Diese Cookies sind für den Betrieb der Seite unbedingt notwendig und
-          ermöglichen insbesondere sicherheitsrelevante Funktionen. Für
-          notwendige Cookies benötigen wir keine Einwilligung, sondern stützen
-          uns auf unsere berechtigten Interessen, die Sicherheit und
-          Funktionsfähigkeit unserer Seite zu gewährleisten. Daher ist das
-          entsprechende Feld vorangekreuzt.
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <p>
-          <input type="checkbox" />
-          Analyse <br />
-          Um unser Angebot und unsere Webseite weiter zu verbessern, erfassen
-          wir Daten für Statistiken und Analysen. Mithilfe dieser Cookies können
-          wir beispielsweise die Besucherzahlen und den Wirkungsgrad bestimmter
-          Seiten unseres Web-Auftritts ermitteln und unsere Inhalte optimieren.
-          Dafür benötigen wir Ihre Einwilligung.
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <p>
-          <input type="checkbox" />
-          Komfort <br />
-          Wir nutzen diese Cookies, um Ihnen die Bedienung der Seite zu
-          erleichtern. So können Sie beispielsweise mit Ihrem Profil eingeloggt
-          bleiben, um unsere Dienste bei einem erneuten Besuch unserer Seite
-          schneller nutzen zu können.
-        </p>
-      </div>
+      <p>
+        Wir verwenden Cookies, um Inhalte zu personalisieren, unsere Plattform
+        zu verbessern und die Sicherheit unserer Nutzer zu gewährleisten. Indem
+        du diese Website nutzt, stimmst du dem Einsatz von Cookies zur Erfassung
+        von Informationen auf naklar.io und anderen Websites zu. Lies dir unsere
+        <a target="_self" href="">Cookie-Richtlinie</a>
+        durch, um mehr zu erfahren.
+      </p>
     </div>
     <div class="btns">
       <button
         class="btn btn-lg btn-outline-primary negative-btn"
         style="border-radius: 17px"
-        (click)="displaySettings(false)"
+        (click)="displaySettings(true)"
       >
-        Zurück
+        Einstellungen
       </button>
       <button
         class="btn btn-lg btn-primary positive-btn"
         style="border-radius: 17px"
+        (click)="allowAnalytics()"
       >
-        Speichern
+        OK
       </button>
     </div>
   </div>
-</div>
+  <div *ngIf="isSettings" class="card">
+    <div class="container">
+      <div>
+        <h4>
+          Schutz deiner Daten
+          <fa-icon icon="lock" class="text-primary"></fa-icon>
+        </h4>
+      </div>
+      <div class="row">
+        <div class="col">
+          <p>
+            <input type="checkbox" checked disabled />
+            Notwendig <br />
+            Diese Cookies sind für den Betrieb der Seite unbedingt notwendig und
+            ermöglichen insbesondere sicherheitsrelevante Funktionen. Für
+            notwendige Cookies benötigen wir keine Einwilligung, sondern stützen
+            uns auf unsere berechtigten Interessen, die Sicherheit und
+            Funktionsfähigkeit unserer Seite zu gewährleisten. Daher ist das
+            entsprechende Feld vorangekreuzt.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <p>
+            <input type="checkbox" id="checkbox_analytics" />
+            Analyse <br />
+            Um unser Angebot und unsere Webseite weiter zu verbessern, erfassen
+            wir Daten für Statistiken und Analysen. Mithilfe dieser Cookies
+            können wir beispielsweise die Besucherzahlen und den Wirkungsgrad
+            bestimmter Seiten unseres Web-Auftritts ermitteln und unsere Inhalte
+            optimieren. Dafür benötigen wir Ihre Einwilligung.
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <p>
+            <input type="checkbox" id="checkbox_comfort" />
+            Komfort <br />
+            Wir nutzen diese Cookies, um Ihnen die Bedienung der Seite zu
+            erleichtern. So können Sie beispielsweise mit Ihrem Profil
+            eingeloggt bleiben, um unsere Dienste bei einem erneuten Besuch
+            unserer Seite schneller nutzen zu können.
+          </p>
+        </div>
+      </div>
+      <div class="btns">
+        <button
+          class="btn btn-lg btn-outline-primary negative-btn"
+          style="border-radius: 17px"
+          (click)="displaySettings(false)"
+        >
+          Zurück
+        </button>
+        <button
+          class="btn btn-lg btn-primary positive-btn"
+          style="border-radius: 17px"
+          (click)="saveSettings()"
+        >
+          Speichern
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

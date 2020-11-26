@@ -35,4 +35,6 @@ export class CookieBannerComponent implements OnInit {
   displaySettings(isSettings) {
     this.isSettings = isSettings;
   }
+  saveSettings(){
+  }
 }
