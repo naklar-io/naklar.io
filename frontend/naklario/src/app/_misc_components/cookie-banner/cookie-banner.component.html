@@ -1,4 +1,5 @@
-<div *ngIf="featureEnabled && isVisible | async" class="card">
+<div *ngIf="featureEnabled && isVisible | async">
+ <div *ngIf="!isSettings" class="card">
   <div>
     <h4>
       Schutz deiner Daten <fa-icon icon="lock" class="text-primary"></fa-icon>
@@ -16,7 +17,7 @@
     <button
       class="btn btn-lg btn-outline-primary negative-btn"
       style="border-radius: 17px"
-      (click)="disallowAnalytics()"
+      (click)="displaySettings(true)"
     >
       Einstellungen
     </button>
@@ -29,8 +30,7 @@
     </button>
   </div>
 </div>
-
-<div class="card">
+<div *ngIf="isSettings" class="card">
   
   <div class="container">
     <div>
@@ -87,6 +87,7 @@
       <button
         class="btn btn-lg btn-outline-primary negative-btn"
         style="border-radius: 17px"
+        (click)="displaySettings(false)"
       >
         Zurück
       </button>
@@ -98,4 +99,5 @@
       </button>
     </div>
   </div>
+</div>
 </div>
