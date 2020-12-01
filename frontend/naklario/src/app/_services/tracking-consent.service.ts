@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { TrackingConsentSettings } from '../_models';
+import { defaultTrackingSettings, TrackingConsentSettings } from '../_models';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +12,7 @@ export class TrackingConsentService {
 
   TRACKING_KEY = 'trackingSettings';
   TRACKING_ASKED_KEY = 'trackingAsked';
-  private trackingSettings: BehaviorSubject<TrackingConsentSettings> = new BehaviorSubject({
-    googleAnalytics: false
-  });
+  private trackingSettings: BehaviorSubject<TrackingConsentSettings> = new BehaviorSubject(defaultTrackingSettings);
   public trackingSettings$ = this.trackingSettings.asObservable();
 
   private trackingAsked: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -48,16 +46,14 @@ export class TrackingConsentService {
     }
   }
 
-  public changeTrackingSettings(settings: TrackingConsentSettings): void {
-    this.trackingSettings.next(settings);
+  public changeTrackingSettings(updateSettings: Partial<TrackingConsentSettings>): void {
+    let shouldReload = false;
+    if ('googleAnalytics' in updateSettings) {
+      shouldReload = !updateSettings.googleAnalytics && this.trackingSettings.value.googleAnalytics;
+      this.countTrackingDeny();
+    }
+    this.trackingSettings.next({...this.trackingSettings.value, ...updateSettings});
     this.trackingAsked.next(true);
-  }
-
-  public disableTracking(): void {
-    this.http.post(`${environment.apiUrl}/account/count-tracking-deny/`, {}).subscribe();
-    this.trackingAsked.next(true);
-    const shouldReload = this.trackingSettings.value.googleAnalytics;
-    this.trackingSettings.next({ googleAnalytics: false });
     if (shouldReload) {
       try {
         window.location.reload();
@@ -66,7 +62,16 @@ export class TrackingConsentService {
       }
     }
   }
+
   public resetTracking(): void {
     this.trackingAsked.next(false);
+  }
+
+  private countTrackingDeny() {
+    this.http.post(`${environment.apiUrl}/account/count-tracking-deny/`, {}).subscribe();
+  }
+
+  public get currentTrackingSettings(): TrackingConsentSettings {
+    return this.trackingSettings.value;
   }
 }

@@ -17,6 +17,7 @@ import { SocialIconsComponent } from './social-icons/social-icons.component';
 import { CapitalizePipe } from './capitalize.pipe';
 import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     CapitalizePipe,
     CookieBannerComponent
   ],
-  imports: [CommonModule, NgbModule, FontAwesomeModule],
+  imports: [CommonModule, NgbModule, FontAwesomeModule, FormsModule],
   exports: [
     ImgUploadComponent,
     ToastsComponent,

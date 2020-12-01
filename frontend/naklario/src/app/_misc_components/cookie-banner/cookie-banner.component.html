@@ -24,9 +24,9 @@
       <button
         class="btn btn-lg btn-primary positive-btn"
         style="border-radius: 17px"
-        (click)="allowAnalytics()"
+        (click)="allowAllAnalytics()"
       >
-        OK
+        Alle erlauben
       </button>
     </div>
   </div>
@@ -55,7 +55,7 @@
       <div class="row">
         <div class="col">
           <p>
-            <input type="checkbox" id="checkbox_analytics" />
+            <input type="checkbox" id="checkbox_analytics" [(ngModel)]="currentSettings.googleAnalytics"/>
             Analyse <br />
             Um unser Angebot und unsere Webseite weiter zu verbessern, erfassen
             wir Daten für Statistiken und Analysen. Mithilfe dieser Cookies
@@ -68,7 +68,7 @@
       <div class="row">
         <div class="col">
           <p>
-            <input type="checkbox" id="checkbox_comfort" />
+            <input type="checkbox" id="checkbox_comfort" [(ngModel)]="currentSettings.comfort"/>
             Komfort <br />
             Wir nutzen diese Cookies, um Ihnen die Bedienung der Seite zu
             erleichtern. So können Sie beispielsweise mit Ihrem Profil
