@@ -40,11 +40,13 @@ export class TrackingConsentService {
         });
       }
     } else {
-      // make sure analytics aren't being sent, by setting localstorage
-      localStorage.setItem(this.TRACKING_KEY, JSON.stringify({
-        googleAnalytics: false
-      }));
-      localStorage.setItem(this.TRACKING_ASKED_KEY, 'false');
+      if (isPlatformBrowser(platformId)) {
+        // make sure analytics aren't being sent, by setting localstorage
+        localStorage.setItem(this.TRACKING_KEY, JSON.stringify({
+          googleAnalytics: false
+        }));
+        localStorage.setItem(this.TRACKING_ASKED_KEY, 'false');
+      }
     }
   }
 
