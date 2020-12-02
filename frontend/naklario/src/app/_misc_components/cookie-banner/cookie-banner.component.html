@@ -13,23 +13,33 @@
         durch, um mehr zu erfahren.
       </p>
     </div>
-    <div class="btns">
-      <p>
-        <input type="checkbox" checked disabled />
-        Notwendig &#160;
-        <input
-          type="checkbox"
-          id="checkbox_analytics"
-          [(ngModel)]="currentSettings.googleAnalytics"
-        />
-        Analyse &#160;
-        <input
-              type="checkbox"
-              id="checkbox_comfort"
-              [(ngModel)]="currentSettings.comfort"
-            />
-            Komfort
-      </p>
+    <div>
+      <div>
+        <p>
+          <input type="checkbox" checked disabled />
+          Notwendig &#160;
+        </p>
+      </div>
+      <div>
+        <p>
+          <input
+            type="checkbox"
+            id="checkbox_analytics"
+            [(ngModel)]="currentSettings.googleAnalytics"
+          />
+          Analyse &#160;
+        </p>
+      </div>
+      <div>
+        <p>
+          <input
+            type="checkbox"
+            id="checkbox_comfort"
+            [(ngModel)]="currentSettings.comfort"
+          />
+          Komfort &#160;
+        </p>
+      </div>
     </div>
     <div class="btns">
       <button
@@ -126,12 +136,12 @@
           Auswahl erlauben
         </button>
         <button
-        class="btn btn-lg btn-primary positive-btn"
-        style="border-radius: 17px"
-        (click)="allowAllAnalytics()"
-      >
-        Alle erlauben
-      </button>
+          class="btn btn-lg btn-primary positive-btn"
+          style="border-radius: 17px"
+          (click)="allowAllAnalytics()"
+        >
+          Alle erlauben
+        </button>
       </div>
     </div>
   </div>
