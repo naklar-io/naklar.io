@@ -14,6 +14,8 @@ from roulette.serializers import MatchSerializer
 
 
 class RouletteConsumer(WebsocketConsumer):
+    request: Request
+    request_group_name: str
 
     def connect(self):
         user = self.scope["user"]
@@ -28,20 +30,20 @@ class RouletteConsumer(WebsocketConsumer):
                 id=request_id, user=user, is_active=True)
         if request_query:
             self.request: Request = request_query.get()
-            self.request.connected_count = F('connected_count') + 1
-            self.request.save()
             self.request_group_name = f"request_{request_type}_{request_id}"
             async_to_sync(self.channel_layer.group_add)(
                 self.request_group_name, self.channel_name)
             self.accept()
-            if hasattr(self.request, 'match'):
+            if self.request.get_match():
                 self.roulette_new_match({
-                    "match": self.request.match.id
+                    "match": self.request.get_match().id
                 })
             if self.request.meeting:
                 self.roulette_meeting_ready({
                     "meetingID": str(self.request.meeting.meeting_id)
                 })
+            self.request.connected_count = F('connected_count') + 1
+            self.request.save()
         else:
             self.close()
 

@@ -21,14 +21,15 @@ def look_for_matches():
     """
 
     student_rs = StudentRequest.objects.prefetch_related('failed_matches', 'user__studentdata')
-
-    student_rs = student_rs.filter(is_active=True, meeting__isnull=True).exclude(match__failed=False,
-                                                                                 match__successful=False)
+    student_rs = student_rs.filter(is_active=True, meeting__isnull=True, connected_count__gte=1).exclude(
+        match__failed=False,
+        match__successful=False)
     # either there needs to be no match, or, all matches need be failed
     for student_request in student_rs:
         student = student_request.user
-        tutor_rs = TutorRequest.objects.filter(is_active=True, meeting__isnull=True).exclude(match__failed=False,
-                                                                                             match__successful=False)
+        tutor_rs = TutorRequest.objects.filter(is_active=True, meeting__isnull=True, connected_count__gte=1).exclude(
+            match__failed=False,
+            match__successful=False)
 
         # filter subjects
         tutor_rs = tutor_rs.filter(
