@@ -16,7 +16,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - DATABASE_URL=psql://docker:docker@db/docker
-      - DEBUG=false
+      - DEBUG=true
 
   celery_worker:
     image: naklario/backend:latest
@@ -30,6 +30,23 @@ services:
       - REDIS_HOST=redis
       - DATABASE_URL=psql://docker:docker@db/docker
       - DEBUG=false
+
+  celery_email_worker:
+    image: naklario/backend:latest
+    command: python -m celery -A naklario worker -Q mails -c 1
+    depends_on:
+      - redis
+      - web
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - DATABASE_URL=psql://docker:docker@db/docker
+      - DEBUG=false
+    deploy:
+      # don't replicate more than once!
+      mode: replicated
+      replicas: 1
 
   celery_beat:
     image: naklario/backend:latest
@@ -48,6 +65,4 @@ services:
     image: redis:6
 
 
-volumes:
-  database:
 

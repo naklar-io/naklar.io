@@ -21,3 +21,6 @@ networks:
   dbnet:
     driver: overlay
     attachable: true
+
+volumes:
+  database:
