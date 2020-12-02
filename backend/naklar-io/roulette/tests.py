@@ -43,8 +43,8 @@ class KeepMatchDataTest(APITestCase):
         cls.tutor_data.subjects.set([cls.subject])
 
     def setUp(self):
-        self.tutor_request = TutorRequest.objects.create(user=self.tutor)
-        self.student_request = StudentRequest.objects.create(user=self.student, subject=self.subject)
+        self.tutor_request = TutorRequest.objects.create(user=self.tutor, connected_count=1)
+        self.student_request = StudentRequest.objects.create(user=self.student, subject=self.subject, connected_count=1)
 
     def check_match_creation(self):
         look_for_matches()
@@ -116,6 +116,7 @@ class KeepMatchDataTest(APITestCase):
         self.tutor_request.connected_count = 1
         self.tutor_request.save()
         self.student_request.last_poll = timezone.now() - timedelta(seconds=30)
+        self.student_request.connected_count = 0
         self.student_request.save()
         deactivate_old_requests()
 
@@ -132,6 +133,7 @@ class KeepMatchDataTest(APITestCase):
         self.student_request.connected_count = 1
         self.student_request.save()
         self.tutor_request.last_poll = timezone.now() - timedelta(seconds=60)
+        self.tutor_request.connected_count = 0
         self.tutor_request.save()
         deactivate_old_requests()
 
