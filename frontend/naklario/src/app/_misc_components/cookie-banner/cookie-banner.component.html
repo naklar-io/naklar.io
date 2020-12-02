@@ -14,12 +14,37 @@
       </p>
     </div>
     <div class="btns">
+      <p>
+        <input type="checkbox" checked disabled />
+        Notwendig &#160;
+        <input
+          type="checkbox"
+          id="checkbox_analytics"
+          [(ngModel)]="currentSettings.googleAnalytics"
+        />
+        Analyse &#160;
+        <input
+              type="checkbox"
+              id="checkbox_comfort"
+              [(ngModel)]="currentSettings.comfort"
+            />
+            Komfort
+      </p>
+    </div>
+    <div class="btns">
       <button
         class="btn btn-lg btn-outline-primary negative-btn"
         style="border-radius: 17px"
         (click)="displaySettings(true)"
       >
-        Einstellungen
+        Details
+      </button>
+      <button
+        class="btn btn-lg btn-outline-primary negative-btn"
+        style="border-radius: 17px"
+        (click)="saveSettings()"
+      >
+        Auswahl erlauben
       </button>
       <button
         class="btn btn-lg btn-primary positive-btn"
@@ -55,7 +80,11 @@
       <div class="row">
         <div class="col">
           <p>
-            <input type="checkbox" id="checkbox_analytics" [(ngModel)]="currentSettings.googleAnalytics"/>
+            <input
+              type="checkbox"
+              id="checkbox_analytics"
+              [(ngModel)]="currentSettings.googleAnalytics"
+            />
             Analyse <br />
             Um unser Angebot und unsere Webseite weiter zu verbessern, erfassen
             wir Daten für Statistiken und Analysen. Mithilfe dieser Cookies
@@ -68,7 +97,11 @@
       <div class="row">
         <div class="col">
           <p>
-            <input type="checkbox" id="checkbox_comfort" [(ngModel)]="currentSettings.comfort"/>
+            <input
+              type="checkbox"
+              id="checkbox_comfort"
+              [(ngModel)]="currentSettings.comfort"
+            />
             Komfort <br />
             Wir nutzen diese Cookies, um Ihnen die Bedienung der Seite zu
             erleichtern. So können Sie beispielsweise mit Ihrem Profil
@@ -86,12 +119,19 @@
           Zurück
         </button>
         <button
-          class="btn btn-lg btn-primary positive-btn"
+          class="btn btn-lg btn-outline-primary negative-btn"
           style="border-radius: 17px"
           (click)="saveSettings()"
         >
-          Speichern
+          Auswahl erlauben
         </button>
+        <button
+        class="btn btn-lg btn-primary positive-btn"
+        style="border-radius: 17px"
+        (click)="allowAllAnalytics()"
+      >
+        Alle erlauben
+      </button>
       </div>
     </div>
   </div>
