@@ -20,6 +20,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { BrowserModule } from '@angular/platform-browser';
     CapitalizePipe,
     CookieBannerComponent
   ],
-  imports: [CommonModule, NgbModule, FontAwesomeModule, FormsModule, BrowserModule, BrowserAnimationsModule],
+  imports: [CommonModule, NgbModule, FontAwesomeModule, FormsModule, BrowserModule, BrowserAnimationsModule, RouterModule],
   exports: [
     ImgUploadComponent,
     ToastsComponent,

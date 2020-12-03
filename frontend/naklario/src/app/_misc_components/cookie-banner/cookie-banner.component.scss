@@ -13,6 +13,7 @@
     font-size: .9rem;
     max-height: 100%;
     overflow: auto;
+    pointer-events: all;
 }
 
 .mymodal {
@@ -24,6 +25,7 @@
     z-index: 2000;
     // animation-name: popIn;
     animation-duration: 500ms;
+    pointer-events: none;
     // transition: transform 500ms cubic-bezier(.18,.89,.32,1.28);
 }
 
