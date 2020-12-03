@@ -18,6 +18,8 @@ import { CapitalizePipe } from './capitalize.pipe';
 import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,7 @@ import { FormsModule } from '@angular/forms';
     CapitalizePipe,
     CookieBannerComponent
   ],
-  imports: [CommonModule, NgbModule, FontAwesomeModule, FormsModule],
+  imports: [CommonModule, NgbModule, FontAwesomeModule, FormsModule, BrowserModule, BrowserAnimationsModule],
   exports: [
     ImgUploadComponent,
     ToastsComponent,

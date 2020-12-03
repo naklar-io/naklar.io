@@ -1,10 +1,10 @@
-<div *ngIf="featureEnabled && isVisible | async">
+<div *ngIf="featureEnabled && isVisible | async" [@popIn]="isVisible" class="mymodal">
   <div *ngIf="!isSettings" class="card">
-    <div>
-      <h4>
+    <div class="row">
+      <h4 class="col-12">
         Schutz deiner Daten <fa-icon icon="lock" class="text-primary"></fa-icon>
       </h4>
-      <p>
+      <p class="col-12">
         Wir verwenden Cookies, um Inhalte zu personalisieren, unsere Plattform
         zu verbessern und die Sicherheit unserer Nutzer zu gewährleisten. Indem
         du diese Website nutzt, stimmst du dem Einsatz von Cookies zur Erfassung

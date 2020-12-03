@@ -50,7 +50,9 @@ export class TrackingConsentService {
     let shouldReload = false;
     if ('googleAnalytics' in updateSettings) {
       shouldReload = !updateSettings.googleAnalytics && this.trackingSettings.value.googleAnalytics;
-      this.countTrackingDeny();
+      if (!updateSettings.googleAnalytics) {
+        this.countTrackingDeny();
+      }
     }
     this.trackingSettings.next({...this.trackingSettings.value, ...updateSettings});
     this.trackingAsked.next(true);

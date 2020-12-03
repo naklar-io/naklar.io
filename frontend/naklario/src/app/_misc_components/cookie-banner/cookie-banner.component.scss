@@ -1,17 +1,35 @@
 .card {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    max-height: 90vh;
-    z-index: 2000;
+    margin-left: 10px;
+    margin-right: 10px;
     margin-bottom: 15px;
     padding: 20px;
     box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); 
     color: #3a3a3a;
     border-radius: 12px;
-    overflow: hidden;
-    overflow-y: auto;
+    font-size: .9rem;
+    max-height: 100%;
+    overflow: auto;
+}
+
+.mymodal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 15px;
+    z-index: 2000;
+    // animation-name: popIn;
+    animation-duration: 500ms;
+    // transition: transform 500ms cubic-bezier(.18,.89,.32,1.28);
+}
+
+@keyframes popIn {
+    from {transform: translateY(100%);}
+    to {transform: translateY(0);}
 }
 
 @media(min-width: 400px) {
@@ -30,7 +48,12 @@
 
 .btn {
     margin: .2em;
-    min-width: 180px;
+    font-size: 1rem;
+    flex-basis: 230px;
+}
+
+.btn:first-child {
+    margin-right: auto;
 }
 
 .btns {
@@ -38,8 +61,11 @@
     flex-wrap: wrap;
 }
 
-@media(max-width: 800px) {
+@media(max-width: 1000px) {
     .btns {
-        flex-direction: column-reverse;
+        flex-wrap: wrap-reverse;
+    }
+    .btn {
+        flex-basis: 99999px;
     }
 }
