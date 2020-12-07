@@ -14,14 +14,13 @@ import {
   PromptUpdateService,
   AppLayoutService,
 } from './_services';
-import { ScrollPositionService } from './_services/scroll-position.service';
 import { TrackingConsentService } from './_services/tracking-consent.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  providers: [AppLayoutService, ScrollPositionService]
+  providers: [AppLayoutService]
 })
 export class AppComponent implements OnInit, AfterViewInit, DoCheck {
   @ViewChild('app') app: ElementRef;

@@ -43,7 +43,6 @@ import {
   RouletteService,
   BannerService,
   NotifyService,
-  AppLayoutService,
 } from './_services';
 
 import { MiscComponentsModule } from './_misc_components/misc-components.module';
