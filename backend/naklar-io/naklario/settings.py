@@ -112,7 +112,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     # our components
     'account',
-    'call',
+    'scheduling',
     'roulette',
     'landing',
     'notify',
