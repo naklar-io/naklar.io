@@ -6,11 +6,13 @@ import { CalendarSingleComponent } from './calendar-single/calendar-single.compo
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CalendarModule, CalendarWeekViewComponent, DateAdapter } from 'angular-calendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CalendarMultiComponent } from './calendar-multi/calendar-multi.component';
 
 
 @NgModule({
   declarations: [
-    CalendarSingleComponent
+    CalendarSingleComponent,
+    CalendarMultiComponent
   ],
   imports: [
     CommonModule,
