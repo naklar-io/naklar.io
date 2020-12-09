@@ -33,6 +33,7 @@ urlpatterns = [
     path('account/', include('account.urls')),
     path('roulette/', include('roulette.urls')),
     path('notify/', include('notify.urls')),
+    path('scheduling/', include('scheduling.urls')),
     path('admin/', admin.site.urls),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

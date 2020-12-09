@@ -3,7 +3,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import get_serializer_class, swagger_auto_schema
 from knox.views import LoginView as KnoxLoginView
 from rest_framework import (exceptions, generics, permissions, serializers,
-                            status)
+                            status, mixins, viewsets)
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
@@ -32,7 +32,7 @@ class StateList(generics.ListAPIView):
     serializer_class = StateSerializer
 
 
-class SubjectList(generics.ListAPIView):
+class SubjectViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 
