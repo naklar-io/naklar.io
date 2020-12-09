@@ -8,7 +8,7 @@ from django.conf import settings as dj_settings
 from django.db.models import QuerySet
 from django.utils import timezone
 
-from scheduling import validators
+from scheduling import validators, util
 
 
 class TimeSlot(models.Model):
@@ -85,12 +85,7 @@ class Appointment(models.Model):
         now = timezone.now()
         # only check if our start time actually is in the future!
         if self.start_time >= now:
-            timeslot_start = self.timeslot.start_time
-            if self.timeslot.weekly:
-                if timeslot_start.weekday() != self.start_time.weekday():
-                    return False
-                timeslot_start = datetime.combine(self.start_time.date(), timeslot_start.time(), timeslot_start.tzinfo)
-            return timeslot_start <= self.start_time <= timeslot_start + self.timeslot.duration - self.duration
+            return util.check_slot_in_range(self.start_time, self.duration, self.timeslot)
         else:
             return True
 

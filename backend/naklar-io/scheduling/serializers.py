@@ -1,11 +1,10 @@
-from django.contrib.auth import get_user_model
-from rest_framework.fields import CurrentUserDefault, DateTimeField, DurationField, UUIDField
-from rest_framework.relations import HyperlinkedRelatedField, HyperlinkedIdentityField
-from rest_framework.serializers import Serializer, ModelSerializer, HyperlinkedModelSerializer
-from rest_framework import fields
+from django.utils.translation import gettext_lazy as _
+from rest_framework.fields import CurrentUserDefault, DateTimeField, DurationField, HiddenField
+from rest_framework.serializers import Serializer, ModelSerializer
+from rest_framework.validators import UniqueTogetherValidator
 
-from account.models import CustomUser, Subject
 from scheduling import models, validators
+from scheduling.models import Appointment
 
 
 class TimeSlotSerializer(ModelSerializer):
@@ -20,7 +19,6 @@ class AppointmentSerializer(ModelSerializer):
     class Meta:
         model = models.Appointment
         fields = ['id', 'owner', 'timeslot', 'start_time', 'duration', 'subject', 'topic']
-        read_only_fields = ['owner']
         extra_kwargs = {
             # 'owner': {'pk_field': UUIDField(source='uuid')}
             # 'owner': {'view_name': 'account:user_view', 'lookup_field': 'uuid'},
@@ -28,7 +26,14 @@ class AppointmentSerializer(ModelSerializer):
             # 'subject': {'view_name': 'account:subject-detail'},
         }
         validators = [
-            validators.no_overlaps
+            validators.AppointmentValidator(
+                queryset=Appointment.objects.all()
+            ),
+            UniqueTogetherValidator(
+                queryset=Appointment.objects.all(),
+                fields=['timeslot', 'start_time'],
+                message=_("Only one appointment can start at this time!")
+            )
         ]
 
 
@@ -43,4 +48,3 @@ class AvailableSlotSerializer(Serializer):
     parent = TimeSlotSerializer()
     start_time = DateTimeField(read_only=True)
     duration = DurationField(read_only=True)
-
