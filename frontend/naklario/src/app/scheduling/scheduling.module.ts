@@ -4,15 +4,22 @@ import { CommonModule } from '@angular/common';
 import { SchedulingRoutingModule } from './scheduling-routing.module';
 import { CalendarSingleComponent } from './calendar-single/calendar-single.component';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
-import { CalendarWeekModule } from 'angular-calendar';
+import { CalendarModule, CalendarWeekViewComponent, DateAdapter } from 'angular-calendar';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
   declarations: [
-    CalendarWeekModule,CalendarSingleComponent],
+    CalendarSingleComponent
+  ],
   imports: [
     CommonModule,
+    BrowserAnimationsModule,
+    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     SchedulingRoutingModule
+  ],
+  exports: [
+    CalendarSingleComponent
   ]
 })
 export class SchedulingModule { }

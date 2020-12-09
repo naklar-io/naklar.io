@@ -70,6 +70,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+import { SchedulingModule } from './scheduling/scheduling.module';
 
 @NgModule({
   declarations: [
@@ -122,6 +123,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
     RouletteModule,
     MiscComponentsModule,
     NotifyModule,
+    SchedulingModule,
     // AppRoutingComponent needs to be the last routing module
     AppRoutingModule,
     // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
@@ -129,7 +131,6 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
       enabled: environment.production,
     }),
     FontAwesomeModule,
-    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
