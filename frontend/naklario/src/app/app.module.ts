@@ -68,6 +68,8 @@ import { SpinnerLoaderComponent } from './_misc_components/spinner-loader/spinne
 import { Angulartics2Module } from 'angulartics2';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { CalendarModule, DateAdapter } from 'angular-calendar';
+import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 @NgModule({
   declarations: [
@@ -127,6 +129,7 @@ import { faLock } from '@fortawesome/free-solid-svg-icons';
       enabled: environment.production,
     }),
     FontAwesomeModule,
+    CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
