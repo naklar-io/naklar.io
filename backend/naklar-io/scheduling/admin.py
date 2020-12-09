@@ -1,14 +1,13 @@
 from django.contrib import admin
 
 # Register your models here.
-from scheduling.models import ScheduledRequest, TimeSlot
+from scheduling.models import Appointment, TimeSlot
 
-admin.site.register(ScheduledRequest)
+admin.site.register(Appointment)
 
 
 @admin.register(TimeSlot)
 class TimeSlotAdmin(admin.ModelAdmin):
-    fields = ['owner', 'duration', 'start_time', 'weekly', 'available_slots']
+    fields = ['owner', 'duration', 'start_time', 'weekly']
     readonly_fields = ['available_slots']
-
 
