@@ -4,11 +4,14 @@ import {
   OnInit,
   ViewEncapsulation,
 } from "@angular/core";
+import { DateAdapter } from '@angular/material/core';
 import {
   CalendarEvent,
   CalendarView,
   CalendarWeekViewBeforeRenderEvent,
+  DAYS_OF_WEEK,
 } from "angular-calendar";
+import { CalendarWeekViewHourSegmentComponent } from 'angular-calendar/modules/week/calendar-week-view-hour-segment.component';
 
 @Component({
   selector: "scheduling-calendar-single",
@@ -20,6 +23,7 @@ import {
 export class CalendarSingleComponent implements OnInit {
   public viewDate: Date = new Date();
   public events: CalendarEvent[] = [];
+  weekStartsOn: number = 1;
 
   clickedDate: Date;
 
