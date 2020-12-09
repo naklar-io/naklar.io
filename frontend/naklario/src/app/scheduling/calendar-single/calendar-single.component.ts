@@ -23,21 +23,17 @@ export class CalendarSingleComponent implements OnInit {
 
   clickedDate: Date;
 
-  
-
-
   //Hier wird gerendert welche Slots verfügbar sind und welche nicht
   beforeWeekViewRender(renderEvent: CalendarWeekViewBeforeRenderEvent) {
     renderEvent.hourColumns.forEach((hourColumn) => {
       hourColumn.hours.forEach((hour) => {
         hour.segments.forEach((segment) => {
           if (
-            (segment.date.getHours() >= 14 ||
-            segment.date.getHours() <= 10) &&
-            segment.date.getDay() === 2
-            || segment.date.getDay() != 2
+            ((segment.date.getHours() >= 14 || segment.date.getHours() <= 10) &&
+              segment.date.getDay() === 2) ||
+            segment.date.getDay() != 2
           ) {
-            segment.cssClass = 'bg-disabled';
+            segment.cssClass = "bg-disabled";
           }
         });
       });
