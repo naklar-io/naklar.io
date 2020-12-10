@@ -23,7 +23,7 @@ import { CalendarWeekViewHourSegmentComponent } from 'angular-calendar/modules/w
 export class CalendarSingleComponent implements OnInit {
   public viewDate: Date = new Date();
   public events: CalendarEvent[] = [];
-  weekStartsOn: number = 1;
+  weekStartsOn: number = this.viewDate.getDay();
 
   clickedDate: Date;
 
@@ -35,7 +35,7 @@ export class CalendarSingleComponent implements OnInit {
           if (
             ((segment.date.getHours() >= 14 || segment.date.getHours() <= 10) &&
               segment.date.getDay() === 2) ||
-            segment.date.getDay() != 2
+            segment.date.getDay() <= 2
           ) {
             segment.cssClass = "bg-disabled";
           }
