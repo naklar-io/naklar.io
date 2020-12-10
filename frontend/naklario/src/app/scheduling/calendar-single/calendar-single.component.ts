@@ -11,6 +11,7 @@ import {
   CalendarWeekViewBeforeRenderEvent,
   DAYS_OF_WEEK,
 } from "angular-calendar";
+import { addDays, addHours, startOfDay } from 'date-fns';
 import { CalendarWeekViewHourSegmentComponent } from 'angular-calendar/modules/week/calendar-week-view-hour-segment.component';
 
 @Component({
@@ -22,7 +23,9 @@ import { CalendarWeekViewHourSegmentComponent } from 'angular-calendar/modules/w
 })
 export class CalendarSingleComponent implements OnInit {
   public viewDate: Date = new Date();
-  public events: CalendarEvent[] = [];
+  public events: CalendarEvent[] = [
+  ];
+  locale: string = 'de';
   weekStartsOn: number = this.viewDate.getDay();
 
   clickedDate: Date;

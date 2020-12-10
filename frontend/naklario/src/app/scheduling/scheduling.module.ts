@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { registerLocaleData } from '@angular/common';
+import localeDe from '@angular/common/locales/de';
 
 import { SchedulingRoutingModule } from './scheduling-routing.module';
 import { CalendarSingleComponent } from './calendar-single/calendar-single.component';
@@ -8,6 +10,7 @@ import { CalendarModule, CalendarWeekViewComponent, DateAdapter } from 'angular-
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarMultiComponent } from './calendar-multi/calendar-multi.component';
 
+registerLocaleData(localeDe);
 
 @NgModule({
   declarations: [
