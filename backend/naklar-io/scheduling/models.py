@@ -19,7 +19,6 @@ class TimeSlot(models.Model):
 
     weekly = models.BooleanField(default=True)
 
-    @property
     def available_slots(self, weeks=4) -> list['AvailableSlot']:
         now = timezone.now()
         start_time = self.start_time
@@ -32,17 +31,16 @@ class TimeSlot(models.Model):
             else:
                 return []
 
-        week_end = start_time + timedelta(weeks=1)
         weeks = weeks if self.weekly else 1
         for i in range(0, weeks):
             base_time = start_time + timedelta(weeks=i)
+            week_end = base_time + timedelta(weeks=1)
             current_time = base_time
-            for request in self.appointment_set.filter(
-                    start_time__gte=current_time, start_time__lt=week_end
-            ).order_by('start_time'):
-                if request.start_time > current_time:
-                    slots.append(AvailableSlot(self, current_time, request.start_time - current_time))
-                current_time = request.end_time
+            for request in self.appointment_set.all():
+                if request.start_time >= base_time and request.end_time < week_end:
+                    if request.start_time > current_time:
+                        slots.append(AvailableSlot(self, current_time, request.start_time - current_time))
+                    current_time = request.end_time
             if (current_time - base_time) < self.duration:
                 slots.append(AvailableSlot(self, current_time, self.duration - (current_time - base_time)))
         return slots

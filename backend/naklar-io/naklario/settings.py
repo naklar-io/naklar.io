@@ -30,7 +30,7 @@ EMAIL_PORT = "1025"
 EMAIL_BACKEND = 'post_office.EmailBackend'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb
-
+INTERNAL_IPS = ['127.0.0.1', '172.20.0.8', '172.16.0.0/12']
 
 API_HOST = "http://localhost:8000"
 HOST = "http://localhost:4000"
@@ -38,7 +38,7 @@ HOST = "http://localhost:4000"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', ]
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:4000",
@@ -64,7 +64,7 @@ SWAGGER_SETTINGS = {
 # Rest framework
 REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
-         'djangorestframework_camel_case.parser.CamelCaseFormParser',
+        'djangorestframework_camel_case.parser.CamelCaseFormParser',
         'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
         # 'rest_framework.parsers.JSONParser',
@@ -75,7 +75,7 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
         # 'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-      
+
         #        'rest_framework_xml.renderers.XMLRenderer',
     ],
     'JSON_UNDERSCOREIZE': {
@@ -110,6 +110,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_base64',
     'django_celery_beat',
+    'debug_toolbar',
     # our components
     'account',
     'scheduling',
@@ -119,8 +120,7 @@ INSTALLED_APPS = [
     # 3rd party that needs to load last
     'post_office',
     'push_notifications',
-    'multiselectfield'
-    
+    'multiselectfield',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +131,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -188,7 +189,6 @@ WSGI_APPLICATION = 'naklario.wsgi.application'
 
 ASGI_APPLICATION = 'naklario.routing.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
@@ -198,7 +198,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -218,7 +217,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -232,13 +230,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/opt/static/'
-
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = '/opt/media/'
@@ -266,7 +262,8 @@ CHANNEL_LAYERS = {
 
 # as we're using CELERY
 POST_OFFICE = {
-    'DEFAULT_PRIORITY': 'medium'
+    'DEFAULT_PRIORITY': 'medium',
+    'CELERY_ENABLED': True
 }
 
 try:
