@@ -5,9 +5,10 @@ from django.contrib.auth.admin import UserAdmin
 from django.http import HttpResponse
 from django.utils.translation import gettext as _
 
+from _shared.admin import SingletonModelAdmin
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import (CustomUser, SchoolData, SchoolType, State, StudentData,
-                     Subject, TutorData)
+                     Subject, TutorData, TrackingDenyCounter)
 
 admin.site.register(SchoolData)
 admin.site.register(SchoolType)
@@ -136,3 +137,4 @@ class CustomUserAdmin(UserAdmin, ExportCsvMixin):
 
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(TrackingDenyCounter, SingletonModelAdmin)

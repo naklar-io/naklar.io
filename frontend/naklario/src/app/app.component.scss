@@ -4,6 +4,7 @@
 }
 
 #app {
+  width: 100%;
 }
 
 #app > header {
@@ -12,7 +13,4 @@
   top: 0;
   border-bottom: 4px solid var(--orange);
   z-index: 999;
-}
-
-#app > main {
 }

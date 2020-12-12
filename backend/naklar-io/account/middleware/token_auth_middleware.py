@@ -25,45 +25,25 @@ def authenticate_user(token_auth: TokenAuthentication, token: bytes):
 
 # some reference: https://gist.github.com/rluts/22e05ed8f53f97bdd02eafdf38f3d60a#gistcomment-3440304
 
-class TokenAuthMiddleware:
-    """
-    Custom auth middleware using rest-tokens
-    """
 
-    def __init__(self, inner):
-        # Store the ASGI application we were passed
-        self.inner = inner
+class TokenAuthMiddleware:
+    def __init__(self, app):
+        self.app = app
         self.auth = TokenAuthentication()
 
-    def __call__(self, scope):
-        return TokenAuthMiddlewareInstance(scope, self)
-
-
-class TokenAuthMiddlewareInstance:
-    def __init__(self, scope, middleware):
-        self.middleware = middleware
-        self.scope = dict(scope)
-        self.inner = self.middleware.inner
-
-    async def __call__(self, receive, send):
-        # Close old database connections to prevent usage of timed out connections
-        sync_to_async(close_old_connections)()
+    async def __call__(self, scope, receive, send):
+        self.scope = scope
 
         if self.scope.get("user") and self.scope.get("user").is_active():
-            inner = self.inner(dict(self.scope), user=self.scope.get("user"))
-            return await inner(receive, send)
+            return await self.app(scope, receive, send)
         query = dict((x.split(b'=') for x in self.scope['query_string'].split(b"&")))
         if b"token" in query:
             token = query[b"token"]
             try: 
-                user, auth_token = await authenticate_user(self.middleware.auth, token)
+                user, auth_token = await authenticate_user(self.auth, token)
             except Exception as e:
                 logger.error("Couldn't authenticate user!")
                 user = AnonymousUser()
-            # Return the inner application directly and let it run everything else
-            inner = self.inner(dict(self.scope, user=user))
-            return await inner(receive, send)
-        inner = self.inner(dict(self.scope, user=AnonymousUser())) 
-        return await inner(receive, send)
+        scope["user"] = user
+        return await self.app(scope, receive, send)
 
-TokenAuthMiddlewareStack = lambda inner: TokenAuthMiddleware(AuthMiddlewareStack(inner))

@@ -11,10 +11,11 @@ from rest_framework import exceptions, generics, mixins, permissions
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListCreateAPIView, get_object_or_404
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 
-from roulette.models import Feedback, Report
+from roulette.models import Feedback, Report, MatchRejectReasons
 from roulette.serializers import FeedbackSerializer, ReportSerializer
 
 from .models import Match, Meeting, Request, StudentRequest, TutorRequest
@@ -92,7 +93,8 @@ class AccessPermission(permissions.BasePermission):
         return type is None
 
 
-class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generics.RetrieveAPIView, generics.DestroyAPIView):
+class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generics.RetrieveAPIView,
+                  generics.DestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, AccessPermission]
 
     def perform_create(self, serializer):
@@ -112,6 +114,7 @@ class MeetingListView(generics.ListAPIView):
     serializer_class = MeetingSerializer
     queryset = Meeting.objects.all()
     filter_backends = [DjangoFilterBackend]
+    pagination_class = LimitOffsetPagination
     filterset_fields = ['ended']
 
     def get_queryset(self):
@@ -155,6 +158,7 @@ class FeedbackListView(generics.ListCreateAPIView):
 
         serializer.save(provider=provider, receiver=receiver)
 
+
 class FeedbackDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = FeedbackSerializer
@@ -164,20 +168,22 @@ class FeedbackDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return self.queryset.filter(Q(provider=self.request.user) | Q(receiver=self.request.user))
 
+
 class MeetingDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = MeetingSerializer
     queryset = Meeting.objects.all()
     lookup_field = 'meeting_id'
-    
+
     def get_queryset(self):
         return self.queryset.filter(users=self.request.user)
+
 
 match_answer_param = openapi.Parameter(
     'agree', openapi.IN_BODY, 'Agree with Match?', required=True, schema=openapi.Schema(type=openapi.TYPE_BOOLEAN))
 
 schema = openapi.Schema(type=openapi.TYPE_OBJECT, properties={
-                        'agree': openapi.Schema(type=openapi.TYPE_BOOLEAN)})
+    'agree': openapi.Schema(type=openapi.TYPE_BOOLEAN)})
 
 type_parameter = openapi.Parameter('type', openapi.IN_PATH, description='User type',
                                    required=True, type=openapi.TYPE_STRING, enum=['student', 'tutor'], )
@@ -203,8 +209,7 @@ def match_answer(request, uuid, type):
         # user is student
         match.student_agree = agree
         if not agree:
-            match.delete()
-
+            match.deactivate(MatchRejectReasons.STUDENT_REJECT)
         else:
             match.save()
         return Response({'success': True})
@@ -212,7 +217,7 @@ def match_answer(request, uuid, type):
         # user is tutor
         match.tutor_agree = agree
         if not agree:
-            match.delete()
+            match.deactivate(MatchRejectReasons.TUTOR_REJECT)
         else:
             match.save()
         return Response({'success': True})
@@ -306,8 +311,10 @@ def answer_request(request, id, type):
 
     return Response(MatchSerializer(instance=match).data)
 
+
 class OnlineThrottle(UserRateThrottle):
     rate = '20/minute'
+
 
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
@@ -316,7 +323,8 @@ def get_online_subjects(request):
     if hasattr(request.user, 'studentdata'):
         # Get all matching tutor requests, and their subjects.
         # this is very simple right now, as we're only 'hard-matching' on the subjects
-        queryset = Subject.objects.filter(tutordata__user__tutorrequest__is_active=True).distinct()
+        queryset = Subject.objects.filter(tutordata__user__tutorrequest__is_active=True,
+                                          ).exclude(tutordata__user__tutor_meetings__ended=False).distinct()
         return Response(SubjectSerializer(queryset, many=True).data)
     else:
         raise exceptions.NotAcceptable(detail={"studentdata": "User needs studentdata!"})

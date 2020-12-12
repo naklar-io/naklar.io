@@ -1,3 +1,4 @@
+from django.db.models import F
 from drf_yasg import openapi
 from drf_yasg.utils import get_serializer_class, swagger_auto_schema
 from knox.views import LoginView as KnoxLoginView
@@ -13,7 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from account.models import (CustomUser, PasswordResetToken, SchoolData,
                             SchoolType, State, Subject, TutorData,
-                            VerificationToken)
+                            VerificationToken, TrackingDenyCounter)
 from account.permissions import IsUser
 from account.serializers import (CurrentUserSerializer, CustomUserSerializer,
                                  PasswordResetRequestSerializer,
@@ -154,3 +155,11 @@ def password_reset_verify(request, token):
         # delete token after usage
         token.delete()
         return Response({"success": True})
+
+
+@api_view(['POST'])
+def send_tracking_deny(request):
+    counter = TrackingDenyCounter.load()
+    counter.count = F('count') + 1
+    counter.save()
+    return Response({})

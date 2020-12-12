@@ -6,7 +6,7 @@ from account import views
 from account.views import (CurrentUserView, CustomUserCreateView,
                            CustomUserView, LoginView, SchoolDataList,
                            SchoolTypeList, StateList, SubjectList,
-                           UploadVerificationView)
+                           UploadVerificationView, send_tracking_deny)
 
 app_name = 'account'
 
@@ -27,4 +27,5 @@ urlpatterns = [
     path('login/', LoginView.as_view(), name='knox_login'),
     path('logout/', knox_views.LogoutView.as_view(), name='knox_logout'),
     path('logoutall/', knox_views.LogoutAllView.as_view(), name='knox_logoutall'),
+    path('count-tracking-deny/', send_tracking_deny, name='count_tracking_deny')
 ]

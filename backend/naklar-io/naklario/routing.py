@@ -1,9 +1,10 @@
 
 from channels.routing import ProtocolTypeRouter, URLRouter
+from django.core.asgi import get_asgi_application
 
 import roulette.routing
 from django.urls import include, path
-from account.middleware.token_auth_middleware import TokenAuthMiddlewareStack
+from account.middleware.token_auth_middleware import TokenAuthMiddleware
 
 socketroutes = [
     path("roulette",
@@ -11,6 +12,6 @@ socketroutes = [
 ]
 
 application = ProtocolTypeRouter({
-    # 'http': URLRouter(roulette.routing.urlpatterns),
-    'websocket': TokenAuthMiddlewareStack(URLRouter(socketroutes))
+    'http': get_asgi_application(),
+    'websocket': TokenAuthMiddleware(URLRouter(socketroutes))
 })

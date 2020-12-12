@@ -1,0 +1,73 @@
+.card {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    padding: 20px;
+    box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12); 
+    color: #3a3a3a;
+    border-radius: 12px;
+    font-size: .9rem;
+    max-height: 100%;
+    overflow: auto;
+    pointer-events: all;
+}
+
+.mymodal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 15px;
+    z-index: 2000;
+    // animation-name: popIn;
+    animation-duration: 500ms;
+    pointer-events: none;
+    // transition: transform 500ms cubic-bezier(.18,.89,.32,1.28);
+}
+
+@keyframes popIn {
+    from {transform: translateY(100%);}
+    to {transform: translateY(0);}
+}
+
+@media(min-width: 400px) {
+    .card {
+        margin-left: 24px;
+        margin-right: 24px;
+    }
+}
+
+@media(min-width: 1440px) {
+    .card {
+        margin-left: 80px;
+        margin-right: 80px;
+    }
+}
+
+.btn {
+    margin: .2em;
+    font-size: 1rem;
+    flex-basis: 230px;
+}
+
+.btn:first-child {
+    margin-right: auto;
+}
+
+.btns {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media(max-width: 1000px) {
+    .btns {
+        flex-wrap: wrap-reverse;
+    }
+    .btn {
+        flex-basis: 99999px;
+    }
+}

@@ -50,11 +50,12 @@ class MatchSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Match
         fields = ['uuid', 'student_agree', 'tutor_agree',
-                  'tutor', 'student', 'subject']
+                  'tutor', 'student', 'subject', 'failed', 'fail_reason']
+        read_only_fields = fields
 
 
 class TutorRequestSerializer(serializers.ModelSerializer):
-    match = MatchSerializer(required=False)
+    match = MatchSerializer(required=False, source='get_match')
 
     class Meta:
         model = TutorRequest
@@ -63,7 +64,7 @@ class TutorRequestSerializer(serializers.ModelSerializer):
 
 
 class StudentRequestSerializer(serializers.ModelSerializer):
-    match = MatchSerializer(required=False)
+    match = MatchSerializer(required=False, source='get_match')
 
     class Meta:
         model = StudentRequest

@@ -15,6 +15,12 @@ import { AudioAutoplayComponent } from './audio-autoplay/audio-autoplay.componen
 import { SpinnerLoaderComponent } from './spinner-loader/spinner-loader.component';
 import { SocialIconsComponent } from './social-icons/social-icons.component';
 import { CapitalizePipe } from './capitalize.pipe';
+import { CookieBannerComponent } from './cookie-banner/cookie-banner.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { FormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
@@ -28,9 +34,10 @@ import { CapitalizePipe } from './capitalize.pipe';
     CloseModalDirective,
     SpinnerLoaderComponent,
     SocialIconsComponent,
-    CapitalizePipe
+    CapitalizePipe,
+    CookieBannerComponent
   ],
-  imports: [CommonModule, NgbModule],
+  imports: [CommonModule, NgbModule, FontAwesomeModule, FormsModule, BrowserModule, BrowserAnimationsModule, RouterModule],
   exports: [
     ImgUploadComponent,
     ToastsComponent,
@@ -42,7 +49,8 @@ import { CapitalizePipe } from './capitalize.pipe';
     AudioAutoplayComponent,
     CloseModalDirective,
     SpinnerLoaderComponent,
-    SocialIconsComponent
+    SocialIconsComponent,
+    CookieBannerComponent
   ],
 })
 export class MiscComponentsModule {}
