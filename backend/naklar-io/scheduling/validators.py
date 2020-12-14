@@ -16,15 +16,13 @@ from rest_framework import serializers
 def validate_duration(value: timedelta):
     if value.total_seconds() == 0:
         raise ValidationError(_("Duration can't be 0!"))
-    if value.seconds % (15 * 60) != 0:
-        raise ValidationError(_('Duration needs to be a multiple of 15 minutes!'))
+    if value.seconds % (30 * 60) != 0:
+        raise ValidationError(_('Duration needs to be a multiple of 30 minutes!'))
 
 
 def validate_start_time(value: datetime):
-    if value.minute % 15 != 0 or value.second > 0 and value.microsecond > 0:
-        raise ValidationError(_('Start time needs to be at a multiple of 15 minutes!'))
-    if value <= timezone.now():
-        raise ValidationError(_('Start time needs to be in the future!'))
+    if value.minute % 30 != 0 or value.second > 0 and value.microsecond > 0:
+        raise ValidationError(_('Start time needs to be at a multiple of 30 minutes!'))
 
 
 class AppointmentValidator:
@@ -37,6 +35,9 @@ class AppointmentValidator:
         timeslot: 'TimeSlot' = data["timeslot"]
         start_time: datetime = data["start_time"]
         duration: timedelta = data["duration"]
+        # this means we haven't got a timeslot yet. Trust on the view to do the creation
+        if not timeslot:
+            return
         end_time = start_time + duration
         queryset = self.queryset
         if serializer.instance:

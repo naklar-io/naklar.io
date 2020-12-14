@@ -1,9 +1,8 @@
 from django.db.models import F
 from drf_yasg import openapi
-from drf_yasg.utils import get_serializer_class, swagger_auto_schema
+from drf_yasg.utils import swagger_auto_schema
 from knox.views import LoginView as KnoxLoginView
-from rest_framework import (exceptions, generics, permissions, serializers,
-                            status, mixins, viewsets)
+from rest_framework import (exceptions, generics, permissions, status, viewsets)
 from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
@@ -15,12 +14,10 @@ from rest_framework.viewsets import ModelViewSet
 from account.models import (CustomUser, PasswordResetToken, SchoolData,
                             SchoolType, State, Subject, TutorData,
                             VerificationToken, TrackingDenyCounter)
-from account.permissions import IsUser
 from account.serializers import (CurrentUserSerializer, CustomUserSerializer,
                                  PasswordResetRequestSerializer,
                                  SchoolDataSerializer, SchoolTypeSerializer,
-                                 StateSerializer, SubjectSerializer,
-                                 TutorDataSerializer)
+                                 StateSerializer, SubjectSerializer)
 
 
 class LoginView(KnoxLoginView):
@@ -67,7 +64,9 @@ class CustomUserCreateView(generics.CreateAPIView):
 
 class CurrentUserView(ModelViewSet):
     serializer_class = CurrentUserSerializer
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects. \
+        select_related('tutordata', 'studentdata', 'state'). \
+        prefetch_related('tutordata__subjects', 'tutordata__schooldata').all()
 
     def get_object(self):
         return self.request.user
@@ -82,7 +81,7 @@ verification_file_parameter = openapi.Parameter(
 class UploadVerificationView(APIView):
     serializer_class = CurrentUserSerializer
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = (MultiPartParser, FormParser, )
+    parser_classes = (MultiPartParser, FormParser,)
 
     @swagger_auto_schema(manual_parameters=[verification_file_parameter])
     def post(self, request, format=None):
@@ -139,6 +138,7 @@ def password_reset_request(request):
     if serializer.is_valid():
         serializer.save()
     return Response({"success": True})
+
 
 @swagger_auto_schema(method='POST', request_body=openapi.Schema(type=openapi.TYPE_OBJECT, properties={
     'password': openapi.Schema(type=openapi.TYPE_STRING)}))

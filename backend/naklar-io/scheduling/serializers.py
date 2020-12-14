@@ -1,11 +1,14 @@
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CurrentUserDefault, DateTimeField, DurationField, HiddenField, UUIDField
+from rest_framework.fields import CurrentUserDefault, DateTimeField, DurationField, HiddenField, UUIDField, \
+    CreateOnlyDefault, ListField, IntegerField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
 from _shared.serializers import DynamicFieldsModelSerializer, DynamicReadOnlyFieldsModelSerializer
 from scheduling import models, validators
-from scheduling.models import Appointment
+from scheduling.models import Appointment, TimeSlot
+from account import serializers as account_serializers
 
 
 class TimeSlotSerializer(DynamicFieldsModelSerializer):
@@ -22,12 +25,7 @@ class TimeSlotSerializer(DynamicFieldsModelSerializer):
 
 
 class FullAppointmentSerializer(ModelSerializer):
-    def validate_timeslot(self, timeslot):
-        if timeslot is None:
-            # this is where our matching algorithm comes into play!?!
-            print(self.initial_data)
-
-        return timeslot
+    invitee = UUIDField(source='invitee.uuid', read_only=True)
 
     def create(self, validated_data):
         user = self.context["request"].user
@@ -36,15 +34,18 @@ class FullAppointmentSerializer(ModelSerializer):
 
     class Meta:
         model = models.Appointment
-        fields = ['id', 'owner', 'timeslot', 'start_time', 'duration', 'subject', 'topic']
+        fields = [
+            'id', 'owner', 'timeslot', 'start_time', 'duration', 'subject', 'topic', 'invitee', 'is_confirmed'
+        ]
         extra_kwargs = {
             # 'owner': {'pk_field': UUIDField(source='uuid')}
             # 'owner': {'view_name': 'account:user_view', 'lookup_field': 'uuid'},
             # 'timeslot': {'view_name': 'scheduling:timeslot-detail'},
             # 'subject': {'view_name': 'account:subject-detail'},
-            'timeslot': {'allow_null': True}
+            'timeslot': {'allow_null': True},
+            'subject': {'allow_null': False},
         }
-        read_only_fields = ['owner']
+        read_only_fields = ['owner', 'invitee']
         validators = [
             validators.AppointmentValidator(
                 queryset=Appointment.objects.all()
@@ -66,6 +67,7 @@ class AvailableSlotSerializer(Serializer):
         pass
 
     # parent = TimeSlotSerializer(fields=['owner'])
-    owner = UUIDField(source='parent.owner.uuid')
+    owner = UUIDField(source='parent.owner_id')
     start_time = DateTimeField(read_only=True)
     duration = DurationField(read_only=True)
+    # subjects = PrimaryKeyRelatedField(source='parent.owner.tutordata.subjects.all', read_only=True, many=True)

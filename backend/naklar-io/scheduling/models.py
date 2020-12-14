@@ -1,11 +1,8 @@
-import math
 from dataclasses import dataclass
 from datetime import timedelta, datetime
-from typing import Optional
 
-from django.db import models
 from django.conf import settings as dj_settings
-from django.db.models import QuerySet
+from django.db import models
 from django.utils import timezone
 
 from scheduling import validators, util
@@ -67,6 +64,10 @@ class Appointment(models.Model):
 
     topic = models.CharField(max_length=255, blank=True)
 
+    is_confirmed = models.BooleanField(default=False)
+
+    meeting = models.ForeignKey(to='roulette.Meeting', on_delete=models.SET_NULL, null=True, blank=True)
+
     @classmethod
     def book_available(cls, slot: 'AvailableSlot', duration, **kwargs):
         return cls.objects.create(timeslot=slot.parent, start_time=slot.start_time, duration=duration, **kwargs)
@@ -78,6 +79,10 @@ class Appointment(models.Model):
     @property
     def end_time(self):
         return self.start_time + self.duration
+
+    @property
+    def invitee(self):
+        return self.timeslot.owner
 
     def check_in_range(self) -> bool:
         now = timezone.now()
@@ -96,6 +101,32 @@ class Appointment(models.Model):
                 collisions.append(appointment)
 
         return collisions
+
+    def send_confirmed(self):
+        print(f'sending confirmation to owner: {self.owner.email}')
+        pass
+
+    def send_confirmation_request(self):
+        print(f'sending confirmation request to invitee {self.invitee.email}')
+        pass
+
+    def handle_rejection(self, rejecting_party):
+        """Handle rejection of appointment from either party
+        If the ::rejecting_party is the owner, don't search for another possible timeslot
+        Otherwise try to match a new party!
+        """
+        if rejecting_party == self.owner:
+            print("Sending rejection notification to timeslot owner and deleting appointment")
+        elif rejecting_party == self.timeslot.owner:
+            new_slot = util.find_matching_timeslot(self.start_time, self.duration, self.subject, self.owner,
+                                                   TimeSlot.objects.exclude(owner=self.timeslot.owner))
+            if new_slot:
+                self.timeslot = new_slot
+                self.save()
+                self.send_confirmation_request()
+            else:
+                print("Send rejection notification to owner and delete appointment")
+                self.delete()
 
     class Meta:
         constraints = [
