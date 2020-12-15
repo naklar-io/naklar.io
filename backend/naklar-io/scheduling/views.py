@@ -29,6 +29,11 @@ class IsSlotOwner(permissions.BasePermission):
         return request.user == obj.timeslot.owner
 
 
+class BelongsToAppointment(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.invitee or request.user == obj.owner
+
+
 class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = TimeSlot.objects.prefetch_related(
         Prefetch('appointment_set', queryset=Appointment.objects.filter(start_time__gte=Now())),
@@ -68,23 +73,38 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[IsSlotOwner])
     def accept(self, request, pk=None):
         appointment = self.get_object()
-        if not appointment.is_confirmed:
-            appointment.is_confirmed = True
+        if appointment.status == Appointment.Status.REQUESTED:
+            appointment.status = Appointment.Status.CONFIRMED
             appointment.save()
             appointment.send_confirmed()
         return Response(data=self.get_serializer(instance=appointment).data)
 
-    @action(detail=True, methods=['delete', 'post'], permission_classes=[IsSlotOwner, IsOwnerOrReadOnly])
+    @action(detail=True, methods=['delete', 'post'], permission_classes=[BelongsToAppointment])
     def reject(self, request, pk=None):
         appointment = self.get_object()
         appointment.handle_rejection(self.request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['post'], permission_classes=[IsSlotOwner, IsOwnerOrReadOnly])
+    @action(detail=True, methods=['post'], permission_classes=[BelongsToAppointment])
     def start_meeting(self, request, pk=None):
+        from roulette.models import Meeting
         appointment = self.get_object()
         if appointment.meeting:
-            return Meeting
+            meeting = appointment.meeting
+        else:
+            meeting = Meeting.objects.create()
+            meeting.users.add(appointment.owner, appointment.invitee)
+            appointment.meeting = meeting
+        if self.request.user == appointment.owner:
+            appointment.status = Appointment.Status.BOTH_STARTED \
+                if appointment.status == Appointment.Status.INVITEE_STARTED else Appointment.Status.OWNER_STARTED
+        elif self.request.user == appointment.invitee:
+            appointment.status = Appointment.Status.BOTH_STARTED \
+                if appointment.status == Appointment.Status.OWNER_STARTED else Appointment.Status.INVITEE_STARTED
+        appointment.save()
+        meeting.create_meeting()
+        url = meeting.create_join_link(self.request.user, True)
+        return Response(data={'join_url': url, 'meeting_id': meeting.meeting_id})
 
     def perform_create(self, serializer: Serializer):
         if not serializer.validated_data['timeslot']:

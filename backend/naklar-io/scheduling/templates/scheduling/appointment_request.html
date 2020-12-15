@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminanfrage von {{ appointment.owner.first_name }} - {{ appointment.subject.name }}</title>
+</head>
+<body>
+<p>Hi {{ appointment.invitee.first_name }},</p>
+<p>{{ appointment.owner.first_name }} fragt folgenden Termin bei dir an:</p>
+<p>{{ appointment.subject }}: Von {{ appointment.start_time }} - {{ appointment.end_time|time }}</p>
+{% if appointment.topic %}
+    <span>Thema: {{ appointment.topic }}</span>
+{% endif %}
+<p>Bitte reagiere innerhalb von 30 Minuten auf diese Anfrage</p>
+<a href="{% url 'scheduling:appointment-accept' appointment.id %}">Annehmen</a>
+<a href="{% url 'scheduling:appointment-reject' appointment.id %}">Ablehnen</a>
+
+<p>
+    Viele Grüße<br>
+    Dein Team von naklar.io
+</p>
+
+</body>
+</html>

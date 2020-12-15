@@ -6,5 +6,5 @@ from scheduling.models import Appointment
 
 @receiver(signal=post_save, sender=Appointment, dispatch_uid='appointment_created')
 def appointment_created(instance: Appointment, sender, created, **kwargs):
-    if created and not instance.is_confirmed:
+    if created and instance.status == Appointment.Status.REQUESTED:
         instance.send_confirmation_request()

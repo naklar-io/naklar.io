@@ -10,22 +10,6 @@ from notify.serializers import (NotificationSerializer,
                                 NotificationSettingsSerializer)
 
 
-"""
-Not used, as a User can only have ONE notification settings ATM, but may change in the future
-
-class NotificationSettingsViewSet(viewsets.ModelViewSet):
-    serializer_class = NotificationSettingsSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = NotificationSettings.objects.all()
-
-    def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        return serializer.save(user=self.request.user)
-"""
-
-
 class NotificationSettingsView(generics.RetrieveUpdateDestroyAPIView, generics.CreateAPIView):
     serializer_class = NotificationSettingsSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -44,10 +28,14 @@ class NotificationSettingsView(generics.RetrieveUpdateDestroyAPIView, generics.C
         return serializer.save(user=self.request.user)
 
 
-class NotificationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
+class NotificationViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
     permission_classes = [permissions.IsAuthenticated]
     queryset = Notification.objects.all()
     serializer_class = NotificationSerializer
+
+
     
     def get_queryset(self):
         return self.queryset.filter(user__pk=self.request.user.pk)

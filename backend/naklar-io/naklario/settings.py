@@ -103,6 +103,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'knox',
     # 3rd party libs
     'channels',
@@ -118,6 +119,7 @@ INSTALLED_APPS = [
     'landing',
     'notify',
     # 3rd party that needs to load last
+    'simple_history',
     'post_office',
     'push_notifications',
     'multiselectfield',
@@ -133,6 +135,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'naklario.urls'

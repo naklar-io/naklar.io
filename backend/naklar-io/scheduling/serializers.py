@@ -1,14 +1,11 @@
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CurrentUserDefault, DateTimeField, DurationField, HiddenField, UUIDField, \
-    CreateOnlyDefault, ListField, IntegerField
-from rest_framework.relations import PrimaryKeyRelatedField
+from rest_framework.fields import DateTimeField, DurationField, UUIDField
 from rest_framework.serializers import Serializer, ModelSerializer
 from rest_framework.validators import UniqueTogetherValidator
 
-from _shared.serializers import DynamicFieldsModelSerializer, DynamicReadOnlyFieldsModelSerializer
+from _shared.serializers import DynamicFieldsModelSerializer
 from scheduling import models, validators
-from scheduling.models import Appointment, TimeSlot
-from account import serializers as account_serializers
+from scheduling.models import Appointment
 
 
 class TimeSlotSerializer(DynamicFieldsModelSerializer):
@@ -35,17 +32,13 @@ class FullAppointmentSerializer(ModelSerializer):
     class Meta:
         model = models.Appointment
         fields = [
-            'id', 'owner', 'timeslot', 'start_time', 'duration', 'subject', 'topic', 'invitee', 'is_confirmed'
+            'id', 'owner', 'timeslot', 'start_time', 'duration', 'subject', 'topic', 'invitee', 'status'
         ]
         extra_kwargs = {
-            # 'owner': {'pk_field': UUIDField(source='uuid')}
-            # 'owner': {'view_name': 'account:user_view', 'lookup_field': 'uuid'},
-            # 'timeslot': {'view_name': 'scheduling:timeslot-detail'},
-            # 'subject': {'view_name': 'account:subject-detail'},
             'timeslot': {'allow_null': True},
             'subject': {'allow_null': False},
         }
-        read_only_fields = ['owner', 'invitee']
+        read_only_fields = ['owner', 'invitee', 'status']
         validators = [
             validators.AppointmentValidator(
                 queryset=Appointment.objects.all()

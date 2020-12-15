@@ -1,18 +1,24 @@
 from dataclasses import dataclass
 from datetime import timedelta, datetime
+import logging
 
 from django.conf import settings as dj_settings
 from django.db import models
+from django.db.models import Q
 from django.utils import timezone
+from post_office import mail
+from simple_history.models import HistoricalRecords
 
 from scheduling import validators, util
+
+logger = logging.getLogger(__name__)
 
 
 class TimeSlot(models.Model):
     owner = models.ForeignKey(to=dj_settings.AUTH_USER_MODEL, on_delete=models.CASCADE, to_field='uuid')
 
     start_time = models.DateTimeField(validators=[validators.validate_start_time])
-    duration = models.DurationField()
+    duration = models.DurationField(validators=[validators.validate_duration])
 
     weekly = models.BooleanField(default=True)
 
@@ -33,11 +39,14 @@ class TimeSlot(models.Model):
             base_time = start_time + timedelta(weeks=i)
             week_end = base_time + timedelta(weeks=1)
             current_time = base_time
-            for request in self.appointment_set.all():
-                if request.start_time >= base_time and request.end_time < week_end:
-                    if request.start_time > current_time:
-                        slots.append(AvailableSlot(self, current_time, request.start_time - current_time))
-                    current_time = request.end_time
+            appointments = [
+                a for a in self.appointment_set.all()
+                if a.start_time >= base_time and a.end_time < week_end and not a.rejected
+            ]
+            for appointment in appointments:
+                if appointment.start_time > current_time:
+                    slots.append(AvailableSlot(self, current_time, appointment.start_time - current_time))
+                current_time = appointment.end_time
             if (current_time - base_time) < self.duration:
                 slots.append(AvailableSlot(self, current_time, self.duration - (current_time - base_time)))
         return slots
@@ -53,6 +62,18 @@ class TimeSlot(models.Model):
         super(TimeSlot, self).save(*args, **kwargs)
 
 
+class ActiveAppointmentManager(models.Manager):
+    """
+    Only returns appointments which haven't been rejected
+    """
+
+    def get_queryset(self):
+        return super(ActiveAppointmentManager, self).get_queryset().exclude(
+            Q(status=Appointment.Status.OWNER_REJECTED) |
+            Q(status=Appointment.Status.INVITEE_REJECTED)
+        ).all()
+
+
 class Appointment(models.Model):
     owner = models.ForeignKey(to=dj_settings.AUTH_USER_MODEL, on_delete=models.CASCADE, to_field='uuid')
 
@@ -64,9 +85,31 @@ class Appointment(models.Model):
 
     topic = models.CharField(max_length=255, blank=True)
 
-    is_confirmed = models.BooleanField(default=False)
-
     meeting = models.ForeignKey(to='roulette.Meeting', on_delete=models.SET_NULL, null=True, blank=True)
+
+    invitee_rejects = models.ManyToManyField(
+        to=dj_settings.AUTH_USER_MODEL, related_name='rejected_appointments', blank=True
+    )
+
+    all_objects = models.Manager()
+    objects = ActiveAppointmentManager()
+
+    class Status(models.TextChoices):
+        REQUESTED = 'REQUESTED'
+        CONFIRMED = 'CONFIRMED'
+
+        # rejection states
+        OWNER_REJECTED = 'OWNER_REJECTED'
+        INVITEE_REJECTED = 'INVITEE_REJECTED'
+
+        # meeting states
+        OWNER_STARTED = 'OWNER_STARTED'
+        INVITEE_STARTED = 'INVITEE_STARTED'
+        BOTH_STARTED = 'BOTH_STARTED'
+
+    status = models.TextField(choices=Status.choices, default=Status.REQUESTED)
+
+    history = HistoricalRecords()
 
     @classmethod
     def book_available(cls, slot: 'AvailableSlot', duration, **kwargs):
@@ -83,6 +126,10 @@ class Appointment(models.Model):
     @property
     def invitee(self):
         return self.timeslot.owner
+
+    @property
+    def rejected(self) -> bool:
+        return self.status == Appointment.Status.INVITEE_REJECTED or self.status == Appointment.Status.OWNER_REJECTED
 
     def check_in_range(self) -> bool:
         now = timezone.now()
@@ -103,12 +150,18 @@ class Appointment(models.Model):
         return collisions
 
     def send_confirmed(self):
-        print(f'sending confirmation to owner: {self.owner.email}')
-        pass
+        logger.debug(f'sending confirmation to owner: {self.owner.email}')
+        mail.send([self.owner.email], 'noreply@naklar.io', 'appointment_confirmed', context={
+            'appointment': self,
+            'confirming_party': self.invitee,
+            'other_party': self.owner
+        })
 
     def send_confirmation_request(self):
-        print(f'sending confirmation request to invitee {self.invitee.email}')
-        pass
+        logger.debug(f'sending confirmation request to invitee {self.invitee.email}')
+        mail.send([self.invitee.email], 'noreply@naklar.io', 'appointment_request', context={
+            'appointment': self
+        })
 
     def handle_rejection(self, rejecting_party):
         """Handle rejection of appointment from either party
@@ -116,21 +169,48 @@ class Appointment(models.Model):
         Otherwise try to match a new party!
         """
         if rejecting_party == self.owner:
-            print("Sending rejection notification to timeslot owner and deleting appointment")
-        elif rejecting_party == self.timeslot.owner:
+            logger.debug("Sending rejection notification to timeslot owner and updating appointment")
+            mail.send([self.invitee.email], 'noreply@naklar.io', template='appointment_rejected', context={
+                'appointment': self,
+                'rejecting_party': self.owner,
+                'other_party': self.invitee,
+                'new_try': False
+            })
+            self.status = Appointment.Status.OWNER_REJECTED
+        elif rejecting_party == self.invitee:
+            self.invitee_rejects.add(self.invitee)
+            old_status = self.status
             new_slot = util.find_matching_timeslot(self.start_time, self.duration, self.subject, self.owner,
-                                                   TimeSlot.objects.exclude(owner=self.timeslot.owner))
+                                                   TimeSlot.objects.exclude(owner__in=self.invitee_rejects.all()))
             if new_slot:
                 self.timeslot = new_slot
+                self.status = Appointment.Status.REQUESTED
                 self.save()
                 self.send_confirmation_request()
             else:
-                print("Send rejection notification to owner and delete appointment")
-                self.delete()
+                logger.debug("Send rejection notification to owner and updating appointment")
+                self.status = Appointment.Status.INVITEE_REJECTED
+            if old_status == Appointment.Status.CONFIRMED:
+                mail.send([self.owner.email], 'noreply@naklar.io', template='appointment_rejected', context={
+                    'appointment': self,
+                    'rejecting_party': self.invitee,
+                    'other_party': self.owner,
+                    'new_try': self.status == Appointment.Status.REQUESTED
+                })
+            else:
+                mail.send([self.owner.email], 'noreply@naklar.io', template='appointment_failed', context={
+                    'appointment': self,
+                    'other_party': self.owner,
+                })
+        self.save()
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['timeslot', 'start_time'], name='unique_appointment_timeslot_start_time'),
+            models.UniqueConstraint(
+                fields=['timeslot', 'start_time'],
+                name='unique_appointment_timeslot_start_time',
+                condition=~Q(Q(status='OWNER_REJECTED') | Q(status='INVITEE_REJECTED'))
+            ),
         ]
 
 

@@ -1,10 +1,14 @@
+import logging
+
 from django.apps import AppConfig
+
+logger = logging.getLogger(__name__)
 
 
 class SchedulingConfig(AppConfig):
     name = 'scheduling'
 
     def ready(self):
-        print("Loading signals")
+        logger.debug("Loading signals")
         from scheduling import signals
-        print(signals, " loaded")
+        logger.debug(f"loaded signals {signals}")
