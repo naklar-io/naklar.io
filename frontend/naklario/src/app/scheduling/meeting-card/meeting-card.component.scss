@@ -1,0 +1,13 @@
+.btns {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+@media(max-width: 1000px) {
+    .btns {
+        flex-wrap: wrap-reverse;
+    }
+    .btn {
+        flex-basis: 99999px;
+    }
+}

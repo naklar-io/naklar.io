@@ -9,13 +9,15 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CalendarModule, CalendarWeekViewComponent, DateAdapter } from 'angular-calendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarMultiComponent } from './calendar-multi/calendar-multi.component';
+import { MeetingCardComponent } from './meeting-card/meeting-card.component';
 
 registerLocaleData(localeDe);
 
 @NgModule({
   declarations: [
     CalendarSingleComponent,
-    CalendarMultiComponent
+    CalendarMultiComponent,
+    MeetingCardComponent
   ],
   imports: [
     CommonModule,
