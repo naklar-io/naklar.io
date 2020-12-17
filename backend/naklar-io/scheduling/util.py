@@ -1,5 +1,7 @@
-from datetime import datetime, timedelta
+import os
+import re
 
+from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional
 
 from django.db.models import Q, Count, QuerySet
@@ -45,3 +47,26 @@ def find_matching_timeslot(start_time: datetime, duration: timedelta,
                 return available.parent
 
     return None
+
+
+def load_email_templates(replace=False):
+    basedir = os.path.join(os.path.dirname(__file__), 'templates/scheduling/')
+    files = [os.path.join(basedir, f) for f in os.listdir(basedir)]
+    title_regex = re.compile("<title>(.*)<\/title>")
+    from post_office.models import EmailTemplate
+    for f in files:
+        name, ext = os.path.splitext(os.path.basename(f))
+        template = EmailTemplate.objects.filter(name=name)
+        if not template:
+            template = EmailTemplate.objects.create(name=name)
+        else:
+            if replace:
+                template = template.get()
+            else:
+                return
+        with open(f, 'r') as to_read:
+            content = to_read.read()
+            title = title_regex.findall(content)[0]
+            template.html_content = content
+            template.subject = title
+        template.save()

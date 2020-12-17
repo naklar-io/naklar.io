@@ -12,3 +12,9 @@ class SchedulingConfig(AppConfig):
         logger.debug("Loading signals")
         from scheduling import signals
         logger.debug(f"loaded signals {signals}")
+        from scheduling.util import load_email_templates
+        try:
+            logger.debug('loading email templates')
+            load_email_templates()
+        except:
+            logger.debug("Couldn't load email templates")

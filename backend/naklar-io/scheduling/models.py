@@ -87,6 +87,7 @@ class Appointment(models.Model):
 
     meeting = models.ForeignKey(to='roulette.Meeting', on_delete=models.SET_NULL, null=True, blank=True)
 
+    confirmation_request_time = models.DateTimeField(auto_now_add=True)
     invitee_rejects = models.ManyToManyField(
         to=dj_settings.AUTH_USER_MODEL, related_name='rejected_appointments', blank=True
     )
@@ -156,6 +157,8 @@ class Appointment(models.Model):
             'confirming_party': self.invitee,
             'other_party': self.owner
         })
+        self.confirmation_request_time = timezone.now()
+        self.save()
 
     def send_confirmation_request(self):
         logger.debug(f'sending confirmation request to invitee {self.invitee.email}')

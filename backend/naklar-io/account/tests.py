@@ -3,7 +3,7 @@ import json
 import uuid
 from django.core import mail
 from django.urls import reverse
-from django.test import override_settings
+from django.test import override_settings, modify_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -13,7 +13,8 @@ from account.models import CustomUser, SchoolData, SchoolType, State, StudentDat
 
 @override_settings(CELERY_TASK_EAGER_PROPAGATES=True,
                    CELERY_TASK_ALWAYS_EAGER=True,
-                   BROKER_BACKEND='memory')
+                   BROKER_BACKEND='memory',
+                   EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
 class AccountCreateTest(APITestCase):
     """
     Account creation test cases

@@ -5,7 +5,6 @@ verify_ssl = true
 
 [dev-packages]
 autopep8 = "*"
-django-debug-toolbar = "*"
 
 [packages]
 django = "~=3.1.0"
@@ -29,6 +28,7 @@ psycopg2 = "*"
 pillow = "*"
 channels-redis = "*"
 django-simple-history = "*"
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.9"

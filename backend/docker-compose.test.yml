@@ -3,7 +3,7 @@ version: "3.8"
 services:
   sut:
     build: .
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./manage.py test'
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./manage.py test --settings=naklario.test_settings'
     depends_on:
       - db
       - redis
