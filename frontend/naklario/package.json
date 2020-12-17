@@ -44,10 +44,12 @@
     "angulartics2": "^10.0.0",
     "bootstrap": "^4.5.2",
     "bootswatch": "^4.5.2",
+    "calendar-utils": "^0.8.3",
     "date-fns": "^2.16.1",
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.5",
     "material-design-icons": "^3.0.1",
+    "rrule": "^2.6.6",
     "rxjs": "~6.6.3",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
