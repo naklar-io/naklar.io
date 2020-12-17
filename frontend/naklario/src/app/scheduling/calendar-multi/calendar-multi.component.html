@@ -1,1 +1,12 @@
-<p>calendar-multi works!</p>
+<mwl-calendar-week-view
+  [viewDate]="viewDate"
+  [events]="events"
+  [dayStartHour]="8"
+  [dayEndHour]="22"
+  [hourSegments]="1"
+  [weekStartsOn]="weekStartsOn"
+  [locale]="locale"
+  (hourSegmentClicked)="clickedDate = $event.date"
+  [hourSegmentTemplate]="weekViewHourSegmentTemplate"
+>
+</mwl-calendar-week-view>
