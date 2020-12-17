@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminerinnerung {{ other_party.first_name }} - {{ appointment.subject }}</title>
+</head>
+<body>
+<p>Hi {{ reminded_party.first_name }},</p>
+<p>Folgender Termin mit {{ other_party.first_name }} startet in
+    <strong>{{ appointment.start_time|timeuntil }}</strong>
+</p>
+<p>{{ appointment.subject }}: Von {{ appointment.start_time }} - {{ appointment.end_time|time }}</p>
+{% if appointment.topic %}
+    <span>Thema: {{ appointment.topic }}</span>
+{% endif %}
+
+<a
+        href="{% url 'scheduling:appointment-start-meeting' appointment.id %}"
+>
+    Klicke hier, um das Meeting zu starten!
+</a>
+
+
+<p>
+    Viele Grüße<br>
+    Dein Team von naklar.io
+</p>
+
+</body>
+</html>

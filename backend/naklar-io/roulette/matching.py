@@ -96,8 +96,8 @@ def generate_notifications():
         notification__date__gte=timezone.now() - F('notificationsettings__notify_interval')).distinct()
 
     time_range_query = Q(notificationsettings__ranges__days__contains=timezone.datetime.today().weekday(),
-                         notificationsettings__ranges__start_time__lte=timezone.now().time(),
-                         notificationsettings__ranges__end_time__gte=timezone.now().time())
+                         notificationsettings__ranges__start_time__lte=timezone.now().timetz(),
+                         notificationsettings__ranges__end_time__gte=timezone.now().timetz())
 
     # now to find those whose time is in range
     all_tutors = all_tutors.filter(

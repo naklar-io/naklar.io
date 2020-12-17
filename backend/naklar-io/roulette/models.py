@@ -1,6 +1,5 @@
 import abc
 import hashlib
-import time
 import uuid
 import xml.etree.ElementTree as ET
 from datetime import timedelta
@@ -12,9 +11,9 @@ from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import models, transaction
 from django.db.models import UniqueConstraint, Q
-from django.db.models.signals import (post_delete, post_save, pre_save)
+from django.db.models.signals import (post_save, pre_save)
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -365,29 +364,25 @@ class Meeting(models.Model):
         return request
 
     def create_meeting(self):
-        if not self.is_establishing:
-            self.is_establishing = True
-            self.save()
-            parameters = {'name': 'naklar.io',
-                          'meetingID': str(self.meeting_id),
-                          'meta_endCallbackUrl': settings.API_HOST + "/roulette/meeting/end/" + str(
-                              self.meeting_id) + "/",
-                          'logoutURL': settings.HOST,
-                          'welcome': 'Herzlich willkommen bei naklar.io!'}
-            r = requests.get(self.build_api_request("create", parameters))
-            root = ET.fromstring(r.content)
-            if r.status_code == 200:
-                self.attendee_pw = root.find("attendeePW").text
-                self.moderator_pw = root.find("moderatorPW").text
-                self.established = True
-                self.is_establishing = False
-                self.time_established = timezone.now()
-            #        self._add_webhook()
-            self.save()
-        else:
-            while self.is_establishing:
-                time.sleep(0.05)
-                self.refresh_from_db(fields=['is_establishing'])
+        with transaction.atomic():
+            meeting = self.__class__.objects.select_for_update().get(pk=self.pk)
+            if not meeting.established:
+                parameters = {'name': 'naklar.io',
+                              'meetingID': str(meeting.meeting_id),
+                              'meta_endCallbackUrl': settings.API_HOST + "/roulette/meeting/end/" + str(
+                                  meeting.meeting_id) + "/",
+                              'logoutURL': settings.HOST,
+                              'welcome': 'Herzlich willkommen bei naklar.io!'}
+                r = requests.get(meeting.build_api_request("create", parameters))
+                root = ET.fromstring(r.content)
+                if r.status_code == 200:
+                    meeting.attendee_pw = root.find("attendeePW").text
+                    meeting.moderator_pw = root.find("moderatorPW").text
+                    meeting.established = True
+                    meeting.is_establishing = False
+                    meeting.time_established = timezone.now()
+            meeting.save()
+        self.refresh_from_db()
 
     def end_meeting(self, close_session=True):
         if self.ended:

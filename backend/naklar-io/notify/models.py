@@ -10,6 +10,14 @@ from push_notifications.models import WebPushDevice
 from post_office import mail
 
 
+class NotificationAction(models.Model):
+    """Makes it possible for notifications to have 'actions' or 'reactions'"""
+    notification = models.ForeignKey(to='notify.Notification', on_delete=models.CASCADE)
+
+    def execute(self):
+        pass
+
+
 class NotificationSettings(models.Model):
     """Contains notification settings for one user
     """
@@ -17,7 +25,7 @@ class NotificationSettings(models.Model):
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     enable_push = models.BooleanField(default=False)
-    enable_mail = models.BooleanField(default=False)
+    enable_mail = models.BooleanField(default=True)
 
     notify_interval = models.DurationField(
         verbose_name="Minimaler Abstand zwischen Benachrichtigungen", default=timedelta(minutes=5))
@@ -30,8 +38,13 @@ class NotificationSettings(models.Model):
         (RANGE_BLOCK, 'Während dieser Zeiten verbieten'),
     ]
     ranges_mode = models.CharField(
-        default=RANGE_ALLOW, max_length=10, choices=MODE_CHOICES)
+        default=RANGE_BLOCK, max_length=10, choices=MODE_CHOICES)
     ranges = models.ManyToManyField(to='notify.NotificationTimeRange')
+
+    @classmethod
+    def load(cls, user) -> 'NotificationSettings':
+        result, created = cls.objects.get_or_create(user=user)
+        return result
 
 
 DAY_CHOICES = (

@@ -27,6 +27,8 @@ drf-yasg = "*"
 psycopg2 = "*"
 pillow = "*"
 channels-redis = "*"
+django-simple-history = "*"
+django-debug-toolbar = "*"
 
 [requires]
 python_version = "3.9"
