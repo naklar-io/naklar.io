@@ -25,7 +25,6 @@ import { CookieBannerComponent } from './_misc_components/cookie-banner/cookie-b
 import { CalendarSingleComponent } from './scheduling/calendar-single/calendar-single.component';
 
 const routes: Routes = [
-  
   {
     path: '',
     children: [

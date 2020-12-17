@@ -9,7 +9,7 @@ const routes: Routes = [
     path: 'test',
     component: CalendarMultiComponent
   },
-]
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
