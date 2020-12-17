@@ -26,7 +26,7 @@
     "component-selector": [
       true,
       "element",
-      ["app", "roulette", "account", "notify", "home", "misc"],
+      ["app", "roulette", "account", "notify", "home", "misc", "scheduling"],
       "kebab-case"
     ],
     "eofline": true,

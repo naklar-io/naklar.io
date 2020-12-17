@@ -67,7 +67,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { SpinnerLoaderComponent } from './_misc_components/spinner-loader/spinner-loader.component';
 import { Angulartics2Module } from 'angulartics2';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { SchedulingModule } from './scheduling/scheduling.module';
@@ -146,6 +146,6 @@ import { SchedulingModule } from './scheduling/scheduling.module';
 })
 export class AppModule {
   constructor(library: FaIconLibrary) {
-    library.addIcons(faLock);
+    library.addIconPacks(fas);
   }
 }
