@@ -1,20 +1,66 @@
-
 <div class="card">
   <div class="row">
     <div class="col-12 col-md-3 align-self-center">
-      <h6>{{appointment.subject.name}} </h6><h6> {{ appointment.invitee.firstName }} {{ appointment.invitee.studentdata?.schoolData.grade }} {{ appointment.invitee.studentdata?.schoolData.schoolType.name }}</h6>
+      <h6>{{ appointment.subject.name }}</h6>
+      <h6>
+        {{ appointment.invitee.firstName }}
+        {{ appointment.invitee.studentdata?.schoolData.grade }}
+        {{ appointment.invitee.studentdata?.schoolData.schoolType.name }}
+      </h6>
     </div>
-    <div class="col-7 col-md-3 align-self-center">{{appointment.startTime|date:'d.M.yyyy'}}</div>
-    <div class="col-5 col-md-2 align-self-center">{{appointment.startTime|date:'HH:mm'}}-{{ endDate|date:'HH:mm' }} </div>
+    <div class="col-7 col-md-3 align-self-center">
+      {{ appointment.startTime | date: 'd.M.yyyy' }}
+    </div>
+    <div class="col-5 col-md-2 align-self-center">
+      {{ appointment.startTime | date: 'HH:mm' }}-{{ endDate | date: 'HH:mm' }}
+    </div>
     <div class="col-md-2 col-6 btns align-self-center">
       <!--<button type="button" class="btn btn-outline-info" disabled>Angefragt</button>
       <button type="button" class="btn btn-outline-success" disabled>Bestätigt</button> 
       <button type="button" class="btn btn-outline-danger" disabled>Abgesagt</button> 
       <button type="button" class="btn btn-outline-success" disabled>Bestätigen</button> -->
-      <button type="button" class="btn btn-success">Starten</button>
+   
+      <div *ngIf="appointment.status === 'REQUESTED'">
+        <ng-container
+          *ngIf="appointment.owner.equals(currentUser); else acceptTemplate"
+        >
+          <button type="button" class="btn btn-outline-info" disabled>
+            Angefragt
+          </button>
+        </ng-container>
+        <ng-template #acceptTemplate>
+          <button
+            type="button"
+            class="btn btn-outline-success"
+            (click)="accept()"
+          >
+            Bestätigen
+          </button>
+        </ng-template>
+      </div>
+      <div *ngIf="
+      appointment.status === 'CONFIRMED' || 
+      appointment.status === 'INVITEE_STARTED' || 
+      appointment.status === 'OWNER_STARTED' ||
+      appointment.status === 'BOTH_STARTED'">
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="start()"
+        >
+          Starten
+        </button>
+      </div>
+    
     </div>
     <div class="col-md-2 col-6 btns align-self-center">
-      <button type="button" class="btn btn-outline-secondary">Absagen</button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="reject()"
+      >
+        Absagen
+      </button>
     </div>
   </div>
 </div>
