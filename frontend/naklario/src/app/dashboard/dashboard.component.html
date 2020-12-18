@@ -1,6 +1,6 @@
 <div class="container">
   <div *ngIf="accountType === 'tutor'" class="row mb-2 justify-content-center">
-    <scheduling-meeting-card></scheduling-meeting-card>
+    <scheduling-appointment-card></scheduling-appointment-card>
     <div class="col-sm-12 col-md-8">
       <h2 class="text-primary">
         <span class="material-icons">
@@ -28,7 +28,7 @@
     </div>
   </div>
   <div *ngIf="accountType === 'student'">
-    <scheduling-meeting-card></scheduling-meeting-card>
+    <scheduling-appointment-card></scheduling-appointment-card>
     <roulette-student></roulette-student>
   </div>
 

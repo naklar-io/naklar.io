@@ -9,7 +9,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CalendarModule, CalendarWeekViewComponent, DateAdapter } from 'angular-calendar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarMultiComponent } from './calendar-multi/calendar-multi.component';
-import { MeetingCardComponent } from './meeting-card/meeting-card.component';
+import { AppointmentCardComponent } from './appointment-card/appointment-card.component';
 
 registerLocaleData(localeDe);
 
@@ -17,7 +17,7 @@ registerLocaleData(localeDe);
   declarations: [
     CalendarSingleComponent,
     CalendarMultiComponent,
-    MeetingCardComponent
+    AppointmentCardComponent
   ],
   imports: [
     CommonModule,
@@ -27,7 +27,7 @@ registerLocaleData(localeDe);
   ],
   exports: [
     CalendarSingleComponent,
-    MeetingCardComponent
+    AppointmentCardComponent
   ]
 })
 export class SchedulingModule { }
