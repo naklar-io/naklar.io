@@ -1,7 +1,7 @@
 import { EventEmitter } from '@angular/core';
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { add } from 'date-fns';
+import { add, differenceInMinutes, isAfter, isBefore, sub } from 'date-fns';
 import { User } from 'src/app/_models';
 import { Appointment } from 'src/app/_models/scheduling';
 import { AuthenticationService } from 'src/app/_services';
@@ -56,5 +56,10 @@ export class AppointmentCardComponent implements OnInit {
     this.appointments
       .reject(this.appointment.id)
       .subscribe((value) => this.appointmentChange.emit(value));
+  }
+
+  startTimeInRange() {
+    const now = new Date();
+    return differenceInMinutes(this.appointment.startTime, now) <= 15;
   }
 }
