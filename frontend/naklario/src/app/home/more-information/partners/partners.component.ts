@@ -58,6 +58,11 @@ const partnerLogos: PartnerLogo[] = [
     href: 'https://www.accenture.com/de-de',
     src: 'assets/img/partners/10 accenture.png',
     alt: 'Accenture'
+  },
+  {
+    href: 'https://de.lw.com/',
+    src: 'assets/img/partners/11 latham_and_watkins.png',
+    alt: 'Latham & Watkins LLP'
   }
 ];
 
