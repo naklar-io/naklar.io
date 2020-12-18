@@ -3,28 +3,43 @@
     <scheduling-appointment-card></scheduling-appointment-card>
     <div class="col-sm-12 col-md-8">
       <h2 class="text-primary">
-        <span class="material-icons">
-          forum
-        </span>
+        <span class="material-icons"> forum </span>
         Community-Mentalität bei naklar.io
       </h2>
       <p>
-        Hi {{ (user$ | async).firstName}}!
-        Mit deinem großartigen Engagement können wir gemeinsam Schülern helfen.
-        <strong>Die wichtigste Maxime hierbei ist das gegenseitige Vertrauen und der Respekt.</strong>
+        Hi {{ (user$ | async).firstName }}! Mit deinem großartigen Engagement
+        können wir gemeinsam Schülern helfen.
+        <strong
+          >Die wichtigste Maxime hierbei ist das gegenseitige Vertrauen und der
+          Respekt.</strong
+        >
         Wir bitten Dich gewissenhaft mit der Verantwortung, Kinder zu
         unterrichten, umzugehen. Danke!
       </p>
     </div>
   </div>
-  <div *ngIf="accountType === 'tutor'" >
+  <div *ngIf="accountType === 'tutor'">
     <div class="d-flex justify-content-center">
-      <button class="btn nabtn-primary btn-lg text-light shadow" (click)="startTutorMatching()">Jetzt Schülern helfen</button>
+      <button
+        class="btn nabtn-primary btn-lg text-light shadow"
+        (click)="startTutorMatching()"
+      >
+        Jetzt Schülern helfen
+      </button>
     </div>
     <div class="time-hint">
-      <p class="text-muted">
-        Nutze naklar.io am besten zwischen 15-17 Uhr.
-      </p>
+      <p class="text-muted">Nutze naklar.io am besten zwischen 15-17 Uhr.</p>
+    </div>
+    <hr/>
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-5">
+        <h6>Kennst du das Termintool?</h6>
+        Mit unserem Termin-Feature können Schüler, direkt eine Frage-Session mit Dir vereinbaren :) 
+      </div>
+      
+      <div class="col-12 col-sm-3">
+        <button class="btn  nabtn-primary btn-block">Verfügbarkeiten eintragen</button>
+      </div>
     </div>
   </div>
   <div *ngIf="accountType === 'student'">
@@ -32,9 +47,11 @@
     <roulette-student></roulette-student>
   </div>
 
-
-
-  <hr>
-  <misc-tutor-explanation *ngIf="accountType === 'tutor'"></misc-tutor-explanation>
-  <misc-student-explanation *ngIf="accountType === 'student'"></misc-student-explanation>
+  <hr />
+  <misc-tutor-explanation
+    *ngIf="accountType === 'tutor'"
+  ></misc-tutor-explanation>
+  <misc-student-explanation
+    *ngIf="accountType === 'student'"
+  ></misc-student-explanation>
 </div>
