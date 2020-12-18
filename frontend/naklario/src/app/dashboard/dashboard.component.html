@@ -1,6 +1,9 @@
 <div class="container">
   <div *ngIf="accountType === 'tutor'" class="row mb-2 justify-content-center">
-    <scheduling-appointment-card></scheduling-appointment-card>
+    <div class="col-12">
+      <scheduling-appointment-list></scheduling-appointment-list>
+    </div>
+    
     <div class="col-sm-12 col-md-8">
       <h2 class="text-primary">
         <span class="material-icons"> forum </span>
@@ -43,7 +46,9 @@
     </div>
   </div>
   <div *ngIf="accountType === 'student'">
-    <scheduling-appointment-card></scheduling-appointment-card>
+    <div class="col-12">
+      <scheduling-appointment-list></scheduling-appointment-list>
+    </div>
     <roulette-student></roulette-student>
   </div>
 
