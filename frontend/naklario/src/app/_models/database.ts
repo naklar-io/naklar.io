@@ -18,6 +18,7 @@ export interface SendableStudentData {
 type GenderAbbr = 'MA' | 'FE' | 'DI';
 
 export interface SendableUser {
+  uuid?: string;
   email: string;
   password: string;
   firstName: string;
@@ -71,11 +72,15 @@ export class User {
     public emailVerified: boolean,
     public gender: Gender,
     public token: string,
-    public tokenExpiry: string
+    public tokenExpiry: string,
+    public uuid?: string,
   ) {}
 
   isStudent(): boolean {
     return !this.studentdata === null;
+  }
+  public equals(otherUser: User): boolean {
+    return this.uuid === otherUser.uuid;
   }
 }
 
@@ -176,7 +181,8 @@ export function sendableToLocalUser(
     constants.genders.find((x) => x.shortcode === user.gender),
     // need to provide token / token_expiry via login
     '',
-    ''
+    '',
+    user.uuid,
   );
 }
 

@@ -25,7 +25,10 @@ export class AppointmentService implements Create<CreateAppointment, Appointment
   list(): Observable<Appointment[]> {
     return this.api.get<Appointment[]>('/scheduling/appointment/').pipe(
       switchMap((appointments) => {
-        return forkJoin(appointments.map(this.transformAppointment.bind(this)));
+        if (appointments.length > 0) {
+          return forkJoin(appointments.map(this.transformAppointment.bind(this)));
+        }
+        return [appointments];
       })
     );
   }
@@ -81,8 +84,8 @@ export class AppointmentService implements Create<CreateAppointment, Appointment
     return this.api.post(`/scheduling/appointment/${id}/accept/`, {}).pipe(mergeMap(this.transformAppointment.bind(this)));
   }
 
-  reject(id: number): Observable<Appointment> {
-    return this.api.post(`/scheduling/appointment/${id}/reject/`, {}).pipe(mergeMap(this.transformAppointment.bind(this)));
+  reject(id: number): Observable<any> {
+    return this.api.post(`/scheduling/appointment/${id}/reject/`, {});
   }
 
   startMeeting(id: number): Observable<JoinResponse> {
