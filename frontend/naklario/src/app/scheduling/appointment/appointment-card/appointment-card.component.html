@@ -53,13 +53,14 @@
       appointment.status === 'INVITEE_STARTED' || 
       appointment.status === 'OWNER_STARTED' ||
       appointment.status === 'BOTH_STARTED'">
-        <button
+        <button *ngIf='startTimeInRange()'
           type="button"
           class="btn btn-success"
           (click)="start()"
         >
           Starten
         </button>
+        <button type="button" *ngIf='!startTimeInRange()' class="btn btn-outline-success" disabled>Bestätigt</button> 
       </div>
     
     </div>

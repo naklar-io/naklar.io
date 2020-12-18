@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { compareAsc } from 'date-fns';
+import { add, compareAsc, isAfter } from 'date-fns';
 import { BehaviorSubject, combineLatest, interval, Observable } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { Appointment } from 'src/app/_models/scheduling';
 import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
 
@@ -24,7 +24,11 @@ export class AppointmentListComponent implements OnInit {
           .list()
           .pipe(
             map((appointments) =>
-              appointments.sort((a, b) => compareAsc(a.startTime, b.startTime))
+              appointments
+                .sort((a, b) => compareAsc(a.startTime, b.startTime))
+                .filter((ap) =>
+                  isAfter(add(ap.startTime, ap.duration), new Date())
+                )
             )
           )
       )
