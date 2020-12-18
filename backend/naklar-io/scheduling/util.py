@@ -35,6 +35,7 @@ def find_matching_timeslot(start_time: datetime, duration: timedelta,
         start_time__iso_week_day=start_time.isoweekday(),
         duration__gte=duration,
         owner__tutordata__subjects=subject,
+        owner__tutordata__verified=True
     ).annotate(
         num_appointments=Count(
             'owner__timeslot__appointment',

@@ -1,13 +1,13 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.db.models import Q, Prefetch
 from django.db.models.functions import Now
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins, permissions, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
@@ -42,7 +42,7 @@ class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         'owner__tutordata'
     ).prefetch_related(
         'owner__tutordata__subjects'
-    ).filter(Q(weekly=True) | Q(start_time__gte=Now()))
+    ).filter(Q(weekly=True) | Q(start_time__gte=Now()), owner__tutordata__verified=True)
     serializer_class = AvailableSlotSerializer
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
@@ -85,11 +85,16 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         appointment.handle_rejection(self.request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['post'], permission_classes=[BelongsToAppointment])
+    @action(detail=True, methods=['post'], permission_classes=[BelongsToAppointment],
+            queryset=Appointment.objects.filter(start_time__lte=timezone.now() + timedelta(minutes=15), status__in=[
+                Appointment.Status.BOTH_STARTED,
+                Appointment.Status.INVITEE_STARTED,
+                Appointment.Status.OWNER_STARTED,
+                Appointment.Status.CONFIRMED]))
     def start_meeting(self, request, pk=None):
         from roulette.models import Meeting
         appointment = self.get_object()
-        if appointment.meeting:
+        if appointment.meeting and not appointment.meeting.ended:
             meeting = appointment.meeting
         else:
             meeting = Meeting.objects.create()
