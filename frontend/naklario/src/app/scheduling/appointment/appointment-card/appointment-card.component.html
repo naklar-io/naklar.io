@@ -2,11 +2,21 @@
   <div class="row">
     <div class="col-12 col-md-3 align-self-center">
       <h6>{{ appointment.subject.name }}</h6>
-      <h6>
-        {{ appointment.invitee.firstName }}
-        {{ appointment.invitee.studentdata?.schoolData.grade }}
-        {{ appointment.invitee.studentdata?.schoolData.schoolType.name }}
-      </h6>
+      <ng-container *ngIf="appointment.owner.equals(currentUser); else elseTemplate">
+        <h6>
+          <img [src]="appointment.invitee.tutordata.profilePicture" class='profile-pic' alt="">
+          {{ appointment.invitee.firstName }}
+        </h6>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <h6>
+          {{ appointment.owner.firstName }} - 
+          {{ appointment.owner.studentdata?.schoolData.grade }}. Klasse
+          {{ appointment.owner.studentdata?.schoolData.schoolType.name }}
+        </h6>
+      </ng-template>
+      
+      
     </div>
     <div class="col-7 col-md-3 align-self-center">
       {{ appointment.startTime | date: 'd.M.yyyy' }}
@@ -31,7 +41,7 @@
         <ng-template #acceptTemplate>
           <button
             type="button"
-            class="btn btn-outline-success"
+            class="btn btn-success"
             (click)="accept()"
           >
             Bestätigen
