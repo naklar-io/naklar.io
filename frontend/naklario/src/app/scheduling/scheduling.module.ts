@@ -26,7 +26,8 @@ registerLocaleData(localeDe);
     SchedulingRoutingModule
   ],
   exports: [
-    CalendarSingleComponent
+    CalendarSingleComponent,
+    MeetingCardComponent
   ]
 })
 export class SchedulingModule { }

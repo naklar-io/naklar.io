@@ -1,5 +1,6 @@
 <div class="container">
   <div *ngIf="accountType === 'tutor'" class="row mb-2 justify-content-center">
+    <scheduling-meeting-card></scheduling-meeting-card>
     <div class="col-sm-12 col-md-8">
       <h2 class="text-primary">
         <span class="material-icons">
@@ -18,7 +19,7 @@
   </div>
   <div *ngIf="accountType === 'tutor'" >
     <div class="d-flex justify-content-center">
-      <button class="btn nabtn-primary text-light" (click)="startTutorMatching()">Jetzt Schülern helfen</button>
+      <button class="btn nabtn-primary btn-lg text-light" (click)="startTutorMatching()">Jetzt Schülern helfen</button>
     </div>
     <div class="time-hint">
       <p class="text-muted">
@@ -27,6 +28,7 @@
     </div>
   </div>
   <div *ngIf="accountType === 'student'">
+    <scheduling-meeting-card></scheduling-meeting-card>
     <roulette-student></roulette-student>
   </div>
 
