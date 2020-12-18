@@ -62,6 +62,10 @@ export class DatabaseService {
     return this.cache[url];
   }
 
+  getSubject(id: string): Observable<Subject> {
+    return this.get<Subject>(`/account/subjects/${id}/`);
+  }
+
   public getConstants() {
     return combineLatest([
       this.states,
