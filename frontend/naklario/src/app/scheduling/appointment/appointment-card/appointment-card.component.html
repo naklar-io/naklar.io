@@ -5,7 +5,7 @@
       <h6>{{appointment.subject.name}} </h6><h6> {{ appointment.invitee.firstName }} {{ appointment.invitee.studentdata?.schoolData.grade }} {{ appointment.invitee.studentdata?.schoolData.schoolType.name }}</h6>
     </div>
     <div class="col-7 col-md-3 align-self-center">{{appointment.startTime|date:'d.M.yyyy'}}</div>
-    <div class="col-5 col-md-2 align-self-center">{{appointment.startTime|date:'hh:mm'}}-{{ appointment.startTime|date:'hh:mm' }} </div>
+    <div class="col-5 col-md-2 align-self-center">{{endDate|date:'hh:mm'}}-{{ appointment.startTime|date:'hh:mm' }} </div>
     <div class="col-md-2 col-6 btns align-self-center">
       <!--<button type="button" class="btn btn-outline-info" disabled>Angefragt</button>
       <button type="button" class="btn btn-outline-success" disabled>Bestätigt</button> 
