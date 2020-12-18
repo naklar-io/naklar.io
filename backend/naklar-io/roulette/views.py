@@ -1,28 +1,25 @@
 import logging
-from datetime import datetime
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.utils import timezone
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import exceptions, generics, mixins, permissions
+from rest_framework import exceptions, generics, permissions
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListCreateAPIView, get_object_or_404
+from rest_framework.generics import get_object_or_404
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 
-from roulette.models import Feedback, Report, MatchRejectReasons
-from roulette.serializers import FeedbackSerializer, ReportSerializer
-
-from .models import Match, Meeting, Request, StudentRequest, TutorRequest
-from .serializers import (MatchSerializer, MeetingSerializer,
-                          StudentRequestSerializer, TutorRequestSerializer)
 from account.models import Subject
 from account.serializers import SubjectSerializer
+from roulette.models import Feedback, Report, MatchRejectReasons
+from roulette.serializers import FeedbackSerializer, ReportSerializer
+from .models import Match, Meeting, StudentRequest, TutorRequest
+from .serializers import (MatchSerializer, MeetingSerializer,
+                          StudentRequestSerializer, TutorRequestSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -252,12 +249,14 @@ def join_meeting_by_match(request, match_uuid):
 def join_meeting_by_id(request, meeting_id):
     user = request.user
     meeting: Meeting = get_object_or_404(Meeting, Q(tutor=user) | Q(
-        student=user), meeting_id=meeting_id)
+        student=user) | Q(users=user), meeting_id=meeting_id)
     url = ""
     if user == meeting.tutor:
         url = meeting.create_join_link(user, moderator=True)
     elif user == meeting.student:
         url = meeting.create_join_link(user, moderator=False)
+    elif user in meeting.users.all():
+        url = meeting.create_join_link(user)
     if url:
         return Response(data={'join_url': url, 'meeting_id': meeting.meeting_id})
     else:
