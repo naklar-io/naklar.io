@@ -17,14 +17,14 @@ export interface AvailableSlot extends Slot {
 }
 
 export interface CreateAppointment extends Slot {
-    subject: number | Subject;
+    subject: Subject;
     topic?: string;
 }
 
 export interface Appointment extends CreateAppointment {
     id?: number;
-    owner: User | string;
-    invitee: User | string;
+    owner: User;
+    invitee: User ;
     status: AppointmentStatus;
 }
 
