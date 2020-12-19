@@ -11,6 +11,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CalendarMultiComponent } from './calendar-multi/calendar-multi.component';
 import { AppointmentCardComponent } from './appointment/appointment-card/appointment-card.component';
 import { AppointmentListComponent } from './appointment/appointment-list/appointment-list.component';
+import { AvailableSlotListComponent } from './available-slot/available-slot-list/available-slot-list.component';
+import { AvailableSlotDetailComponent } from './available-slot/available-slot-detail/available-slot-detail.component';
+import { NgbCollapse, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 registerLocaleData(localeDe);
 
@@ -19,11 +22,14 @@ registerLocaleData(localeDe);
     CalendarSingleComponent,
     CalendarMultiComponent,
     AppointmentCardComponent,
-    AppointmentListComponent
+    AppointmentListComponent,
+    AvailableSlotListComponent,
+    AvailableSlotDetailComponent
   ],
   imports: [
     CommonModule,
     BrowserAnimationsModule,
+    NgbModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     SchedulingRoutingModule
   ],

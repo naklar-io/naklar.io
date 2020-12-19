@@ -7,6 +7,7 @@ import { Appointment } from 'src/app/_models/scheduling';
 import { AuthenticationService } from 'src/app/_services';
 import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
 import { environment } from 'src/environments/environment';
+import { endTime } from '../../utils/times';
 
 @Component({
   selector: 'scheduling-appointment-card',
@@ -31,7 +32,7 @@ export class AppointmentCardComponent implements OnInit {
   }
 
   get endDate(): Date {
-    return add(this.appointment.startTime, this.appointment.duration);
+    return endTime(this.appointment);
   }
 
   start() {

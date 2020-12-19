@@ -1,0 +1,18 @@
+
+<div class="col-3">
+    {{ slot.startTime | date: 'EE dd.MM.yyyy' }}
+</div>
+<div class="col-5">
+    {{ slot.startTime | date: 'HH:mm' }}-{{ endTime(slot) | date: 'HH:mm' }}
+    <button class="btn btn-primary" (click)="isCollapsed = !isCollapsed">Buchen</button>
+</div>
+<div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="col-8">
+    <div class="card">
+      <div class="card-body">
+        <div *ngFor="let startTime of startTimes">
+            <button class="btn btn-outline-primary" (click)="bookTime(startTime)">30 Minuten ab {{  startTime|date: 'HH:mm'}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
