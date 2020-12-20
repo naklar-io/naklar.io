@@ -12,6 +12,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 
+from account.serializers import SubjectSerializer
 from scheduling import filters, util
 from scheduling.models import TimeSlot, Appointment
 from scheduling.serializers import AvailableSlotSerializer, FullAppointmentSerializer, TimeSlotSerializer
@@ -48,6 +49,16 @@ class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.AvailableSlotFilter
     pagination_class = LimitOffsetPagination
+
+    @action(['GET'], detail=False, serializer_class=SubjectSerializer, filterset_class=None)
+    def subjects(self, request, *args, **kwargs):
+        qs = self.filter_queryset(self.get_queryset())
+        subjects = set()
+        for timeslot in qs:
+            if len(timeslot.available_slots()) > 0:
+                subjects = subjects.union(timeslot.owner.tutordata.subjects.all())
+        serializer = SubjectSerializer(subjects, many=True)
+        return Response(serializer.data)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
