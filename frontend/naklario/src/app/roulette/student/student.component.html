@@ -12,7 +12,7 @@
         starten und im Hintergrund warten.
       </p>
       <div *ngIf='(subjects$ | async) as subjects' class="subjects-overview">
-        <ngb-alert *ngIf='false && !offlineAlertClosed' [dismissible]='false' type='info' (close)='closeOfflineAlert()'>
+        <ngb-alert *ngIf='allSubjectsOffline(subjects) && !offlineAlertClosed' [dismissible]='false' type='info' (close)='closeOfflineAlert()'>
           
             <div class="text-center">
               Leider keine Tutoren verfügbar.

@@ -13,9 +13,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PauseModalComponent } from '../pause-modal/pause-modal.component';
 import { combineLatest, forkJoin, interval, Observable } from 'rxjs';
 import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
+import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
 
 interface OnlineSubject extends Subject {
     isOnline?: boolean;
+    hasAppointments?: boolean;
 }
 @Component({
     selector: 'roulette-student',
@@ -66,26 +68,29 @@ export class StudentComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private toast: ToastService,
+        private appointments: AppointmentService,
         private modalService: NgbModal
     ) {}
 
     ngOnInit(): void {
-        this.subjects$ = this.autoRefresh$.pipe(switchMap(() => combineLatest([
-            this.route.data.pipe(map((d: { constants: Constants }) => d.constants)),
-            this.rouletteService.getOnlineSubjects().pipe(startWith([] as Subject[])),
-        ]).pipe(
-            map(
-                ([constants, online]) => {
-                    const onlineIds = online.map((s) => s.id);
-                    return constants.subjects.map((s) =>
-                        Object.assign(s, {
-                            isOnline: onlineIds.includes(s.id),
-                        })
-                    );
-                }
-            ),
-            tap((_) => (this.loadDate = new Date()))
-        )));
+        this.subjects$ = this.autoRefresh$.pipe(
+            switchMap(() =>
+                combineLatest([
+                    this.route.data.pipe(map((d: { constants: Constants }) => d.constants)),
+                    this.rouletteService.getOnlineSubjects().pipe(startWith([] as Subject[])),
+                ]).pipe(
+                    map(([constants, online]) => {
+                        const onlineIds = online.map((s) => s.id);
+                        return constants.subjects.map((s) =>
+                            Object.assign(s, {
+                                isOnline: onlineIds.includes(s.id),
+                            })
+                        );
+                    }),
+                    tap((_) => (this.loadDate = new Date()))
+                )
+            )
+        );
         // this.refreshOnline();
         this.route.data.subscribe((data: { constants: Constants; user: User }) => {
             this.constants = data.constants;
@@ -199,5 +204,10 @@ export class StudentComponent implements OnInit {
 
     mapSubjectToName(subject: Subject): string {
         return subject.name;
+    }
+
+    allSubjectsOffline(list: OnlineSubject[]): boolean {
+        const res = !list.map((s) => s.isOnline).reduce((acc, currS) => acc && currS);
+        return res;
     }
 }
