@@ -1,6 +1,7 @@
-<div *ngIf='appointments$ | async'>
-  <h3>Anstehende Termine</h3>
-  <div *ngFor="let appointment of appointments$ | async">
+<div *ngIf='(appointments$ | async) as app'>
+  
+  <h3 *ngIf='app && app.length > 0'>Anstehende Termine</h3>
+  <div *ngFor="let appointment of app">
     <scheduling-appointment-card
       [appointment]="appointment"
       (appointmentChange)="this.refresh$.next($event)"

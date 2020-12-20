@@ -15,6 +15,7 @@ import { InstructionVideoComponent } from './student/instruction-video/instructi
 import { PauseModalComponent } from './pause-modal/pause-modal.component';
 import { NgxSliderModule } from '@m0t0r/ngx-slider';
 import { ExitModalComponent } from './session/exit-modal/exit-modal.component';
+import { SchedulingModule } from '../scheduling/scheduling.module';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ExitModalComponent } from './session/exit-modal/exit-modal.component';
     ReactiveFormsModule,
     RouletteRoutingModule,
     MiscComponentsModule,
+    SchedulingModule,
   ],
   exports: [StudentComponent],
 })
