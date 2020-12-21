@@ -1,6 +1,7 @@
-import { EventEmitter } from '@angular/core';
+import { EventEmitter, TemplateRef, ViewChild } from '@angular/core';
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { add, differenceInMinutes, isAfter, isBefore, sub } from 'date-fns';
 import { User } from 'src/app/_models';
 import { Appointment } from 'src/app/_models/scheduling';
@@ -17,6 +18,7 @@ import { endTime } from '../../utils/times';
 export class AppointmentCardComponent implements OnInit {
   @Input() appointment: Appointment;
   @Output() appointmentChange = new EventEmitter<Appointment>();
+  @ViewChild('confirmModal') confirmModal: TemplateRef<any>;
 
   currentUser: User;
   // featureEnabled = environment.features.scheduling;
@@ -24,7 +26,8 @@ export class AppointmentCardComponent implements OnInit {
   constructor(
     private auth: AuthenticationService,
     private appointments: AppointmentService,
-    private router: Router
+    private router: Router,
+    private modal: NgbModal,
   ) {}
 
   ngOnInit(): void {
@@ -53,10 +56,15 @@ export class AppointmentCardComponent implements OnInit {
       .subscribe((value) => this.appointmentChange.emit(value));
   }
 
-  reject() {
-    this.appointments
-      .reject(this.appointment.id)
-      .subscribe((value) => this.appointmentChange.emit(value));
+  reject(confirm?: boolean) {
+    if (confirm) {
+      this.modal.dismissAll();
+      this.appointments
+        .reject(this.appointment.id)
+        .subscribe((value) => this.appointmentChange.emit(value));
+    } else {
+      this.modal.open(this.confirmModal);
+    }
   }
 
   startTimeInRange() {

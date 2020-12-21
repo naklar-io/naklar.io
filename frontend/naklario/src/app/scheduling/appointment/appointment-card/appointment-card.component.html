@@ -74,3 +74,15 @@
         </div>
     </div>
 </div>
+
+<ng-template #confirmModal let-modal>
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-basic-title">
+            Willst du diese Session wirklich absagen?
+        </h3>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.close()">Abbrechen</button>
+        <button type="button" class="btn btn-danger" (click)="reject(true)">Absagen</button>
+    </div>
+</ng-template>
