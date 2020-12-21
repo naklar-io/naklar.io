@@ -24,7 +24,6 @@ from _shared.models import SingletonModel
 
 logger = logging.getLogger(__name__)
 
-
 EMAIL_VERIFICATION_PLAINTEXT = get_template("email_verification.txt")
 EMAIL_VERIFICATION_HTMLY = get_template("email_verification.html")
 
@@ -70,8 +69,13 @@ class State(models.Model):
         return self.name + " (%s)" % self.shortcode
 
 
+def subject_upload_path(instance, filename):
+    return f'subjects/{instance.id}/{filename}'
+
+
 class Subject(models.Model):
     name = models.CharField(_("Name"), max_length=50)
+    img = models.ImageField(upload_to=subject_upload_path, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Fach")
@@ -133,7 +137,8 @@ class TutorData(models.Model):
         if self.__was_verified != self.verified:
             self.send_verified_email()
 
-        return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                           update_fields=update_fields)
 
     def send_verified_email(self):
         subject, from_email, to = "Verifizierung für naklar.io", "noreply@naklar.io", self.user.email
@@ -287,7 +292,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             self.email_verified = False
             self.send_verification_email()
 
-        return super(CustomUser, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        return super(CustomUser, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                            update_fields=update_fields)
 
     is_tutor.boolean = True
     is_tutor.admin_order_field = 'tutordata'
