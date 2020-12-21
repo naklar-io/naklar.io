@@ -2,7 +2,7 @@ import {
   BrowserModule,
   BrowserTransferStateModule,
 } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -71,6 +71,7 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { SchedulingModule } from './scheduling/scheduling.module';
+import { APP_BASE_HREF } from '@angular/common';
 
 @NgModule({
   declarations: [
