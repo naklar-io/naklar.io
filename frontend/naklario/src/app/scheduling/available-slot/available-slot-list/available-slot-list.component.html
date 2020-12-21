@@ -1,4 +1,3 @@
-<h2>Available slots for {{ subjectId }}</h2>
 <div *ngFor="let slot of availableSlots$|async" >
-    <scheduling-available-slot-detail [slot]="slot" class="row"></scheduling-available-slot-detail>
+    <scheduling-available-slot-detail [slot]="slot" (bookedAppointment)="onBooked($event)"></scheduling-available-slot-detail>
 </div>

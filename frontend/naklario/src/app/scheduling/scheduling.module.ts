@@ -36,7 +36,8 @@ registerLocaleData(localeDe);
   exports: [
     CalendarSingleComponent,
     AppointmentCardComponent,
-    AppointmentListComponent
+    AppointmentListComponent,
+    AvailableSlotListComponent
   ]
 })
 export class SchedulingModule { }

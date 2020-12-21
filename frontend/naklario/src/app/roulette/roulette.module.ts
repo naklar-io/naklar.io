@@ -16,6 +16,8 @@ import { PauseModalComponent } from './pause-modal/pause-modal.component';
 import { NgxSliderModule } from '@m0t0r/ngx-slider';
 import { ExitModalComponent } from './session/exit-modal/exit-modal.component';
 import { SchedulingModule } from '../scheduling/scheduling.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { StartModalComponent } from './start-modal/start-modal.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +30,7 @@ import { SchedulingModule } from '../scheduling/scheduling.module';
     InstructionVideoComponent,
     PauseModalComponent,
     ExitModalComponent,
+    StartModalComponent,
   ],
   imports: [
     NgbModule,
@@ -37,6 +40,7 @@ import { SchedulingModule } from '../scheduling/scheduling.module';
     RouletteRoutingModule,
     MiscComponentsModule,
     SchedulingModule,
+    FontAwesomeModule
   ],
   exports: [StudentComponent],
 })

@@ -1,58 +1,93 @@
 <div class="content">
-  <h2 class="text-primary">Finde deinen Tutor</h2>
-  <div class="col-12">
+    <h2 class="text-primary">Hey, {{ user.firstName }}</h2>
+ 
     <scheduling-appointment-list></scheduling-appointment-list>
-  </div>
+    
 
-  <ng-container [ngSwitch]="isInstructionVideoShowing">
-    <ng-container *ngSwitchCase="false">
-      <p>
-        Hey {{ user.firstName }},
-        wähle ein Fach. In grauen Fächern ist aktuell kein Tutor frei. Du kannst die Suche aber
-        starten und im Hintergrund warten.
-      </p>
-      <div *ngIf='(subjects$ | async) as subjects' class="subjects-overview">
-        <ngb-alert *ngIf='allSubjectsOffline(subjects) && !offlineAlertClosed' [dismissible]='false' type='info' (close)='closeOfflineAlert()'>
-          
-            <div class="text-center">
-              Leider keine Tutoren verfügbar.
-              Nutze naklar.io am besten zwischen 15-17 Uhr.
+    <ng-container [ngSwitch]="isInstructionVideoShowing">
+        <ng-container *ngSwitchCase="false">
+            <h3>Wähle ein Fach</h3>
+            <p>
+                In grauen Fächern ist aktuell kein Tutor frei. Du kannst die Suche aber starten und
+                im Hintergrund warten.
+            </p>
+
+            <div *ngIf="subjects$ | async as subjects" class="subjects-overview">
+                <div class="online-subjects row row-cols-1 row-cols-md-2 row-cols-lg-4">
+                    <div *ngFor="let subject of subjects; trackBy: trackSubjectFn" class="col mb-4">
+                        <div
+                            class="card clickable-card shadow"
+                            [class.isOnline]="subject.isOnline"
+                            (click)="openSubjectDialog(subject)"
+                        >
+                            <img
+                                class="card-img-top"
+                                src="https://source.unsplash.com/505eectW54k/400x100"
+                                alt=""
+                            />
+                            <div class="card-body">
+                                <h4 class="card-title">{{ subject.name }}</h4>
+                                <p class="card-text">
+                                    <span *ngIf="subject.isOnline">
+                                        <fa-icon icon="dot-circle" style="color: green"></fa-icon>
+                                        Tutoren online!
+                                    </span>
+                                    <span *ngIf="!subject.isOnline">
+                                        <fa-icon icon="dot-circle" style="color: grey"></fa-icon>
+                                        Keine Tutoren online
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-muted pt-2">Stand: {{ loadDate | date: 'HH:mm:ss' }} Uhr</p>
             </div>
-          
-        </ngb-alert>
-        <div class="online-subjects">
-          <button *ngFor='let subject of subjects' (click)='startWithSubject(subject.id)'
-            [class.is-online]='subject.isOnline'>
-            {{ subject.name }}</button>
-        </div>
-        <p class="text-muted pt-2">Stand: {{ loadDate | date:'HH:mm:ss'}} Uhr</p>
-        <!-- <button class="btn nabtn-secondary my-2" (click)='refreshOnline()'>Stand: {{ loadDate | date:'HH:mm'}} Uhr<span class="material-icons">refresh</span></button> -->
-      </div>
-      <!--       <form [formGroup]="studentForm" (ngSubmit)="onFormSubmit()">
-        <div class="form-group">
-          <label for="subjects">Für welches Fach hast du eine Frage?</label>
-          <select name="subjects" class="form-control custom-select" [formControl]="f.subject">
-            <option *ngFor="let subject of constants?.subjects" [value]="subject.id">
-              {{ subject.name }}
-            </option>
-          </select>
-          <div class="invalid-feedback">
-            <div *ngIf="f.subject.errors?.required">
-              Du musst ein Fach auswählen
-            </div>
-          </div>
-        </div>
+        </ng-container>
 
-        <button type="submit" class="btn nabtn-primary submit-button" [disabled]="submitSuccess || loading">
-          <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-          Suche starten
-        </button>
-      </form> -->
+        <ng-container *ngSwitchCase="true">
+            <roulette-strudent-instruction-video
+                (prevClick)="onVideoPrev()"
+                (nextClick)="onVideoNext()"
+            >
+            </roulette-strudent-instruction-video>
+        </ng-container>
     </ng-container>
-
-    <ng-container *ngSwitchCase="true">
-      <roulette-strudent-instruction-video (prevClick)="onVideoPrev()" (nextClick)="onVideoNext()">
-      </roulette-strudent-instruction-video>
-    </ng-container>
-  </ng-container>
 </div>
+
+<ng-template #subjectModal let-modal>
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-basic-title">Wann willst du deine Session haben?</h3>
+    </div>
+    <div class="modal-body">
+        <p *ngIf="selectedSubject.hasAppointments">
+            Du kannst entweder direkt die Suche starten oder eine zukünftige Session vereinbaren.
+        </p>
+        <h4>Ausgewähltes Fach: {{ selectedSubject.name }}</h4>
+        <p *ngIf="selectedSubject.isOnline">
+            <fa-icon icon="dot-circle" style="color: green"></fa-icon> Tutoren online!
+        </p>
+        <p *ngIf="!selectedSubject.isOnline">
+            <fa-icon icon="dot-circle" style="color: grey"></fa-icon> Keine Tutoren online
+        </p>
+    </div>
+    <div class="modal-footer">
+        <button
+            *ngIf="selectedSubject.hasAppointments"
+            type="button"
+            class="btn btn-outline-primary"
+            (click)="modal.close('Save click')"
+        >
+            Session vereinbaren
+        </button>
+        <button
+            type="button"
+            class="btn"
+            [class.btn-primary]="selectedSubject.isOnline"
+            [class.btn-secondary]="!selectedSubject.isOnline"
+            (click)="startMatch()"
+        >
+            Suche starten
+        </button>
+    </div>
+</ng-template>

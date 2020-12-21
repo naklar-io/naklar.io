@@ -1,8 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { add } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AvailableSlot, Slot, TimeSlot } from 'src/app/_models/scheduling';
+import { Appointment, AvailableSlot, Slot, TimeSlot } from 'src/app/_models/scheduling';
 import { DatabaseService } from 'src/app/_services';
 import { AvailableSlotService } from 'src/app/_services/database/scheduling/available-slot.service';
 import { mergeOverlappingSlots } from '../../utils/times';
@@ -16,6 +16,7 @@ export class AvailableSlotListComponent implements OnInit {
 
   availableSlots$: Observable<AvailableSlot[]>;
   @Input() subjectId = 1;
+  @Output() bookedAppointment = new EventEmitter<Appointment>();
 
   constructor(private availableSlots: AvailableSlotService) { }
 
@@ -26,6 +27,10 @@ export class AvailableSlotListComponent implements OnInit {
 
   endTime(slot: Slot): Date {
     return add(slot.startTime, slot.duration);
+  }
+
+  onBooked(appointment: Appointment) {
+    this.bookedAppointment.emit(appointment);
   }
 
 }

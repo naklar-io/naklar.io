@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { parseISO } from 'date-fns';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { Subject } from 'src/app/_models';
 import { AvailableSlot } from 'src/app/_models/scheduling';
 import { UserService } from '../account/user.service';
 import { ApiService } from '../api.service';
@@ -30,6 +31,11 @@ export class AvailableSlotService {
         })
       );
   }
+
+  subjects(): Observable<Subject[]> {
+    return this.api.get<Subject[]>(`${BASE_URL}subjects/`);
+  }
+
 
   private transformAvailableSlot(
     object: AvailableSlot

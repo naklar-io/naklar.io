@@ -22,7 +22,7 @@ export class TransformationService {
   
   deserializeAppointment(app: Sendable<Appointment>) {
     const target = new Appointment();
-    return target.deserialize(app, this);
+    return this.toLocal(target, app);
   }
 
 

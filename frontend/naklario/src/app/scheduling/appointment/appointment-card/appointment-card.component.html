@@ -1,6 +1,6 @@
 <div class="card">
   <div class="row">
-    <div class="col-12 col-md-3 align-self-center">
+    <div class="col-sm-12 col-md-4 align-self-center">
       <h6>{{ appointment.subject.name }}</h6>
       <ng-container *ngIf="appointment.owner.equals(currentUser); else elseTemplate">
         <h6>
@@ -18,19 +18,14 @@
       
       
     </div>
-    <div class="col-7 col-md-3 align-self-center">
+    <div class="col-sm-7 col-md-2 align-self-center">
       {{ appointment.startTime | date: 'd.M.yyyy' }}
     </div>
-    <div class="col-5 col-md-2 align-self-center">
+    <div class="col-sm-5 col-md-2 align-self-center">
       {{ appointment.startTime | date: 'HH:mm' }}-{{ endDate | date: 'HH:mm' }}
     </div>
-    <div class="col-md-2 col-6 btns align-self-center">
-      <!--<button type="button" class="btn btn-outline-info" disabled>Angefragt</button>
-      <button type="button" class="btn btn-outline-success" disabled>Bestätigt</button> 
-      <button type="button" class="btn btn-outline-danger" disabled>Abgesagt</button> 
-      <button type="button" class="btn btn-outline-success" disabled>Bestätigen</button> -->
-   
-      <div *ngIf="appointment.status === 'REQUESTED'">
+    <div class="col-sm-6 col-md-4 align-self-center">
+      <ng-container *ngIf="appointment.status === 'REQUESTED'">
         <ng-container
           *ngIf="appointment.owner.equals(currentUser); else acceptTemplate"
         >
@@ -47,8 +42,8 @@
             Bestätigen
           </button>
         </ng-template>
-      </div>
-      <div *ngIf="
+      </ng-container>
+      <ng-container *ngIf="
       appointment.status === 'CONFIRMED' || 
       appointment.status === 'INVITEE_STARTED' || 
       appointment.status === 'OWNER_STARTED' ||
@@ -61,17 +56,14 @@
           Starten
         </button>
         <button type="button" *ngIf='!startTimeInRange()' class="btn btn-outline-success" disabled>Bestätigt</button> 
-      </div>
-    
-    </div>
-    <div class="col-md-2 col-6 btns align-self-center">
+      </ng-container>
       <button
-        type="button"
-        class="btn btn-outline-secondary"
-        (click)="reject()"
-      >
-        Absagen
-      </button>
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="reject()"
+    >
+      Absagen
+    </button>
     </div>
   </div>
 </div>

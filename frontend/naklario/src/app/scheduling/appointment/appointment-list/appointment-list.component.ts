@@ -35,4 +35,8 @@ export class AppointmentListComponent implements OnInit {
     refresh() {
         this.refresh$.next(null);
     }
+
+    trackAppointment(index: number, app: Appointment) {
+      return app.id;
+    }
 }

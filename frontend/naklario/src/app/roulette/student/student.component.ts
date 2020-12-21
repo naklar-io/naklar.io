@@ -1,4 +1,12 @@
-import { Component, OnInit, Output, EventEmitter, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Output,
+    EventEmitter,
+    OnDestroy,
+    ViewChild,
+    TemplateRef,
+} from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
     DatabaseService,
@@ -14,8 +22,10 @@ import { PauseModalComponent } from '../pause-modal/pause-modal.component';
 import { combineLatest, forkJoin, interval, Observable } from 'rxjs';
 import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
+import { AvailableSlotService } from 'src/app/_services/database/scheduling/available-slot.service';
+import { StartModalComponent } from '../start-modal/start-modal.component';
 
-interface OnlineSubject extends Subject {
+export interface OnlineSubject extends Subject {
     isOnline?: boolean;
     hasAppointments?: boolean;
 }
@@ -53,9 +63,12 @@ export class StudentComponent implements OnInit {
     subjects$: Observable<OnlineSubject[]>;
 
     loadDate: Date;
+    selectedSubject: OnlineSubject | null = null;
 
     selectedSubjectID: number = null;
     offlineAlertClosed = false;
+
+    @ViewChild('subjectModal') subjectModal: TemplateRef<any>;
 
     get f() {
         return this.studentForm.controls;
@@ -68,7 +81,7 @@ export class StudentComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private toast: ToastService,
-        private appointments: AppointmentService,
+        private availableSlots: AvailableSlotService,
         private modalService: NgbModal
     ) {}
 
@@ -77,15 +90,20 @@ export class StudentComponent implements OnInit {
             switchMap(() =>
                 combineLatest([
                     this.route.data.pipe(map((d: { constants: Constants }) => d.constants)),
-                    this.rouletteService.getOnlineSubjects().pipe(startWith([] as Subject[])),
+                    this.rouletteService.getOnlineSubjects(),
+                    this.availableSlots.subjects(),
                 ]).pipe(
-                    map(([constants, online]) => {
+                    map(([constants, online, appointments]) => {
                         const onlineIds = online.map((s) => s.id);
-                        return constants.subjects.map((s) =>
-                            Object.assign(s, {
-                                isOnline: onlineIds.includes(s.id),
-                            })
-                        );
+                        const appointmentIds = appointments.map((s) => s.id);
+                        return constants.subjects
+                            .map((s) =>
+                                Object.assign(s, {
+                                    isOnline: onlineIds.includes(s.id),
+                                    hasAppointments: appointmentIds.includes(s.id),
+                                })
+                            )
+                            .sort((a, b) => (a.isOnline === b.isOnline ? 0 : a.isOnline ? -1 : 1));
                     }),
                     tap((_) => (this.loadDate = new Date()))
                 )
@@ -144,6 +162,7 @@ export class StudentComponent implements OnInit {
     }
 
     startMatch(): void {
+        this.modalService.dismissAll();
         this.submitted = true;
         if (!this.user.emailVerified) {
             this.toast.error('Deine E-Mail muss bestätigt sein um hierhin zu kommen!');
@@ -176,9 +195,14 @@ export class StudentComponent implements OnInit {
         this.createMatchRequest();
     }
 
-    startWithSubject(subjectID: number): void {
-        this.selectedSubjectID = subjectID;
-        this.startMatch();
+    openSubjectDialog(subject: OnlineSubject): void {
+        this.selectedSubject = subject;
+        const modalRef = this.modalService.open(StartModalComponent, {
+          size: 'lg',
+          centered: true,
+        });
+        modalRef.componentInstance.subject = subject;
+        this.selectedSubjectID = subject.id;
     }
 
     createMatchRequest() {
@@ -209,5 +233,10 @@ export class StudentComponent implements OnInit {
     allSubjectsOffline(list: OnlineSubject[]): boolean {
         const res = !list.map((s) => s.isOnline).reduce((acc, currS) => acc && currS);
         return res;
+    }
+
+    trackSubjectFn(index: number, sub: Subject) {
+        console.log('tracking', sub.id);
+        return sub.id;
     }
 }
