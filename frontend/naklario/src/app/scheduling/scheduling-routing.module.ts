@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { LoggedInGuard } from '../_helpers';
+import { AppointmentAnswerComponent } from './appointment/appointment-answer/appointment-answer.component';
 import { AvailableSlotListComponent } from './available-slot/available-slot-list/available-slot-list.component';
 import { CalendarMultiComponent } from './calendar-multi/calendar-multi.component';
 
@@ -12,6 +14,11 @@ const routes: Routes = [
   {
     path: 'test2',
     component: AvailableSlotListComponent,
+  },
+  {
+    path: 'scheduling/appointment/:id/answer',
+    component: AppointmentAnswerComponent,
+    canActivate: [LoggedInGuard]
   }
 ];
 

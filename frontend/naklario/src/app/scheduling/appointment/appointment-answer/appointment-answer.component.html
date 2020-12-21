@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="col-md-9">
+        <h3>Auf Anfrage antworten:</h3>
+        <ngb-alert *ngIf="error" type="danger">
+            <div *ngIf="error.detail">
+                {{ error.detail }}
+            </div></ngb-alert
+        >
+        <div *ngIf="appointment$ | async as app">
+            <scheduling-appointment-card [appointment]="app"> </scheduling-appointment-card>
+        </div>
+    </div>
+</div>

@@ -14,6 +14,7 @@ import { AppointmentListComponent } from './appointment/appointment-list/appoint
 import { AvailableSlotListComponent } from './available-slot/available-slot-list/available-slot-list.component';
 import { AvailableSlotDetailComponent } from './available-slot/available-slot-detail/available-slot-detail.component';
 import { NgbCollapse, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AppointmentAnswerComponent } from './appointment/appointment-answer/appointment-answer.component';
 
 registerLocaleData(localeDe);
 
@@ -24,7 +25,8 @@ registerLocaleData(localeDe);
     AppointmentCardComponent,
     AppointmentListComponent,
     AvailableSlotListComponent,
-    AvailableSlotDetailComponent
+    AvailableSlotDetailComponent,
+    AppointmentAnswerComponent
   ],
   imports: [
     CommonModule,
