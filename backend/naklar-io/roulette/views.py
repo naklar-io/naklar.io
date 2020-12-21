@@ -248,8 +248,7 @@ def join_meeting_by_match(request, match_uuid):
 @permission_classes([permissions.IsAuthenticated])
 def join_meeting_by_id(request, meeting_id):
     user = request.user
-    meeting: Meeting = get_object_or_404(Meeting, Q(tutor=user) | Q(
-        student=user) | Q(users=user), meeting_id=meeting_id)
+    meeting: Meeting = get_object_or_404(Meeting, users=user, meeting_id=meeting_id)
     url = ""
     if user == meeting.tutor:
         url = meeting.create_join_link(user, moderator=True)
