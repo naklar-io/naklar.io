@@ -1,7 +1,8 @@
 <div class="content">
     <h2 class="text-primary">Hey, {{ user.firstName }}</h2>
- 
-    <scheduling-appointment-list class="mb-2"></scheduling-appointment-list>
+    
+    <scheduling-appointment-list></scheduling-appointment-list>
+    <br>
     
 
     <ng-container [ngSwitch]="isInstructionVideoShowing">
@@ -55,39 +56,3 @@
     </ng-container>
 </div>
 
-<ng-template #subjectModal let-modal>
-    <div class="modal-header">
-        <h3 class="modal-title" id="modal-basic-title">Wann willst du deine Session haben?</h3>
-    </div>
-    <div class="modal-body">
-        <p *ngIf="selectedSubject.hasAppointments">
-            Du kannst entweder direkt die Suche starten oder eine zukünftige Session vereinbaren.
-        </p>
-        <h4>Ausgewähltes Fach: {{ selectedSubject.name }}</h4>
-        <p *ngIf="selectedSubject.isOnline">
-            <fa-icon icon="dot-circle" style="color: green"></fa-icon> Tutoren online!
-        </p>
-        <p *ngIf="!selectedSubject.isOnline">
-            <fa-icon icon="dot-circle" style="color: grey"></fa-icon> Keine Tutoren online
-        </p>
-    </div>
-    <div class="modal-footer">
-        <button
-            *ngIf="selectedSubject.hasAppointments"
-            type="button"
-            class="btn btn-outline-primary"
-            (click)="modal.close('Save click')"
-        >
-            Session vereinbaren
-        </button>
-        <button
-            type="button"
-            class="btn"
-            [class.btn-primary]="selectedSubject.isOnline"
-            [class.btn-secondary]="!selectedSubject.isOnline"
-            (click)="startMatch()"
-        >
-            Suche starten
-        </button>
-    </div>
-</ng-template>
