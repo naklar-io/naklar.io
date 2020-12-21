@@ -18,7 +18,7 @@
         </div>
         <div *ngSwitchCase="'BOOK_SESSION'">
             <scheduling-available-slot-list
-                [subjectId]="subject.id"
+                [subject]="subject"
                 (bookedAppointment)="onBooked($event)"
             ></scheduling-available-slot-list>
         </div>
