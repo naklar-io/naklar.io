@@ -9,5 +9,8 @@
         <div *ngIf="appointment$ | async as app">
             <scheduling-appointment-card [appointment]="app"> </scheduling-appointment-card>
         </div>
+        <br>
+        <a routerLink="/dashboard" class="btn btn-primary" href="#" role="button">Zurück zum Dashboard</a>
     </div>
+   
 </div>
