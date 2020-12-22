@@ -7,6 +7,7 @@
             <button type="button" class="remove-btn"><fa-icon icon="plus-circle"></fa-icon></button>
         </div>
     </div>
+    <hr/>
     <div *ngFor="let timeslot of timeslots$ | async">
         <scheduling-timeslot-detail [slot]="timeslot"></scheduling-timeslot-detail>
     </div>
