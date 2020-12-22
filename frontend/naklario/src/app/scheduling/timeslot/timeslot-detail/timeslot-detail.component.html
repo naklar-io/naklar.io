@@ -1,8 +1,10 @@
 <div>
     <div class="header">
-        <strong>Slot {{ slot.id }}:</strong> Ab dem {{ slot.startTime | date}} jeden {{ slot.startTime | date:'EEEE'}} von {{ slot.startTime|date:'shortTime' }} bis {{ getSlotEndTime()|date:'shortTime' }}
+        <strong>Slot {{ slot.id }}:</strong> 
+        <span *ngIf="slot.weekly">Ab dem {{ slot.startTime | date}} jeden {{ slot.startTime | date:'EEEE'}} von {{ slot.startTime|date:'shortTime' }} bis {{ getSlotEndTime()|date:'shortTime' }}</span>
+        <span *ngIf="!slot.weekly">Am {{ slot.startTime | date}} von {{ slot.startTime|date:'shortTime' }} bis {{ getSlotEndTime()|date:'shortTime' }}</span>
     </div>
-    <form (change)="log($event)" class="form">
+    <form class="form">
         <div class="form-row align-items-center">
             <div class="col-auto">
                 <label for="date">Datum:</label>
