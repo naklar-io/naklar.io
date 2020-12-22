@@ -8,7 +8,7 @@
 <body>
 <p>Hi {{ other_party.first_name }},</p>
 <p>Leider konnten wir für folgende Anfrage keinen Tutor finden:</p>
-<p>{{ appointment.subject }}: Von {{ appointment.start_time }} - {{ appointment.end_time|time }}</p>
+<p>{{ appointment.subject }}: {{ appointment.start_time }} - {{ appointment.end_time|time }}</p>
 {% if appointment.topic %}
     <span>Thema: {{ appointment.topic }}</span>
 {% endif %}

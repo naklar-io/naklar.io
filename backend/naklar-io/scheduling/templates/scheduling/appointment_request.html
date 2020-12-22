@@ -1,3 +1,4 @@
+{% load frontend_urls %}
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -13,8 +14,8 @@
     <span>Thema: {{ appointment.topic }}</span>
 {% endif %}
 <p>Bitte reagiere innerhalb von 30 Minuten auf diese Anfrage</p>
-<a href="{% url 'scheduling:appointment-accept' appointment.id %}">Annehmen</a>
-<a href="{% url 'scheduling:appointment-reject' appointment.id %}">Ablehnen</a>
+<a href="{% appointment_answer_url appointment.id %}">Beantworten</a>
+
 
 <p>
     Viele Grüße<br>
