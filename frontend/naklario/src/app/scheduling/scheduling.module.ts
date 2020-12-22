@@ -18,6 +18,7 @@ import { AppointmentAnswerComponent } from './appointment/appointment-answer/app
 import { TimeslotListComponent } from './timeslot/timeslot-list/timeslot-list.component';
 import { TimeslotDetailComponent } from './timeslot/timeslot-detail/timeslot-detail.component';
 import { FormsModule } from '@angular/forms';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 registerLocaleData(localeDe);
 
@@ -38,6 +39,7 @@ registerLocaleData(localeDe);
     BrowserAnimationsModule,
     NgbModule,
     FormsModule,
+    FontAwesomeModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     SchedulingRoutingModule
   ],

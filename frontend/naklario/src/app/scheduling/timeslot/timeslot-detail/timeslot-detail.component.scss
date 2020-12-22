@@ -1,0 +1,11 @@
+.remove-btn {
+    background-color: transparent;
+    color: red;
+    border: none;
+    
+    display: inline-block;
+    .text {
+        text-decoration: underline;
+        margin-left: .75em;
+    }
+}

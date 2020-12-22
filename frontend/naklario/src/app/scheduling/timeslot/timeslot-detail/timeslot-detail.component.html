@@ -1,16 +1,61 @@
 <div>
     <div class="header">
-        <strong>Slot {{ slot.id }}:</strong>
+        <strong>Slot {{ slot.id }}:</strong> Ab dem {{ slot.startTime | date}} jeden {{ slot.startTime | date:'EEEE'}} von {{ slot.startTime|date:'shortTime' }} bis {{ getSlotEndTime()|date:'shortTime' }}
     </div>
-    
-    <div class="time-select">
-        Datum: <ngb-datepicker [(ngModel)]="date"> </ngb-datepicker>
-        Von:
-        {{ slot.startTime | date: 'shortTime' }} Bis: {{ endTime | date: 'shortTime' }}
-    </div>
-    <div class="footer">
-        {{ slot.weekly ? 'Wöchentlich' : 'Einmalig' }} -
-        <button type="button" class="btn btn-primary">Slot entfernen</button>
-    </div>
-    
+    <form (change)="log($event)" class="form">
+        <div class="form-row align-items-center">
+            <div class="col-auto">
+                <label for="date">Datum:</label>
+                <div class="input-group" id="date">
+                    <input
+                        class="form-control"
+                        name="dp"
+                        [(ngModel)]="date"
+                        (dateSelect)="updateTimes()"
+                        placholder="Datum wählen"
+                        ngbDatepicker
+                        #d="ngbDatepicker"
+                    />
+                    <div class="input-group-append">
+                        <button
+                            class="btn btn-outline-secondary"
+                            (click)="d.toggle()"
+                            type="button"
+                        >
+                            <fa-icon icon="calendar"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto">
+                <label for="startTime">Von:</label>
+                <select class="custom-select" name="startTime" id="startTime" [(ngModel)]="startTime" (change)="startTimeChange()">
+                    <option *ngFor="let time of selectOptions" [value]="time.id">
+                        {{ time.hour |number: '2.0' }}:{{ time.minute | number: '2.0' }}
+                    </option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <label for="endTime">Bis:</label>
+                <select class="custom-select" name="endTime" id="endTime" [(ngModel)]="endTime" (change)="endTimeChange()">
+                    <option *ngFor="let time of selectOptions" [value]="time.id">
+                        {{ time.hour |number: '2.0' }}:{{ time.minute | number: '2.0' }}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row align-items-center mt-2">
+            <div class="col-auto">
+                <div class="custom-control custom-switch">
+                    <input type="checkbox" class="custom-control-input" id="weeklySwitch" [(checked)]="slot.weekly">
+                    <label class="custom-control-label" for="weeklySwitch">Wöchentlich wiederholen</label>
+                </div>
+
+            </div>
+            <div class="col-auto ml-auto">
+                <button type="button" class="remove-btn"><fa-icon icon="trash"></fa-icon><span class="text">Slot entfernen</span></button>
+            </div>
+        </div>
+    </form>
 </div>

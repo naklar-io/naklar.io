@@ -1,4 +1,12 @@
 <div class="container">
+    <div class="row">
+        <div class="col align-self-end">
+            <h3>Verfügbarkeit hinzufügen</h3>
+        </div>
+        <div class="col align-self-end">
+            <button type="button" class="remove-btn"><fa-icon icon="plus-circle"></fa-icon></button>
+        </div>
+    </div>
     <div *ngFor="let timeslot of timeslots$ | async">
         <scheduling-timeslot-detail [slot]="timeslot"></scheduling-timeslot-detail>
     </div>
