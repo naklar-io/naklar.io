@@ -4,7 +4,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { MatStep, MatStepper } from '@angular/material/stepper';
 import { ActivatedRoute } from '@angular/router';
-import { Options } from '@m0t0r/ngx-slider';
+import { Options } from '@angular-slider/ngx-slider';
 import { combineLatest, Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { fileSizeValidator } from 'src/app/_helpers';

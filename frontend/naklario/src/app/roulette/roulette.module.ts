@@ -13,7 +13,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReportComponent } from './feedback/report/report.component';
 import { InstructionVideoComponent } from './student/instruction-video/instruction-video.component';
 import { PauseModalComponent } from './pause-modal/pause-modal.component';
-import { NgxSliderModule } from '@m0t0r/ngx-slider';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { ExitModalComponent } from './session/exit-modal/exit-modal.component';
 import { SchedulingModule } from '../scheduling/scheduling.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
