@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { formatISO, parseISO } from 'date-fns';
 import { Observable } from 'rxjs';
 import { Deserializable, Sendable, Serializable, User } from 'src/app/_models';
-import { Appointment } from 'src/app/_models/scheduling';
+import { Appointment, TimeSlot } from 'src/app/_models/scheduling';
 import { DatabaseService } from '../database.service';
 import { UserService } from './account/user.service';
 import { deserializeDuration, serializeDuration } from './scheduling/utils';
@@ -25,6 +25,10 @@ export class TransformationService {
     return this.toLocal(target, app);
   }
 
+  deserializeTimeSlot(ts: Sendable<TimeSlot>) {
+    const target = new TimeSlot();
+    return this.toLocal(target, ts) as Observable<TimeSlot>;
+  }
 
   toSendable(object: Serializable) {
     return object.serialize(this);

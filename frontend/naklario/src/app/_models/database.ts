@@ -91,7 +91,7 @@ export class State {
 }
 
 export class Subject {
-    constructor(public id: number, public name: string) {}
+    constructor(public id: number, public name: string, public img?: string) {}
 }
 export class SchoolType {
     constructor(public id: number, public name: string) {}

@@ -1,0 +1,5 @@
+<div class="container">
+    <div *ngFor="let timeslot of timeslots$ | async">
+        <scheduling-timeslot-detail [slot]="timeslot"></scheduling-timeslot-detail>
+    </div>
+</div>

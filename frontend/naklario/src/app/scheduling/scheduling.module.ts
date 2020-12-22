@@ -15,6 +15,9 @@ import { AvailableSlotListComponent } from './available-slot/available-slot-list
 import { AvailableSlotDetailComponent } from './available-slot/available-slot-detail/available-slot-detail.component';
 import { NgbCollapse, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppointmentAnswerComponent } from './appointment/appointment-answer/appointment-answer.component';
+import { TimeslotListComponent } from './timeslot/timeslot-list/timeslot-list.component';
+import { TimeslotDetailComponent } from './timeslot/timeslot-detail/timeslot-detail.component';
+import { FormsModule } from '@angular/forms';
 
 registerLocaleData(localeDe);
 
@@ -26,12 +29,15 @@ registerLocaleData(localeDe);
     AppointmentListComponent,
     AvailableSlotListComponent,
     AvailableSlotDetailComponent,
-    AppointmentAnswerComponent
+    AppointmentAnswerComponent,
+    TimeslotDetailComponent,
+    TimeslotListComponent
   ],
   imports: [
     CommonModule,
     BrowserAnimationsModule,
     NgbModule,
+    FormsModule,
     CalendarModule.forRoot({ provide: DateAdapter, useFactory: adapterFactory }),
     SchedulingRoutingModule
   ],

@@ -1,6 +1,6 @@
 import { forkJoin, of } from 'rxjs';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Create } from '../_services/database/actions';
 import { TransformationService } from '../_services/database/transformation.service';
 import { User, Subject, Sendable, Serializable, Deserializable } from './database';
@@ -22,7 +22,7 @@ export class Slot implements Deserializable, Serializable {
     serialize(transform: TransformationService): Sendable<Slot> {
         return {
             startTime: transform.serializeDate(this.startTime),
-            duration: transform.serializeDuration(this.duration)
+            duration: transform.serializeDuration(this.duration),
         };
     }
 }
@@ -46,8 +46,24 @@ export class MergedSlot<T extends Slot> {
 
 export class TimeSlot extends Slot {
     id?: number;
-    owner: User;
+    owner?: User;
     weekly: boolean;
+
+    deserialize(object: Sendable<TimeSlot>, transform: TransformationService) {
+        return super.deserialize(object, transform).pipe(
+            switchMap((parent) => {
+                return forkJoin({
+                    weekly: of(object.weekly),
+                }).pipe(map((values) => Object.assign(object, parent, values)));
+            })
+        );
+    }
+
+    serialize(transform: TransformationService) {
+        return Object.assign(super.serialize(transform), {
+            weekly: this.weekly,
+        }) as Sendable<TimeSlot>;
+    }
 }
 
 export class AvailableSlot extends Slot {

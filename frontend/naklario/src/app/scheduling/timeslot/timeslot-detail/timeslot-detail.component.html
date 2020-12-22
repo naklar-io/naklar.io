@@ -1,0 +1,16 @@
+<div>
+    <div class="header">
+        <strong>Slot {{ slot.id }}:</strong>
+    </div>
+    
+    <div class="time-select">
+        Datum: <ngb-datepicker [(ngModel)]="date"> </ngb-datepicker>
+        Von:
+        {{ slot.startTime | date: 'shortTime' }} Bis: {{ endTime | date: 'shortTime' }}
+    </div>
+    <div class="footer">
+        {{ slot.weekly ? 'Wöchentlich' : 'Einmalig' }} -
+        <button type="button" class="btn btn-primary">Slot entfernen</button>
+    </div>
+    
+</div>
