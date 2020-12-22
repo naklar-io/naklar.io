@@ -236,7 +236,6 @@ export class StudentComponent implements OnInit {
     }
 
     trackSubjectFn(index: number, sub: Subject) {
-        console.log('tracking', sub.id);
         return sub.id;
     }
 }

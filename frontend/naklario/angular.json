@@ -37,6 +37,7 @@
               "src/custom-service-worker.js"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/@fortawesome/fontawesome-svg-core/styles.css",
               "src/styles.scss"
             ],

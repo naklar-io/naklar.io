@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { formatISO } from 'date-fns';
+import { Observable } from 'rxjs';
 import { Subject } from 'src/app/_models';
 import { Appointment, AvailableSlot, CreateAppointment, MergedSlot, Slot } from 'src/app/_models/scheduling';
 import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
@@ -15,9 +16,11 @@ export class AvailableSlotDetailComponent implements OnInit {
   @Input() slot: MergedSlot<AvailableSlot>;
   @Input() subject: Subject = new Subject(1, 'deutsch');
   @Output() bookedAppointment = new EventEmitter<Appointment>();
+  @Output() bookingError = new EventEmitter<string>();
 
   isCollapsed = true;
   topic = '';
+
 
   constructor(private appointments: AppointmentService) { }
 
@@ -36,6 +39,8 @@ export class AvailableSlotDetailComponent implements OnInit {
     const newAppointment = new CreateAppointment(date, {minutes: 30}, this.subject, this.topic);
     this.appointments.create(newAppointment).subscribe((result) => {
       this.bookedAppointment.emit(result);
+    }, (error) => {
+      this.bookingError.emit(error);
     });
   }
 

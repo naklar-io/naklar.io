@@ -1,4 +1,4 @@
-FROM node:14.2.0-alpine AS builder
+FROM node:15.2.0-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -11,7 +11,7 @@ COPY ./naklario ./
 RUN npm run build:ssr
 
 
-FROM node:14.2.0-alpine
+FROM node:15.2.0-alpine
 
 COPY --from=builder /usr/src/app/dist /dist
 

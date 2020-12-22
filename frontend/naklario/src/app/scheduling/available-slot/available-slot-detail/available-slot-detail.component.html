@@ -1,9 +1,11 @@
 <div class="row">
-    <div class="col-5">
+    <div class="col-4 align-self-center">
         {{ slot.startTime | date: 'EE dd.MM.yyyy' }}
     </div>
-    <div class="col-3">
-        {{ slot.startTime | date: 'HH:mm' }}-{{ endTime(slot) | date: 'HH:mm' }}
+    <div class="col-4 align-self-center">
+        {{ startTimes.length }} Slots zwischen {{ slot.startTime | date: 'HH:mm' }}-{{
+            endTime(slot) | date: 'HH:mm'
+        }}
     </div>
     <div class="col-4">
         <button class="btn btn-primary" (click)="isCollapsed = !isCollapsed">Buchen</button>
@@ -11,12 +13,10 @@
 
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="col-12">
         <div class="card">
-            <div class="card-body">
-                <div *ngFor="let startTime of startTimes">
-                    <button class="btn btn-outline-primary" (click)="bookTime(startTime)">
-                        30 Minuten ab {{ startTime | date: 'HH:mm' }}
-                    </button>
-                </div>
+            <div *ngFor="let startTime of startTimes">
+                <button class="btn btn-outline-primary" (click)="bookTime(startTime)">
+                    30 Minuten ab {{ startTime | date: 'HH:mm' }}
+                </button>
             </div>
         </div>
     </div>
