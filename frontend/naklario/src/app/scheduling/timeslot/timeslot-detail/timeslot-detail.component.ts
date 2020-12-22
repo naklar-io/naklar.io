@@ -50,6 +50,7 @@ interface SimpleTime {
 })
 export class TimeslotDetailComponent implements OnInit {
     @Input() slot: TimeSlot;
+    @Input() otherSlots: TimeSlot[] = [];
     date: NgbDate;
     public startTime: number = null;
     public endTime: number = null;
@@ -137,10 +138,6 @@ export class TimeslotDetailComponent implements OnInit {
             );
         }
         this.slot.duration = intervalToDuration({ start: this.slot.startTime, end: slotEnd });
-    }
-
-    log(object) {
-        console.log(object);
     }
 
     getSlotEndTime() {
