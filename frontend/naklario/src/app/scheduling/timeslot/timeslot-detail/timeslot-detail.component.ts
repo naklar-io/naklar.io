@@ -1,4 +1,4 @@
-import { Component, Injectable, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Injectable, Input, OnInit, Output } from '@angular/core';
 import { NgbDate, NgbDateParserFormatter, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import {
     add,
@@ -50,7 +50,10 @@ interface SimpleTime {
 })
 export class TimeslotDetailComponent implements OnInit {
     @Input() slot: TimeSlot;
+    @Input() index = 0;
     @Input() otherSlots: TimeSlot[] = [];
+    @Output() delete = new EventEmitter<TimeSlot>();
+
     date: NgbDate;
     public startTime: number = null;
     public endTime: number = null;
@@ -142,5 +145,9 @@ export class TimeslotDetailComponent implements OnInit {
 
     getSlotEndTime() {
         return endTime(this.slot);
+    }
+
+    onDelete() {
+        this.delete.emit(this.slot);
     }
 }

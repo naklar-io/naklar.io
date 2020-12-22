@@ -1,8 +1,8 @@
 <div>
-    <div class="header">
-        <strong>Slot {{ slot.id }}:</strong> 
-        <span *ngIf="slot.weekly">Ab dem {{ slot.startTime | date}} jeden {{ slot.startTime | date:'EEEE'}} von {{ slot.startTime|date:'shortTime' }} bis {{ getSlotEndTime()|date:'shortTime' }}</span>
-        <span *ngIf="!slot.weekly">Am {{ slot.startTime | date}} von {{ slot.startTime|date:'shortTime' }} bis {{ getSlotEndTime()|date:'shortTime' }}</span>
+    <div class="header mb-3">
+        <strong>Slot {{ index+1 }}:</strong> 
+        <i *ngIf="slot.weekly"> Ab dem {{ slot.startTime | date}} jeden {{ slot.startTime | date:'EEEE'}} von {{ slot.startTime|date:'shortTime' }} bis {{ getSlotEndTime()|date:'shortTime' }}</i>
+        <i *ngIf="!slot.weekly"> Am {{ slot.startTime | date}} von {{ slot.startTime|date:'shortTime' }} bis {{ getSlotEndTime()|date:'shortTime' }}</i>
     </div>
     <form class="form">
         <div class="form-row align-items-center">
@@ -47,16 +47,16 @@
             </div>
         </div>
 
-        <div class="form-row align-items-center mt-2">
+        <div class="form-row align-items-center mt-4">
             <div class="col-auto">
                 <div class="custom-control custom-switch">
-                    <input type="checkbox" class="custom-control-input" id="weeklySwitch" [(checked)]="slot.weekly">
+                    <input type="checkbox" class="custom-control-input" id="weeklySwitch" name="weeklySwitch" [(ngModel)]="slot.weekly">
                     <label class="custom-control-label" for="weeklySwitch">Wöchentlich wiederholen</label>
                 </div>
 
             </div>
             <div class="col-auto ml-auto">
-                <button type="button" class="remove-btn"><fa-icon icon="trash"></fa-icon><span class="text">Slot entfernen</span></button>
+                <button type="button" class="remove-btn" (click)="onDelete()"><fa-icon icon="trash"></fa-icon><span class="text">Slot entfernen</span></button>
             </div>
         </div>
     </form>
