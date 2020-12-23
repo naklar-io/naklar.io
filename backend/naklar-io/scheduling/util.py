@@ -30,7 +30,7 @@ def find_matching_timeslot(start_time: datetime, duration: timedelta,
     ).select_related(
         'owner'
     ).filter(
-        Q(weekly=False, start_time__lte=start_time) | Q(weekly=True),
+        start_time__lte=start_time,
         start_time__time__lte=start_time.timetz(),
         start_time__iso_week_day=start_time.isoweekday(),
         duration__gte=duration,
