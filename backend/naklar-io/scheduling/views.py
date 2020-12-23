@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 
-from django.db.models import Q, Prefetch
+from django.db.models import Q, Prefetch, F
 from django.db.models.functions import Now
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins, permissions, status
@@ -77,7 +76,7 @@ class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
 
 class AppointmentViewSet(viewsets.ModelViewSet):
-    queryset = Appointment.objects.select_related('owner').all()
+    queryset = Appointment.objects.select_related('owner').filter(start_time__gte=Now() - F('duration'))
     serializer_class = FullAppointmentSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
@@ -97,11 +96,12 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=['post'], permission_classes=[BelongsToAppointment],
-            queryset=Appointment.objects.filter(start_time__lte=timezone.now() + timedelta(minutes=15), status__in=[
-                Appointment.Status.BOTH_STARTED,
-                Appointment.Status.INVITEE_STARTED,
-                Appointment.Status.OWNER_STARTED,
-                Appointment.Status.CONFIRMED]))
+            queryset=Appointment.objects.filter(start_time__lte=Now() + timedelta(minutes=15),
+                                                start_time__gte=Now() - F('duration'), status__in=[
+                    Appointment.Status.BOTH_STARTED,
+                    Appointment.Status.INVITEE_STARTED,
+                    Appointment.Status.OWNER_STARTED,
+                    Appointment.Status.CONFIRMED]))
     def start_meeting(self, request, pk=None):
         from roulette.models import Meeting
         appointment = self.get_object()
@@ -131,8 +131,9 @@ class AppointmentViewSet(viewsets.ModelViewSet):
                 start_time, duration, subject, self.request.user, TimeSlot.objects.all()
             )
             if timeslot:
+                serializer.initial_data['timeslot'] = timeslot.id
+                serializer.run_validation(serializer.initial_data)
                 serializer.validated_data['timeslot'] = timeslot
-                serializer.is_valid(raise_exception=True)
             else:
                 raise ValidationError({
                     'timeslot': _("Couldn't find matching timeslot!")}

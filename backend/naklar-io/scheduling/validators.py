@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, OrderedDict
 
-from django.db.models import QuerySet
-from django.utils import timezone
+from django.db.models import QuerySet, Q
 
 from scheduling import util
 
@@ -35,6 +34,7 @@ class AppointmentValidator:
         timeslot: 'TimeSlot' = data["timeslot"]
         start_time: datetime = data["start_time"]
         duration: timedelta = data["duration"]
+        owner = serializer.context["request"].user
         # this means we haven't got a timeslot yet. Trust on the view to do the creation
         if not timeslot:
             return
@@ -42,12 +42,14 @@ class AppointmentValidator:
         queryset = self.queryset
         if serializer.instance:
             queryset = queryset.exclude(id=serializer.instance.id)
-        queryset = queryset.filter(timeslot=timeslot, start_time__date=start_time.date())
+        queryset = queryset.filter(Q(timeslot=timeslot) | Q(owner=owner), start_time__date=start_time.date())
 
         if not util.check_slot_in_range(start_time, duration, timeslot):
             raise serializers.ValidationError(_("This appointment doesn't match the timeslots range!"))
 
         for appointment in queryset:
             if start_time < appointment.end_time and end_time > appointment.start_time:
-                raise serializers.ValidationError(_("This appointment overlaps with at least one other appointment!"))
-
+                if appointment.owner == owner:
+                    raise serializers.ValidationError(_("This appointment overlaps with one of your other appointments!"))
+                else:
+                    raise serializers.ValidationError(_("This appointment overlaps with at least one other appointment!"))

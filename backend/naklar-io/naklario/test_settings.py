@@ -107,6 +107,7 @@ INSTALLED_APPS = [
     'roulette',
     'landing',
     'notify',
+    '_shared',
     # 3rd party that needs to load last
     'simple_history',
     'post_office',

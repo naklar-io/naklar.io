@@ -42,7 +42,6 @@ def find_matching_timeslot(start_time: datetime, duration: timedelta,
             filter=Q(owner__timeslot__appointment__start_time__gte=Now())
         )
     ).order_by('num_appointments')
-    print(qs)
     for timeslot in qs:
         for available in timeslot.available_slots():
             if available.start_time >= start_time and (available.start_time + available.duration

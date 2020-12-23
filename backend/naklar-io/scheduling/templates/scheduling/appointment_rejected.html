@@ -8,7 +8,7 @@
 <body>
 <p>Hi {{ other_party.first_name }},</p>
 <p>{{ rejecting_party.first_name }} hat folgenden Termin abgesagt:</p>
-<p>{{ appointment.subject }}: Von {{ appointment.start_time }} - {{ appointment.end_time|time }}</p>
+<p>{{ appointment.subject }}: {{ appointment.start_time }} - {{ appointment.end_time|time }}</p>
 {% if appointment.topic %}
     <span>Thema: {{ appointment.topic }}</span>
 {% endif %}
