@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { trigger, transition, style, stagger, animate, query } from '@angular/animations';
+import { Component, HostBinding, OnInit } from '@angular/core';
 import { add, compareAsc, isAfter } from 'date-fns';
 import { BehaviorSubject, combineLatest, interval, Observable } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
@@ -9,6 +10,16 @@ import { AppointmentService } from 'src/app/_services/database/scheduling/appoin
     selector: 'scheduling-appointment-list',
     templateUrl: './appointment-list.component.html',
     styleUrls: ['./appointment-list.component.scss'],
+    animations: [
+        trigger('appointmentTrigger', [
+            transition('* => *', [
+                query(':enter', [
+                    style({ opacity: 0, transform: 'translateX(-100vw)'}),
+                    stagger('100ms', animate('250ms ease', style({ opacity: 1, transform: 'none'}))),
+                ]),
+            ]),
+        ])
+    ]
 })
 export class AppointmentListComponent implements OnInit {
     refresh$ = new BehaviorSubject(null);

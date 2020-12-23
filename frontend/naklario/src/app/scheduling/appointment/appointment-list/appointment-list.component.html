@@ -1,10 +1,12 @@
 <div *ngIf='(appointments$ | async) as app'>
   <h3 *ngIf='app && app.length > 0'>Anstehende Termine</h3>
   <br>
-  <div *ngFor="let appointment of app; trackBy: trackAppointment">
-    <scheduling-appointment-card
-      [appointment]="appointment"
-      (appointmentChange)="this.refresh$.next($event)"
-    ></scheduling-appointment-card>
+  <div [@appointmentTrigger]='app.length'>
+    <div *ngFor="let appointment of app; trackBy: trackAppointment" class="appointment-detail">
+      <scheduling-appointment-card
+        [appointment]="appointment"
+        (appointmentChange)="this.refresh$.next($event)"
+      ></scheduling-appointment-card>
+    </div>
   </div>
 </div>

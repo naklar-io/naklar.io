@@ -1,8 +1,5 @@
-import {
-  BrowserModule,
-  BrowserTransferStateModule,
-} from '@angular/platform-browser';
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -37,20 +34,19 @@ import { NavbarComponent } from './home/misc/navbar/navbar.component';
 import { PageNotFoundComponent } from './home/misc/page-not-found/page-not-found.component';
 
 import {
-  DatabaseService,
-  AuthenticationService,
-  ToastService,
-  RouletteService,
-  BannerService,
-  NotifyService,
-  AppLayoutService,
+    DatabaseService,
+    AuthenticationService,
+    ToastService,
+    RouletteService,
+    BannerService,
+    NotifyService,
 } from './_services';
 
 import { MiscComponentsModule } from './_misc_components/misc-components.module';
 import { MoreInformationComponent } from './home/more-information/more-information.component';
 import { BannerComponent } from './home/misc/banner/banner.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ScrollSpyDirective } from './_helpers/scroll-spy.directive';
+import { ScrollSpyDirective } from './@shared/directives/scroll-spy.directive';
 import { PartnersComponent } from './home/more-information/partners/partners.component';
 import { FeaturesComponent } from './home/more-information/features/features.component';
 import { VideoComponent } from './home/more-information/video/video.component';
@@ -64,89 +60,89 @@ import { NotifyModule } from './notify/notify.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PressComponent } from './home/misc/press/press.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { SpinnerLoaderComponent } from './_misc_components/spinner-loader/spinner-loader.component';
 import { Angulartics2Module } from 'angulartics2';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { fas } from '@fortawesome/free-solid-svg-icons';
-import { CalendarModule, DateAdapter } from 'angular-calendar';
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { SchedulingModule } from './scheduling/scheduling.module';
-import { APP_BASE_HREF } from '@angular/common';
+import { SharedModule } from './@shared/shared.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HomeComponent,
-    MoreInformationComponent,
-    AboutComponent,
-    DatenschutzComponent,
-    FeedbackComponent,
-    HelpSupportComponent,
-    ImpressumComponent,
-    ParentsComponent,
-    PrivacyComponent,
-    SchoolsComponent,
-    StudentsComponent,
-    TutorsComponent,
-    TermsConditionsComponent,
-    FooterComponent,
-    NavbarComponent,
-    PageNotFoundComponent,
-    BannerComponent,
-    DashboardComponent,
-    ScrollSpyDirective,
-    PartnersComponent,
-    FeaturesComponent,
-    VideoComponent,
-    MissionComponent,
-    NumbersComponent,
-    TeamComponent,
-    JoinTheCommunityComponent,
-    PressComponent,
-  ],
-  imports: [
-    NgbModule,
-    BrowserModule.withServerTransition({ appId: 'serverApp' }),
-    BrowserTransferStateModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    Angulartics2Module.forRoot(),
-    // Loading bar
-    LoadingBarHttpClientModule,
-    LoadingBarRouterModule,
-    // Material
-    MatSnackBarModule,
-    // Stuff for reactive / template driven forms
-    ReactiveFormsModule,
-    FormsModule,
-    // modules (arbitrary order)
-    AccountModule,
-    RouletteModule,
-    MiscComponentsModule,
-    NotifyModule,
-    SchedulingModule,
-    // AppRoutingComponent needs to be the last routing module
-    AppRoutingModule,
-    // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    ServiceWorkerModule.register('custom-service-worker.js', {
-      enabled: environment.production,
-    }),
-    FontAwesomeModule,
-  ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-    AuthenticationService,
-    DatabaseService,
-    RouletteService,
-    ToastService,
-    BannerService,
-    NotifyService,
-  ],
-  bootstrap: [AppComponent],
+    declarations: [
+        AppComponent,
+        HomeComponent,
+        MoreInformationComponent,
+        AboutComponent,
+        DatenschutzComponent,
+        FeedbackComponent,
+        HelpSupportComponent,
+        ImpressumComponent,
+        ParentsComponent,
+        PrivacyComponent,
+        SchoolsComponent,
+        StudentsComponent,
+        TutorsComponent,
+        TermsConditionsComponent,
+        FooterComponent,
+        NavbarComponent,
+        PageNotFoundComponent,
+        BannerComponent,
+        DashboardComponent,
+        PartnersComponent,
+        FeaturesComponent,
+        VideoComponent,
+        MissionComponent,
+        NumbersComponent,
+        TeamComponent,
+        JoinTheCommunityComponent,
+        PressComponent,
+    ],
+    imports: [
+        NgbModule,
+
+        BrowserModule.withServerTransition({ appId: 'serverApp' }),
+        BrowserTransferStateModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        Angulartics2Module.forRoot(),
+        // Loading bar
+        LoadingBarHttpClientModule,
+        LoadingBarRouterModule,
+        // Material
+        MatSnackBarModule,
+        // Stuff for reactive / template driven forms
+        ReactiveFormsModule,
+        FormsModule,
+        // modules (arbitrary order)
+        
+        AccountModule,
+        RouletteModule,
+        MiscComponentsModule,
+        NotifyModule,
+        SchedulingModule,
+        SharedModule,
+        
+        // AppRoutingComponent needs to be the last routing module
+        AppRoutingModule,
+        // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+        ServiceWorkerModule.register('custom-service-worker.js', {
+            enabled: environment.production,
+        }),
+        FontAwesomeModule,
+    ],
+    providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        AuthenticationService,
+        DatabaseService,
+        RouletteService,
+        ToastService,
+        BannerService,
+        NotifyService,
+    ],
+    bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(library: FaIconLibrary) {
-    library.addIconPacks(fas);
-  }
+    constructor(library: FaIconLibrary) {
+        library.addIconPacks(fas);
+    }
 }
