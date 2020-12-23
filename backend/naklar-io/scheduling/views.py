@@ -108,7 +108,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
         if appointment.meeting and not appointment.meeting.ended:
             meeting = appointment.meeting
         else:
-            meeting = Meeting.objects.create()
+            meeting = Meeting.objects.create(tutor=appointment.invitee, student=appointment.owner)
             meeting.users.add(appointment.owner, appointment.invitee)
             appointment.meeting = meeting
         if self.request.user == appointment.owner:
