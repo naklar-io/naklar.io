@@ -51,16 +51,6 @@ class TimeSlot(models.Model):
                 slots.append(AvailableSlot(self, current_time, self.duration - (current_time - base_time)))
         return slots
 
-    def save(self, *args, **kwargs):
-        if self.pk:
-            # filter through all appointments and cancel if no longer in range
-            appointments = self.appointment_set.filter(start_time__gte=timezone.now())
-            for appointment in appointments:
-                if not appointment.check_in_range():
-                    appointment.delete()
-
-        super(TimeSlot, self).save(*args, **kwargs)
-
 
 class ActiveAppointmentManager(models.Manager):
     """
