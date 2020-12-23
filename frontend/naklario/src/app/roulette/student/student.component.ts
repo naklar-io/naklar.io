@@ -202,6 +202,9 @@ export class StudentComponent implements OnInit {
           centered: true,
         });
         modalRef.componentInstance.subject = subject;
+        modalRef.componentInstance.startMatch.subscribe((x) => {
+            this.startMatch();
+        });
         this.selectedSubjectID = subject.id;
     }
 

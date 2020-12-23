@@ -20,9 +20,9 @@ const titleStateMapping = {
 export class StartModalComponent implements OnInit {
 
   @Input() subject: OnlineSubject;
-  @Output() startMatch: EventEmitter<OnlineSubject>;
+  @Output() startMatch = new EventEmitter<OnlineSubject>();
 
-  state: ModalState;
+  @Input() state: ModalState = 'START';
   bookedAppointment: Appointment | null = null;
 
   
@@ -30,10 +30,10 @@ export class StartModalComponent implements OnInit {
   constructor(public modal: NgbActiveModal, private appointments: AppointmentService) { }
 
   ngOnInit(): void {
-    this.state = 'START';
   }
 
   onStartMatch() {
+    this.modal.dismiss();
     this.startMatch.emit(this.subject);
   }
 
