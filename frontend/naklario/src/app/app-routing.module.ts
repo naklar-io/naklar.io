@@ -23,6 +23,7 @@ import { PrivacyComponent } from './home/misc/privacy/privacy.component';
 import { PressComponent } from './home/misc/press/press.component';
 import { CookieBannerComponent } from './_misc_components/cookie-banner/cookie-banner.component';
 import { CalendarSingleComponent } from './scheduling/calendar-single/calendar-single.component';
+import { PartnerComponent } from './home/misc/partner/partner.component';
 
 const routes: Routes = [
   {
@@ -38,6 +39,7 @@ const routes: Routes = [
         },
       },
       { path: 'feedback', component: FeedbackComponent },
+      { path: 'partner', component: PartnerComponent },
       { path: 'support', component: HelpSupportComponent },
       { path: 'parents', component: ParentsComponent },
       { path: 'schools', component: SchoolsComponent },

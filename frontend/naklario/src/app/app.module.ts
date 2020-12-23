@@ -65,6 +65,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { fas } from '@fortawesome/free-solid-svg-icons';
 import { SchedulingModule } from './scheduling/scheduling.module';
 import { SharedModule } from './@shared/shared.module';
+import { PartnerComponent } from './home/misc/partner/partner.component';
 
 @NgModule({
     declarations: [
@@ -95,6 +96,7 @@ import { SharedModule } from './@shared/shared.module';
         TeamComponent,
         JoinTheCommunityComponent,
         PressComponent,
+        PartnerComponent,
     ],
     imports: [
         NgbModule,
