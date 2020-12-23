@@ -44,7 +44,7 @@ def find_matching_timeslot(start_time: datetime, duration: timedelta,
     ).order_by('num_appointments')
     for timeslot in qs:
         for available in timeslot.available_slots():
-            if available.start_time >= start_time and (available.start_time + available.duration
+            if available.start_time <= start_time and (available.start_time + available.duration
                                                        >= start_time + duration):
                 return available.parent
     return None
