@@ -1,10 +1,12 @@
 import { Component, OnDestroy, OnInit, Output } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { add, roundToNearestMinutes, set, setHours } from 'date-fns';
 import * as _ from 'lodash';
 import { forkJoin, Observable, Subscription } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { TimeSlot } from 'src/app/_models/scheduling';
 import { TimeslotService } from 'src/app/_services/database/scheduling/timeslot.service';
+import { compareAsc } from '../../utils/times';
 
 @Component({
     selector: 'scheduling-timeslot-list',
@@ -18,14 +20,14 @@ export class TimeslotListComponent implements OnInit, OnDestroy {
     changed: Set<number>;
     private timeslotSub: Subscription;
 
-    constructor(private timeslots: TimeslotService) {}
+    constructor(private timeslots: TimeslotService, private activeModal?: NgbActiveModal) {}
 
     ngOnInit(): void {
         this.timeslotSub = this.timeslots
             .list()
             .pipe(tap((x) => console.log(x)))
             .subscribe((value) => {
-                this.timeslotList = value;
+                this.timeslotList = value.sort((a, b) => compareAsc(a, b));
             });
         this.timeslotList = [];
         this.changed = new Set<number>();
@@ -62,13 +64,21 @@ export class TimeslotListComponent implements OnInit, OnDestroy {
             observableIdx.push(idx);
         });
         console.log(observableIdx);
-        forkJoin(observables).subscribe(() => {
-            this.changed.clear();
-            this.timeslotSub.unsubscribe();
-            this.timeslotSub = this.timeslots.list().subscribe((result) => {
-                this.timeslotList = result;
+        if (observables.length > 0) {
+            forkJoin(observables).subscribe(() => {
+                this.changed.clear();
+
+                this.timeslotSub.unsubscribe();
+                this.timeslotSub = this.timeslots.list().subscribe((result) => {
+                    this.timeslotList = result;
+                });
+                if (this.activeModal) {
+                    this.activeModal.close();
+                }
             });
-        });
+        } else if (this.activeModal) {
+            this.activeModal.close();
+        }
     }
 
     deleteTimeSlot(idx: number, slot: TimeSlot) {
