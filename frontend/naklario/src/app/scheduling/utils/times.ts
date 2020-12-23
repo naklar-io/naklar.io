@@ -66,6 +66,26 @@ export function mergeOverlappingSlots<T extends Slot>(slots: T[]): MergedSlot<T>
     return result;
 }
 
+export function mergeDaySlots<T extends Slot>(slots: MergedSlot<T>[]): MergedSlot<T>[] {
+    const result: MergedSlot<T>[] = [];
+    const workSlots = slots.sort(compareAsc);
+    const mergedSlots = [];
+    workSlots.forEach((slot) => {
+        if (!mergedSlots.includes(slot)){
+            const sameDay = slots.filter((x) => x !== slot && timedate.isSameDay(x.startTime, slot.startTime));
+            const newSlot = new MergedSlot(slot);
+            newSlot.children = [...slot.children];
+            const maxEnd = timedate.max([...sameDay.map(endTime), endTime(slot)]);
+            newSlot.duration = timedate.intervalToDuration({start: slot.startTime, end: maxEnd});
+            sameDay.forEach((x) => newSlot.children.push(...x.children))
+            mergedSlots.push(...sameDay);
+            result.push(newSlot);
+        }
+        
+    });
+    return result;
+}
+
 
 export function getStartTimes(slot: Slot): Date[] {
     const result: Set<Date> = new Set();

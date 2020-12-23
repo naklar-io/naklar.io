@@ -7,7 +7,7 @@ import { Subject } from 'src/app/_models';
 import { Appointment, AvailableSlot, Slot } from 'src/app/_models/scheduling';
 import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
 import { AvailableSlotService } from 'src/app/_services/database/scheduling/available-slot.service';
-import { mergeOverlappingSlots } from '../../utils/times';
+import { mergeDaySlots, mergeOverlappingSlots } from '../../utils/times';
 
 @Component({
     selector: 'scheduling-available-slot-list',
@@ -44,7 +44,7 @@ export class AvailableSlotListComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.availableSlots$ = this.availableSlots
             .list(this.subject.id)
-            .pipe(map(mergeOverlappingSlots));
+            .pipe(map(mergeOverlappingSlots), map(mergeDaySlots));
         this.availabeSlotsSub = this.availableSlots$.subscribe((value) => {
             this.availableSlotList = value;
         });

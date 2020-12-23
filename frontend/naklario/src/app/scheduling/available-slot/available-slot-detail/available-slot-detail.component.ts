@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { formatISO } from 'date-fns';
+import { formatISO, isEqual } from 'date-fns';
 import { Observable } from 'rxjs';
 import { Subject } from 'src/app/_models';
 import { Appointment, AvailableSlot, CreateAppointment, MergedSlot, Slot } from 'src/app/_models/scheduling';
@@ -32,7 +32,17 @@ export class AvailableSlotDetailComponent implements OnInit {
   }
 
   get startTimes(): Date[] {
-    return [...new Set(...this.slot.children.map(getStartTimes))];
+    const result = [];
+    const allTimes = this.slot.children.map(getStartTimes);
+    allTimes.forEach((x) => {
+      x.forEach((time) => {
+        const isInArray = result.find((resultTime) => isEqual(resultTime, time));
+        if (!isInArray) {
+          result.push(time);
+        }
+      });
+    });
+    return result;
   }
 
   bookTime(date: Date) {
