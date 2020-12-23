@@ -15,6 +15,7 @@ export class Slot implements Deserializable, Serializable {
     }
 
     deserialize(object: Sendable<Slot>, transform: TransformationService): Observable<Slot> {
+        Object.assign(this, object);
         this.duration = transform.deserializeDuration(object.duration);
         this.startTime = transform.deserializeDate(object.startTime);
         return of(this);
@@ -49,12 +50,17 @@ export class TimeSlot extends Slot {
     owner?: User;
     weekly: boolean;
 
+    constructor(startTime?: Date, duration?: Duration, weekly?: boolean) {
+        super(startTime, duration);
+        this.weekly = weekly;
+    }
+
     deserialize(object: Sendable<TimeSlot>, transform: TransformationService) {
         return super.deserialize(object, transform).pipe(
             switchMap((parent) => {
                 return forkJoin({
                     weekly: of(object.weekly),
-                }).pipe(map((values) => Object.assign(object, parent, values)));
+                }).pipe(map((values) => Object.assign(this, parent, values)));
             })
         );
     }

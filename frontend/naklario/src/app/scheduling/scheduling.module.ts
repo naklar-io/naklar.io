@@ -20,6 +20,7 @@ import { TimeslotDetailComponent } from './timeslot/timeslot-detail/timeslot-det
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { SharedModule } from '../@shared/shared.module';
+import { TimeslotBtnComponent } from './timeslot/timeslot-btn.component';
 
 registerLocaleData(localeDe);
 
@@ -34,6 +35,7 @@ registerLocaleData(localeDe);
         AppointmentAnswerComponent,
         TimeslotDetailComponent,
         TimeslotListComponent,
+        TimeslotBtnComponent,
     ],
     imports: [
         SharedModule,
@@ -50,6 +52,7 @@ registerLocaleData(localeDe);
         AppointmentCardComponent,
         AppointmentListComponent,
         AvailableSlotListComponent,
+        TimeslotBtnComponent
     ],
 })
 export class SchedulingModule {}

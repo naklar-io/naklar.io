@@ -24,7 +24,6 @@ export class TimeslotService
     constructor(private api: ApiService, private transform: TransformationService) {
         this.deserialize = ((timeSlot: Sendable<TimeSlot>) =>
             this.transform.toLocal(new TimeSlot(), timeSlot)).bind(this);
-        this.serialize = ((timeSlot: TimeSlot) => timeSlot.serialize(this.transform)).bind(this);
     }
 
     read(id: number): Observable<TimeSlot> {
@@ -45,7 +44,10 @@ export class TimeslotService
     }
     create(object: TimeSlot): Observable<TimeSlot> {
         return this.api
-            .post<Sendable<TimeSlot>, Sendable<TimeSlot>>(`${BASE_URL}`, this.serialize(object))
+            .post<Sendable<TimeSlot>, Sendable<TimeSlot>>(
+                `${BASE_URL}`,
+                object.serialize(this.transform)
+            )
             .pipe(mergeMap(this.deserialize));
     }
     delete(id: number): Observable<any> {
@@ -55,7 +57,7 @@ export class TimeslotService
         return this.api
             .put<Sendable<TimeSlot>, Sendable<TimeSlot>>(
                 `${BASE_URL}${id}/`,
-                this.serialize(object)
+                object.serialize(this.transform)
             )
             .pipe(mergeMap(this.deserialize));
     }

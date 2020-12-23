@@ -50,14 +50,15 @@ interface SimpleTime {
 })
 export class TimeslotDetailComponent implements OnInit {
     @Input() slot: TimeSlot;
+    @Output() slotChange = new EventEmitter<TimeSlot>();
     @Input() index = 0;
     @Input() otherSlots: TimeSlot[] = [];
-    @Output() delete = new EventEmitter<TimeSlot>();
+    @Output() timeslotDelete = new EventEmitter<TimeSlot>();
 
     date: NgbDate;
     public startTime: number = null;
     public endTime: number = null;
-    selectOptions: SimpleTime[];
+    public selectOptions: SimpleTime[];
 
     constructor() {}
 
@@ -75,16 +76,14 @@ export class TimeslotDetailComponent implements OnInit {
         this.endTime = this.selectOptions.find(
             (time) => time.hour === end.getHours() && time.minute === end.getMinutes()
         ).id;
-        console.log(this.startTime, this.endTime);
     }
 
     private generateSelectOptions() {
-        let time = { hour: 8, minute: 0 };
+        let time = { id: 0, hour: 8, minute: 0 };
         const times = [];
-        let counter = 0;
         while (time.hour < 22) {
             times.push(time);
-            const newTime = { id: counter++, hour: time.hour, minute: time.minute };
+            const newTime = { id: time.id + 1, hour: time.hour, minute: time.minute };
             newTime.minute += 30;
             if (Math.floor(newTime.minute / 60) > 0) {
                 newTime.hour += 1;
@@ -102,7 +101,7 @@ export class TimeslotDetailComponent implements OnInit {
     startTimeChange() {
         const selectedStartTime = this.getTimeById(parseInt(this.startTime as any, 10));
         let selectedEndTime = this.getTimeById(parseInt(this.endTime as any, 10));
-        if (selectedStartTime.id > selectedEndTime.id) {
+        if (selectedStartTime.id >= selectedEndTime.id) {
             selectedEndTime = this.getTimeById(selectedStartTime.id + 1);
         }
         this.startTime = selectedStartTime.id;
@@ -113,7 +112,7 @@ export class TimeslotDetailComponent implements OnInit {
     endTimeChange() {
         let selectedStartTime = this.getTimeById(parseInt(this.startTime as any, 10));
         const selectedEndTime = this.getTimeById(parseInt(this.endTime as any, 10));
-        if (selectedStartTime.id > selectedEndTime.id) {
+        if (selectedStartTime.id >= selectedEndTime.id) {
             selectedStartTime = this.getTimeById(selectedStartTime.id - 1);
         }
         this.startTime = selectedStartTime.id;
@@ -141,13 +140,18 @@ export class TimeslotDetailComponent implements OnInit {
             );
         }
         this.slot.duration = intervalToDuration({ start: this.slot.startTime, end: slotEnd });
+        this.slotChange.emit(this.slot);
     }
 
     getSlotEndTime() {
         return endTime(this.slot);
     }
 
+    onChanges() {
+
+    }
+
     onDelete() {
-        this.delete.emit(this.slot);
+        this.timeslotDelete.emit(this.slot);
     }
 }
