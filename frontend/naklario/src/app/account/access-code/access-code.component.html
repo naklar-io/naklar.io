@@ -1,0 +1,47 @@
+<div *ngIf="codes$ | async as codes">
+    <div *ngIf="codes.length > 0; else noCodes">
+        <h4>
+            Folgende Codes kannst du noch benutzen:
+        </h4>
+        <ul>
+            <li *ngFor="let code of codes">{{ code.code }}</li>
+        </ul>
+    </div>
+</div>
+<ng-template #noCodes>
+    <h4
+        >Bitte gib einen Code ein, um weitere Termine zu vereinbaren oder Live-Anfragen zu
+        starten</h4>
+</ng-template>
+
+<form (ngSubmit)="onCodeEntry(codeForm)" #codeForm="ngForm">
+    <h5>Neuen Code hinzufügen</h5>
+    <ngb-alert *ngIf="this.error" type="warning" (closed)="this.error=''">Dein Code ist leider nicht gültig!</ngb-alert>
+    <fieldset [disabled]=this.loading>
+        <div class="row align-items-center">
+            <div class="col">
+                <div class="form-label-group" style="margin-bottom: 0">
+                    <input
+                        type="text"
+                        (input)="toUpperCase($event)"
+                        class="form-control"
+                        name="code"
+                        id="code"
+                        placeholder="Code eingeben"
+                        [(ngModel)]="enteredCode"
+                        required
+                        #code="ngModel"
+                    />
+                    <label for="code">Code eingeben</label>
+                    <div
+                        *ngIf="code.invalid && (code.dirty || code.touched)"
+                        class="alert alert-danger"
+                    >Bitte gib einen Code ein!</div>
+                </div>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn nabtn-primary" [disabled]="!codeForm.form.valid">Einlösen</button>
+            </div>
+        </div>
+    </fieldset>
+</form>

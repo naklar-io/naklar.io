@@ -22,6 +22,8 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { TutorRegisterComponent } from './tutor-register/tutor-register.component';
 
 import { MatStepperModule } from '@angular/material/stepper';
+import { AccessCodeComponent } from './access-code/access-code.component';
+import { NgbAlert, NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   declarations: [
     TutorComponent,
@@ -35,6 +37,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     PasswordResetComponent,
     ResetRequestComponent,
     TutorRegisterComponent,
+    AccessCodeComponent,
   ],
   imports: [
     MiscComponentsModule,
@@ -44,6 +47,10 @@ import { MatStepperModule } from '@angular/material/stepper';
     ReactiveFormsModule,
     CommonModule,
     AccountRoutingModule,
+    NgbModule
+  ],
+  exports: [
+    AccessCodeComponent,
   ],
   providers: [DatabaseService, AuthenticationService],
 })

@@ -19,11 +19,22 @@ import { User, Constants, StudentRequest, Request, Subject } from 'src/app/_mode
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { PauseModalComponent } from '../pause-modal/pause-modal.component';
-import { combineLatest, forkJoin, interval, Observable } from 'rxjs';
+import {
+    BehaviorSubject,
+    combineLatest,
+    forkJoin,
+    interval,
+    merge,
+    Observable,
+    of,
+    Subscription,
+} from 'rxjs';
 import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
 import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
 import { AvailableSlotService } from 'src/app/_services/database/scheduling/available-slot.service';
 import { StartModalComponent } from '../start-modal/start-modal.component';
+import { environment } from 'src/environments/environment';
+import { AccessCodeService } from 'src/app/_services/database/account/access-code.service';
 
 export interface OnlineSubject extends Subject {
     isOnline?: boolean;
@@ -35,7 +46,7 @@ export interface OnlineSubject extends Subject {
     styleUrls: ['./student.component.scss'],
     providers: [DatabaseService],
 })
-export class StudentComponent implements OnInit {
+export class StudentComponent implements OnInit, OnDestroy {
     @Output() done = new EventEmitter<Request>();
 
     readonly FEATURE_RELEASE_DATE = new Date('2020-05-14T00:00:00+02:00');
@@ -45,6 +56,7 @@ export class StudentComponent implements OnInit {
     constants: Constants;
 
     private readonly autoRefresh$ = interval(1000 * 30).pipe(startWith(0));
+    private readonly refreshSub = new BehaviorSubject(null);
 
     studentForm = this.fb.group({
         subject: ['', Validators.required],
@@ -67,6 +79,10 @@ export class StudentComponent implements OnInit {
 
     selectedSubjectID: number = null;
     offlineAlertClosed = false;
+    accessCodesActive = false;
+    canAccess = true;
+
+    private canAccessSub: Subscription;
 
     @ViewChild('subjectModal') subjectModal: TemplateRef<any>;
 
@@ -82,11 +98,29 @@ export class StudentComponent implements OnInit {
         private router: Router,
         private toast: ToastService,
         private availableSlots: AvailableSlotService,
-        private modalService: NgbModal
-    ) {}
+        private modalService: NgbModal,
+        private accessCodeService: AccessCodeService
+    ) {
+        this.accessCodesActive = environment.features.codes;
+    }
+    ngOnDestroy(): void {
+        this.canAccessSub.unsubscribe();
+    }
 
     ngOnInit(): void {
-        this.subjects$ = this.autoRefresh$.pipe(
+        if (this.accessCodesActive) {
+            this.canAccessSub = this.refreshSub
+                .pipe(
+                    switchMap(() => {
+                        this.accessCodeService.list().subscribe();
+                        return this.accessCodeService.availableCodes$.pipe(
+                            map((list) => list.length > 0)
+                        );
+                    })
+                )
+                .subscribe((val) => (this.canAccess = val));
+        }
+        this.subjects$ = merge(this.autoRefresh$, this.refreshSub).pipe(
             switchMap(() =>
                 combineLatest([
                     this.route.data.pipe(map((d: { constants: Constants }) => d.constants)),
@@ -198,14 +232,18 @@ export class StudentComponent implements OnInit {
     openSubjectDialog(subject: OnlineSubject): void {
         this.selectedSubject = subject;
         const modalRef = this.modalService.open(StartModalComponent, {
-          size: 'lg',
-          centered: true,
+            size: 'lg',
+            centered: true,
         });
         modalRef.componentInstance.subject = subject;
         modalRef.componentInstance.startMatch.subscribe((x) => {
             this.startMatch();
         });
+
         this.selectedSubjectID = subject.id;
+        modalRef.closed.subscribe(() => {
+            this.refreshSub.next(null);
+        });
     }
 
     createMatchRequest() {
@@ -240,5 +278,9 @@ export class StudentComponent implements OnInit {
 
     trackSubjectFn(index: number, sub: Subject) {
         return sub.id;
+    }
+
+    refresh() {
+        this.refreshSub.next(null);
     }
 }

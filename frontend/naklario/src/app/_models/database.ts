@@ -13,6 +13,10 @@ export interface SendableTutorData {
     profilePicture?: string;
 }
 
+export interface AccessCode {
+    code: string;
+}
+
 export interface SendableStudentData {
     schoolData: number;
 }

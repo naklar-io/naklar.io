@@ -23,7 +23,7 @@ export class ApiService {
     return this.http.patch<R>(`${environment.apiUrl}${path}`, body);
   }
 
-  post<T, R>(path: string, body: T): Observable<R> {
+  post<T, R>(path: string, body?: T): Observable<R> {
     return this.http.post<R>(`${environment.apiUrl}${path}`, body);
   }
 

@@ -18,6 +18,7 @@ import { ExitModalComponent } from './session/exit-modal/exit-modal.component';
 import { SchedulingModule } from '../scheduling/scheduling.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { StartModalComponent } from './start-modal/start-modal.component';
+import { AccountModule } from '../account/account.module';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { StartModalComponent } from './start-modal/start-modal.component';
     RouletteRoutingModule,
     MiscComponentsModule,
     SchedulingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    AccountModule
   ],
   exports: [StudentComponent],
 })

@@ -1,48 +1,63 @@
 <div class="content">
     <h2 class="text-primary">Hey {{ user.firstName }},</h2>
-    
-    <scheduling-appointment-list></scheduling-appointment-list>
-    <br>
-    
+
+    <account-access-code *ngIf="accessCodesActive"></account-access-code>
+    <scheduling-appointment-list (changed)="refresh()"></scheduling-appointment-list>
+    <br />
 
     <ng-container [ngSwitch]="isInstructionVideoShowing">
-        <ng-container *ngSwitchCase="false">
-            <h3>Wähle ein Fach</h3>
-            <p>
-                In grauen Fächern ist aktuell kein Tutor frei. Du kannst die Suche aber starten und
-                im Hintergrund warten.
-            </p>
+        <ng-container *ngSwitchCase="false" >
+            <div [class.inactiveOverlay]="!canAccess" class="overlayDiv">
+                <h3>Wähle ein Fach</h3>
+                <p>
+                    In grauen Fächern ist aktuell kein Tutor frei. Du kannst die Suche aber starten
+                    und im Hintergrund warten.
+                </p>
 
-            <div *ngIf="subjects$ | async as subjects" class="subjects-overview">
-                <div class="online-subjects row row-cols-1 row-cols-md-2 row-cols-lg-4">
-                    <div *ngFor="let subject of subjects; trackBy: trackSubjectFn" class="col mb-4">
+                <div *ngIf="subjects$ | async as subjects" class="subjects-overview">
+                    <div class="online-subjects row row-cols-1 row-cols-md-2 row-cols-lg-4">
                         <div
-                            class="card clickable-card shadow"
-                            [class.isOnline]="subject.isOnline"
-                            (click)="openSubjectDialog(subject)"
+                            *ngFor="let subject of subjects; trackBy: trackSubjectFn"
+                            class="col mb-4"
                         >
-                            <img
-                                class="card-img-top"
-                                [src]="subject.img ? subject.img : 'https://source.unsplash.com/505eectW54k/400x100'"
-                                alt=""
-                            />
-                            <div class="card-body">
-                                <h4 class="card-title">{{ subject.name }}</h4>
-                                <p class="card-text">
-                                    <span *ngIf="subject.isOnline">
-                                        <fa-icon icon="dot-circle" style="color: green"></fa-icon>
-                                        Tutoren online!
-                                    </span>
-                                    <span *ngIf="!subject.isOnline">
-                                        <fa-icon icon="dot-circle" style="color: grey"></fa-icon>
-                                        Keine Tutoren online
-                                    </span>
-                                </p>
+                            <div
+                                class="card clickable-card shadow"
+                                [class.isOnline]="subject.isOnline"
+                                (click)="openSubjectDialog(subject)"
+                            >
+                                <img
+                                    class="card-img-top"
+                                    [src]="
+                                        subject.img
+                                            ? subject.img
+                                            : 'https://source.unsplash.com/505eectW54k/400x100'
+                                    "
+                                    alt=""
+                                />
+                                <div class="card-body">
+                                    <h4 class="card-title">{{ subject.name }}</h4>
+                                    <p class="card-text">
+                                        <span *ngIf="subject.isOnline">
+                                            <fa-icon
+                                                icon="dot-circle"
+                                                style="color: green"
+                                            ></fa-icon>
+                                            Tutoren online!
+                                        </span>
+                                        <span *ngIf="!subject.isOnline">
+                                            <fa-icon
+                                                icon="dot-circle"
+                                                style="color: grey"
+                                            ></fa-icon>
+                                            Keine Tutoren online
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <p class="text-muted pt-2">Stand: {{ loadDate | date: 'HH:mm:ss' }} Uhr</p>
                 </div>
-                <p class="text-muted pt-2">Stand: {{ loadDate | date: 'HH:mm:ss' }} Uhr</p>
             </div>
         </ng-container>
 
@@ -55,4 +70,3 @@
         </ng-container>
     </ng-container>
 </div>
-

@@ -9,7 +9,8 @@ export const environment = {
   features: {
     roulette: true,
     notifications: true,
-    analytics: true
+    analytics: false,
+    codes: true
   },
   vapidKey: 'BNoY3a9ohX5PTkDzqpsq_6LifNMwNpm0J6jTZyG-Xv63z8CkiQT7mi3EDGCky5txmRuKmFtyFSugWgZXbXXxWXg'
 };
