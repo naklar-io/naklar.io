@@ -1,6 +1,9 @@
 from django.apps import apps
 from django.contrib.auth.models import BaseUserManager
 from django.core.exceptions import ValidationError
+from django.db.models import Manager, Q
+from django.db.models.manager import BaseManager
+
 
 class CustomUserManager(BaseUserManager):
 
@@ -30,3 +33,15 @@ class CustomUserManager(BaseUserManager):
 
     def get_by_natural_key(self, email):
         return self.get(email__iexact=email)
+
+
+class AvailableCodeManager(Manager):
+    def get_queryset(self):
+        from scheduling.models import Appointment
+        return super(AvailableCodeManager, self).get_queryset().filter(
+            used=False, meeting__isnull=True
+        ).filter(
+            Q(appointment__isnull=True) |
+            Q(appointment__status__in=[Appointment.Status.OWNER_REJECTED,
+                                       Appointment.Status.INVITEE_REJECTED])
+        )

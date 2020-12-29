@@ -1,6 +1,8 @@
 import csv
 
+from django.conf import settings
 from django.contrib import admin
+from django.contrib.admin import BooleanFieldListFilter
 from django.contrib.auth.admin import UserAdmin
 from django.http import HttpResponse
 from django.utils.translation import gettext as _
@@ -8,12 +10,22 @@ from django.utils.translation import gettext as _
 from _shared.admin import SingletonModelAdmin
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import (CustomUser, SchoolData, SchoolType, State, StudentData,
-                     Subject, TutorData, TrackingDenyCounter)
+                     Subject, TutorData, TrackingDenyCounter, AccessCode)
 
 admin.site.register(SchoolData)
 admin.site.register(SchoolType)
 admin.site.register(State)
 admin.site.register(Subject)
+
+if settings.NAKLAR_USE_ACCESS_CODES:
+    @admin.register(AccessCode)
+    class AccessCodeAdmin(admin.ModelAdmin):
+        list_display = ['code', 'user', 'used']
+        list_filter = ['used',
+                       ('appointment', BooleanFieldListFilter),
+                       ('meeting', BooleanFieldListFilter),
+                       ('user', BooleanFieldListFilter)]
+
 
 class ExportCsvMixin:
     def export_csv(self, request, queryset):
@@ -44,6 +56,7 @@ class ExportCsvMixin:
                 return "nothing"
         else:
             return getattr(obj, field)
+
 
 class StudentDataInline(admin.StackedInline):
     model = StudentData
@@ -84,6 +97,7 @@ class StudentDataFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         return (('not_null', _('Yes')),
                 ('null', _('No')))
+
     def queryset(self, request, queryset):
         if self.value() == 'null':
             return queryset.filter(studentdata__isnull=True)
@@ -118,11 +132,12 @@ class CustomUserAdmin(UserAdmin, ExportCsvMixin):
     ]
     list_display = ('email', 'first_name', 'last_name',
                     'state', 'is_staff', 'is_active', 'is_tutor', 'is_student', 'email_verified', 'date_joined')
-    list_filter = ('is_staff', 'is_active', 'email_verified', UnverifiedTutorFilter, StudentDataFilter, TutorDataFilter, 'state'
-                   )
+    list_filter = (
+    'is_staff', 'is_active', 'email_verified', UnverifiedTutorFilter, StudentDataFilter, TutorDataFilter, 'state'
+    )
     fieldsets = (
         (None, {'fields':
-                ('email', 'email_verified', 'first_name', 'last_name', 'gender', 'state', 'password')}),
+                    ('email', 'email_verified', 'first_name', 'last_name', 'gender', 'state', 'password')}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     add_fieldsets = (
@@ -130,10 +145,10 @@ class CustomUserAdmin(UserAdmin, ExportCsvMixin):
             'classes': (
                 'wide',), 'fields': (
                 'email', 'first_name', 'state', 'password1', 'password2',
-                    'is_staff', 'is_active')}), )
+                'is_staff', 'is_active')}),)
     search_fields = ('email',)
     ordering = ['-date_joined']
-    actions = ("export_csv", )
+    actions = ("export_csv",)
 
 
 admin.site.register(CustomUser, CustomUserAdmin)

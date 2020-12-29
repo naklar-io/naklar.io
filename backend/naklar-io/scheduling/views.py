@@ -11,6 +11,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 
+from account.permissions import HasAvailableAccessCodeOrReadOnly
 from account.serializers import SubjectSerializer
 from scheduling import filters, util
 from scheduling.models import TimeSlot, Appointment
@@ -78,7 +79,7 @@ class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 class AppointmentViewSet(viewsets.ModelViewSet):
     queryset = Appointment.objects.select_related('owner').filter(start_time__gte=Now() - F('duration'))
     serializer_class = FullAppointmentSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly, HasAvailableAccessCodeOrReadOnly]
 
     @action(detail=True, methods=['post'], permission_classes=[IsSlotOwner])
     def accept(self, request, pk=None):

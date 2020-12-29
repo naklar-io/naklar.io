@@ -257,3 +257,7 @@ CHANNEL_LAYERS = {
 POST_OFFICE = {
     'DEFAULT_PRIORITY': 'now'
 }
+
+# does this instance use access codes for students?
+NAKLAR_USE_ACCESS_CODES = False
+

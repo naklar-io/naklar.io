@@ -270,6 +270,9 @@ POST_OFFICE = {
     'CELERY_ENABLED': True
 }
 
+# does this instance use access codes for students?
+NAKLAR_USE_ACCESS_CODES = False
+
 try:
     from .settings_local import *
 except ImportError:

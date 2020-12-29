@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.urls import path
 from drf_yasg.utils import swagger_auto_schema
 from knox import views as knox_views
@@ -7,11 +8,13 @@ from account import views
 from account.views import (CurrentUserView, CustomUserCreateView,
                            CustomUserView, LoginView, SchoolDataList,
                            SchoolTypeList, StateList,
-                           UploadVerificationView, send_tracking_deny, SubjectViewSet)
+                           UploadVerificationView, send_tracking_deny, SubjectViewSet, AccessCodeViewSet)
 
 app_name = 'account'
 router = DefaultRouter()
 router.register('subjects', SubjectViewSet)
+if settings.NAKLAR_USE_ACCESS_CODES:
+    router.register('access-code', AccessCodeViewSet)
 urlpatterns = router.urls
 urlpatterns += [
     path('states/', StateList.as_view()),
