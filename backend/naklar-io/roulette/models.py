@@ -383,7 +383,7 @@ class Meeting(models.Model):
                     meeting.time_established = timezone.now()
                     if settings.NAKLAR_USE_ACCESS_CODES and self.student:
                         code = AccessCode.available_codes.filter(user=self.student).first()
-                        code.meeting = self
+                        code.set_meeting(self)
                         code.save()
             meeting.save()
         self.refresh_from_db()
