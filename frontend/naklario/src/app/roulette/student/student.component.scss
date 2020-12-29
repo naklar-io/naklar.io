@@ -28,7 +28,7 @@
 }
 
 .inactiveOverlay {
-    filter: blur(1rem);
+    filter: blur(.20rem);
     .clickable-card {
         cursor: none;
         pointer-events: none;
