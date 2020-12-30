@@ -21,7 +21,7 @@ export class AppointmentCardComponent implements OnInit {
   @ViewChild('confirmModal') confirmModal: TemplateRef<any>;
 
   currentUser: User;
-  // featureEnabled = environment.features.scheduling;
+  // featureEnabled = ConfigService.config.features.scheduling;
   featureEnabled = true;
   constructor(
     private auth: AuthenticationService,

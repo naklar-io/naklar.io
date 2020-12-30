@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Email } from '../_models';
+import { ConfigService } from './config.service';
 
 @Injectable()
 export class UnauthenticatedService {
@@ -9,7 +10,7 @@ export class UnauthenticatedService {
 
   submitEmailAddress(form: Email) {
     return this.http.post<Email>(
-      `${environment.apiUrl}/landing/add_individual/`,
+      `${ConfigService.config.apiUrl}/landing/add_individual/`,
       form
     );
   }

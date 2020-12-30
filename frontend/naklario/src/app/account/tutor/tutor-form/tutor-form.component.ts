@@ -31,6 +31,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { ThrowStmt } from '@angular/compiler';
 import { SwPush } from '@angular/service-worker';
 import { environment } from 'src/environments/environment';
+import { ConfigService } from 'src/app/_services/config.service';
 
 @Component({
   selector: 'account-tutor-form',
@@ -46,7 +47,7 @@ export class TutorFormComponent implements OnInit {
   schoolData: SchoolData[];
   genders: Gender[];
 
-  enableNotifications: boolean = environment.features.notifications;
+  enableNotifications = false;
 
   verificationFile$: Observable<string>;
 
@@ -92,6 +93,8 @@ export class TutorFormComponent implements OnInit {
       this.genders = routeData.constants.genders;
       this.user = routeData.user;
     });
+    ConfigService.config$.subscribe((config)=> this.enableNotifications = config.features.notifications);
+
 
     const data: SchoolData[][] = [];
     for (const schoolType of this.schoolTypes) {

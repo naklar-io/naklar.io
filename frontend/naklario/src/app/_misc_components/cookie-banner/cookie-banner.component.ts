@@ -11,6 +11,7 @@ import {
   animate,
   transition,
 } from '@angular/animations';
+import { ConfigService } from 'src/app/_services/config.service';
 
 @Component({
   selector: 'misc-cookie-banner',
@@ -32,7 +33,7 @@ import {
 export class CookieBannerComponent implements OnInit {
   isVisible: Observable<boolean>;
   isSettings = false;
-  featureEnabled = environment.features.analytics;
+  featureEnabled$;
   currentSettings: TrackingConsentSettings;
 
   constructor(public trackingConsent: TrackingConsentService) {
@@ -40,6 +41,7 @@ export class CookieBannerComponent implements OnInit {
       map((value) => !value)
     );
     this.currentSettings = trackingConsent.currentTrackingSettings;
+    this.featureEnabled$ = ConfigService.config$.pipe(map(config => config.features.analytics));
   }
 
   ngOnInit(): void {}

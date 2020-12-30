@@ -35,6 +35,7 @@ import { AvailableSlotService } from 'src/app/_services/database/scheduling/avai
 import { StartModalComponent } from '../start-modal/start-modal.component';
 import { environment } from 'src/environments/environment';
 import { AccessCodeService } from 'src/app/_services/database/account/access-code.service';
+import { ConfigService } from 'src/app/_services/config.service';
 
 export interface OnlineSubject extends Subject {
     isOnline?: boolean;
@@ -100,9 +101,7 @@ export class StudentComponent implements OnInit, OnDestroy {
         private availableSlots: AvailableSlotService,
         private modalService: NgbModal,
         private accessCodeService: AccessCodeService
-    ) {
-        this.accessCodesActive = environment.features.codes;
-    }
+    ) {}
     ngOnDestroy(): void {
         if (this.canAccessSub) {
             this.canAccessSub.unsubscribe();
@@ -110,18 +109,25 @@ export class StudentComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        if (this.accessCodesActive) {
-            this.canAccessSub = this.refreshSub
-                .pipe(
-                    switchMap(() => {
+
+        
+        this.canAccessSub = combineLatest([this.refreshSub, ConfigService.config$])
+            .pipe(
+                switchMap(([_, config]) => {
+                    this.accessCodesActive = config.features.codes;
+                    if (this.accessCodeService) {
                         this.accessCodeService.list().subscribe();
                         return this.accessCodeService.availableCodes$.pipe(
                             map((list) => list.length > 0)
                         );
-                    })
-                )
-                .subscribe((val) => (this.canAccess = val));
-        }
+                    } else {
+                        return of(true);
+                    }
+                    
+                })
+            )
+            .subscribe((val) => (this.canAccess = val));
+
         this.subjects$ = merge(this.autoRefresh$, this.refreshSub).pipe(
             switchMap(() =>
                 combineLatest([

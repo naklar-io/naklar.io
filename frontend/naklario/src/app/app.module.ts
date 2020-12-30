@@ -1,5 +1,5 @@
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -40,6 +40,7 @@ import {
     RouletteService,
     BannerService,
     NotifyService,
+    UserResolver,
 } from './_services';
 
 import { MiscComponentsModule } from './_misc_components/misc-components.module';
@@ -65,6 +66,11 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { SchedulingModule } from './scheduling/scheduling.module';
 import { SharedModule } from './@shared/shared.module';
 import { PartnerComponent } from './home/misc/partner/partner.component';
+import { ConfigService } from './_services/config.service';
+
+export function initializeApp(config: ConfigService) {
+    return () => config.load();
+}
 
 @NgModule({
     declarations: [
@@ -131,14 +137,10 @@ import { PartnerComponent } from './home/misc/partner/partner.component';
         FontAwesomeModule,
     ],
     providers: [
+        ConfigService,
+        { provide: APP_INITIALIZER, useFactory: initializeApp, deps: [ConfigService], multi: true},
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-        AuthenticationService,
-        DatabaseService,
-        RouletteService,
-        ToastService,
-        BannerService,
-        NotifyService,
     ],
     bootstrap: [AppComponent],
 })

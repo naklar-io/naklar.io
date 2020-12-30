@@ -14,6 +14,7 @@ import {
   SendableSchoolData,
   sendableToLocalSchoolData,
 } from '../_models';
+import { ConfigService } from './config.service';
 
 @Injectable({ providedIn: 'root' })
 export class DatabaseService {
@@ -51,7 +52,8 @@ export class DatabaseService {
       return this.cache[url];
     }
     console.log('do request again');
-    this.cache[url] = this.http.get<T>(environment.apiUrl + url).pipe(
+    console.log(ConfigService.config);
+    this.cache[url] = this.http.get<T>(ConfigService.config.apiUrl + url).pipe(
       shareReplay(1),
       catchError((err) => {
         console.log('Database request error: ', err);

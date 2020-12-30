@@ -7,6 +7,8 @@ import { environment } from 'src/environments/environment';
 import { AuthenticationService } from './authentication.service';
 import { BehaviorSubject, Observable, combineLatest, from } from 'rxjs';
 import { mergeMap, flatMap, switchMap, map } from 'rxjs/operators';
+import { ConfigService } from './config.service';
+import { ApiService } from './database/api.service';
 
 enum Browser {
   Chrome = 'Chrome',
@@ -35,7 +37,7 @@ export class NotifyService {
   constructor(
     @Inject(PLATFORM_ID) private platformId,
     private swPush: SwPush,
-    private http: HttpClient,
+    private api: ApiService,
     private authService: AuthenticationService
   ) {
     // console.debug('Notifyservice is live');
@@ -170,8 +172,8 @@ export class NotifyService {
 
   // attempts to fetch settings from server
   private fetchSettings(): void {
-    this.http
-      .get<NotificationSettings>(`${environment.apiUrl}/notify/settings/`)
+    this.api
+      .get<NotificationSettings>(`/notify/settings/`)
       .subscribe(
         (settings) => {
           settings = this.convertToLocal(settings);
@@ -184,8 +186,8 @@ export class NotifyService {
   }
 
   private getPushDevices(): Observable<WebPushDevice[]> {
-    return this.http.get<WebPushDevice[]>(
-      `${environment.apiUrl}/notify/push/device/wp/`
+    return this.api.get<WebPushDevice[]>(
+      `${ConfigService.config.apiUrl}/notify/push/device/wp/`
     );
   }
 
@@ -234,7 +236,7 @@ export class NotifyService {
   ): Observable<NotificationSettings> {
     return this.http
       .put<NotificationSettings>(
-        `${environment.apiUrl}/notify/settings/`,
+        `${ConfigService.config.apiUrl}/notify/settings/`,
         this.convertToUTC(newSettings)
       )
       .pipe(
@@ -255,7 +257,7 @@ export class NotifyService {
   public createSettings(newSettings: NotificationSettings) {
     return this.http
       .post<NotificationSettings>(
-        `${environment.apiUrl}/notify/settings/`,
+        `${ConfigService.config.apiUrl}/notify/settings/`,
         this.convertToUTC(newSettings)
       )
       .pipe(
@@ -303,7 +305,7 @@ export class NotifyService {
       browser: this.browser.toUpperCase(),
     };
     return this.http.post<WebPushDevice>(
-      `${environment.apiUrl}/notify/push/device/wp/`,
+      `${ConfigService.config.apiUrl}/notify/push/device/wp/`,
       wpDevice
     );
   }

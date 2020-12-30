@@ -15,6 +15,7 @@ import { environment } from '../../environments/environment';
 import { map, flatMap, tap, take, mergeMap, first } from 'rxjs/operators';
 import { DatabaseService } from './database.service';
 import { isPlatformBrowser } from '@angular/common';
+import { ConfigService } from './config.service';
 
 interface LoginResponse {
   token: string;
@@ -113,7 +114,7 @@ export class AuthenticationService {
 
   public updateUser(user: Partial<SendableUser>, constants: Constants) {
     return this.http
-      .patch<SendableUser>(`${environment.apiUrl}/account/current/`, user)
+      .patch<SendableUser>(`${ConfigService.config.apiUrl}/account/current/`, user)
       .pipe(
         map((sendableUser) => {
           const u = sendableToLocalUser(sendableUser, constants);
@@ -130,7 +131,7 @@ export class AuthenticationService {
 
   public register(user: SendableUser, constants: Constants) {
     return this.http
-      .post<SendableUser>(`${environment.apiUrl}/account/create/`, user)
+      .post<SendableUser>(`${ConfigService.config.apiUrl}/account/create/`, user)
       .pipe(
         map((sendableUser) => {
           const u = sendableToLocalUser(sendableUser, constants);
@@ -143,7 +144,7 @@ export class AuthenticationService {
   public login(login: SendableLogin, constants: Constants) {
     return this.http
       .post<LoginResponse>(
-        `${environment.apiUrl}/account/login/`,
+        `${ConfigService.config.apiUrl}/account/login/`,
         {},
         {
           headers: new HttpHeaders({
@@ -188,7 +189,7 @@ export class AuthenticationService {
   public fetchUserData(constants: Constants) {
     if (this.isLoggedIn) {
       return this.http
-        .get<SendableUser>(`${environment.apiUrl}/account/current/`)
+        .get<SendableUser>(`${ConfigService.config.apiUrl}/account/current/`)
         .pipe(
           map((user) => {
             const u = sendableToLocalUser(user, constants);
@@ -207,7 +208,7 @@ export class AuthenticationService {
 
   public refreshTutorVerified() {
     return this.http
-      .get<SendableUser>(`${environment.apiUrl}/account/current/`)
+      .get<SendableUser>(`${ConfigService.config.apiUrl}/account/current/`)
       .pipe(
         map((user) => {
           const updatedUser = Object.assign(this.currentUserValue, {
@@ -226,7 +227,7 @@ export class AuthenticationService {
    */
   public logout() {
     if (this.isLoggedIn) {
-      this.http.post(`${environment.apiUrl}/account/logout/`, null).subscribe();
+      this.http.post(`${ConfigService.config.apiUrl}/account/logout/`, null).subscribe();
       this.currentUserSubject.next(null);
       this.loggedIn.next(false);
     }
@@ -237,7 +238,7 @@ export class AuthenticationService {
    */
   public logoutAll() {
     this.http
-      .post(`${environment.apiUrl}/account/logoutall/`, null)
+      .post(`${ConfigService.config.apiUrl}/account/logoutall/`, null)
       .subscribe();
     this.currentUserSubject.next(null);
     this.loggedIn.next(false);
@@ -245,7 +246,7 @@ export class AuthenticationService {
 
   public verify(token: string) {
     return this.http
-      .post<null>(`${environment.apiUrl}/account/email/verify/${token}/`, null)
+      .post<null>(`${ConfigService.config.apiUrl}/account/email/verify/${token}/`, null)
       .pipe(
         tap((v) => {
           // set verified to true
@@ -257,21 +258,21 @@ export class AuthenticationService {
 
   public resendVerify() {
     return this.http.post(
-      `${environment.apiUrl}/account/email/resend_verification/`,
+      `${ConfigService.config.apiUrl}/account/email/resend_verification/`,
       null
     );
   }
 
   public requestPasswordReset(email: string) {
     return this.http.post(
-      `${environment.apiUrl}/account/request-password-reset/`,
+      `${ConfigService.config.apiUrl}/account/request-password-reset/`,
       { email }
     );
   }
 
   public resetPassword(newPassword: string, token: string) {
     return this.http.post(
-      `${environment.apiUrl}/account/reset-password/${token}/`,
+      `${ConfigService.config.apiUrl}/account/reset-password/${token}/`,
       {
         password: newPassword,
       }
@@ -279,7 +280,7 @@ export class AuthenticationService {
   }
 
   public deleteAccount() {
-    this.http.delete(`${environment.apiUrl}/account/current/`).subscribe();
+    this.http.delete(`${ConfigService.config.apiUrl}/account/current/`).subscribe();
     this.currentUserSubject.next(null);
     this.loggedIn.next(false);
   }

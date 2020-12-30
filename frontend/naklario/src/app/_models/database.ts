@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { ConfigService } from '../_services/config.service';
 import { TransformationService } from '../_services/database/transformation.service';
 
 /**
@@ -187,8 +188,8 @@ export function sendableToLocalSchoolData(s: SendableSchoolData, types: SchoolTy
     );
 }
 
-const addAPIUrl = (url: string) => environment.apiUrl + url;
-const removeAPIUrl = (url: string) => url.replace(environment.apiUrl, '');
+const addAPIUrl = (url: string) => ConfigService.config.apiUrl + url;
+const removeAPIUrl = (url: string) => url.replace(ConfigService.config.apiUrl, '');
 
 export class Constants {
     constructor(
