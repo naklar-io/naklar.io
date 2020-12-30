@@ -4,13 +4,13 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://dev.api.naklar.io',
+  apiUrl: 'http://localhost:8000',
   // apiUrl: 'http://localhost:4200/api',
   features: {
     roulette: true,
     notifications: true,
     analytics: false,
-    codes: true
+    codes: false
   },
   vapidKey: 'BNoY3a9ohX5PTkDzqpsq_6LifNMwNpm0J6jTZyG-Xv63z8CkiQT7mi3EDGCky5txmRuKmFtyFSugWgZXbXXxWXg'
 };

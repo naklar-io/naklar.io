@@ -104,7 +104,9 @@ export class StudentComponent implements OnInit, OnDestroy {
         this.accessCodesActive = environment.features.codes;
     }
     ngOnDestroy(): void {
-        this.canAccessSub.unsubscribe();
+        if (this.canAccessSub) {
+            this.canAccessSub.unsubscribe();
+        }
     }
 
     ngOnInit(): void {
