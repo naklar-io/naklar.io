@@ -1,0 +1,17 @@
+<ngb-alert type="danger" *ngIf="error" (closed)="error = ''" [dismissible]="true"
+    >Fehler! Entweder wurde der Termin bereits vergeben, oder er überschneidet sich mit einem
+    anderen Termin!</ngb-alert
+>
+<div [@slotTrigger]="availableSlotList.length">
+    <div
+        *ngFor="let slot of availableSlotList"
+        class="mb-2 border shadow-sm rounded p-1 slot-detail"
+    >
+        <scheduling-available-slot-detail
+            [slot]="slot"
+            [subject]="subject"
+            (bookedAppointment)="onBooked($event)"
+            (bookingError)="onError($event)"
+        ></scheduling-available-slot-detail>
+    </div>
+</div>

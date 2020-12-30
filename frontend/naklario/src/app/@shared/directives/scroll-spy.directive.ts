@@ -1,6 +1,7 @@
 import { Directive, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { Scroll } from '@angular/router';
-import { ScrollPositionService } from '../_services/scroll-position.service';
+import { ScrollPositionService } from 'src/app/_services/scroll-position.service';
+
 
 @Directive({
   selector: '[appScrollSpy]'

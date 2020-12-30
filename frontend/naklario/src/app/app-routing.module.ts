@@ -21,13 +21,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoggedInGuard } from './_helpers';
 import { PrivacyComponent } from './home/misc/privacy/privacy.component';
 import { PressComponent } from './home/misc/press/press.component';
-import { CookieBannerComponent } from './_misc_components/cookie-banner/cookie-banner.component';
+import { PartnerComponent } from './home/misc/partner/partner.component';
 
 const routes: Routes = [
-  {
-    path: 'test',
-    component: CookieBannerComponent
-  },
   {
     path: '',
     children: [
@@ -41,6 +37,7 @@ const routes: Routes = [
         },
       },
       { path: 'feedback', component: FeedbackComponent },
+      { path: 'partner', component: PartnerComponent },
       { path: 'support', component: HelpSupportComponent },
       { path: 'parents', component: ParentsComponent },
       { path: 'schools', component: SchoolsComponent },
@@ -61,9 +58,10 @@ const routes: Routes = [
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {
-      scrollPositionRestoration: 'enabled',
-      initialNavigation: 'enabled',
-    }),
+    scrollPositionRestoration: 'enabled',
+    initialNavigation: 'enabled',
+    relativeLinkResolution: 'legacy'
+}),
   ],
   exports: [RouterModule],
 })

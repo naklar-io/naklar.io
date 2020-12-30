@@ -18,10 +18,12 @@ import { PasswordResetComponent } from './password-reset/password-reset.componen
 import { ResetRequestComponent } from './password-reset/reset-request/reset-request.component';
 import { MiscComponentsModule } from '../_misc_components/misc-components.module';
 import { RegisterComponent } from './register/register.component';
-import { NgxSliderModule } from '@m0t0r/ngx-slider';
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { TutorRegisterComponent } from './tutor-register/tutor-register.component';
 
 import { MatStepperModule } from '@angular/material/stepper';
+import { AccessCodeComponent } from './access-code/access-code.component';
+import { NgbAlert, NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   declarations: [
     TutorComponent,
@@ -35,6 +37,7 @@ import { MatStepperModule } from '@angular/material/stepper';
     PasswordResetComponent,
     ResetRequestComponent,
     TutorRegisterComponent,
+    AccessCodeComponent,
   ],
   imports: [
     MiscComponentsModule,
@@ -44,6 +47,10 @@ import { MatStepperModule } from '@angular/material/stepper';
     ReactiveFormsModule,
     CommonModule,
     AccountRoutingModule,
+    NgbModule
+  ],
+  exports: [
+    AccessCodeComponent,
   ],
   providers: [DatabaseService, AuthenticationService],
 })

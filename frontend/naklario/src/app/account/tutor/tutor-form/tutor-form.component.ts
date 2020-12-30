@@ -22,7 +22,7 @@ import {
   scrollToTop,
   fileSizeValidator,
 } from '../../../_helpers';
-import { Options } from '@m0t0r/ngx-slider';
+import { Options } from '@angular-slider/ngx-slider';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { first, switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';

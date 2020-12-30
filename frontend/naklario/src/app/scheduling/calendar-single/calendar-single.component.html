@@ -1,0 +1,12 @@
+<mwl-calendar-week-view
+  [viewDate]="viewDate"
+  [events]="events"
+  [dayStartHour]="8"
+  [dayEndHour]="22"
+  [hourSegments]="1"
+  [weekStartsOn]="weekStartsOn"
+  [locale]="locale"
+  (beforeViewRender)="beforeWeekViewRender($event)"
+  (hourSegmentClicked)="clickedDate = $event.date"
+>
+</mwl-calendar-week-view>

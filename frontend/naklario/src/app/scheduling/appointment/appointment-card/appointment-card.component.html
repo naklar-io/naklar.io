@@ -1,0 +1,88 @@
+<div class="card mb-4 shadow" style="border-radius: 12px">
+    <div class="my-2 mx-3">
+        <div class="row">
+            <div class="col-md-3 col-lg-2 col-sm-4 align-self-center">
+                {{ appointment.subject.name }}
+            </div>
+            <div class="col-sm-12 col-md-2 align-self-center">
+                <ng-container *ngIf="appointment.owner.equals(currentUser); else elseTemplate">
+                    <img
+                        [src]="appointment.invitee.tutordata.profilePicture"
+                        class="profile-pic"
+                        alt=""
+                    />
+                    {{ appointment.invitee.firstName }}
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <h6>
+                        {{ appointment.owner.firstName }} -
+                        {{ appointment.owner.studentdata?.schoolData.grade }}. Klasse
+                        {{ appointment.owner.studentdata?.schoolData.schoolType.name }}
+                    </h6>
+                </ng-template>
+            </div>
+            <div class="col-sm-7 col-md-2 align-self-center">
+                {{ appointment.startTime | date: 'EE dd.MM.yyyy' }}
+            </div>
+            <div class="col-sm-5 col-md-2 align-self-center">
+                {{ appointment.startTime | date: 'HH:mm' }}-{{ endDate | date: 'HH:mm' }}
+            </div>
+            <div class="col-sm-6 col-md-4 align-self-center text-right">
+                <ng-container *ngIf="appointment.status === 'REQUESTED'">
+                    <ng-container
+                        *ngIf="appointment.owner.equals(currentUser); else acceptTemplate"
+                    >
+                        <button type="button" class="btn btn-outline-info" disabled>
+                            Angefragt
+                        </button>
+                    </ng-container>
+                    <ng-template #acceptTemplate>
+                        <button type="button" class="btn btn-success" (click)="accept()">
+                            Bestätigen
+                        </button>
+                    </ng-template>
+                </ng-container>
+                <ng-container
+                    *ngIf="
+                        appointment.status === 'CONFIRMED' ||
+                        appointment.status === 'INVITEE_STARTED' ||
+                        appointment.status === 'OWNER_STARTED' ||
+                        appointment.status === 'BOTH_STARTED'
+                    "
+                >
+                    <button
+                        *ngIf="startTimeInRange()"
+                        type="button"
+                        class="btn btn-success"
+                        (click)="start()"
+                    >
+                        Starten
+                    </button>
+                    <button
+                        type="button"
+                        *ngIf="!startTimeInRange()"
+                        class="btn btn-outline-success"
+                        disabled
+                    >
+                        Bestätigt
+                    </button>
+                </ng-container>
+                <button type="button" class="btn btn-outline-secondary" (click)="reject()">
+                    Absagen
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #confirmModal let-modal>
+    <div class="modal-header">
+        <h3 class="modal-title" id="modal-basic-title">
+            Willst du diese Session wirklich absagen?
+        </h3>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.close()">Abbrechen</button>
+        <button type="button" class="btn btn-danger" (click)="reject(true)">Absagen</button>
+    </div>
+</ng-template>
