@@ -5,6 +5,8 @@ import uuid
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.core import validators
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
@@ -17,7 +19,7 @@ from django.utils.translation import gettext_lazy as _
 from post_office import mail
 from post_office.models import EmailTemplate
 
-from account.managers import CustomUserManager
+from account.managers import CustomUserManager, AvailableCodeManager
 from account.tasks import send_email_task
 
 from _shared.models import SingletonModel
@@ -312,3 +314,26 @@ def send_verify_on_creation(sender, instance, created, **kwargs):
 
 class TrackingDenyCounter(SingletonModel):
     count = models.IntegerField(default=0)
+
+
+class AccessCode(models.Model):
+    code = models.CharField(max_length=255, unique=True)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    used = models.BooleanField(default=False)
+
+    meeting = models.ForeignKey(to='roulette.Meeting', null=True, blank=True, on_delete=models.SET_NULL)
+    appointment = models.ForeignKey(to='scheduling.Appointment', null=True, blank=True, on_delete=models.SET_NULL)
+    redeem_time = models.DateTimeField(null=True, blank=True)
+
+    objects = models.Manager()
+    available_codes = AvailableCodeManager()
+
+    def set_meeting(self, meeting):
+        self.meeting = meeting
+        self.used = True
+        self.save()
+        return self
+
+    def set_appointment(self, appointment):
+        self.appointment = appointment
+        self.save()

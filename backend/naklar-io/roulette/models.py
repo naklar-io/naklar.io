@@ -18,7 +18,7 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from account.models import CustomUser, StudentData, Subject, TutorData
+from account.models import CustomUser, StudentData, Subject, TutorData, AccessCode
 
 channel_layer = get_channel_layer()
 
@@ -381,6 +381,10 @@ class Meeting(models.Model):
                     meeting.established = True
                     meeting.is_establishing = False
                     meeting.time_established = timezone.now()
+                    if settings.NAKLAR_USE_ACCESS_CODES and self.student:
+                        code = AccessCode.available_codes.filter(user=self.student).first()
+                        code.set_meeting(self)
+                        code.save()
             meeting.save()
         self.refresh_from_db()
 

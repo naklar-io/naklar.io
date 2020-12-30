@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from _shared.serializers import DynamicFieldsModelSerializer
 from account.models import (CustomUser, SchoolData,
-                            SchoolType, State, StudentData, Subject, TutorData)
+                            SchoolType, State, StudentData, Subject, TutorData, AccessCode)
 
 
 class SubjectSerializer(serializers.ModelSerializer):
@@ -138,3 +138,10 @@ class PasswordResetRequestSerializer(serializers.Serializer):
     def save(self):
         user = CustomUser.objects.get(email=self.validated_data['email'])
         user.send_reset_mail()
+
+
+class AccessCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AccessCode
+        fields = ['code', 'redeem_time', 'meeting', 'appointment']
+        read_only_fields = fields

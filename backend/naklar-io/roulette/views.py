@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 
 from account.models import Subject
+from account.permissions import HasAvailableAccessCodeOrReadOnly
 from account.serializers import SubjectSerializer
 from roulette.models import Feedback, Report, MatchRejectReasons
 from roulette.serializers import FeedbackSerializer, ReportSerializer
@@ -92,7 +93,7 @@ class AccessPermission(permissions.BasePermission):
 
 class RequestView(MatchUserMixin, MatchTypeMixin, generics.CreateAPIView, generics.RetrieveAPIView,
                   generics.DestroyAPIView):
-    permission_classes = [permissions.IsAuthenticated, AccessPermission]
+    permission_classes = [permissions.IsAuthenticated, AccessPermission, HasAvailableAccessCodeOrReadOnly]
 
     def perform_create(self, serializer):
         #        self.get_queryset().filter(user=self.request.user).delete()
