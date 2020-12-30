@@ -44,7 +44,14 @@
                                             ></fa-icon>
                                             Tutoren online!
                                         </span>
-                                        <span *ngIf="!subject.isOnline">
+                                        <span *ngIf="!subject.isOnline && subject.hasAppointments">
+                                            <fa-icon
+                                                icon="dot-circle"
+                                                style="color: var(--primary)"
+                                            ></fa-icon>
+                                            Termine verfügbar
+                                        </span>
+                                        <span *ngIf="!subject.isOnline && !subject.hasAppointments">
                                             <fa-icon
                                                 icon="dot-circle"
                                                 style="color: grey"
