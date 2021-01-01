@@ -38,7 +38,6 @@ BBB_SHARED = env('BBB_SHARED')
 BBB_URL = env('BBB_URL')
 
 
-EMAIL_BACKEND = 'post_office.EmailBackend'
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb
 
@@ -118,7 +117,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_base64',
     'django_celery_beat',
-    'debug_toolbar',
     # our components
     'account',
     'scheduling',
@@ -131,8 +129,10 @@ INSTALLED_APPS = [
     'post_office',
     'push_notifications',
     'multiselectfield'
-,
 ]
+
+ENABLE_DEBUG_TOOLBAR = env.bool('DEBUG_TOOLBAR', default=False)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -143,10 +143,13 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
 ]
+
+if ENABLE_DEBUG_TOOLBAR:
+    INSTALLED_APPS.append('debug_toolbar')
+    MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
 
 ROOT_URLCONF = 'naklario.urls'
 
@@ -283,14 +286,23 @@ CHANNEL_LAYERS = {
 #######################
 # Email configuration #
 #######################
+EMAIL_DISABLE = env.bool('EMAIL_DISABLE', default=False)
+
+EMAIL_BACKEND = 'post_office.EmailBackend'
 POST_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.locmem.EmailBackend')
-POST_OFFICE = {
-    'DEFAULT_PRIORITY': env('EMAIL_DEFAULT_PRIORITY', default='now'),
-    'BACKENDS': {
-        'default': POST_BACKEND
-    },
-    'CELERY_ENABLED': False,
-}
+if EMAIL_DISABLE:
+    POST_OFFICE = {
+        'DEFAULT_PRIORITY': 'now',
+        'CELERY_ENABLED': False
+    }
+else:
+    POST_OFFICE = {
+        'DEFAULT_PRIORITY': env('EMAIL_DEFAULT_PRIORITY', default='now'),
+        'BACKENDS': {
+            'default': POST_BACKEND
+        },
+        'CELERY_ENABLED': not EMAIL_DISABLE,
+    }
 
 if POST_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
     EMAIL_HOST = env('EMAIL_HOST')
@@ -299,15 +311,9 @@ if POST_BACKEND == 'django.core.mail.backends.smtp.EmailBackend':
     EMAIL_HOST_USER = env('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
-
 ADMINS = getaddresses([env('DJANGO_ADMINS')])
 SERVER_EMAIL = env('SERVER_EMAIL')
 
 
 # does this instance use access codes for students?
-NAKLAR_USE_ACCESS_CODES = False
-
-try:
-    from .settings_local import *
-except ImportError:
-    print("Unable to find settings_local.py! We need a configuration for this")
+NAKLAR_USE_ACCESS_CODES = env.bool('NAKLAR_USE_ACCESS_CODES', default=False)

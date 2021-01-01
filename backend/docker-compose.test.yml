@@ -3,7 +3,7 @@ version: "3.8"
 services:
   sut:
     build: .
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./manage.py test --settings=naklario.test_settings'
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; ./manage.py test'
     depends_on:
       - db
       - redis
@@ -20,6 +20,7 @@ services:
       - REDIS_PORT=6379
       - DJANGO_ADMINS=
       - SERVER_EMAIL=server@example.com
+      - EMAIL_DISABLE=true
   db:
      image: postgres
      environment:
