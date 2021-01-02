@@ -4,8 +4,10 @@ import re
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional
 
+from django.conf import settings
 from django.db.models import Q, Count, QuerySet
 from django.db.models.functions import Now
+from django.utils import timezone
 
 from account.models import Subject
 
@@ -36,7 +38,10 @@ def find_matching_timeslot(start_time: datetime, duration: timedelta,
         duration__gte=duration,
         owner__tutordata__subjects=subject,
         owner__tutordata__verified=True
-    ).annotate(
+    )
+    if settings.NAKLAR_SCHEDULING_SCHOOLDATA:
+        qs = qs.filter(owner__tutordata__schooldata=requester.studentdata.school_data)
+    qs = qs.annotate(
         num_appointments=Count(
             'owner__timeslot__appointment',
             filter=Q(owner__timeslot__appointment__start_time__gte=Now())
@@ -44,8 +49,9 @@ def find_matching_timeslot(start_time: datetime, duration: timedelta,
     ).order_by('num_appointments')
     for timeslot in qs:
         for available in timeslot.available_slots():
-            if available.start_time <= start_time and (available.start_time + available.duration
-                                                       >= start_time + duration):
+            if (start_time >= available.start_time >= timezone.now() + timedelta(
+                    minutes=settings.NAKLAR_SCHEDULING_APPOINTMENT_DISTANCE)
+                    and available.start_time + available.duration >= start_time + duration):
                 return available.parent
     return None
 

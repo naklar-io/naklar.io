@@ -21,3 +21,15 @@ def confirm_email_timeout():
     logger.debug(f"confirmation timeout reached for {qs.count()} appointments")
     for ap in qs:
         ap.handle_rejection(ap.invitee)
+
+
+@shared_task(ignore_result=True)
+def send_appointment_reminder():
+    from scheduling.models import Appointment
+    qs = Appointment.objects.filter(
+        status__in=[Appointment.Status.CONFIRMED, Appointment.Status.OWNER_STARTED, Appointment.Status.INVITEE_STARTED],
+        reminded=False,
+        start_time__gte=timezone.now()-timedelta(minutes=20)
+    )
+    for ap in qs:
+        ap.send_reminder()

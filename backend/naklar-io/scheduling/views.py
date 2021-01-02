@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.db.models import Q, Prefetch, F
 from django.db.models.functions import Now
 from django.utils.translation import gettext_lazy as _
@@ -37,7 +38,8 @@ class BelongsToAppointment(permissions.BasePermission):
 
 class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = TimeSlot.objects.prefetch_related(
-        Prefetch('appointment_set', queryset=Appointment.objects.filter(start_time__gte=Now())),
+        Prefetch('appointment_set', queryset=Appointment.objects.filter(
+            start_time__gte=Now() + timedelta(minutes=settings.NAKLAR_SCHEDULING_APPOINTMENT_DISTANCE))),
     ).select_related(
         'owner',
         'owner__tutordata'
@@ -49,6 +51,12 @@ class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = filters.AvailableSlotFilter
     pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        qs = self.queryset.all()
+        if self.request.user.studentdata and settings.NAKLAR_SCHEDULING_SCHOOLDATA:
+            qs = qs.filter(owner__tutordata__schooldata=self.request.user.studentdata.school_data)
+        return qs
 
     @action(['GET'], detail=False, serializer_class=SubjectSerializer, filterset_class=None)
     def subjects(self, request, *args, **kwargs):
@@ -146,7 +154,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 
 
 class TimeSlotViewSet(viewsets.ModelViewSet):
-    queryset = TimeSlot.objects.select_related('owner').all()
+    queryset = TimeSlot.objects.select_related('owner').filter(Q(start_time__gte=Now()) | Q(weekly=True))
     serializer_class = TimeSlotSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
 
