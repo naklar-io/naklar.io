@@ -11,7 +11,7 @@ const features: Feature[] = [
   {
     src: 'assets/img/features/aufdenpunkt.svg',
     displayText: 'Fragen auf Knopfdruck',
-    longDescription: 'Eine Vielzahl an engagierten Tutoren steht jederzeit für Dich auf Knopfdruck zur Verfügung. Probiere es gleich aus und stelle Deine Frage!',
+    longDescription: 'Eine Vielzahl an engagierten Tutoren steht für Dich auf Knopfdruck zur Verfügung. Gib einfach deinen Code ein und stelle deine Fragen!',
     shortDescription: 'Stell deine Frage per Chat, Audio oder Video direkt an Tutoren aus ganz Deutschland.'
   },
   {
