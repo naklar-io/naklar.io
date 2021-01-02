@@ -12,11 +12,11 @@
                         Du musst mindestens ein Fach angeben.
                     </div>
                     <div class="subjects">
-                        <div *ngFor="let subject of (constants$ | async).subjects; let i = index"
+                        <div *ngFor="let subject of subjectsControl.controls; let i = index"
                             class="form-check colored-select">
-                            <input type="checkbox" [formControl]="subjectsControl.at(i)" id="subject-{{ subject.id }}"
-                                class="form-check-input" [value]="subject" />
-                            <label class="form-check-label" for="subject-{{ subject.id }}">{{ subject.name }}
+                            <input type="checkbox" [formControl]="subjectsControl.at(i)" id="subject-{{ subjects[i].id }}"
+                                class="form-check-input" [value]="subjects[i].id" />
+                            <label class="form-check-label" for="subject-{{ subjects[i].id }}">{{ subjects[i].name }}
                             </label>
                         </div>
                     </div>
