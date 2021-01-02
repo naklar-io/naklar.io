@@ -138,7 +138,7 @@ export class StudentComponent implements OnInit, OnDestroy {
                                     isOnline: onlineIds.includes(s.id),
                                     hasAppointments: appointmentIds.includes(s.id),
                                 })
-                            )
+                            ).sort((a, b) => (a.hasAppointments === b.hasAppointments ? 0 : a.hasAppointments ? -1 : 1))
                             .sort((a, b) => (a.isOnline === b.isOnline ? 0 : a.isOnline ? -1 : 1));
                     }),
                     tap((_) => (this.loadDate = new Date()))
@@ -236,6 +236,7 @@ export class StudentComponent implements OnInit, OnDestroy {
         const modalRef = this.modalService.open(StartModalComponent, {
             size: 'lg',
             centered: true,
+            scrollable: true
         });
         modalRef.componentInstance.subject = subject;
         modalRef.componentInstance.startMatch.subscribe((x) => {

@@ -5,13 +5,24 @@
                 {{ appointment.subject.name }}
             </div>
             <div class="col-sm-12 col-md-2 align-self-center">
-                <ng-container *ngIf="appointment.owner.equals(currentUser); else elseTemplate">
-                    <img
+                <ng-container *ngIf="appointment.owner.uuid === currentUser.uuid; else elseTemplate">
+                    <ng-container *ngIf="appointment.status !== 'REQUESTED'">
+                        <img
                         [src]="appointment.invitee.tutordata.profilePicture"
                         class="profile-pic"
                         alt=""
                     />
                     {{ appointment.invitee.firstName }}
+                    </ng-container>
+                    <ng-container *ngIf="appointment.status === 'REQUESTED'">
+                        <img
+                        src="assets/img/icons/user_default.png"
+                        class="profile-pic"
+                        alt=""
+                    />
+                    Dein Tutor
+                    </ng-container>
+                    
                 </ng-container>
                 <ng-template #elseTemplate>
                     <h6>

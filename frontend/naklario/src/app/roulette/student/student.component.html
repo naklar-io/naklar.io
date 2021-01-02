@@ -10,8 +10,7 @@
             <div [class.inactiveOverlay]="!canAccess" class="overlayDiv">
                 <h3>Wähle ein Fach</h3>
                 <p>
-                    In grauen Fächern ist aktuell kein Tutor frei. Du kannst die Suche aber starten
-                    und im Hintergrund warten.
+                    Du kannst eine Session in dem gewünschten Fach vereinbaren oder Tutoren suchen die online sind.
                 </p>
 
                 <div *ngIf="subjects$ | async as subjects" class="subjects-overview">
@@ -42,7 +41,7 @@
                                                 icon="dot-circle"
                                                 style="color: green"
                                             ></fa-icon>
-                                            Tutoren online!
+                                            Tutoren online
                                         </span>
                                         <span *ngIf="!subject.isOnline && subject.hasAppointments">
                                             <fa-icon

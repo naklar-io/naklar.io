@@ -5,16 +5,34 @@
     <span [ngSwitch]="state">
         <div *ngSwitchCase="'START'">
             <p *ngIf="subject.hasAppointments">
-                Du kannst entweder direkt die Suche starten oder eine zukünftige Session
+                Du kannst entweder direkt eine Session mit einem Tutor starten oder einen Termin für eine Session
                 vereinbaren.
             </p>
             <h4>Ausgewähltes Fach: {{ subject.name }}</h4>
-            <p *ngIf="subject.isOnline">
-                <fa-icon icon="dot-circle" style="color: green"></fa-icon> Tutoren online!
+            <p>
+                <span *ngIf="subject.isOnline">
+                    <fa-icon
+                        icon="dot-circle"
+                        style="color: green"
+                    ></fa-icon>
+                    Tutoren online
+                </span>
+                <span *ngIf="!subject.isOnline && subject.hasAppointments">
+                    <fa-icon
+                        icon="dot-circle"
+                        style="color: var(--primary)"
+                    ></fa-icon>
+                    Termine verfügbar
+                </span>
+                <span *ngIf="!subject.isOnline && !subject.hasAppointments">
+                    <fa-icon
+                        icon="dot-circle"
+                        style="color: grey"
+                    ></fa-icon>
+                    Keine Tutoren online
+                </span>
             </p>
-            <p *ngIf="!subject.isOnline">
-                <fa-icon icon="dot-circle" style="color: grey"></fa-icon> Keine Tutoren online
-            </p>
+           
         </div>
         <div *ngSwitchCase="'BOOK_SESSION'">
             <scheduling-available-slot-list
@@ -36,16 +54,24 @@
             <button
                 *ngIf="subject.hasAppointments"
                 type="button"
-                class="btn btn-outline-primary"
+                class="btn btn-primary"
+                style="margin-right: 1rem"
                 (click)="onStartBooking()"
             >
                 Session vereinbaren
             </button>
             <button
+                *ngIf="subject.isOnline"
                 type="button"
-                class="btn"
-                [class.btn-primary]="subject.isOnline"
-                [class.btn-secondary]="!subject.isOnline"
+                class="btn btn-success"
+                (click)="onStartMatch()"
+            >
+                Session starten
+            </button>
+            <button
+                *ngIf="!subject.isOnline"
+                type="button"
+                class="btn btn-outline-secondary"
                 (click)="onStartMatch()"
             >
                 Suche starten
