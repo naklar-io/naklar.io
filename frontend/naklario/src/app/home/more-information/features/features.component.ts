@@ -19,12 +19,6 @@ const features: Feature[] = [
     displayText: 'Geprüfte Tutoren',
     longDescription: 'Sicherheit und Vertrauen sind wichtig. Unsere Tutoren werden einzeln überprüft und mithilfe eines Bewertungssystems kontrolliert.',
     shortDescription: 'Um für mehr Sicherheit und Vertrauen zu sorgen, werden Tutoren persönlich verifiziert. '
-  },
-  {
-    src: 'assets/img/features/offen.svg',
-    displayText: 'Für jeden zugänglich',
-    longDescription: 'Jeder kann helfen. Und helfen kann so einfach sein! Engagierte können ganz einfach Tutor werden und in ihren verfügbaren Zeiten flexibel Schülern helfen. Der kostenlose Zugang ermöglicht Schülerinnen und Schülern per Knopfdruck auf Tutoren zuzugreifen und bequem ihre Fragen zu stellen.',
-    shortDescription: 'Für mehr Bildungsgerechtigkeit: Kostenlos Fragen stellen - flexibel und einfach helfen.'
   }
 ];
 
