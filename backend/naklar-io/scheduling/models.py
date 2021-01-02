@@ -3,7 +3,7 @@ from datetime import timedelta, datetime
 import logging
 
 from django.conf import settings as dj_settings
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
 from django.utils import timezone
 from post_office import mail
@@ -82,6 +82,8 @@ class Appointment(models.Model):
         to=dj_settings.AUTH_USER_MODEL, related_name='rejected_appointments', blank=True
     )
 
+    reminded = models.BooleanField(default=False)
+
     all_objects = models.Manager()
     objects = ActiveAppointmentManager()
 
@@ -156,6 +158,24 @@ class Appointment(models.Model):
             'appointment': self
         })
 
+    def send_reminder(self):
+        with transaction.atomic():
+            appointment = self.__class__.objects.select_for_update().get(pk=self.pk)
+            if not appointment.reminded:
+                mail.send([self.invitee.email], 'noreply@naklar.io', 'appointment_reminder', context={
+                    'appointment': appointment,
+                    'reminded_party': self.invitee,
+                    'other_party': self.owner
+                })
+                mail.send([self.owner.email], 'noreply@naklar.io', 'appointment_reminder', context={
+                    'appointment': appointment,
+                    'reminded_party': self.owner,
+                    'other_party': self.invitee
+                })
+            appointment.reminded = True
+            appointment.save()
+        self.refresh_from_db()
+
     def handle_rejection(self, rejecting_party):
         """Handle rejection of appointment from either party
         If the ::rejecting_party is the owner, don't search for another possible timeslot
@@ -183,18 +203,18 @@ class Appointment(models.Model):
             else:
                 logger.debug("Send rejection notification to owner and updating appointment")
                 self.status = Appointment.Status.INVITEE_REJECTED
-            if old_status == Appointment.Status.CONFIRMED:
-                mail.send([self.owner.email], 'noreply@naklar.io', template='appointment_rejected', context={
-                    'appointment': self,
-                    'rejecting_party': self.invitee,
-                    'other_party': self.owner,
-                    'new_try': self.status == Appointment.Status.REQUESTED
-                })
-            else:
-                mail.send([self.owner.email], 'noreply@naklar.io', template='appointment_failed', context={
-                    'appointment': self,
-                    'other_party': self.owner,
-                })
+                if old_status == Appointment.Status.CONFIRMED:
+                    mail.send([self.owner.email], 'noreply@naklar.io', template='appointment_rejected', context={
+                        'appointment': self,
+                        'rejecting_party': self.invitee,
+                        'other_party': self.owner,
+                        'new_try': self.status == Appointment.Status.REQUESTED
+                    })
+                else:
+                    mail.send([self.owner.email], 'noreply@naklar.io', template='appointment_failed', context={
+                        'appointment': self,
+                        'other_party': self.owner,
+                    })
         self.save()
 
     class Meta:
