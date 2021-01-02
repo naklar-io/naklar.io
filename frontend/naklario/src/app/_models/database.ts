@@ -61,7 +61,7 @@ export class TutorData {
         public subjects: Subject[],
         public verificationFile: string,
         public verified: boolean,
-        public profilePicture
+        public profilePicture: string
     ) {}
 }
 

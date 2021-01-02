@@ -1,2 +1,2 @@
-naklario/node_modules
-naklario/dist
+**/dist
+**/node_modules

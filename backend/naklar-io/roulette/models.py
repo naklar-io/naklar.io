@@ -366,25 +366,35 @@ class Meeting(models.Model):
     def create_meeting(self):
         with transaction.atomic():
             meeting = self.__class__.objects.select_for_update().get(pk=self.pk)
-            if not meeting.established:
+            if not meeting.established or meeting.ended:
                 parameters = {'name': 'naklar.io',
                               'meetingID': str(meeting.meeting_id),
                               'meta_endCallbackUrl': settings.API_HOST + "/roulette/meeting/end/" + str(
                                   meeting.meeting_id) + "/",
                               'logoutURL': settings.HOST,
                               'welcome': 'Herzlich willkommen bei naklar.io!'}
+                if meeting.attendee_pw and meeting.moderator_pw:
+                    parameters['attendeePW'] = meeting.attendee_pw
+                    parameters['moderatorPW'] = meeting.moderator_pw
                 r = requests.get(meeting.build_api_request("create", parameters))
                 root = ET.fromstring(r.content)
-                if r.status_code == 200:
-                    meeting.attendee_pw = root.find("attendeePW").text
-                    meeting.moderator_pw = root.find("moderatorPW").text
-                    meeting.established = True
-                    meeting.is_establishing = False
-                    meeting.time_established = timezone.now()
+                if r.status_code == 200 and root.find('returncode').text == 'SUCCESS':
+                    if not meeting.established:
+                        meeting.attendee_pw = root.find("attendeePW").text
+                        meeting.moderator_pw = root.find("moderatorPW").text
+                        meeting.established = True
+                        meeting.is_establishing = False
+                        meeting.time_established = timezone.now()
+                    if meeting.ended:
+                        meeting.ended = False
+                        meeting.time_ended = None
                     if settings.NAKLAR_USE_ACCESS_CODES and self.student:
-                        code = AccessCode.available_codes.filter(user=self.student).first()
-                        code.set_meeting(self)
-                        code.save()
+                        if not AccessCode.objects.filter(meeting=meeting):
+                            code = AccessCode.objects.filter(user=self.student, used=False, meeting__isnull=True).first()
+                            code.set_meeting(self)
+                            code.save()
+                else:
+                    raise RuntimeError(f"Couldn't start meeting, response: {r.content}")
             meeting.save()
         self.refresh_from_db()
 
@@ -408,8 +418,7 @@ class Meeting(models.Model):
         self.save()
 
     def create_join_link(self, user, moderator=False):
-        if not self.established:
-            self.create_meeting()
+        self.create_meeting()
         if user in self.users.all() and self.established:
             parameters = {'fullName': user.first_name,
                           'userID': str(user.uuid),

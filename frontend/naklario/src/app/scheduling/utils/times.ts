@@ -77,7 +77,7 @@ export function mergeDaySlots<T extends Slot>(slots: MergedSlot<T>[]): MergedSlo
             newSlot.children = [...slot.children];
             const maxEnd = timedate.max([...sameDay.map(endTime), endTime(slot)]);
             newSlot.duration = timedate.intervalToDuration({start: slot.startTime, end: maxEnd});
-            sameDay.forEach((x) => newSlot.children.push(...x.children))
+            sameDay.forEach((x) => newSlot.children.push(...x.children));
             mergedSlots.push(...sameDay);
             result.push(newSlot);
         }

@@ -136,8 +136,9 @@ class TutorData(models.Model):
         self.__was_verified = self.verified
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.__was_verified != self.verified:
+        if self.verified and self.__was_verified != self.verified:
             self.send_verified_email()
+            self.__was_verified = self.verified
 
         return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using,
                                            update_fields=update_fields)
@@ -161,7 +162,7 @@ class TutorData(models.Model):
         return str(self.user)
 
     def image_tag(self):
-        return mark_safe('<img src="/media/%s" width="256" height="256" />' % (self.profile_picture))
+        return mark_safe(f'<img src="{self.profile_picture.url}" width="256" height="256" />')
 
     image_tag.short_description = 'Profilbild'
 

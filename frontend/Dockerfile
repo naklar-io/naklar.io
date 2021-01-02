@@ -2,9 +2,10 @@ FROM node:14.14-alpine AS builder
 
 WORKDIR /usr/src/app
 
-COPY ./naklario/package*.json ./
+COPY ./naklario/package.json ./
+COPY ./naklario/package-lock.json ./
 
-RUN npm i && npm run ngcc-cache
+RUN npm i
 
 COPY ./naklario ./
 

@@ -106,7 +106,7 @@ class AppointmentViewSet(viewsets.ModelViewSet):
     def start_meeting(self, request, pk=None):
         from roulette.models import Meeting
         appointment = self.get_object()
-        if appointment.meeting and not appointment.meeting.ended:
+        if appointment.meeting:
             meeting = appointment.meeting
         else:
             meeting = Meeting.objects.create(tutor=appointment.invitee, student=appointment.owner)
@@ -119,7 +119,6 @@ class AppointmentViewSet(viewsets.ModelViewSet):
             appointment.status = Appointment.Status.BOTH_STARTED \
                 if appointment.status == Appointment.Status.OWNER_STARTED else Appointment.Status.INVITEE_STARTED
         appointment.save()
-        meeting.create_meeting()
         url = meeting.create_join_link(self.request.user, True)
         return Response(data={'join_url': url, 'meeting_id': meeting.meeting_id})
 

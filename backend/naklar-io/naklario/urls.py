@@ -1,10 +1,6 @@
-import debug_toolbar
 from django.conf import settings
-from django.conf.urls import url
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path, re_path
-from django.views.generic import TemplateView
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from knox import auth
@@ -37,6 +33,9 @@ urlpatterns = [
     path('notify/', include('notify.urls')),
     path('scheduling/', include('scheduling.urls')),
     path('admin/', admin.site.urls),
-    path('__debug__/', include(debug_toolbar.urls)),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.ENABLE_DEBUG_TOOLBAR:
+    import debug_toolbar
+    urlpatterns.append(path('__debug__/', include(debug_toolbar.urls)))
