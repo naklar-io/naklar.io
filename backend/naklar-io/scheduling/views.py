@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.db.models import Q, Prefetch, F
 from django.db.models.functions import Now
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins, permissions, status
@@ -39,7 +40,7 @@ class BelongsToAppointment(permissions.BasePermission):
 class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = TimeSlot.objects.prefetch_related(
         Prefetch('appointment_set', queryset=Appointment.objects.filter(
-            start_time__gte=Now() + timedelta(minutes=settings.NAKLAR_SCHEDULING_APPOINTMENT_DISTANCE))),
+            start_time__gte=Now()))
     ).select_related(
         'owner',
         'owner__tutordata'
@@ -72,7 +73,8 @@ class AvailableSlotViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         slots = []
         for timeslot in queryset:
-            slots.extend(timeslot.available_slots())
+            slots.extend(timeslot.available_slots(
+                earliest_start=timezone.now() + timedelta(minutes=settings.NAKLAR_SCHEDULING_APPOINTMENT_DISTANCE)))
         slots.sort(key=lambda x: x.start_time)
 
         page = self.paginate_queryset(slots)

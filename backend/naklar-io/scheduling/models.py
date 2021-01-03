@@ -1,3 +1,4 @@
+import math
 from dataclasses import dataclass
 from datetime import timedelta, datetime
 import logging
@@ -22,14 +23,14 @@ class TimeSlot(models.Model):
 
     weekly = models.BooleanField(default=True)
 
-    def available_slots(self, weeks=4) -> list['AvailableSlot']:
+    def available_slots(self, weeks=2, earliest_start=None) -> list['AvailableSlot']:
         now = timezone.now()
         start_time = self.start_time
         slots = []
         # if it's terminated weekly, we have to calculate our new start time
         if start_time < now:
             if self.weekly:
-                while start_time < now:
+                while start_time < now and start_time + self.duration < now:
                     start_time += timedelta(weeks=1)
             else:
                 return []
@@ -39,6 +40,13 @@ class TimeSlot(models.Model):
             base_time = start_time + timedelta(weeks=i)
             week_end = base_time + timedelta(weeks=1)
             current_time = base_time
+            if earliest_start and current_time < earliest_start:
+                diff: timedelta = (earliest_start - current_time)
+                secs = math.ceil(diff.total_seconds() / (60 * 30)) * 60 * 30
+                if current_time+timedelta(seconds=secs) < base_time + self.duration:
+                    current_time += timedelta(seconds=secs)
+                else:
+                    continue
             appointments = [
                 a for a in self.appointment_set.all()
                 if a.start_time >= base_time and a.end_time < week_end and not a.rejected
