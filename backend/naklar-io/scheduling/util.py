@@ -48,9 +48,9 @@ def find_matching_timeslot(start_time: datetime, duration: timedelta,
         )
     ).order_by('num_appointments')
     for timeslot in qs:
-        for available in timeslot.available_slots():
-            if (start_time >= available.start_time >= timezone.now() + timedelta(
-                    minutes=settings.NAKLAR_SCHEDULING_APPOINTMENT_DISTANCE)
+        for available in timeslot.available_slots(
+                earliest_start=timezone.now() + timedelta(minutes=settings.NAKLAR_SCHEDULING_APPOINTMENT_DISTANCE)):
+            if (start_time >= available.start_time
                     and available.start_time + available.duration >= start_time + duration):
                 return available.parent
     return None
