@@ -14,10 +14,34 @@
     <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsed" class="col-12">
         <div class="card">
             <div *ngFor="let startTime of startTimes">
-                <button class="btn btn-outline-primary" (click)="bookTime(startTime)">
+                <button class="btn btn-outline-primary" (click)="bookTime(startTime, content)">
                     30 Minuten ab {{ startTime | date: 'HH:mm' }}
                 </button>
             </div>
         </div>
     </div>
 </div>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Bestätige deine Anfrage</h4>
+        <button
+            type="button"
+            class="close"
+            aria-label="Close"
+            (click)="modal.dismiss('Cross click')"
+        >
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Session für <strong>{{ subject.name }}</strong></p>
+        <p>Am {{ selectedDate|date:'fullDate' }} von {{ selectedDate|date:'shortTime'}} bis {{ calculateEnd(selectedDate, selectedDuration)|date:'shortTime' }} Uhr</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="modal.dismiss()">Abbrechen</button>
+        <button type="button" class="btn btn-success" (click)="modal.close('Save click')">
+            Bestätigen
+        </button>
+    </div>
+</ng-template>
