@@ -31,6 +31,7 @@ export class AvailableSlotListComponent implements OnInit, OnDestroy {
     @Input() subject: Subject;
     @Output() bookedAppointment = new EventEmitter<Appointment>();
     error = '';
+    loading = false;
 
     constructor(
         private availableSlots: AvailableSlotService,
@@ -45,8 +46,10 @@ export class AvailableSlotListComponent implements OnInit, OnDestroy {
         this.availableSlots$ = this.availableSlots
             .list(this.subject.id)
             .pipe(map(mergeOverlappingSlots), map(mergeDaySlots));
+        this.loading = true;
         this.availabeSlotsSub = this.availableSlots$.subscribe((value) => {
             this.availableSlotList = value;
+            this.loading = false;
         });
     }
 
