@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8000',
+  apiUrl: 'https://dev.api.naklar.io',
   // apiUrl: 'http://localhost:4200/api',
   features: {
     roulette: true,

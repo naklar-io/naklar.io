@@ -1,8 +1,9 @@
-import { EventEmitter, TemplateRef, ViewChild } from '@angular/core';
+import { EventEmitter, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { add, differenceInMinutes, isAfter, isBefore, sub } from 'date-fns';
+import { Subscription } from 'rxjs';
 import { User } from 'src/app/_models';
 import { Appointment } from 'src/app/_models/scheduling';
 import { AuthenticationService } from 'src/app/_services';
@@ -15,7 +16,7 @@ import { endTime } from '../../utils/times';
   templateUrl: './appointment-card.component.html',
   styleUrls: ['./appointment-card.component.scss'],
 })
-export class AppointmentCardComponent implements OnInit {
+export class AppointmentCardComponent implements OnInit, OnDestroy {
   @Input() appointment: Appointment;
   @Output() appointmentChange = new EventEmitter<Appointment>();
   @ViewChild('confirmModal') confirmModal: TemplateRef<any>;
@@ -23,6 +24,8 @@ export class AppointmentCardComponent implements OnInit {
   currentUser: User;
   // featureEnabled = environment.features.scheduling;
   featureEnabled = true;
+
+  currentUserSub: Subscription;
   constructor(
     private auth: AuthenticationService,
     private appointments: AppointmentService,
@@ -30,8 +33,12 @@ export class AppointmentCardComponent implements OnInit {
     private modal: NgbModal,
   ) {}
 
+  ngOnDestroy(): void {
+      this.currentUserSub.unsubscribe();
+  }
+
   ngOnInit(): void {
-    this.currentUser = this.auth.currentUserValue;
+    this.currentUserSub = this.auth.currentUser.subscribe((user) => this.currentUser = user);
   }
 
   get endDate(): Date {
@@ -43,7 +50,7 @@ export class AppointmentCardComponent implements OnInit {
       .startMeeting(this.appointment.id)
       .subscribe((response) => {
         console.log('got meeting join response', response);
-        const whichUrl = this.currentUser.isStudent ? 'student' : 'tutor';
+        const whichUrl = this.currentUser.studentdata ? 'student' : 'tutor';
         this.router.navigate(['roulette', whichUrl], {
           queryParams: { state: 'session', meetingId: response.meetingId },
         });

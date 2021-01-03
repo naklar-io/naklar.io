@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { formatISO, parseISO } from 'date-fns';
-import { forkJoin, Observable, of } from 'rxjs';
-import { map, mergeMap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
+import { map, mergeMap, switchMap, tap } from 'rxjs/operators';
 import { JoinResponse, Sendable, Subject } from 'src/app/_models';
 import { Appointment, CreateAppointment } from 'src/app/_models/scheduling';
 import { DatabaseService } from '../../database.service';
@@ -17,6 +17,9 @@ import { deserializeDuration } from './utils';
 export class AppointmentService
     implements Create<CreateAppointment, Appointment>, List<Appointment>, Get<Appointment, number> {
     private deserialize;
+    private appointmentCreatedSubject = new BehaviorSubject(null);
+    appointmentCreated$ = this.appointmentCreatedSubject.asObservable();
+
     constructor(
         private api: ApiService,
         private user: UserService,
@@ -32,7 +35,7 @@ export class AppointmentService
                 '/scheduling/appointment/',
                 object.serialize(this.transform)
             )
-            .pipe(mergeMap(this.deserialize));
+            .pipe(mergeMap(this.deserialize), tap(_ => this.appointmentCreatedSubject.next(null)));
     }
 
     list(): Observable<Appointment[]> {

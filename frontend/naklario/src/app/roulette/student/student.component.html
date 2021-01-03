@@ -1,5 +1,5 @@
 <div class="content">
-    <h2 class="text-primary">Hey {{ user.firstName }},</h2>
+    <h2 class="text-primary">Hey {{ user.firstName }} 😄,</h2>
 
     <account-access-code *ngIf="accessCodesActive"></account-access-code>
     <scheduling-appointment-list (changed)="refresh()"></scheduling-appointment-list>
@@ -10,8 +10,7 @@
             <div [class.inactiveOverlay]="!canAccess" class="overlayDiv">
                 <h3>Wähle ein Fach</h3>
                 <p>
-                    In grauen Fächern ist aktuell kein Tutor frei. Du kannst die Suche aber starten
-                    und im Hintergrund warten.
+                    Du kannst eine Session in dem gewünschten Fach vereinbaren oder Tutoren suchen die online sind.
                 </p>
 
                 <div *ngIf="subjects$ | async as subjects" class="subjects-overview">
@@ -42,7 +41,7 @@
                                                 icon="dot-circle"
                                                 style="color: green"
                                             ></fa-icon>
-                                            Tutoren online!
+                                            Tutoren online
                                         </span>
                                         <span *ngIf="!subject.isOnline && subject.hasAppointments">
                                             <fa-icon

@@ -1,10 +1,11 @@
 import { trigger, transition, style, stagger, animate, query } from '@angular/animations';
-import { Component, EventEmitter, HostBinding, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { add, compareAsc, isAfter } from 'date-fns';
 import { BehaviorSubject, combineLatest, interval, Observable } from 'rxjs';
 import { filter, map, startWith, switchMap } from 'rxjs/operators';
 import { Appointment } from 'src/app/_models/scheduling';
 import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
+import { getTsBuildInfoEmitOutputFilePath } from 'typescript';
 
 @Component({
     selector: 'scheduling-appointment-list',
@@ -51,7 +52,7 @@ export class AppointmentListComponent implements OnInit {
     constructor(private appointments: AppointmentService) {}
 
     ngOnInit(): void {
-        this.appointments$ = combineLatest([this.refresh$, this.autoRefresh$]).pipe(
+        this.appointments$ = combineLatest([this.refresh$, this.autoRefresh$, this.appointments.appointmentCreated$]).pipe(
             switchMap(() =>
                 this.appointments
                     .list()
