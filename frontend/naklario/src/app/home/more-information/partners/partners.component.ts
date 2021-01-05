@@ -63,6 +63,16 @@ const partnerLogos: PartnerLogo[] = [
     href: 'https://de.lw.com/',
     src: 'assets/img/partners/11 latham_and_watkins.png',
     alt: 'Latham & Watkins LLP'
+  },
+  {
+    href: 'https://https://www.spiegel.de/',
+    src: 'assets/img/partners/12 der_spiegel.png',
+    alt: 'Der Spiegel'
+  },
+  {
+    href: 'https://sz.de/',
+    src: 'assets/img/partners/13 sz.png',
+    alt: 'Süddeutsche Zeitung'
   }
 ];
 
