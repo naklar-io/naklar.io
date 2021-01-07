@@ -325,8 +325,6 @@ export class TutorFormComponent implements OnInit {
       const user: Partial<SendableUser> = {
         email: this.f.email.value,
         password: this.f.password.value,
-        firstName: this.f.firstName.value,
-        lastName: this.f.lastName.value,
         state: this.f.state.value,
         gender: this.f.gender.value,
         termsAccepted: this.f.terms.value,

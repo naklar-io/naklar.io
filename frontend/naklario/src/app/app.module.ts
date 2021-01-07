@@ -1,5 +1,5 @@
 import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -65,7 +65,13 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 import { SchedulingModule } from './scheduling/scheduling.module';
 import { SharedModule } from './@shared/shared.module';
 import { PartnerComponent } from './home/misc/partner/partner.component';
+import { switchMap } from 'rxjs/operators';
 
+function fetchUserData(auth: AuthenticationService, db: DatabaseService) {
+    return () => {
+        return db.getConstants().pipe(switchMap(c => auth.fetchUserData(c))).subscribe();
+    };
+}
 @NgModule({
     declarations: [
         AppComponent,
@@ -131,6 +137,7 @@ import { PartnerComponent } from './home/misc/partner/partner.component';
         FontAwesomeModule,
     ],
     providers: [
+        { provide: APP_INITIALIZER, useFactory: fetchUserData, multi: true, deps: [AuthenticationService, DatabaseService]},
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
         AuthenticationService,

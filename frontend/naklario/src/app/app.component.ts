@@ -1,73 +1,128 @@
+import { isPlatformBrowser } from '@angular/common';
 import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef,
-  Renderer2,
-  AfterViewInit,
-  DoCheck, HostListener
+    Component,
+    OnInit,
+    ViewChild,
+    ElementRef,
+    Renderer2,
+    AfterViewInit,
+    DoCheck,
+    HostListener,
+    OnDestroy,
+    PLATFORM_ID,
+    Inject,
 } from '@angular/core';
+import { platformBrowser } from '@angular/platform-browser';
 import { Angulartics2GoogleTagManager } from 'angulartics2/gtm';
+import { BehaviorSubject, interval, merge, of, Subscription } from 'rxjs';
+import { startWith, switchMap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import {
-  NotifyService,
-  PromptUpdateService,
-  AppLayoutService,
+    NotifyService,
+    PromptUpdateService,
+    AppLayoutService,
+    AuthenticationService,
+    DatabaseService,
 } from './_services';
 import { ScrollPositionService } from './_services/scroll-position.service';
 import { TrackingConsentService } from './_services/tracking-consent.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  providers: [AppLayoutService, ScrollPositionService]
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    providers: [AppLayoutService, ScrollPositionService],
 })
-export class AppComponent implements OnInit, AfterViewInit, DoCheck {
-  @ViewChild('app') app: ElementRef;
-  @ViewChild('main') main: ElementRef;
+export class AppComponent implements OnInit, OnDestroy, AfterViewInit, DoCheck {
+    @ViewChild('app') app: ElementRef;
+    @ViewChild('main') main: ElementRef;
 
-  public fullscreen = false;
+    private visibilityState: VisibilityState = 'visible';
+    private userRefresh$ = new BehaviorSubject<null>(null);
+    private userRefreshInterval$ = interval(30 * 60 * 1000).pipe(startWith(0));
+    private userRefreshSub: Subscription;
 
-  title = 'naklar.io';
-  constructor(
-    private notify: NotifyService,
-    private promptUpdate: PromptUpdateService,
-    private layoutService: AppLayoutService,
-    private renderer: Renderer2,
-    private angulartics2GoogleTagManager: Angulartics2GoogleTagManager,
-    public trackingConsent: TrackingConsentService,
-  ) {
-    this.promptUpdate.checkForUpdates();
-    if (environment.features.analytics) {
-      trackingConsent.trackingSettings$.subscribe((settings) => {
-        if (settings.googleAnalytics) {
-          this.angulartics2GoogleTagManager.startTracking();
-        }
-      });
+    public fullscreen = false;
+    isBrowser = false;
+
+    title = 'naklar.io';
+    constructor(
+        private notify: NotifyService,
+        private promptUpdate: PromptUpdateService,
+        private layoutService: AppLayoutService,
+        private renderer: Renderer2,
+        private angulartics2GoogleTagManager: Angulartics2GoogleTagManager,
+        public trackingConsent: TrackingConsentService,
+        private auth: AuthenticationService,
+        private db: DatabaseService,
+        @Inject(PLATFORM_ID) platformId
+    ) {
+        this.isBrowser = isPlatformBrowser(platformId);
     }
-  }
 
-  ngDoCheck(): void {
-    if (this.fullscreen !== this.layoutService.isFullscreen) {
-      this.fullscreen = this.layoutService.isFullscreen;
-    }
-  }
-
-  ngAfterViewInit(): void {
-    this.layoutService.scrollable$.subscribe((scrollable) => {
-      if (scrollable) {
-        try {
-          this.renderer.removeClass(this.app.nativeElement, 'noscroll');
-        } catch {
-          console.error('couldnt remove scrollable class');
+    ngDoCheck(): void {
+        if (this.fullscreen !== this.layoutService.isFullscreen) {
+            this.fullscreen = this.layoutService.isFullscreen;
         }
-      } else {
-        this.renderer.addClass(this.app.nativeElement, 'noscroll');
-      }
-    });
-  }
+    }
 
-  ngOnInit(): void {
-  }
+    ngAfterViewInit(): void {
+        this.layoutService.scrollable$.subscribe((scrollable) => {
+            if (scrollable) {
+                try {
+                    this.renderer.removeClass(this.app.nativeElement, 'noscroll');
+                } catch {
+                    console.error('couldnt remove scrollable class');
+                }
+            } else {
+                this.renderer.addClass(this.app.nativeElement, 'noscroll');
+            }
+        });
+    }
+
+    ngOnInit(): void {
+        this.promptUpdate.checkForUpdates();
+        if (environment.features.analytics) {
+            this.trackingConsent.trackingSettings$.subscribe((settings) => {
+                if (settings.googleAnalytics) {
+                    this.angulartics2GoogleTagManager.startTracking();
+                }
+            });
+        }
+        if (this.isBrowser) {
+            this.userRefreshSub = merge(this.userRefresh$, this.userRefreshInterval$)
+                .pipe(
+                    switchMap(() => {
+                        if (this.auth.isLoggedIn) {
+                            console.log('getting user');
+                            return this.db
+                                .getConstants()
+                                .pipe(switchMap((constants) => this.auth.fetchUserData(constants)));
+                        } else {
+                            console.log('returning null');
+                            return of(null);
+                        }
+                    })
+                )
+                .subscribe((val) => {
+                    console.log('got result', val);
+                });
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.userRefreshSub?.unsubscribe();
+    }
+
+    @HostListener('document:visibilitychange', ['$event'])
+    onFocus(event: Event): void {
+        const doc: Document = event.target as Document;
+        const visibilityState: VisibilityState = doc.visibilityState;
+        if (this.visibilityState !== visibilityState) {
+            if (this.visibilityState === 'hidden' && this.auth.isLoggedIn) {
+                this.userRefresh$.next(null);
+            }
+            this.visibilityState = visibilityState;
+        }
+    }
 }

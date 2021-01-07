@@ -49,6 +49,7 @@
                 formControlName="firstName"
                 class="form-control"
                 placeholder="Vorname"
+                disabled
               />
               <label for="firstName">Vorname</label>
               <div class="invalid-feedback">
@@ -65,6 +66,7 @@
                 formControlName="lastName"
                 class="form-control"
                 placeholder="Nachname"
+                disabled
               />
               <label for="lastName">Nachname</label>
               <div class="invalid-feedback">
@@ -115,6 +117,7 @@
                       [value]="gender.shortcode"
                       id="gender-{{ gender.shortcode }}"
                       formControlName="gender"
+                      disabled
                     />
                     <label
                       class="custom-control-label"
