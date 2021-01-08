@@ -29,7 +29,7 @@ def send_appointment_reminder():
     qs = Appointment.objects.filter(
         status__in=[Appointment.Status.CONFIRMED, Appointment.Status.OWNER_STARTED, Appointment.Status.INVITEE_STARTED],
         reminded=False,
-        start_time__gte=timezone.now()-timedelta(minutes=20)
+        start_time__range=(timezone.now(), timezone.now()+timedelta(minutes=20))
     )
     for ap in qs:
         ap.send_reminder()

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin.templatetags.admin_list import date_hierarchy
 from django.db.models import QuerySet
 
+from _shared.admin import ExportCsvMixin
 from roulette.models import Feedback, Report
 
 from .models import Match, Meeting, StudentRequest, TutorRequest
@@ -19,12 +20,13 @@ class MatchAdmin(admin.ModelAdmin):
 
 
 @admin.register(Feedback)
-class FeedbackAdmin(admin.ModelAdmin):
+class FeedbackAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Feedback
     list_display = ('provider', 'rating', 'created')
     date_hierarchy = 'created'
     ordering = ['-created']
     raw_id_fields = ['provider', 'receiver', 'meeting']
+    actions = ['export_as_csv']
 
 
 class FeedbackInline(admin.StackedInline):
@@ -35,11 +37,11 @@ class FeedbackInline(admin.StackedInline):
 
 
 @admin.register(Meeting)
-class MeetingAdmin(admin.ModelAdmin):
+class MeetingAdmin(admin.ModelAdmin, ExportCsvMixin):
     model = Meeting
     list_display = ('meeting_id', 'ended', 'tutor',
                     'student', 'time_established', 'duration')
-    actions = ['end_meeting']
+    actions = ['end_meeting', 'export_as_csv']
     search_fields = ('tutor__email', 'student__email')
     date_hierarchy = 'time_established'
     ordering = ['-time_established']
