@@ -11,6 +11,7 @@ from post_office import mail
 from simple_history.models import HistoricalRecords
 
 from scheduling import validators, util
+from scheduling.managers import TimeSlotManager
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,10 @@ class TimeSlot(models.Model):
     duration = models.DurationField(validators=[validators.validate_duration])
 
     weekly = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
+
+    objects = TimeSlotManager(alive_only=True)
+    all_objects = TimeSlotManager()
 
     def available_slots(self, weeks=2, earliest_start=None) -> list['AvailableSlot']:
         now = timezone.now()
@@ -58,6 +63,13 @@ class TimeSlot(models.Model):
             if (current_time - base_time) < self.duration:
                 slots.append(AvailableSlot(self, current_time, self.duration - (current_time - base_time)))
         return slots
+
+    def delete(self, *args, **kwargs):
+        self.deleted = True
+        self.save()
+
+    def hard_delete(self, *args, **kwargs):
+        super(TimeSlot, self).delete(*args, **kwargs)
 
 
 class ActiveAppointmentManager(models.Manager):
