@@ -122,7 +122,7 @@ class Appointment(models.Model):
 
     status = models.TextField(choices=Status.choices, default=Status.REQUESTED)
 
-    history = HistoricalRecords()
+    history = HistoricalRecords(user_db_constraint=False)
 
     @classmethod
     def book_available(cls, slot: 'AvailableSlot', duration, **kwargs):
