@@ -1,6 +1,5 @@
 import abc
 import hashlib
-import time
 import uuid
 import xml.etree.ElementTree as ET
 from datetime import timedelta
@@ -12,14 +11,14 @@ from channels.layers import get_channel_layer
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import models, transaction
 from django.db.models import UniqueConstraint, Q
-from django.db.models.signals import (post_delete, post_save, pre_save)
+from django.db.models.signals import (post_save, pre_save)
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from account.models import CustomUser, StudentData, Subject, TutorData
+from account.models import CustomUser, StudentData, Subject, TutorData, AccessCode
 
 channel_layer = get_channel_layer()
 
@@ -365,29 +364,39 @@ class Meeting(models.Model):
         return request
 
     def create_meeting(self):
-        if not self.is_establishing:
-            self.is_establishing = True
-            self.save()
-            parameters = {'name': 'naklar.io',
-                          'meetingID': str(self.meeting_id),
-                          'meta_endCallbackUrl': settings.API_HOST + "/roulette/meeting/end/" + str(
-                              self.meeting_id) + "/",
-                          'logoutURL': settings.HOST,
-                          'welcome': 'Herzlich willkommen bei naklar.io!'}
-            r = requests.get(self.build_api_request("create", parameters))
-            root = ET.fromstring(r.content)
-            if r.status_code == 200:
-                self.attendee_pw = root.find("attendeePW").text
-                self.moderator_pw = root.find("moderatorPW").text
-                self.established = True
-                self.is_establishing = False
-                self.time_established = timezone.now()
-            #        self._add_webhook()
-            self.save()
-        else:
-            while self.is_establishing:
-                time.sleep(0.05)
-                self.refresh_from_db(fields=['is_establishing'])
+        with transaction.atomic():
+            meeting = self.__class__.objects.select_for_update().get(pk=self.pk)
+            if not meeting.established or meeting.ended:
+                parameters = {'name': 'naklar.io',
+                              'meetingID': str(meeting.meeting_id),
+                              'meta_endCallbackUrl': settings.API_HOST + "/roulette/meeting/end/" + str(
+                                  meeting.meeting_id) + "/",
+                              'logoutURL': settings.HOST,
+                              'welcome': 'Herzlich willkommen bei naklar.io!'}
+                if meeting.attendee_pw and meeting.moderator_pw:
+                    parameters['attendeePW'] = meeting.attendee_pw
+                    parameters['moderatorPW'] = meeting.moderator_pw
+                r = requests.get(meeting.build_api_request("create", parameters))
+                root = ET.fromstring(r.content)
+                if r.status_code == 200 and root.find('returncode').text == 'SUCCESS':
+                    if not meeting.established:
+                        meeting.attendee_pw = root.find("attendeePW").text
+                        meeting.moderator_pw = root.find("moderatorPW").text
+                        meeting.established = True
+                        meeting.is_establishing = False
+                        meeting.time_established = timezone.now()
+                    if meeting.ended:
+                        meeting.ended = False
+                        meeting.time_ended = None
+                    if settings.NAKLAR_USE_ACCESS_CODES and self.student:
+                        if not AccessCode.objects.filter(meeting=meeting):
+                            code = AccessCode.objects.filter(user=self.student, used=False, meeting__isnull=True).first()
+                            code.set_meeting(self)
+                            code.save()
+                else:
+                    raise RuntimeError(f"Couldn't start meeting, response: {r.content}")
+            meeting.save()
+        self.refresh_from_db()
 
     def end_meeting(self, close_session=True):
         if self.ended:
@@ -409,8 +418,7 @@ class Meeting(models.Model):
         self.save()
 
     def create_join_link(self, user, moderator=False):
-        if not self.established:
-            self.create_meeting()
+        self.create_meeting()
         if user in self.users.all() and self.established:
             parameters = {'fullName': user.first_name,
                           'userID': str(user.uuid),

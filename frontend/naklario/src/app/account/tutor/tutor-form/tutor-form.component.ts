@@ -22,7 +22,7 @@ import {
   scrollToTop,
   fileSizeValidator,
 } from '../../../_helpers';
-import { Options } from '@m0t0r/ngx-slider';
+import { Options } from '@angular-slider/ngx-slider';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { first, switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -325,8 +325,6 @@ export class TutorFormComponent implements OnInit {
       const user: Partial<SendableUser> = {
         email: this.f.email.value,
         password: this.f.password.value,
-        firstName: this.f.firstName.value,
-        lastName: this.f.lastName.value,
         state: this.f.state.value,
         gender: this.f.gender.value,
         termsAccepted: this.f.terms.value,

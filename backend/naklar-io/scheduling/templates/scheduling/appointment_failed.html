@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kein Tutor verfügbar - {{ appointment.subject.name }}</title>
+</head>
+<body>
+<p>Hi {{ other_party.first_name }},</p>
+<p>Leider konnten wir für folgende Anfrage keinen Tutor finden:</p>
+<p>{{ appointment.subject }}: {{ appointment.start_time }} - {{ appointment.end_time|time }}</p>
+{% if appointment.topic %}
+    <span>Thema: {{ appointment.topic }}</span>
+{% endif %}
+<strong>Wenn du weiterhin einen Termin brauchst, suche dir einen neuen!</strong>
+
+<p>
+    Viele Grüße<br>
+    Dein Team von naklar.io
+</p>
+
+</body>
+</html>

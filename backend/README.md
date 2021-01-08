@@ -1,19 +1,31 @@
-# LernRoulette
-Django-Implementierung von LernRoulette
-
+# naklar.io - Backend 
+Django-Implementierung von naklar.io
 
 ## Entwicklungsumgebung
 Benötigt:
+  - Docker
+  - Docker-Compose
   - python3
-  - virtualenv (`pip3 install virtualenv`)
-Erstellt euch ein virtualenv um die Requirements besser zu managen: `virtualenv <folder_name>`
-Danach `source <foldername>/bin/activate.sh` (bzw. zsh, fish, je nach gewählter Shell)
+  - pipenv (`pip3 install pipenv`)
 
-Um die aktuellen reqs zu installieren (im VirtualEnv):
-`pip3 install -r requirements.txt`
+## Konfiguration
+Kopieren des Beispiel .env
+```shell script
+$ cp .env.example .env
+```
+--> Anpassen der ``.env``-Datei mit den benötigten Parametern
+### Je nach Deployment:
+ - Einlesen von .env in environment variables
+ - Direktes Nutzen der angegebenen Variablen
+ 
+## Deploy 
+```
+# mit externem redis, postgres und minio
+$ docker-compose -f docker-compose.yml 
 
-Wenn neue Requirements hinzukommen (via pip3 install ...):
-`pip3 freeze > requirements.txt`
-
-## Testserver starten
+# mit internem redis, postgres und minio
+$ docker-compose -f docker-compose.yml 
+```
+## Entwicklungsserver
+do
 `python manage.py runserver`

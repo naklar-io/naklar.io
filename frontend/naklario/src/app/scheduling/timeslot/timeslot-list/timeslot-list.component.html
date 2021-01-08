@@ -1,0 +1,20 @@
+<div class="modal-header">
+    <div class="row">
+        <div class="col-auto mr-auto align-self-center">
+            <h3>Verfügbarkeit hinzufügen</h3>
+        </div>
+        <div class="col-auto">
+            <button type="button" class="remove-btn" (click)="addTimeSlot()"><fa-icon icon="plus-circle"></fa-icon></button>
+        </div>
+    </div>
+</div>
+<div class="modal-body">
+    <div *ngFor="let timeslot of timeslotList; index as idx">
+        <scheduling-timeslot-detail [slot]="timeslot" (slotChange)='slotChanged(idx, $event)' [index]="idx" (timeslotDelete)='deleteTimeSlot(idx, $event)'></scheduling-timeslot-detail>
+        <hr>
+    </div>
+</div>
+<div class="modal-footer">
+    <hr>
+    <button type="button" class="btn btn-primary" (click)="save()">Fertig</button>
+</div>

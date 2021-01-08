@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Termin abgesagt von {{ rejecting_party.first_name }} - {{ appointment.subject.name }}</title>
+</head>
+<body>
+<p>Hi {{ other_party.first_name }},</p>
+<p>{{ rejecting_party.first_name }} hat folgenden Termin abgesagt:</p>
+<p>{{ appointment.subject }}: {{ appointment.start_time }} - {{ appointment.end_time|time }}</p>
+{% if appointment.topic %}
+    <span>Thema: {{ appointment.topic }}</span>
+{% endif %}
+{% if new_try %}
+    <strong>Wir haben die Anfrage einem weiterem Tutor weitergeleitet!</strong>
+{% endif %}
+
+<p>
+    Viele Grüße<br>
+    Dein Team von naklar.io
+</p>
+
+</body>
+</html>

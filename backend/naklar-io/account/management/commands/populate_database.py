@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
-from account.models import SchoolData, SchoolType, State, Subject
+from account.managers import CustomUserManager
+from account.models import SchoolData, SchoolType, State, Subject, CustomUser, TutorData, StudentData
 
 SUBJECTS = ["Deutsch", "Mathematik", "Englisch", "Französisch", "Latein", "Physik", "Chemie",
             "Biologie", "Musik", "Geschichte", "Geographie", "Wirtschaft/Recht", "Informatik"]
@@ -27,6 +28,9 @@ STATES = {"Baden-Württemberg": "BW",
 class Command(BaseCommand):
     help = 'populates DB with default values'
 
+    def add_arguments(self, parser):
+        parser.add_argument('--superuser', action='store_true', help="Create superuser?")
+
     def handle(self, *args, **options):
         # create states
         for state, short in STATES.items():
@@ -45,3 +49,18 @@ class Command(BaseCommand):
         for subj in SUBJECTS:
             subjobj = Subject(name=subj)
             subjobj.save()
+
+        if options['superuser']:
+            CustomUser.objects.create_superuser('kstein@inforbi.de', 'Korbinian', 1, '12345678')
+
+        # create tutor account
+        tutor = CustomUser.objects.create_user('tutor@inforbi.de', 'TestTutor', 1, '12345678', email_verified=True, gender='MA')
+        tutordata = TutorData.objects.create(user=tutor, verified=True)
+        tutordata.subjects.add(*Subject.objects.all())
+        tutordata.schooldata.add(*SchoolData.objects.all())
+        print(tutor)
+
+        # create student account
+        student = CustomUser.objects.create_user('schueler@inforbi.de', 'TestSchüler', 1, '12345678', email_verified=True, gender='MA')
+        studentdata = StudentData.objects.create(user=student, school_data=SchoolData.objects.order_by('?')[0])
+        print(student)

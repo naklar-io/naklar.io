@@ -5,6 +5,8 @@ import uuid
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.core import validators
 from django.core.mail import EmailMultiAlternatives
 from django.db import models
@@ -17,13 +19,12 @@ from django.utils.translation import gettext_lazy as _
 from post_office import mail
 from post_office.models import EmailTemplate
 
-from account.managers import CustomUserManager
+from account.managers import CustomUserManager, AvailableCodeManager
 from account.tasks import send_email_task
 
 from _shared.models import SingletonModel
 
 logger = logging.getLogger(__name__)
-
 
 EMAIL_VERIFICATION_PLAINTEXT = get_template("email_verification.txt")
 EMAIL_VERIFICATION_HTMLY = get_template("email_verification.html")
@@ -70,8 +71,13 @@ class State(models.Model):
         return self.name + " (%s)" % self.shortcode
 
 
+def subject_upload_path(instance, filename):
+    return f'subjects/{instance.id}/{filename}'
+
+
 class Subject(models.Model):
     name = models.CharField(_("Name"), max_length=50)
+    img = models.ImageField(upload_to=subject_upload_path, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Fach")
@@ -130,10 +136,12 @@ class TutorData(models.Model):
         self.__was_verified = self.verified
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.__was_verified != self.verified:
+        if self.verified and self.__was_verified != self.verified:
             self.send_verified_email()
+            self.__was_verified = self.verified
 
-        return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        return super(TutorData, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                           update_fields=update_fields)
 
     def send_verified_email(self):
         subject, from_email, to = "Verifizierung für naklar.io", "noreply@naklar.io", self.user.email
@@ -154,7 +162,7 @@ class TutorData(models.Model):
         return str(self.user)
 
     def image_tag(self):
-        return mark_safe('<img src="/media/%s" width="256" height="256" />' % (self.profile_picture))
+        return mark_safe(f'<img src="{self.profile_picture.url}" width="256" height="256" />')
 
     image_tag.short_description = 'Profilbild'
 
@@ -287,7 +295,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             self.email_verified = False
             self.send_verification_email()
 
-        return super(CustomUser, self).save(force_insert=force_insert, force_update=force_update, using=using, update_fields=update_fields)
+        return super(CustomUser, self).save(force_insert=force_insert, force_update=force_update, using=using,
+                                            update_fields=update_fields)
 
     is_tutor.boolean = True
     is_tutor.admin_order_field = 'tutordata'
@@ -306,3 +315,26 @@ def send_verify_on_creation(sender, instance, created, **kwargs):
 
 class TrackingDenyCounter(SingletonModel):
     count = models.IntegerField(default=0)
+
+
+class AccessCode(models.Model):
+    code = models.CharField(max_length=255, unique=True)
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+    used = models.BooleanField(default=False)
+
+    meeting = models.ForeignKey(to='roulette.Meeting', null=True, blank=True, on_delete=models.SET_NULL)
+    appointment = models.ForeignKey(to='scheduling.Appointment', null=True, blank=True, on_delete=models.SET_NULL)
+    redeem_time = models.DateTimeField(null=True, blank=True)
+
+    objects = models.Manager()
+    available_codes = AvailableCodeManager()
+
+    def set_meeting(self, meeting):
+        self.meeting = meeting
+        self.used = True
+        self.save()
+        return self
+
+    def set_appointment(self, appointment):
+        self.appointment = appointment
+        self.save()

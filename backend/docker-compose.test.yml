@@ -7,6 +7,20 @@ services:
     depends_on:
       - db
       - redis
+    environment:
+      - SECRET_KEY=key
+      - DATABASE_URL=psql://docker:docker@db/docker
+      - DEBUG=false
+      - BBB_SHARED=1234
+      - BBB_URL=https://bbb.example.com
+      - API_URL=https://api.example.com
+      - FRONTEND_URL=https://frontend.example.com
+      - USE_S3=false
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DJANGO_ADMINS=
+      - SERVER_EMAIL=server@example.com
+      - EMAIL_DISABLE=true
   db:
      image: postgres
      environment:

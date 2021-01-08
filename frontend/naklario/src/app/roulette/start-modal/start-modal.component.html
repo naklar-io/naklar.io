@@ -1,0 +1,85 @@
+<div class="modal-header">
+    <h3 class="modal-title" id="modal-basic-title">{{ getTitle() }}</h3>
+</div>
+<div class="modal-body">
+    <span [ngSwitch]="state">
+        <div *ngSwitchCase="'START'">
+            <p *ngIf="subject.hasAppointments">
+                Du kannst entweder direkt eine Session mit einem Tutor starten oder einen Termin für eine Session
+                vereinbaren.
+            </p>
+            <h4>Ausgewähltes Fach: {{ subject.name }}</h4>
+            <p>
+                <span *ngIf="subject.isOnline">
+                    <fa-icon
+                        icon="dot-circle"
+                        style="color: green"
+                    ></fa-icon>
+                    Tutoren online
+                </span>
+                <span *ngIf="!subject.isOnline && subject.hasAppointments">
+                    <fa-icon
+                        icon="dot-circle"
+                        style="color: var(--primary)"
+                    ></fa-icon>
+                    Termine verfügbar
+                </span>
+                <span *ngIf="!subject.isOnline && !subject.hasAppointments">
+                    <fa-icon
+                        icon="dot-circle"
+                        style="color: grey"
+                    ></fa-icon>
+                    Keine Tutoren online
+                </span>
+            </p>
+           
+        </div>
+        <div *ngSwitchCase="'BOOK_SESSION'">
+            <scheduling-available-slot-list
+                [subject]="subject"
+                (bookedAppointment)="onBooked($event)"
+            ></scheduling-available-slot-list>
+        </div>
+        <div *ngSwitchCase="'APPOINTMENT_BOOKED'">
+            <scheduling-appointment-card
+                [appointment]="bookedAppointment"
+            disabled></scheduling-appointment-card>
+        </div>
+        <p *ngSwitchDefault></p>
+    </span>
+</div>
+<div class="modal-footer">
+    <div [ngSwitch]="state">
+        <div *ngSwitchCase="'START'">
+            <button
+                *ngIf="subject.hasAppointments"
+                type="button"
+                class="btn btn-primary"
+                style="margin-right: 1rem"
+                (click)="onStartBooking()"
+            >
+                Session vereinbaren
+            </button>
+            <button
+                *ngIf="subject.isOnline"
+                type="button"
+                class="btn btn-success"
+                (click)="onStartMatch()"
+            >
+                Session starten
+            </button>
+            <button
+                *ngIf="!subject.isOnline"
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="onStartMatch()"
+            >
+                Suche starten
+            </button>
+        </div>
+        <div *ngSwitchCase="'APPOINTMENT_BOOKED'">
+            <button type="button" class="btn btn-primary" (click)="modal.close()">OK</button>
+        </div>
+        <div *ngSwitchDefault></div>
+    </div>
+</div>
