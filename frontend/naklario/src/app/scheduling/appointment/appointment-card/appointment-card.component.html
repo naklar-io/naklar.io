@@ -4,7 +4,7 @@
             <div class="col-md-3 col-lg-2 col-sm-4 align-self-center">
                 {{ appointment.subject.name }}
             </div>
-            <div class="col-sm-12 col-md-2 align-self-center">
+            <div class="col-sm-12 col-md-2 align-self-center d-flex align-items-center">
                 <ng-container *ngIf="appointment.owner.uuid === currentUser.uuid; else elseTemplate">
                     <ng-container *ngIf="appointment.status !== 'REQUESTED'">
                         <img
@@ -25,7 +25,7 @@
                     
                 </ng-container>
                 <ng-template #elseTemplate>
-                    <h6>
+                    <h6 style="display: inline-block;">
                         {{ appointment.owner.firstName }} -
                         {{ appointment.owner.studentdata?.schoolData.grade }}. Klasse
                         {{ appointment.owner.studentdata?.schoolData.schoolType.name }}
@@ -38,7 +38,7 @@
             <div class="col-sm-5 col-md-2 align-self-center">
                 {{ appointment.startTime | date: 'HH:mm' }}-{{ endDate | date: 'HH:mm' }}
             </div>
-            <div class="col-sm-6 col-md-4 align-self-center text-right">
+            <div class="col-sm-12 col-lg-4 align-self-center text-right">
                 <ng-container *ngIf="appointment.status === 'REQUESTED'">
                     <ng-container
                         *ngIf="appointment.owner.equals(currentUser); else acceptTemplate"
@@ -78,7 +78,7 @@
                         Bestätigt
                     </button>
                 </ng-container>
-                <button type="button" class="btn btn-outline-secondary" (click)="reject()">
+                <button type="button" class="btn btn-outline-secondary ml-2" (click)="reject()">
                     Absagen
                 </button>
             </div>

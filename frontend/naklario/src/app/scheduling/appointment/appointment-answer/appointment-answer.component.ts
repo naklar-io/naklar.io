@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { BehaviorSubject, combineLatest, Observable, of, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { Appointment } from 'src/app/_models/scheduling';
@@ -15,7 +15,7 @@ export class AppointmentAnswerComponent implements OnInit {
     refreshSub = new BehaviorSubject(null);
     error: any = null;
 
-    constructor(private appointments: AppointmentService, private route: ActivatedRoute) {}
+    constructor(private appointments: AppointmentService, private route: ActivatedRoute, private router: Router) {}
 
     ngOnInit(): void {
         this.appointment$ = combineLatest([this.route.params, this.refreshSub]).pipe(
@@ -30,7 +30,13 @@ export class AppointmentAnswerComponent implements OnInit {
         );
     }
 
-    refresh(): void {
-        this.refreshSub.next(null);
+    refresh(value): void {
+        if (value === null) {
+            this.appointment$ = of(null);
+            this.router.navigateByUrl('/dashboard');
+        } else {
+            this.refreshSub.next(null);
+        }
+        
     }
 }
