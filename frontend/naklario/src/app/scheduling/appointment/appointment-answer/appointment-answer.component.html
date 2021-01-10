@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="col-md-9">
+    <div class="col-lg-9 col-md-12">
         <h3>Auf Anfrage antworten:</h3>
         <ngb-alert *ngIf="error" type="danger">
             <div *ngIf="error.detail">
@@ -7,7 +7,7 @@
             </div></ngb-alert
         >
         <div *ngIf="appointment$ | async as app">
-            <scheduling-appointment-card (appointmentChange)="refresh()" [appointment]="app"> </scheduling-appointment-card>
+            <scheduling-appointment-card (appointmentChange)="refresh($event)" [appointment]="app"> </scheduling-appointment-card>
         </div>
         <br>
         <a routerLink="/dashboard" class="btn btn-primary" href="#" role="button">Zurück zum Dashboard</a>
