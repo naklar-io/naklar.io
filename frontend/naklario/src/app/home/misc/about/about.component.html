@@ -1,104 +1,145 @@
-<div class="container my-5">
-  <div class="row">
-    <div class="col-12 col-lg-7">
-      <h3>ÜBER UNS</h3>
-      <p>Das Team hinter naklar.io - engagiert und
-        motiviert! Wir sind ein neunköpfiges Team
-        von Studierenden, die Schüler in dieser
-        Zeit mit der richtigen Unterstützung unter die
-        Arme greifen.
-        Mit naklar.io wollen wir ehrenamtliche Tutoren
-        mit Schülern in ganz Deutschland
-        zusammenbringen und ihnen per Knopfdruck
-        Fragen beantworten. Seit dem #wirvsvirus
-        Hackathon der Bundesregierung arbeitet
-        unser Team daher an diesem Projekt.</p>
-      <div class="text-center mb-3">
-        <a
-          class="btn nabtn-primary"
-          [href]="joinMailToLink"
-          target="_blank"
-        >Werde Teil des Teams!</a>
-      </div>
-    </div>
-    <div class="col-12 col-lg-5 order-lg-first">
-      <img
-        src="assets/img/team/group_picture.jpg"
-        alt="team image"
-        class="img-fluid"
-      />
-    </div>
-  </div>
-  <div class="row mt-5">
-    <div class="col-12">
-      <h3 class="text-center text-primary">Entstehungsgeschichte</h3>
-      <p>
-        Während dem <a target="_blank" href="https://wirvsvirus.org/">#wirvsvirus-Hackathon</a> im März 2020 ist die Idee entstanden und wurde von unserem Team, bestehend aus 9 Studierenden, innerhalb eines Wochenendes in den Grundzügen umgesetzt.
-      </p>
-      <p>
-        Nach zahlreichen Verbesserungen ist naklar.io nach einem Monat harter Entwicklungsarbeit bereit für die ersten Nutzer.
-      </p>
-      <p>
-        Die Plattform stößt auf großes Interesse und hat 2 Monaten nach dem Hackathon schnell wachsende und stolze 5000 Nutzer.
-      </p>
-      <p>
-        Als motiviertes und visionäres Team sehen wir uns Ende 2020 mit mindestens 100.000 Nutzern. #dreambig
-      </p>
-    </div>
-  </div>
-
-  
-
-  <div class="row">
-    <div class="col-12">
-      <h3>DAS TEAM</h3>
-    </div>
-    <div
-      class="col-12 col-sm-6 col-lg-4 team-picture mb-4"
-      [class.active]="i === activeMemberPicture"
-      *ngFor="let member of team; let i = index"
-      (click)="activeMemberPicture = i">
-      <div class="position-relative" style="overflow: hidden;">
-        <div class="d-block position-relative">
-          <div>
-            <div class="personal-text">
-              <div
-                class="position-absolute text-center"
-                style="top: -25px; left: 0; ; width: 100%; z-index: 3;  color: rgba(255, 255, 255, 0.8)">
-                <i class="material-icons" style="font-size: 30px; text-shadow: 0 0 2px black">keyboard_arrow_up</i>
-              </div>
-              {{member.text}}
-              <br/><br/>
-            </div>
-          </div>
-          <img
-            src="assets/img/team/{{member.name}}.jpg"
-            alt="Bild von {{member.name}}"
-            class="img-fluid d-block"
-          >
+<div class="container mb-5">
+    <h1 class="mb-3">ÜBER UNS</h1>
+    <div class="row">
+        <div class="col-12 col-lg-8">
+            <h3>Wir wollen Schülern helfen</h3>
+            <p>
+                Das Team hinter naklar.io - engagiert und motiviert! Wir sind ein neunköpfiges Team
+                von Studierenden, die Schüler in dieser Zeit mit der richtigen Unterstützung unter
+                die Arme greifen. Mit naklar.io wollen wir ehrenamtliche Tutoren mit Schülern in
+                ganz Deutschland zusammenbringen und ihnen per Knopfdruck Fragen beantworten. Seit
+                dem #wirvsvirus Hackathon der Bundesregierung arbeitet unser Team daher an diesem
+                Projekt.
+            </p>
         </div>
-        <div class="shadow-box"></div>
+        <div class="col-12 col-lg-4">
+            <img src="assets/img/partners/09 wfs_logo.png" alt="team image" class="img-fluid" />
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-10">
+            <h3>Ausschnitt aktueller Projekte</h3>
+            naklar.io bietet eine innovative Lösung zur Wissensvermittlung zwischen Schülern und
+            Lehrenden. Auf Basis der entwickelten Plattform pilotiert naklar.io aktuell die
+            Technologie und pädagogische Wirkungskraft im Rahmen folgender beispielhafter Projekte:
+        </div>
+    </div>
+    <div class="row justify-content-evenly">
+        <div class="col-4">
+          <img src="assets/img/partners/09 wfs_logo.png" alt="team image" class="img-fluid" />
+            <a target="_blank" href=""
+                >Unterstützung im Distanzunterricht - Ministerium für Kultus des Freistaats Sachsen:
+            </a>
+            naklar.io unterstützt 5000 Schüler mit einem Zugang zu ehrenamtlicher Hilfe. Innerhalb
+            von maximal 24 Stunden erhalten Schüler einen direkten Zugang zu einem qualifizierten
+            Tutor.
+        </div>
+        <div class="col-4">
+          <img src="assets/img/partners/09 wfs_logo.png" alt="team image" class="img-fluid" />
+            <a target="_blank" href="">
+                Hybrider Untericht - Prof. Hauck-Thum der Ludwig-Maximilians-Universität:</a
+            >
+            Studierende und zusätzliche Helfende stehen als Tutoren zur Verfügung. Schüler der
+            Bauhausschule können bei Fragen / Überforderung im Distanzunterricht flexibel und
+            einfach einen Termin mit einem Tutor vereinbaren. So werden die Kapazitäten der Tutoren
+            optimal ausgenutzt und maximal vielen Schülern wird in dieser Zeit unter die Arme
+            gegriffen.
+        </div>
+        <div class="col-4">
+          <img src="assets/img/partners/09 wfs_logo.png" alt="team image" class="img-fluid" />
+          <a target="_blank" href="">
+              Hybrider Untericht - Prof. Hauck-Thum der Ludwig-Maximilians-Universität:</a
+          >
+          Studierende und zusätzliche Helfende stehen als Tutoren zur Verfügung. Schüler der
+          Bauhausschule können bei Fragen / Überforderung im Distanzunterricht flexibel und
+          einfach einen Termin mit einem Tutor vereinbaren. So werden die Kapazitäten der Tutoren
+          optimal ausgenutzt und maximal vielen Schülern wird in dieser Zeit unter die Arme
+          gegriffen.
       </div>
-      <h4 class="text-center mt-1">{{member.name}}</h4>
     </div>
-  </div>
+    <div class="row mt-3">
+        <div class="col-12">
+            <h3>Entstehungsgeschichte</h3>
+            <p>
+                Während dem
+                <a target="_blank" href="https://wirvsvirus.org/">#wirvsvirus-Hackathon</a> im März
+                2020 ist die Idee entstanden und wurde von unserem Team, bestehend aus 9
+                Studierenden, innerhalb eines Wochenendes in den Grundzügen umgesetzt.
+            </p>
+            <p>
+                Nach zahlreichen Verbesserungen ist naklar.io nach einem Monat harter
+                Entwicklungsarbeit bereit für die ersten Nutzer.
+            </p>
+            <p>
+                Die Plattform stößt auf großes Interesse und hat 2 Monaten nach dem Hackathon
+                schnell wachsende und stolze 5000 Nutzer.
+            </p>
+            <p>
+                Als motiviertes und visionäres Team sehen wir uns Ende 2020 mit mindestens 100.000
+                Nutzern. #dreambig
+            </p>
+        </div>
+    </div>
 
-  <div class="row">
-    <div class="col-12 text-center">
-      <a
-        class="btn btn-lg nabtn-primary"
-        [href]="joinMailToLink"
-        target="_blank"
-      >Werde Teil des Teams!</a>
+    <div class="row">
+        <div class="col-12">
+            <h3>DAS TEAM</h3>
+        </div>
+        <div
+            class="col-12 col-sm-6 col-lg-4 team-picture mb-4"
+            [class.active]="i === activeMemberPicture"
+            *ngFor="let member of team; let i = index"
+            (click)="activeMemberPicture = i"
+        >
+            <div class="position-relative" style="overflow: hidden">
+                <div class="d-block position-relative">
+                    <div>
+                        <div class="personal-text">
+                            <div
+                                class="position-absolute text-center"
+                                style="
+                                    top: -25px;
+                                    left: 0;
+                                    width: 100%;
+                                    z-index: 3;
+                                    color: rgba(255, 255, 255, 0.8);
+                                "
+                            >
+                                <i
+                                    class="material-icons"
+                                    style="font-size: 30px; text-shadow: 0 0 2px black"
+                                    >keyboard_arrow_up</i
+                                >
+                            </div>
+                            {{ member.text }}
+                            <br /><br />
+                        </div>
+                    </div>
+                    <img
+                        src="assets/img/team/{{ member.name }}.jpg"
+                        alt="Bild von {{ member.name }}"
+                        class="img-fluid d-block"
+                    />
+                </div>
+                <div class="shadow-box"></div>
+            </div>
+            <h4 class="text-center mt-1">{{ member.name }}</h4>
+        </div>
     </div>
-  </div>
-  <div class="row my-5">
-    <div class="col-12 mb-3">
-      <h4><b>Folge uns auf Social Media!</b></h4>
+
+    <div class="row">
+        <div class="col-12 text-center">
+            <a class="btn btn-lg nabtn-primary" [href]="joinMailToLink" target="_blank"
+                >Werde Teil des Teams!</a
+            >
+        </div>
     </div>
-    <div class="col-12">
-      <app-social-icons></app-social-icons>
+    <div class="row my-5">
+        <div class="col-12 mb-3">
+            <h4><b>Folge uns auf Social Media!</b></h4>
+        </div>
+        <div class="col-12">
+            <app-social-icons></app-social-icons>
+        </div>
     </div>
-  </div>
-  
 </div>

@@ -56,6 +56,10 @@ export class AboutComponent implements OnInit {
             name: 'Jana',
             text: `Für Schüler ist diese Situation derzeit besonders schwierig. Aber genau die sollen nicht unter der Lage leiden und vor allem nicht ihre Bildung. Daher finde ich naklar.io mit seinem Konzept super, damit Bildungsgerechtigkeit auch weiter gegeben ist und arbeite gerne in unserem motivierten Team 🤙🏽 Eure Jana ❤️`,
         },
+        {
+            name: 'Du',
+            text: `Für Schüler ist diese Situation derzeit besonders schwierig. Aber genau die sollen nicht unter der Lage leiden und vor allem nicht ihre Bildung. Daher finde ich naklar.io mit seinem Konzept super, damit Bildungsgerechtigkeit auch weiter gegeben ist und arbeite gerne in unserem motivierten Team 🤙🏽 Eure Jana ❤️`,
+        },
     ];
 
     activeMemberPicture = -1;
