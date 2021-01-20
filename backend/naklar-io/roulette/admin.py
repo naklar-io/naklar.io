@@ -1,10 +1,9 @@
+from django.conf import settings
 from django.contrib import admin
-from django.contrib.admin.templatetags.admin_list import date_hierarchy
-from django.db.models import QuerySet
 
 from _shared.admin import ExportCsvMixin
+from account.admin import SingleAccessCodeInline
 from roulette.models import Feedback, Report
-
 from .models import Match, Meeting, StudentRequest, TutorRequest
 
 
@@ -48,12 +47,17 @@ class MeetingAdmin(admin.ModelAdmin, ExportCsvMixin):
     raw_id_fields = ('tutor', 'student', 'users')
 
     inlines = [
-        FeedbackInline
+        FeedbackInline,
     ]
+    if settings.NAKLAR_USE_ACCESS_CODES:
+        inlines.append(SingleAccessCodeInline)
 
     def end_meeting(self, request, queryset):
         for m in queryset:
             m.end_meeting()
+
+    def access_code(self, obj):
+        return obj.accesscode_set.first()
 
 
 class RequestHadMeetingFilter(admin.SimpleListFilter):

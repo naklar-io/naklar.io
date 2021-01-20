@@ -6,6 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.http import HttpResponse
 from django.utils.translation import gettext as _
 
+from _shared.admin import ExportCsvMixin as GeneralExportCsvMixin
 from _shared.admin import SingletonModelAdmin
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 from .models import (CustomUser, SchoolData, SchoolType, State, StudentData,
@@ -59,9 +60,34 @@ class UserNullFilter(NullFilterSpec):
 
 if settings.NAKLAR_USE_ACCESS_CODES:
     @admin.register(AccessCode)
-    class AccessCodeAdmin(admin.ModelAdmin):
+    class AccessCodeAdmin(admin.ModelAdmin, GeneralExportCsvMixin):
         list_display = ['code', 'user', 'used', 'redeem_time']
+        actions = ['export_as_csv', ]
+        autocomplete_fields = ['user', 'appointment', 'meeting']
         list_filter = ['used', AppointmentNullFilter, MeetingNullFilter, UserNullFilter]
+        search_fields = ['code']
+
+
+class AccessCodeInline(admin.StackedInline):
+    model = AccessCode
+
+
+class SingleAccessCodeInline(AccessCodeInline):
+    max_num = 1
+    extra = 0
+    can_delete = False
+    show_change_link = True
+
+    # make immutable in view
+
+    def has_add_permission(self, request, obj):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 class ExportCsvMixin:
@@ -100,6 +126,9 @@ class StudentDataInline(admin.StackedInline):
     verbose_name = "Schülerdaten"
     verbose_name_plural = verbose_name
 
+    max_num = 1
+    extra = 0
+
 
 class TutorDataInline(admin.StackedInline):
     model = TutorData
@@ -108,6 +137,9 @@ class TutorDataInline(admin.StackedInline):
     fields = ['schooldata', 'subjects', 'verified',
               'verification_file', 'profile_picture', 'image_tag']
     readonly_fields = ['image_tag']
+
+    max_num = 1
+    extra = 0
 
 
 class TutorDataFilter(admin.SimpleListFilter):
@@ -162,6 +194,7 @@ class CustomUserAdmin(UserAdmin, ExportCsvMixin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
     model = CustomUser
+    change_form_template = "account/customuser_changeform.html"
 
     inlines = [
         StudentDataInline,
@@ -175,15 +208,15 @@ class CustomUserAdmin(UserAdmin, ExportCsvMixin):
     fieldsets = (
         (None, {'fields':
                     ('email', 'email_verified', 'first_name', 'last_name', 'gender', 'state', 'password')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active')}),
+        ('Permissions', {'fields': ('is_staff', 'is_active', 'groups')}),
     )
     add_fieldsets = (
         (None, {
             'classes': (
                 'wide',), 'fields': (
-                'email', 'first_name', 'state', 'password1', 'password2',
+                'email', 'first_name', 'gender', 'state', 'password1', 'password2',
                 'is_staff', 'is_active')}),)
-    search_fields = ('email',)
+    search_fields = ('email', 'first_name', 'last_name')
     ordering = ['-date_joined']
     actions = ("export_csv",)
 
