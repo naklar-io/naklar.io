@@ -6,7 +6,10 @@ import { isPlatformBrowser } from '@angular/common';
 import { environment } from 'src/environments/environment';
 import { AuthenticationService } from './authentication.service';
 import { BehaviorSubject, Observable, combineLatest, from } from 'rxjs';
-import { mergeMap, flatMap, switchMap, map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
+import { parseISO } from 'date-fns';
+import { ApiService } from './database/api.service';
+import { ConfigService } from './config.service';
 
 enum Browser {
   Chrome = 'Chrome',
@@ -35,8 +38,9 @@ export class NotifyService {
   constructor(
     @Inject(PLATFORM_ID) private platformId,
     private swPush: SwPush,
-    private http: HttpClient,
-    private authService: AuthenticationService
+    private api: ApiService,
+    private authService: AuthenticationService,
+    private config: ConfigService
   ) {
     // console.debug('Notifyservice is live');
     authService.isLoggedIn$.subscribe((loggedIn) => {
@@ -170,8 +174,8 @@ export class NotifyService {
 
   // attempts to fetch settings from server
   private fetchSettings(): void {
-    this.http
-      .get<NotificationSettings>(`${environment.apiUrl}/notify/settings/`)
+    this.api
+      .get<NotificationSettings>(`/notify/settings/`)
       .subscribe(
         (settings) => {
           settings = this.convertToLocal(settings);
@@ -184,8 +188,8 @@ export class NotifyService {
   }
 
   private getPushDevices(): Observable<WebPushDevice[]> {
-    return this.http.get<WebPushDevice[]>(
-      `${environment.apiUrl}/notify/push/device/wp/`
+    return this.api.get<WebPushDevice[]>(
+      `/notify/push/device/wp/`
     );
   }
 
@@ -209,11 +213,11 @@ export class NotifyService {
 
   public requestPushSubscription(): void {
     // console.debug('requesting');
-
-    this.swPush
-      .requestSubscription({
-        serverPublicKey: environment.vapidKey,
-      })
+    this.config.settings.subscribe(settings => {
+      this.swPush
+        .requestSubscription({
+          serverPublicKey: settings.vapidKey,
+        })
       .then((x) => {
         this.addPushSubscription(x).subscribe(
           (result) => {
@@ -227,14 +231,15 @@ export class NotifyService {
       .catch((error) => {
         console.error('Subbing error', error);
       });
+    });
   }
 
   public updateSettings(
     newSettings: NotificationSettings
   ): Observable<NotificationSettings> {
-    return this.http
-      .put<NotificationSettings>(
-        `${environment.apiUrl}/notify/settings/`,
+    return this.api
+      .put<NotificationSettings, NotificationSettings>(
+        `/notify/settings/`,
         this.convertToUTC(newSettings)
       )
       .pipe(
@@ -253,9 +258,9 @@ export class NotifyService {
   }
 
   public createSettings(newSettings: NotificationSettings) {
-    return this.http
-      .post<NotificationSettings>(
-        `${environment.apiUrl}/notify/settings/`,
+    return this.api
+      .post<NotificationSettings, NotificationSettings>(
+        `/notify/settings/`,
         this.convertToUTC(newSettings)
       )
       .pipe(
@@ -285,8 +290,8 @@ export class NotifyService {
       ranges: settings.ranges.map((range) => {
         return {
           days: range.days,
-          startTime: NotifyService.convertToLocal(range.startTime),
-          endTime: NotifyService.convertToLocal(range.endTime),
+          startTime: parseISO(range.startTime),
+          endTime: parseISO(range.endTime),
           pk: range.pk,
         };
       }),
@@ -302,8 +307,8 @@ export class NotifyService {
       auth: pushJSON.keys.auth,
       browser: this.browser.toUpperCase(),
     };
-    return this.http.post<WebPushDevice>(
-      `${environment.apiUrl}/notify/push/device/wp/`,
+    return this.api.post<WebPushDevice, any>(
+      `/notify/push/device/wp/`,
       wpDevice
     );
   }

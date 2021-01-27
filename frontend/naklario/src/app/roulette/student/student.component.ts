@@ -13,12 +13,10 @@ import {
     AuthenticationService,
     RouletteService,
     ToastService,
-    BannerService,
 } from 'src/app/_services';
 import { User, Constants, StudentRequest, Request, Subject } from 'src/app/_models';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PauseModalComponent } from '../pause-modal/pause-modal.component';
 import {
     BehaviorSubject,
     combineLatest,
@@ -29,12 +27,11 @@ import {
     of,
     Subscription,
 } from 'rxjs';
-import { delay, map, startWith, switchMap, tap } from 'rxjs/operators';
-import { AppointmentService } from 'src/app/_services/database/scheduling/appointment.service';
+import { map, startWith, switchMap, tap } from 'rxjs/operators';
 import { AvailableSlotService } from 'src/app/_services/database/scheduling/available-slot.service';
 import { StartModalComponent } from '../start-modal/start-modal.component';
-import { environment } from 'src/environments/environment';
 import { AccessCodeService } from 'src/app/_services/database/account/access-code.service';
+import { ConfigService } from 'src/app/_services/config.service';
 
 export interface OnlineSubject extends Subject {
     isOnline?: boolean;
@@ -99,9 +96,12 @@ export class StudentComponent implements OnInit, OnDestroy {
         private toast: ToastService,
         private availableSlots: AvailableSlotService,
         private modalService: NgbModal,
-        private accessCodeService: AccessCodeService
+        private accessCodeService: AccessCodeService,
+        private settings: ConfigService
     ) {
-        this.accessCodesActive = environment.features.codes;
+        settings.features.subscribe((features) => {
+            this.accessCodesActive = features.codes;
+        });
     }
     ngOnDestroy(): void {
         if (this.canAccessSub) {

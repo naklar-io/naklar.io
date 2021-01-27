@@ -12,11 +12,9 @@ import {
     PLATFORM_ID,
     Inject,
 } from '@angular/core';
-import { platformBrowser } from '@angular/platform-browser';
 import { Angulartics2GoogleTagManager } from 'angulartics2/gtm';
 import { BehaviorSubject, interval, merge, of, Subscription } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
-import { environment } from 'src/environments/environment';
 import {
     NotifyService,
     PromptUpdateService,
@@ -25,6 +23,7 @@ import {
     DatabaseService,
 } from './_services';
 import { ScrollPositionService } from './_services/scroll-position.service';
+import { ConfigService } from './_services/config.service';
 import { TrackingConsentService } from './_services/tracking-consent.service';
 
 @Component({
@@ -55,6 +54,7 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, DoCheck {
         public trackingConsent: TrackingConsentService,
         private auth: AuthenticationService,
         private db: DatabaseService,
+        private settings: ConfigService,
         @Inject(PLATFORM_ID) platformId
     ) {
         this.isBrowser = isPlatformBrowser(platformId);
@@ -82,13 +82,15 @@ export class AppComponent implements OnInit, OnDestroy, AfterViewInit, DoCheck {
 
     ngOnInit(): void {
         this.promptUpdate.checkForUpdates();
-        if (environment.features.analytics) {
-            this.trackingConsent.trackingSettings$.subscribe((settings) => {
-                if (settings.googleAnalytics) {
-                    this.angulartics2GoogleTagManager.startTracking();
-                }
-            });
-        }
+        this.settings.features.subscribe((features) => {
+            if (features.analytics) {
+                this.trackingConsent.trackingSettings$.subscribe((settings) => {
+                    if (settings.googleAnalytics) {
+                        this.angulartics2GoogleTagManager.startTracking();
+                    }
+                });
+            }
+        });
         if (this.isBrowser) {
             this.userRefreshSub = merge(this.userRefresh$, this.userRefreshInterval$)
                 .pipe(

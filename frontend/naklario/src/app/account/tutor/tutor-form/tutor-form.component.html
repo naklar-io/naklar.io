@@ -35,7 +35,7 @@
       >
         <br />
 
-        <div *ngIf="!register && enableNotifications" class="form-row">
+        <div *ngIf="!register && (enableNotifications$ | async)" class="form-row">
           <div class="col-md form-group">
             <a  routerLink="/notify/settings" class="btn nabtn-primary">Benachrichtigungseinstellungen</a>
           </div>

@@ -187,9 +187,6 @@ export function sendableToLocalSchoolData(s: SendableSchoolData, types: SchoolTy
     );
 }
 
-const addAPIUrl = (url: string) => environment.apiUrl + url;
-const removeAPIUrl = (url: string) => url.replace(environment.apiUrl, '');
-
 export class Constants {
     constructor(
         public states: State[],

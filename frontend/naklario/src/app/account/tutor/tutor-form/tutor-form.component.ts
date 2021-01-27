@@ -24,13 +24,14 @@ import {
 } from '../../../_helpers';
 import { Options } from '@angular-slider/ngx-slider';
 import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
-import { first, switchMap } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { ThrowStmt } from '@angular/compiler';
 import { SwPush } from '@angular/service-worker';
 import { environment } from 'src/environments/environment';
+import { ConfigService } from 'src/app/_services/config.service';
 
 @Component({
   selector: 'account-tutor-form',
@@ -46,7 +47,7 @@ export class TutorFormComponent implements OnInit {
   schoolData: SchoolData[];
   genders: Gender[];
 
-  enableNotifications: boolean = environment.features.notifications;
+  enableNotifications$: Observable<boolean>;
 
   verificationFile$: Observable<string>;
 
@@ -76,9 +77,11 @@ export class TutorFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private swPush: SwPush
+    private swPush: SwPush,
+    private config: ConfigService
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
+    this.enableNotifications$ = config.features.pipe(map(features => features.notifications));
   }
   ngOnInit(): void {
     this.route.data.subscribe((routeData: { constants: Constants; user: User }) => {
@@ -233,6 +236,8 @@ export class TutorFormComponent implements OnInit {
   }
 
   subscribeToNotifications(): void {
+    // TODO: Fix this!
+    /* 
     this.swPush
       .requestSubscription({
         serverPublicKey: environment.vapidKey,
@@ -244,7 +249,7 @@ export class TutorFormComponent implements OnInit {
       })
       .catch((err) => {
         console.log(err);
-      });
+      });*/
   }
 
   onSubmit(): void {

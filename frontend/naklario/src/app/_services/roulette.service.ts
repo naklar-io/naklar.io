@@ -35,6 +35,8 @@ import {
   WebSocketSubject, webSocket
 } from 'rxjs/webSocket';
 import { AuthenticationService } from './authentication.service';
+import { ConfigService } from './config.service';
+import { ApiService } from './database/api.service';
 
 export type RouletteRequestType = 'student' | 'tutor';
 
@@ -47,16 +49,19 @@ export class RouletteService {
   private socketSubject: WebSocketSubject<RouletteEvent>;
   private lastMatch = null;
   private lastMeetingID = null;
+  private apiURL;
 
   constructor(
-    private http: HttpClient,
-    private auth: AuthenticationService
+    private api: ApiService,
+    private auth: AuthenticationService,
+    private config: ConfigService
   ) {
     this.matchRequestSubject = new BehaviorSubject<Request>(null);
     this.matchRequest$ = this.matchRequestSubject
       .asObservable()
       // filter the first null value
       .pipe(filter((x) => Boolean(x)));
+    this.config.apiURL.subscribe(x => this.apiURL = x);
   }
   public get matchRequestValue() {
     return this.matchRequestSubject.value;
@@ -65,11 +70,11 @@ export class RouletteService {
   public createRequest(
     requestType: RouletteRequestType,
     request: StudentRequest,
-    constants: Constants
+    constants: Constants,
   ): Observable<StudentRequest> {
-    return this.http
-      .post<SendableStudentRequest>(
-        `${environment.apiUrl}/roulette/${requestType}/request/`,
+    return this.api
+      .post<SendableStudentRequest, SendableStudentRequest>(
+        `/roulette/${requestType}/request/`,
         localToSendableStudentRequest(request)
       )
       .pipe(map((r) => sendableToLocalStudentRequest(r, constants)))
@@ -82,7 +87,8 @@ export class RouletteService {
   }
 
   public socketMatch(requestType: RouletteRequestType, requestID: number, constants: Constants): Observable<Match> {
-    const apiURL = new URL(environment.apiUrl);
+
+    const apiURL = new URL(this.apiURL);
     const protocol = apiURL.protocol === 'https:' ? 'wss:' : 'ws:';
     // setting apiURL to be the right protocol
     apiURL.protocol = protocol;
@@ -115,7 +121,7 @@ export class RouletteService {
         }
         // Hack: Have to add apiUrl
         if (!match.tutor.tutordata.profilePicture.startsWith('http')) {
-          match.tutor.tutordata.profilePicture = environment.apiUrl + match.tutor.tutordata.profilePicture;
+          match.tutor.tutordata.profilePicture = this.apiURL + match.tutor.tutordata.profilePicture;
         }
         this.lastMatch = match;
         return match;
@@ -142,8 +148,8 @@ export class RouletteService {
   }
 
   public deleteRequest(requestType: RouletteRequestType): Observable<void> {
-    const obs = this.http
-      .delete<void>(`${environment.apiUrl}/roulette/${requestType}/request/`)
+    const obs = this.api
+      .delete<void>(`/roulette/${requestType}/request/`)
       .pipe(
         tap(() => {
           console.log('deleting match');
@@ -158,7 +164,7 @@ export class RouletteService {
   }
 
   public getRequest(requestType: RouletteRequestType): Observable<Request> {
-    return this.http.get<Request>(`${environment.apiUrl}/roulette/${requestType}/request/`);
+    return this.api.get<Request>(`/roulette/${requestType}/request/`);
   }
 
   public answerMatch(
@@ -166,9 +172,9 @@ export class RouletteService {
     match: Match,
     answer: MatchAnswer
   ): Observable<MatchAnswer> {
-    const obs = this.http
-      .post<SendableMatchAnswer>(
-        `${environment.apiUrl}/roulette/${requestType}/match/answer/${match.uuid}/`,
+    const obs = this.api
+      .post<SendableMatchAnswer, SendableMatchAnswer>(
+        `/roulette/${requestType}/match/answer/${match.uuid}/`,
         localToSendableMatchAnswer(answer)
       )
       .pipe(map((a) => sendableToLocalMatchAnswer(a)))
@@ -179,70 +185,70 @@ export class RouletteService {
   }
 
   public getMeetings() {
-    return this.http
-      .get<Meeting[]>(`${environment.apiUrl}/roulette/meetings/`)
+    return this.api
+      .get<Meeting[]>(`/roulette/meetings/`)
       .pipe(tap((m) => console.log('got meetings: ', m)));
   }
 
   public getMeeting(id: string): Observable<Meeting> {
-    return this.http
-      .get<Meeting>(`${environment.apiUrl}/roulette/meetings/${id}`)
+    return this.api
+      .get<Meeting>(`/roulette/meetings/${id}`)
       .pipe(tap((m) => console.log('got meeting', m)));
   }
 
   public joinMeeting(match: Match) {
-    return this.http
-      .post<JoinResponse>(
-        `${environment.apiUrl}/roulette/meeting/join/${match.uuid}/`,
+    return this.api
+      .post<JoinResponse, JoinResponse>(
+        `/roulette/meeting/join/${match.uuid}/`,
         null
       )
       .pipe(tap((r) => console.log('got join response: ', r)));
   }
 
   public joinMeetingById(id: string) {
-    return this.http
-      .post<JoinResponse>(
-        `${environment.apiUrl}/roulette/meeting/joinbyid/${id}/`,
+    return this.api
+      .post<JoinResponse, JoinResponse>(
+        `/roulette/meeting/joinbyid/${id}/`,
         null
       )
       .pipe(tap((r) => console.log('got joinbyid response: ', r)));
   }
 
   public endMeeting(meeting: Meeting) {
-    return this.http
-      .post<void>(
-        `${environment.apiUrl}/roulette/meeting/end/${meeting.meetingId}/`,
+    return this.api
+      .post(
+        `/roulette/meeting/end/${meeting.meetingId}/`,
         null
       )
       .pipe(tap((_) => console.log('ended meeting')));
   }
 
   public getFeedbackMeeting(meeting: Meeting) {
-    return this.http.get<Feedback>(
-      `${environment.apiUrl}/roulette/meeting/feedback/${meeting.meetingId}/`
+    return this.api.get<Feedback>(
+      `/roulette/meeting/feedback/${meeting.meetingId}/`
     );
   }
 
   public postFeedback(feedback: Feedback) {
-    return this.http
-      .post(`${environment.apiUrl}/roulette/meeting/feedback/`, feedback)
+    return this.api
+      .post(`/roulette/meeting/feedback/`, feedback)
       .pipe(tap((f) => console.log('posted feedback', f)));
   }
 
   public getFeedback() {
-    return this.http
-      .get<Feedback[]>(`${environment.apiUrl}/roulette/meeting/feedback/`)
+    return this.api
+      .get<Feedback[]>(`/roulette/meeting/feedback/`)
       .pipe(tap((f) => console.log('got feedback', f)));
   }
 
   public postReportMeeting(report: Report) {
-    return this.http
-      .post<Report>(`${environment.apiUrl}/roulette/meeting/report/`, report)
+    return this.api
+      .post<Report, Report>(`/roulette/meeting/report/`, report)
       .pipe(tap((r) => console.log('posted report', r)));
   }
 
   public getOnlineSubjects(): Observable<Subject[]> {
-    return this.http.get<Subject[]>(`${environment.apiUrl}/roulette/online-subjects/`).pipe(tap((s) => {
+    return this.api.get<Subject[]>(`/roulette/online-subjects/`).pipe(tap((s) => {
       console.log('got subjects', s);
     }));
   }

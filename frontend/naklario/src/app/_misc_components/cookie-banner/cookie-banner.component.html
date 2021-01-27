@@ -1,4 +1,4 @@
-<div *ngIf="featureEnabled && isVisible | async" [@popIn]="isVisible" class="mymodal">
+<div *ngIf="(featureEnabled$ | async) && (isVisible | async)" [@popIn]="isVisible" class="mymodal">
   <div *ngIf="!isSettings" class="card">
     <div class="row">
       <h4 class="col-12">

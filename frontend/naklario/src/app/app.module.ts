@@ -36,10 +36,6 @@ import { PageNotFoundComponent } from './home/misc/page-not-found/page-not-found
 import {
     DatabaseService,
     AuthenticationService,
-    ToastService,
-    RouletteService,
-    BannerService,
-    NotifyService,
 } from './_services';
 
 import { MiscComponentsModule } from './_misc_components/misc-components.module';
@@ -66,12 +62,9 @@ import { SchedulingModule } from './scheduling/scheduling.module';
 import { SharedModule } from './@shared/shared.module';
 import { PartnerComponent } from './home/misc/partner/partner.component';
 import { switchMap } from 'rxjs/operators';
+import { ConfigService } from './_services/config.service';
 
-function fetchUserData(auth: AuthenticationService, db: DatabaseService) {
-    return () => {
-        return db.getConstants().pipe(switchMap(c => auth.fetchUserData(c))).subscribe();
-    };
-}
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -120,14 +113,14 @@ function fetchUserData(auth: AuthenticationService, db: DatabaseService) {
         ReactiveFormsModule,
         FormsModule,
         // modules (arbitrary order)
-        
+
         AccountModule,
         RouletteModule,
         MiscComponentsModule,
         NotifyModule,
         SchedulingModule,
         SharedModule,
-        
+
         // AppRoutingComponent needs to be the last routing module
         AppRoutingModule,
         // ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
@@ -137,15 +130,14 @@ function fetchUserData(auth: AuthenticationService, db: DatabaseService) {
         FontAwesomeModule,
     ],
     providers: [
-        { provide: APP_INITIALIZER, useFactory: fetchUserData, multi: true, deps: [AuthenticationService, DatabaseService]},
+        {
+            provide: APP_INITIALIZER,
+            useFactory: (settings: ConfigService) => () => settings.getSettings(),
+            multi: true,
+            deps: [ConfigService],
+        },
         { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-        AuthenticationService,
-        DatabaseService,
-        RouletteService,
-        ToastService,
-        BannerService,
-        NotifyService,
     ],
     bootstrap: [AppComponent],
 })
