@@ -16,7 +16,6 @@ from pathlib import Path
 from typing import List
 
 import environ
-
 from channels.routing import get_default_application
 from django.core.asgi import get_asgi_application
 
@@ -37,7 +36,7 @@ SECRET_KEY = env('SECRET_KEY')
 BBB_SHARED = env('BBB_SHARED')
 BBB_URL = env('BBB_URL')
 
-
+FORCE_SCRIPT_NAME = env.str('FORCE_SCRIPT_NAME', default=None)
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10mb
 
@@ -203,7 +202,7 @@ LOGGING = {
 
 WSGI_APPLICATION = 'naklario.wsgi.application'
 
-ASGI_APPLICATION = 'naklario.routing.application'
+ASGI_APPLICATION = 'naklario.asgi.application'
 
 
 # Database
@@ -247,10 +246,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 STATIC_URL = env('STATIC_URL', default='/static/')
 STATIC_ROOT = env('STATIC_ROOT', default=BASE_DIR / 'static')
-
+if FORCE_SCRIPT_NAME:
+    STATIC_URL = FORCE_SCRIPT_NAME + STATIC_URL
+    WHITENOISE_STATIC_PREFIX = '/static/'
 # STORAGES CONFIG
 if env.bool('USE_S3'):
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

@@ -7,6 +7,8 @@ from knox import auth
 from rest_framework import permissions
 from rest_framework.authentication import SessionAuthentication
 
+from naklario import views
+
 schema_view = get_schema_view(
     openapi.Info(
         title="naklario-API",
@@ -33,9 +35,11 @@ urlpatterns = [
     path('notify/', include('notify.urls')),
     path('scheduling/', include('scheduling.urls')),
     path('admin/', admin.site.urls),
+    path('settings/', views.FrontendSettingsView.as_view())
 
-]# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]  # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.ENABLE_DEBUG_TOOLBAR:
     import debug_toolbar
+
     urlpatterns.append(path('__debug__/', include(debug_toolbar.urls)))
