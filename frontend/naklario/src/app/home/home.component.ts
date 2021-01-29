@@ -19,12 +19,12 @@ export class HomeComponent implements OnInit {
     this.meta.addTag({
       name: 'description',
       content:
-        'Ehrenamtliche Tutoren geben Schülern kostenlose Nachhilfe - ganz einfach und für jeden zugänglich.',
+        'Tutoren geben Schülern Nachhilfe',
     });
     this.title.setTitle(
-      'naklar.io - Kostenlose Nachhilfe - Tutoren helfen ehrenamtlich'
+      'naklar.io'
     );
-    this.meta.addTag({name: 'keywords', content: 'Kostenlose Nachhilfe Ehrenamtlich'});
+    this.meta.addTag({name: 'keywords', content: 'Nachhilfe'});
   }
 
   ngOnInit(): void {
