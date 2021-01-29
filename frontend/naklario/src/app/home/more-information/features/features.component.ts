@@ -23,7 +23,7 @@ const features: Feature[] = [
   {
     src: 'assets/img/features/offen.svg',
     displayText: 'Für jeden zugänglich',
-    longDescription: 'Egal ob Lehrer, Eltern, Studenten, Schüler...jeder kann helfen! Und helfen kann so einfach sein. Damit ermöglichen wir Schülern aus ganz Deutschland einen kostenlosen Zugang zu Tutoren.',
+    longDescription: 'Egal ob Lehrer, Eltern, Studenten, Schüler...jeder kann helfen! Damit ermöglichen wir Schülern aus ganz Deutschland einen kostenlosen Zugang zu Tutoren. Für alle Schularten und Fächer.',
     shortDescription: 'Für mehr Bildungsgerechtigkeit: Kostenlos Fragen stellen - flexibel und einfach helfen.'
   }
 ];
