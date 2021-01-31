@@ -12,7 +12,7 @@ export class NumbersComponent implements OnInit {
   @Input() parentCurrentScrollSectionId: BehaviorSubject<string>;
 
   // to be gotten externally in future
-  readonly USERS_COUNT = 5000;
+  readonly USERS_COUNT = 6000;
   userCounter = this.USERS_COUNT;
   private hasCounted = false;
 

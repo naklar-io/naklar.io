@@ -11,19 +11,19 @@ const features: Feature[] = [
   {
     src: 'assets/img/features/aufdenpunkt.svg',
     displayText: 'Fragen auf Knopfdruck',
-    longDescription: 'Eine Vielzahl an engagierten Tutoren steht jederzeit für Dich auf Knopfdruck zur Verfügung. Probiere es gleich aus und stelle Deine Frage!',
+    longDescription: 'Eine Vielzahl an engagierten Tutoren steht jederzeit für Dich auf Knopfdruck zur Verfügung. Sofort per Livehilfe oder per Termin. Probiere es gleich aus und stelle Deine Frage!',
     shortDescription: 'Stell deine Frage per Chat, Audio oder Video direkt an Tutoren aus ganz Deutschland.'
   },
   {
     src: 'assets/img/features/geprueft.svg',
     displayText: 'Geprüfte Tutoren',
-    longDescription: 'Sicherheit und Vertrauen sind wichtig. Unsere Tutoren werden einzeln überprüft und mithilfe eines Bewertungssystems kontrolliert.',
+    longDescription: 'Sicherheit und Vertrauen sind uns extrem wichtig. Unsere Tutoren werden von unserem Team einzeln verifiziert und fortlaufend überprüft.',
     shortDescription: 'Um für mehr Sicherheit und Vertrauen zu sorgen, werden Tutoren persönlich verifiziert. '
   },
   {
     src: 'assets/img/features/offen.svg',
     displayText: 'Für jeden zugänglich',
-    longDescription: 'Jeder kann helfen. Und helfen kann so einfach sein! Engagierte können ganz einfach Tutor werden und in ihren verfügbaren Zeiten flexibel Schülern helfen. Der kostenlose Zugang ermöglicht Schülerinnen und Schülern per Knopfdruck auf Tutoren zuzugreifen und bequem ihre Fragen zu stellen.',
+    longDescription: 'Egal ob Lehrer, Eltern, Studenten, Schüler...jeder kann helfen! Damit ermöglichen wir Schülern aus ganz Deutschland einen kostenlosen Zugang zu Tutoren. Für alle Schularten und Fächer.',
     shortDescription: 'Für mehr Bildungsgerechtigkeit: Kostenlos Fragen stellen - flexibel und einfach helfen.'
   }
 ];
